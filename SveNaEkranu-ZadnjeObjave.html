@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recent Posts</title>
+  <style>
+    /* Dodatak za stiliziranje */
+    body {
+      background-color: #141414; /* Crna pozadina slična Netflix-u */
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .post-container {
+      border-bottom: 1px solid #333; /* Tamno siva boja */
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #1a1a1a; /* Tamna pozadina za svaki post */
+      border-radius: 8px; /* Zaobljeni uglovi */
+      padding: 10px; /* Dodati prostor unutar svakog posta */
+    }
+    .post-title {
+      background-color: #C70039; /* Crvena boja Netflix-a */
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      text-decoration: none; /* Uklanja podvlačenje */
+    }
+    .post-title:hover {
+      text-decoration: underline; /* Dodaj podvlačenje na hover */
+    }
+    .published-time {
+      color: #008000; /* Svetlo siva za tekst vremena */
+    }
+    .post-tags {
+      margin-top: 5px;
+      font-style: italic;
+      color: #fff; /* Crvena boja Netflix-a za tagove */
+    }
+    img {
+      border-radius: 8px; /* Zaobljeni uglovi slike */
+    }
+  </style>
+</head>
+<body>
+  <div id="recent-posts" style="border: 1px solid #333; padding: 10px; margin: 10px;">
+    <!-- Ovdje će se automatski dodati postovi -->
+  </div>
+
+  <script>
+    var allPosts = [];
+
+    function prikaziPostove(response) {
+      var posts = response.feed.entry;
+      if (posts) {
+        posts.forEach(post => {
+          var postTitle = post.title.$t;
+          var postURL = post.link.find(link => link.rel === "alternate").href;
+          var postPublished = post.published.$t;
+          var postImage = post.media$thumbnail ? post.media$thumbnail.url : "https://via.placeholder.com/150";
+          var postTags = post.category ? post.category.map(tag => tag.term).join(', ') : "Nema tagova";
+          
+          allPosts.push({
+            title: postTitle,
+            url: postURL,
+            published: postPublished,
+            image: postImage,
+            tags: postTags
+          });
+        });
+        prikaziSvePostove();
+      } else {
+        document.getElementById('recent-posts').innerHTML = '<p>Nema postova.</p>';
+      }
+    }
+
+    function prikaziSvePostove() {
+      // Sortiraj postove prema datumu objavljivanja (najnoviji prvo)
+      allPosts.sort((a, b) => new Date(b.published) - new Date(a.published));
+      
+      var currentTime = new Date();
+      var postHTML = '';
+
+      allPosts.forEach(post => {
+        var postPublishedTime = new Date(post.published);
+        var timeDifference = Math.floor((currentTime - postPublishedTime) / (1000 * 60 * 60)); // Razlika u satima
+
+        var timeText = timeDifference < 24
+          ? `<span class="published-time">Objavljeno prije ${timeDifference} sati</span>`
+          : `<span class="published-time">Objavljeno prije ${Math.floor(timeDifference / 24)} dana</span>`;
+
+        postHTML += `
+          <div class="post-container">
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+              <a href="${post.url}"><img src="${post.image}" alt="${post.title}" style="max-width: 100px; margin-right: 10px;"></a>
+              <div>
+                <p><a class="post-title" href="${post.url}">${post.title}</a></p>
+                <p>${timeText}</p>
+                <p class="post-tags">: ${post.tags}</p>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById('recent-posts').innerHTML = postHTML || '<p>Nema postova.</p>';
+    }
+
+    function dohvatiPostove(feedUrl) {
+      var script = document.createElement('script');
+      script.src = `${feedUrl}?alt=json-in-script&orderby=published&max-results=20&callback=prikaziPostove`;
+      document.body.appendChild(script);
+    }
+
+    // Učitaj postove sa feed URL-a
+    dohvatiPostove('https://www.svenadlanuplus.club/feeds/posts/default');
+    dohvatiPostove('https://turksifilmovi.blogspot.com/feeds/posts/default'); 
+  </script>
+</body>
+</html>
