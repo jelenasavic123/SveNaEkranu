@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000; /* Pozadina stranice je crna */
+    color: #fff;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.5em; /* Smanjenje veličine teksta, prilagodite po potrebi */
+    margin: 0; /* Uklanja marginu oko naslova */
+}
+
+nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dve kolone */
+    grid-template-rows: repeat(3, auto); /* Tri reda */
+    gap: 10px; /* Razmak između dugmadi */
+    background-color: #222;
+    padding: 10px; /* Padding oko grida */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s, border-color 0.3s;
+    display: block;
+}
+
+nav a.turske-serije {
+    border-color: #ff6f61; /* Boja za turske serije */
+}
+
+nav a.domace-serije {
+    border-color: #f7b731; /* Boja za domaće serije */
+}
+
+nav a.strane-serije {
+    border-color: #4b7bec; /* Boja za strane serije */
+}
+
+nav a.strani-filmovi {
+    border-color: #a55eea; /* Boja za strane filmove */
+    grid-column: 1 / -1; /* Proširuje se na obe kolone */
+}
+
+nav a:hover {
+    background-color: #444;
+    border-color: #fff;
+}
+
+.container a {
+    float: left;
+    width: 48%;
+    margin-right: 4%; /* Space between images */
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.container a:nth-child(2n) {
+    margin-right: 0; /* Remove margin for the second item in each row */
+}
+
+.container img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="turske-serije">Turske Serije</a>
+    <a href="#" class="turske-serije">Turski Filmovi</a>
+    <a href="#" class="strane-serije">Strane Serije</a>
+    <a href="#" class="strane-serije">Strani Filmovi</a>
+    <a href="#" class="domace-serije">Domaće Serije</a>
+    <a href="#" class="domace-serije">Domaći Filmovi</a>
+    <a href="#" class="strani-filmovi">Zadnje Objave</a>
+</nav>
+
+<header>
+    <h1>Predlažemo Vam</h1>
+</header>
+<div class="container">
+    <a href="https://www.svenadlanuplus.club/2024/07/sunce-nad-mrazom-ayazin-sonu-gunes-kraj.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiniGGpvVAcVq8OFa8dBlW8-W4GnqYiHNpRl8V84DSVWXSMtwBMGTpU7IBl9auk1qvyGepGnMXsC0jJ_3ExQpna70CfDdRlIOG-erYbGIbyoDl0hLo5teq8E2kv7zbwjECmdTMd7BQ30oAliL5UGOWzmFp1LsGjhM7qGU0MjufKt5iWVZ2hwxXCRrQytXtz/s55-w680-c/Sunce%20nad%20mrazom.jpg" alt="Image 1">
+    </a>
+    <a href="https://www.svenadlanuplus.club/2024/02/nevesta-gelin.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ2oJAF0uqmJs4InCL8Oo1JTEGA4wMFNTjkWgdnQsK0zidtw-kiVbLTeK7YWlySoHNWepD9LMeK4DcSg_GAggecpGxyD0IQwi5lpJtAUEQFP6TN_9amG2GEiSfVhCh3_PoDJ1cZw5X_v9i7bTpjaAeIYPxCxtgfgfRmAE0NHmchH4dDcjov3rT1UGy3CBu/s55-w680-c/Gelin1.jpg" alt="Image 2">
+    </a>
+</div>
+
+<div class="container">
+    <a href="https://www.svenadlanuplus.club/2024/05/ljubicasto-kao-more-viola-come-il-mare.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjCSiNEFsNJxVcP32Y527UJuSaBm2FVnk6IMkppYVXzSrCrT_I1xjuCybUQAfFfTarhUjAYGCA41h8UmVGEW7xVDdwume68CCQZfubNAfnsNzZJPHqukDhMHDCvLjfT5CJhRuRII5eAYC0Dj0Pr7q-J3iBXt1mT_wSQDyg8xeKAUfotG4rZLb6LV_u_AIch/s320-rw/LJUBI%C4%8CASTA%20KAO%20MORE.jpg" alt="Image 1">
+    </a>
+    <a href="https://www.svenadlanuplus.club/2024/07/seti-se-gonul-hatirla-gonul.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi149d6Ahy3gyuNt_tNqt00d9PCpdtC-AD0XnP69KuK5ldKjH2WEnL7RvV8-WNV-jsh6holr5aqpfvkLlc3pbmvnOtsW4LhtL3dLiMNpelqh6rMvlsUbGt1D6H5cH7euACXlA-WpXvY8vsR15QZz5RCJpvX348ZNTwmefwkZVfL4ffjh0dp1PB-Z7X1l590/w680-rw/HATIRLA%20GONUL.JPG" alt="Image 2">
+    </a>
+</div>
+
+<div class="container">
+    <a href="https://www.svenadlanuplus.club/2022/12/sanjalica-erkenci-kus.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjFXzs8-LbtQ6ZPSnTZxYRblMbmWfXAAGObeI8zp9FjTb0BlOoQZGkYlo0QS5gHVgrosH-wAIk13WhfhXyHUyNd8bhO5FBXZe7HpQLaRdTTm9abRcDDTsow8HNEOjT4Xhy0OH6qpLILYNv0E59cjfozJeRLoi8NWXphwj4O-RC_8JBxZDeU7UBYDFWlVSXY/s320-rw/Sanalica1.jpg" alt="Image 1">
+    </a>
+    <a href="https://www.svenadlanuplus.club/2024/07/ru-1-epz-input-position-absolute-left.html">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhNvtAzIKCaNgMgUAC6CvcW3HzUrywHN8Dn1qVoyftRO39i9QM8DGGeCQyqFEFqgMlB9RYzABSM0_jhKgf6cynF1PKRezV4krtfIhiPrn_jU6f4CRa2jOQdkOVdDSBaLTX7PZmQEyzeXGAbjFWI2dZ0F6TU0yoWQRvN_ar95aOmOapdEauWdjXgdtAvErr4/w680-rw/ru.JPG" alt="Image 2">
+    </a>
+</div>
+
+</body>
+</html>
