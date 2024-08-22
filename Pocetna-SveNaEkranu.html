@@ -62,6 +62,24 @@ nav a.strani-filmovi {
     grid-column: 1 / -1; /* Proširuje se na obe kolone */
 }
 
+ nav a.favorite {
+    display: inline-block; /* Osigurava da dugme ima padding i margin */
+    padding: 5px 10px; /* Razmak unutar dugmeta */
+    border: 2px solid #fff; /* Boja obruba */
+    border-radius: 5px; /* Zaobljeni uglovi */
+    background-color: #DE3163; /* Pozadina dugmeta */
+    color: #fff; /* Boja teksta */
+    text-align: center; /* Poravnanje teksta u sredinu */
+    text-decoration: none; /* Uklanja podvlačenje teksta */
+    font-size: 16px; /* Veličina fonta */
+    font-weight: bold; /* Debeli font */
+    grid-column: 1 / -1; /* Proširuje se na obe kolone */
+  }
+
+  nav a.favorite:hover {
+    background-color: #DE3163; /* Pozadina pri prelazu mišem */
+    color: #fff; /* Boja teksta pri prelazu mišem */
+  }
 nav a:hover {
     background-color: #444;
     border-color: #fff;
@@ -91,6 +109,7 @@ nav a:hover {
 <body>
 
 <nav>
+    <a href="#" class="favorite">Vaša lista omiljenog sadržaja</a>
     <a href="#" class="turske-serije">Turske Serije</a>
     <a href="#" class="turske-serije">Turski Filmovi</a>
     <a href="#" class="strane-serije">Strane Serije</a>
