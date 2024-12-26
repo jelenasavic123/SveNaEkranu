@@ -1,3 +1,7 @@
+<div style="background-color: #141414; color: #e50914; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
+    <p style="font-size: 13px; line-height: 1.8; margin: 0;">
+      Kada pokrenete film u donjem desnom uglu  ukljucite prevod na srpski bosanski ili hrvatski </p>
+</div>
 
 <!DOCTYPE html>
 <html lang="sr">
@@ -137,7 +141,7 @@
     }
 
     async function openVideo(movieId) {
-        const videoUrl = `https://vidlink.pro/movie/${movieId}`;
+        const videoUrl = `https://vidsrc.xyz/embed/movie/${movieId}`;
         const modal = document.getElementById('popup-modal');
         const iframe = document.getElementById('iframe-player');
 
@@ -364,55 +368,6 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
-document.addEventListener('DOMContentLoaded', () => {
-    fetchTopMovies(); // Učitaj top filmove prilikom učitavanja stranice
-
-    // Funckija za otvaranje modala i video
-    function openVideo(movieId) {
-        const videoUrl = `https://vidlink.pro/movie/${movieId}`;
-        const modal = document.getElementById('popup-modal');
-        const iframe = document.getElementById('iframe-player');
-
-        iframe.src = videoUrl;
-        modal.style.display = 'block';
-
-        // Zatvori modal pomoću Escape tastera
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                modal.style.display = 'none';
-                iframe.src = ''; // Resetujemo iframe src kada se zatvori
-            }
-        });
-    }
-});
-
-// Event listener za otvaranje i zatvaranje modala putem tastature
-document.addEventListener('keydown', function(event) {
-    if (event.target.tagName === 'INPUT' && event.target.id === 'search-query') {
-        if (event.key === 'Enter') {
-            document.getElementById('search-btn').click(); // Klik na dugme za pretragu
-        } else if (event.key === 'ArrowDown') {
-            // Navigacija kroz predloge uz tastaturu
-            let suggestions = document.querySelectorAll('.suggestion-item');
-            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
-            let nextIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) + 1 : 0;
-            if (nextIndex < suggestions.length) {
-                if (activeSuggestion) activeSuggestion.classList.remove('active');
-                suggestions[nextIndex].classList.add('active');
-                document.getElementById('search-query').value = suggestions[nextIndex].textContent;
-            }
-        } else if (event.key === 'ArrowUp') {
-            let suggestions = document.querySelectorAll('.suggestion-item');
-            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
-            let prevIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) - 1 : suggestions.length - 1;
-            if (prevIndex >= 0) {
-                if (activeSuggestion) activeSuggestion.classList.remove('active');
-                suggestions[prevIndex].classList.add('active');
-                document.getElementById('search-query').value = suggestions[prevIndex].textContent;
-            }
-        }
-    }
-});
 
 
 </script>
@@ -425,153 +380,54 @@ document.addEventListener('keydown', function(event) {
         margin: 0;
         padding: 0;
     }
-
-    .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #1e1e1e;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 2em; /* Manja veličina naslova za manje ekrane */
-        color: #f39c12;
-        margin-bottom: 20px;
-    }
-
-    input[type="text"] {
-        width: 90%;
-        padding: 12px;
-        margin-bottom: 15px;
-        border: 1px solid #555;
-        border-radius: 5px;
-        background-color: #2c2c2c;
-        color: #fff;
-    }
-
-    button {
-        width: 100%; /* Dugmad preko cele širine na manjim ekranima */
-        padding: 12px;
-        background-color: #e67e22;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: #d35400;
-    }
-
-    #results-container, #hulu-top-movies-container, #netflix-top-movies-container, #top-movies-container {
-        margin-top: 20px;
-    }
-
-
-
-.results-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Fleksibilne kolone */
-    gap: 20px; /* Razmak između kartica */
-    margin: 0 auto; /* Centriranje containera */
-    padding: 10px;
-    max-width: 100%; /* Ograničavamo širinu containera */
-    box-sizing: border-box; /* Uključujemo padding u dimenzije */
-}
-
-
-
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.8);
-        padding-top: 60px;
-    }
-
-    .modal-content {
-        margin: auto;
-        padding: 20px;
-        background: #1e1e1e;
-        border-radius: 10px;
-        width: 90%;
-        max-width: 600px;
-    }
-
-    /* Responzivni dizajn */
-    @media (min-width: 600px) {
-        button {
-            width: auto; /* Dugmad se vraćaju na normalnu širinu na tabletima */
-        }
-
-        .movie-card {
-            display: inline-block;
-            width: calc(50% - 20px); /* Dve karte u redu za tablete */
-            margin: 10px;
-        }
-
-        .movie-card img {
-            max-width: 120px;
-        }
-    }
-
-    @media (min-width: 900px) {
-        .movie-card {
-            width: calc(25% - 20px); /* Četiri karte u redu za desktop */
-        }
-    }
-    .close {
-    color: #aaa;
-    float: right;
-    font-size: 2.5em; /* Uvećavamo font za X */
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-.close:hover {
-    color: red; /* Crvena boja prilikom hover-a */
-    text-decoration: none;
-}
-
+-
 
 #hulu-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll;
-    gap: 15px; /* Razmak između filmova */
+    gap: 1px; /* Razmak između filmova */
 }
 
 
 #netflix-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll;
-    gap: 15px; /* Razmak između filmova */
+    gap: 1px; /* Razmak između filmova */
 }
 
 #disney-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll; /* Horizontalni scroll */
-    gap: 15px; /* Razmak između filmova */
+    gap: 10%; /* 10% razmak između filmova */
     scroll-snap-type: x mandatory; /* Poravnanje elemenata sa scroll-om */
     scrollbar-width: auto; /* Pokaži scrollbar */
     -ms-overflow-style: auto; /* Pokaži scrollbar na IE */
     -webkit-overflow-scrolling: touch; /* Omogućava klizanje prstima na touch uređajima */
 }
 
+#disney-top-movies-container .results-container > * {
+    flex-basis: calc(100% / 6); /* Odredjuje širinu na 16.66% (6 delova od 100%) */
+}
+
+
+#disney-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
+
+
+#netflix-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
+
+#hulu-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
 
 .suggestion-item.active, .movie-card.active {
     background-color: #e67e22;
