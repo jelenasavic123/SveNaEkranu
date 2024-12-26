@@ -217,6 +217,11 @@ header select {
     cursor: pointer;
 }
 
+.selected {
+    border: 2px solid red;
+    outline: none; /* Uklanja default outline ako je potrebno */
+}
+
 </style>
 
 </head>
@@ -251,12 +256,14 @@ header select {
             <button id="update-embed">Update Embed</button>
         </div>
     </div>
-<!-- Modal for video playback -->
-<div id="popup-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <iframe id="iframe-player" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
+
+    
+    <select id="subtitle-select">
+    <option value="none">None</option>
+    <option value="english">English</option>
+    <option value="spanish">Spanish</option>
+    <!-- Dodajte više opcija prema potrebama -->
+</select>
 </div>
     <script src="script.js"></script>
 
@@ -299,17 +306,52 @@ async function openVideo(movieId) {
     window.location.href = videoUrl; // Učitava video unutar trenutnog prozora
 
 
-
-
+// Otvoriti video u trenutnom prozoru
+    const videoContainer = document.getElementById('video-container'); // Element gde se učitava video
+    if (videoContainer) {
+        videoContainer.innerHTML = ''; // Uklanjanje prethodnog sadržaja
+        const iframe = document.createElement('iframe');
         iframe.src = videoUrl;
-        modal.style.display = 'block';
+        iframe.width = '100%'; // Prilagodba veličine iframe-a
+        iframe.height = '500px'; // Prilagodba visine iframe-a
+        iframe.frameBorder = '0'; // Uklanja ivice iframe-a
+        iframe.allowFullscreen = true; // Omogućava fullscreen režim ako je potrebno
 
-        // Close modal
-        document.querySelector('.close').addEventListener('click', () => {
-            modal.style.display = 'none';
-            iframe.src = ''; // Reset iframe src when modal is closed
+        // Dodajemo iframe unutar video-container-a
+        videoContainer.appendChild(iframe);
+        
+        // Dodavanje opcije za odabir titlova (kontrola)
+        const subtitleControl = document.createElement('div');
+        subtitleControl.innerHTML = `
+            <label for="subtitle-select">Choose Subtitle:</label>
+            <select id="subtitle-select">
+                <option value="none">None</option>
+                <option value="english">English</option>
+                <option value="spanish">Spanish</option>
+                <!-- Dodajte više opcija prema potrebama -->
+            </select>
+        `;
+        videoContainer.appendChild(subtitleControl);
+
+        // Event handler za selekciju titlova
+        document.getElementById('subtitle-select').addEventListener('change', function () {
+            const selectedSubtitle = this.value;
+            // Funkcija za promeni titl može da se zove ovde
+            setSubtitle(selectedSubtitle, iframe); // Implementirajte ovu funkciju kako želite
         });
+    } else {
+        console.error('Element with ID "video-container" not found.');
     }
+}
+
+// Primena titlova (ova funkcija zavisi od video player-a koji koristite)
+function setSubtitle(subtitle, iframe) {
+    // Zamena titlova na iframe-u ili video player-u
+    if (iframe && iframe.contentWindow && iframe.contentWindow.postMessage) {
+        // Pošaljite poruku unutar iframe-a da promenite titlove (primarno za HTML5 video)
+        iframe.contentWindow.postMessage({ type: 'setSubtitle', subtitle: subtitle }, '*');
+    }
+}
 
     // Display movies on the page
     const displayMovies = (movies) => {
@@ -404,6 +446,24 @@ async function openVideo(movieId) {
     // Initial load
     fetchMovies(); // Load popular movies by default
 });
+
+
+function highlightSelectedOption(event) {
+    const selectElement = document.getElementById('subtitle-select');
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const allOptions = selectElement.options;
+    
+    // Uklonite selekciju sa svih opcija
+    for (let option of allOptions) {
+        option.classList.remove('selected');
+    }
+    
+    // Dodaj crveni okvir na odabranu opciju
+    selectedOption.classList.add('selected');
+}
+
+// Dodavanje event listener-a na select element
+document.getElementById('subtitle-select').addEventListener('change', highlightSelectedOption);
 
 </script>
 
