@@ -364,6 +364,55 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTopMovies(); // Učitaj top filmove prilikom učitavanja stranice
+
+    // Funckija za otvaranje modala i video
+    function openVideo(movieId) {
+        const videoUrl = `https://vidlink.pro/movie/${movieId}`;
+        const modal = document.getElementById('popup-modal');
+        const iframe = document.getElementById('iframe-player');
+
+        iframe.src = videoUrl;
+        modal.style.display = 'block';
+
+        // Zatvori modal pomoću Escape tastera
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                modal.style.display = 'none';
+                iframe.src = ''; // Resetujemo iframe src kada se zatvori
+            }
+        });
+    }
+});
+
+// Event listener za otvaranje i zatvaranje modala putem tastature
+document.addEventListener('keydown', function(event) {
+    if (event.target.tagName === 'INPUT' && event.target.id === 'search-query') {
+        if (event.key === 'Enter') {
+            document.getElementById('search-btn').click(); // Klik na dugme za pretragu
+        } else if (event.key === 'ArrowDown') {
+            // Navigacija kroz predloge uz tastaturu
+            let suggestions = document.querySelectorAll('.suggestion-item');
+            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
+            let nextIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) + 1 : 0;
+            if (nextIndex < suggestions.length) {
+                if (activeSuggestion) activeSuggestion.classList.remove('active');
+                suggestions[nextIndex].classList.add('active');
+                document.getElementById('search-query').value = suggestions[nextIndex].textContent;
+            }
+        } else if (event.key === 'ArrowUp') {
+            let suggestions = document.querySelectorAll('.suggestion-item');
+            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
+            let prevIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) - 1 : suggestions.length - 1;
+            if (prevIndex >= 0) {
+                if (activeSuggestion) activeSuggestion.classList.remove('active');
+                suggestions[prevIndex].classList.add('active');
+                document.getElementById('search-query').value = suggestions[prevIndex].textContent;
+            }
+        }
+    }
+});
 
 
 </script>
