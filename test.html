@@ -352,10 +352,12 @@
 
 .results-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dve kolone: leva i desna */
-    gap: 20px; /* Razmak između kolona i redova */
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Fleksibilne kolone */
+    gap: 20px; /* Razmak između kartica */
+    margin: 0 auto; /* Centriranje containera */
     padding: 10px;
+    max-width: 100%; /* Ograničavamo širinu containera */
+    box-sizing: border-box; /* Uključujemo padding u dimenzije */
 }
 
 .movie-card {
@@ -363,10 +365,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    position: relative; /* Omogućava pozicioniranje dugmeta */
-    width: 200px;
-    height: 300px;
-    background-color: #1e1e1e; /* Tamna pozadina */
+    position: relative;
+    width: 100%; /* Automatski zauzima širinu kolone */
+    height: auto;
+    background-color: #1e1e1e;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
@@ -374,13 +376,13 @@
 }
 
 .movie-card img {
-    width: 100%;
-    height: auto;
-    border-bottom: 2px solid #333; /* Razdvajanje slike od sadržaja */
+    width: 100%; /* Slika se prilagođava širini kartice */
+    height: auto; /* Proporcionalna visina */
+    border-bottom: 2px solid #333;
 }
 
 .movie-card button {
-    position: absolute; /* Dugme pozicionirano unutar slike */
+    position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
@@ -395,8 +397,24 @@
 }
 
 .movie-card button:hover {
-    background-color: #d35400; /* Tamnija boja prilikom hover-a */
+    background-color: #d35400;
 }
+
+/* Media Query za male ekrane */
+@media (max-width: 768px) {
+    .results-container {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Manje kartice za manje ekrane */
+    }
+
+    .movie-card {
+        height: auto; /* Omogućava fleksibilnost visine */
+    }
+
+    .movie-card button {
+        font-size: 0.8em; /* Smanjujemo veličinu dugmeta */
+    }
+}
+
 
 
 
