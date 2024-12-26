@@ -350,19 +350,42 @@
     text-align: center;
 }
 
+.results-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dve kolone: leva i desna */
+    gap: 20px; /* Razmak između kolona i redova */
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative; /* Omogućava pozicioniranje dugmeta */
+    width: 200px;
+    height: 300px;
+    background-color: #1e1e1e; /* Tamna pozadina */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
 .movie-card img {
     width: 100%;
     height: auto;
-    border-bottom: 2px solid #333; /* Deli sliku od ostatka */
+    border-bottom: 2px solid #333; /* Razdvajanje slike od sadržaja */
 }
 
 .movie-card button {
-    position: absolute; /* Pozicioniranje dugmeta unutar slike */
+    position: absolute; /* Dugme pozicionirano unutar slike */
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px 15px;
-    background-color: #e67e22; /* Narandžasta boja za dugme */
+    background-color: #e67e22;
     color: white;
     border: none;
     border-radius: 5px;
@@ -372,17 +395,9 @@
 }
 
 .movie-card button:hover {
-    background-color: #d35400; /* Tamnija narandžasta prilikom hover-a */
+    background-color: #d35400; /* Tamnija boja prilikom hover-a */
 }
 
-.results-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px; /* Razmak između kartica */
-    justify-content: center;
-    margin-top: 20px;
-    padding: 10px;
-}
 
 
     .modal {
