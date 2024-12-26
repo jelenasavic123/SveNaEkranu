@@ -238,9 +238,10 @@
             movieCard.appendChild(movieTitle);
 
             const viewButton = document.createElement('button');
-            viewButton.textContent = 'Gledaj film';
+            viewButton.textContent = 'Gledaj';
             viewButton.addEventListener('click', () => openVideo(movie.id));
             movieCard.appendChild(viewButton);
+
 
             movieCardsContainer.appendChild(movieCard);
         });
@@ -251,6 +252,30 @@
     document.addEventListener('DOMContentLoaded', () => {
         fetchTopMovies(); // Učitaj top filmove prilikom učitavanja stranice
     });
+    
+    function displayResults(results) {
+    const resultsContainer = document.getElementById('results-container');
+    resultsContainer.innerHTML = ''; // Brišemo prethodne rezultate
+
+    results.forEach(movie => {
+        const movieCard = document.createElement('div');
+        movieCard.className = 'movie-card';
+
+        const movieImg = document.createElement('img');
+        movieImg.src = `https://image.tmdb.org/t/p/w200${movie.poster_path}`; // URL postera
+        movieImg.alt = movie.title;
+
+        const videoButton = document.createElement('button');
+        videoButton.textContent = 'Gledaj';
+        videoButton.addEventListener('click', () => openVideo(movie.id));
+
+        movieCard.appendChild(movieImg);
+        movieCard.appendChild(videoButton); // Dugme je unutar kartice
+
+        resultsContainer.appendChild(movieCard);
+    });
+}
+
 </script>
 
 <style>
@@ -310,23 +335,55 @@
     }
 
     .movie-card {
-        display: inline-block;
-        width: 100%; /* Full width for mobile screens */
-        margin: 10px 0;
-        text-align: center;
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 10px;
+    position: relative; /* Omogućava apsolutno pozicioniranje dugmeta */
+    width: 200px;
+    height: 300px;
+    background-color: #1e1e1e; /* Tamnija pozadina */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
 
-    .movie-card img {
-        width: 100%;
-        max-width: 150px; /* Ograničenje veličine slike */
-        height: auto;
-        border-radius: 10px;
-    }
+.movie-card img {
+    width: 100%;
+    height: auto;
+    border-bottom: 2px solid #333; /* Deli sliku od ostatka */
+}
 
-    .movie-card h3 {
-        margin: 10px 0 5px;
-        font-size: 1em; /* Manji naslov filma za manje ekrane */
-    }
+.movie-card button {
+    position: absolute; /* Pozicioniranje dugmeta unutar slike */
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 15px;
+    background-color: #e67e22; /* Narandžasta boja za dugme */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+
+.movie-card button:hover {
+    background-color: #d35400; /* Tamnija narandžasta prilikom hover-a */
+}
+
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px; /* Razmak između kartica */
+    justify-content: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
 
     .modal {
         display: none;
