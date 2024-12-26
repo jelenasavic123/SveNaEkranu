@@ -1,7 +1,4 @@
-<div style="background-color: #141414; color: #e50914; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
-    <p style="font-size: 13px; line-height: 1.8; margin: 0;">
-        Prevod ukljucite u playeru kad pokrenete film</p>
-</div>
+
 <!DOCTYPE html>
 <html lang="sr">
 <head>
@@ -24,6 +21,8 @@
     <div id="video-player-container"></div>
      <div id="hulu-top-movies-container"></div>
     <div id="netflix-top-movies-container"></div>
+    <div id="disney-top-movies-container"></div>
+
     <div id="top-movies-container"></div> <!-- Dodato za Hulu i Netflix top filmove -->
 </div>
 
@@ -179,10 +178,9 @@
             movieTitle.textContent = movie.title;
 
             movieCard.appendChild(movieImg);
-            movieCard.appendChild(movieTitle);
 
             const viewButton = document.createElement('button');
-            viewButton.textContent = 'Gledaj film';
+            viewButton.textContent = 'Gledaj';
             viewButton.addEventListener('click', () => openVideo(movie.id));
             movieCard.appendChild(viewButton);
 
@@ -207,18 +205,51 @@
     }
 
     async function initializeNetflixTopMovies() {
-        const netflixTopMoviesURL = 'https://api.themoviedb.org/3/discover/movie?api_key=' + apiKey + '&with_networks=213'; // Netflix network ID
-        try {
-            const response = await fetch(netflixTopMoviesURL);
-            const data = await response.json();
+    const netflixTopMoviesURL = 'https://api.themoviedb.org/3/discover/movie?api_key=' + apiKey + '&with_watch_monetization_types=flatrate'; // Netflix network ID
+    try {
+        const response = await fetch(netflixTopMoviesURL);
+        const data = await response.json();
 
-            if (data.results.length > 0) {
-                displayTopMovies(data.results, 'Netflix', 'netflix-top-movies-container');
-            }
-        } catch (error) {
-            console.error('Greška prilikom učitavanja top filmova sa Netflix:', error);
+        if (data.results.length > 0) {
+            displayTopMovies(data.results, 'Netflix', 'netflix-top-movies-container');
         }
+    } catch (error) {
+        console.error('Greška prilikom učitavanja top filmova sa Netflix:', error);
     }
+}
+
+
+async function fetchTopMovies() {
+    const topMoviesURL = 'https://api.themoviedb.org/3/movie/top_rated?api_key=' + apiKey + '&language=en-US&page=1';
+    try {
+        const response = await fetch(topMoviesURL);
+        const data = await response.json();
+
+        if (data.results.length > 0) {
+            initializeTopMovies(data.results);
+            initializeHuluTopMovies(); // Pozivanje funkcije za Hulu top filmove
+            initializeNetflixTopMovies(); // Pozivanje funkcije za Netflix top filmove
+            initializeDisneyTopMovies(); // Dodali smo funkciju za Disney top filmove
+        }
+    } catch (error) {
+        console.error('Greška prilikom učitavanja najboljih filmova:', error);
+    }
+}
+
+
+async function initializeDisneyTopMovies() {
+    const disneyTopMoviesURL = 'https://api.themoviedb.org/3/discover/movie?api_key=' + apiKey + '&with_networks=273'; // Disney+ network ID
+    try {
+        const response = await fetch(disneyTopMoviesURL);
+        const data = await response.json();
+
+        if (data.results.length > 0) {
+            displayTopMovies(data.results, 'Disney+', 'disney-top-movies-container');
+        }
+    } catch (error) {
+        console.error('Greška prilikom učitavanja top filmova sa Disney+:', error);
+    }
+}
 
     function displayTopMovies(movies, platform, containerId) {
         const container = document.getElementById(containerId);
@@ -239,7 +270,7 @@
             movieTitle.textContent = movie.title;
 
             movieCard.appendChild(movieImg);
-            movieCard.appendChild(movieTitle);
+
 
             const viewButton = document.createElement('button');
             viewButton.textContent = 'Gledaj';
@@ -338,21 +369,7 @@
         margin-top: 20px;
     }
 
-    .movie-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    margin: 10px;
-    position: relative; /* Omogućava apsolutno pozicioniranje dugmeta */
-    width: 200px;
-    height: 300px;
-    background-color: #1e1e1e; /* Tamnija pozadina */
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
+
 
 .results-container {
     display: grid;
@@ -362,61 +379,6 @@
     padding: 10px;
     max-width: 100%; /* Ograničavamo širinu containera */
     box-sizing: border-box; /* Uključujemo padding u dimenzije */
-}
-
-.movie-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    position: relative;
-    width: 100%; /* Automatski zauzima širinu kolone */
-    height: auto;
-    background-color: #1e1e1e;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
-
-.movie-card img {
-    width: 100%; /* Slika se prilagođava širini kartice */
-    height: auto; /* Proporcionalna visina */
-    border-bottom: 2px solid #333;
-}
-
-.movie-card button {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 15px;
-    background-color: #e67e22;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s;
-}
-
-.movie-card button:hover {
-    background-color: #d35400;
-}
-
-/* Media Query za male ekrane */
-@media (max-width: 768px) {
-    .results-container {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Manje kartice za manje ekrane */
-    }
-
-    .movie-card {
-        height: auto; /* Omogućava fleksibilnost visine */
-    }
-
-    .movie-card button {
-        font-size: 0.8em; /* Smanjujemo veličinu dugmeta */
-    }
 }
 
 
@@ -481,6 +443,33 @@
     color: red; /* Crvena boja prilikom hover-a */
     text-decoration: none;
 }
+
+
+#hulu-top-movies-container .results-container {
+    display: flex;
+    overflow-x: scroll;
+    gap: 15px; /* Razmak između filmova */
+}
+
+
+#netflix-top-movies-container .results-container {
+    display: flex;
+    overflow-x: scroll;
+    gap: 15px; /* Razmak između filmova */
+}
+
+#disney-top-movies-container .results-container {
+    display: flex;
+    overflow-x: scroll; /* Horizontalni scroll */
+    gap: 15px; /* Razmak između filmova */
+    scroll-snap-type: x mandatory; /* Poravnanje elemenata sa scroll-om */
+    scrollbar-width: auto; /* Pokaži scrollbar */
+    -ms-overflow-style: auto; /* Pokaži scrollbar na IE */
+    -webkit-overflow-scrolling: touch; /* Omogućava klizanje prstima na touch uređajima */
+}
+
+
+
 
 </style>
 
