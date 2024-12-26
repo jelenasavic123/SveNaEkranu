@@ -26,7 +26,15 @@
     <div id="top-movies-container"></div> <!-- Dodato za Hulu i Netflix top filmove -->
 </div>
 
+<input type="text" id="search-query" placeholder="Unesite naziv filma na Engleskom">
+<div id="suggestions-container"></div>
+<button id="search-btn">Pretraži</button>
 
+<div id="results-container"></div>
+<div id="video-player-container"></div>
+<div id="hulu-top-movies-container"></div>
+<div id="netflix-top-movies-container"></div>
+<div id="disney-top-movies-container"></div>
     
    
     
@@ -311,6 +319,53 @@ async function initializeDisneyTopMovies() {
     });
 }
 
+
+document.addEventListener('keydown', function(event) {
+    if (event.target.tagName === 'INPUT' && event.target.id === 'search-query') {
+        if (event.key === 'Enter') {
+            document.getElementById('search-btn').click();
+        } else if (event.key === 'ArrowDown') {
+            let suggestions = document.querySelectorAll('.suggestion-item');
+            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
+            let nextIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) + 1 : 0;
+            if (nextIndex < suggestions.length) {
+                if (activeSuggestion) activeSuggestion.classList.remove('active');
+                suggestions[nextIndex].classList.add('active');
+                document.getElementById('search-query').value = suggestions[nextIndex].textContent;
+            }
+        } else if (event.key === 'ArrowUp') {
+            let suggestions = document.querySelectorAll('.suggestion-item');
+            let activeSuggestion = Array.from(suggestions).find(item => item.classList.contains('active'));
+            let prevIndex = activeSuggestion ? suggestions.indexOf(activeSuggestion) - 1 : suggestions.length - 1;
+            if (prevIndex >= 0) {
+                if (activeSuggestion) activeSuggestion.classList.remove('active');
+                suggestions[prevIndex].classList.add('active');
+                document.getElementById('search-query').value = suggestions[prevIndex].textContent;
+            }
+        }
+    } else if (event.target.id === 'search-btn' && event.key === 'Enter') {
+        document.getElementById('search-btn').click();
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.target.classList.contains('movie-card')) {
+        let movieCards = document.querySelectorAll('.movie-card');
+        let activeCard = Array.from(movieCards).find(card => card.classList.contains('active'));
+        let nextIndex = activeCard ? movieCards.indexOf(activeCard) + 1 : 0;
+        if (event.key === 'ArrowDown') {
+            if (nextIndex < movieCards.length) {
+                if (activeCard) activeCard.classList.remove('active');
+                movieCards[nextIndex].classList.add('active');
+            }
+        } else if (event.key === 'Enter' && activeCard) {
+            let videoButton = activeCard.querySelector('button');
+            if (videoButton) videoButton.click();
+        }
+    }
+});
+
+
 </script>
 
 <style>
@@ -381,9 +436,6 @@ async function initializeDisneyTopMovies() {
     box-sizing: border-box; /* Uključujemo padding u dimenzije */
 }
 
-
-
-
     .modal {
         display: none;
         position: fixed;
@@ -448,24 +500,53 @@ async function initializeDisneyTopMovies() {
 #hulu-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll;
-    gap: 15px; /* Razmak između filmova */
+    gap: 1px; /* Razmak između filmova */
 }
 
 
 #netflix-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll;
-    gap: 15px; /* Razmak između filmova */
+    gap: 1px; /* Razmak između filmova */
 }
 
 #disney-top-movies-container .results-container {
     display: flex;
     overflow-x: scroll; /* Horizontalni scroll */
-    gap: 15px; /* Razmak između filmova */
+    gap: 10%; /* 10% razmak između filmova */
     scroll-snap-type: x mandatory; /* Poravnanje elemenata sa scroll-om */
     scrollbar-width: auto; /* Pokaži scrollbar */
     -ms-overflow-style: auto; /* Pokaži scrollbar na IE */
     -webkit-overflow-scrolling: touch; /* Omogućava klizanje prstima na touch uređajima */
+}
+
+#disney-top-movies-container .results-container > * {
+    flex-basis: calc(100% / 6); /* Odredjuje širinu na 16.66% (6 delova od 100%) */
+}
+
+
+#disney-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
+
+
+#netflix-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
+
+#hulu-top-movies-container .results-container img {
+    width: 90px; /* Širina */
+    height: auto; /* Visina */
+    display: block;
+}
+
+.suggestion-item.active, .movie-card.active {
+    background-color: #e67e22;
+    color: white;
 }
 
 
