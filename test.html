@@ -294,10 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   
     // Open video in a modal
-    async function openVideo(movieId) {
-        const videoUrl = `https://moviesapi.club/movie/${movieId}`; // Replace this with your video source URL
-        const modal = document.getElementById('popup-modal');
-        const iframe = document.getElementById('iframe-player');
+async function openVideo(movieId) {
+    const videoUrl = `https://vidsrc.xyz/embed/movie/${movieId}`; // URL za video
+    window.location.href = videoUrl; // Učitava video unutar trenutnog prozora
+
+
+
 
         iframe.src = videoUrl;
         modal.style.display = 'block';
