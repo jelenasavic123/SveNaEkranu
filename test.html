@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('modal-overview').textContent = overview;
                 document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
 
-                document.getElementById('media-iframe').src = `https://www.flicky.host/embed/movie/?id=${id}`;
+                document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${id}`;
                 document.getElementById('movie-modal').style.display = 'block';
             })
             .catch(error => console.error('Error fetching movie details:', error));
