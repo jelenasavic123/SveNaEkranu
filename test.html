@@ -466,37 +466,39 @@ select {
     }
 }
 
+/* Header CSS - Poređivanje selektova horizontalno */
+header {
+    display: flex;
+    justify-content: space-between; /* Godine, Žanr i Hulu u jednom redu */
+    gap: 10px; /* Razmak između selektova */
+    padding: 10px;
+}
 
+/* Prilagodba za mobilne uređaje */
+@media (max-width: 768px) {
+    header select {
+        width: 100%; /* Puna širina za selektove na mobilnim uređajima */
+        margin-bottom: 10px; /* Dodatni razmak ispod svakog selekta */
+    }
+}
+header {
+    display: flex;
+    flex-direction: column; /* Postavljamo flex-direction na column kako bi elementi išli jedan ispod drugog */
+    padding: 10px;
+}
+
+input[type="text"] {
+    width: 100%; /* Puna širina za input polje pretrage */
+    margin-top: 10px; /* Dodatni razmak između input polja i poslednjeg dropdown-a */
+}
 
     </style>
 </head>
 
 
 <body>
-    <header>
-        <select id="genre-select">
-            <option value="">Zanr</option>
-            <option value="28">Action</option>
-            <option value="12">Adventure</option>
-            <option value="16">Animation</option>
-            <option value="35">Comedy</option>
-            <option value="80">Crime</option>
-            <option value="99">Documentary</option>
-            <option value="18">Drama</option>
-            <option value="10751">Family</option>
-            <option value="14">Fantasy</option>
-            <option value="36">History</option>
-            <option value="27">Horror</option>
-            <option value="10402">Music</option>
-            <option value="9648">Mystery</option>
-            <option value="10749">Romance</option>
-            <option value="878">Science Fiction</option>
-            <option value="10770">TV Movie</option>
-            <option value="53">Thriller</option>
-            <option value="10752">War</option>
-            <option value="37">Western</option>
-        </select>
-
+  <header>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
         <select id="year-select">
             <option value="">Godine</option>
             <option value="2024">2024</option>
@@ -531,17 +533,44 @@ select {
             <option value="1950">1950</option>
         </select>
 
-        <select>
-            <option value="hulu">Hulu</option>
-            <option value="marvel">Marvel</option>
-            <option value="netflix">Netflix</option>
-            <option value="disney">Disney+</option>
-            <option value="popular">Popular</option>
+        <select id="genre-select">
+            <option value="">Žanr</option>
+            <option value="28">Action</option>
+            <option value="12">Adventure</option>
+            <option value="16">Animation</option>
+            <option value="35">Comedy</option>
+            <option value="80">Crime</option>
+            <option value="99">Documentary</option>
+            <option value="18">Drama</option>
+            <option value="10751">Family</option>
+            <option value="14">Fantasy</option>
+            <option value="36">History</option>
+            <option value="27">Horror</option>
+            <option value="10402">Music</option>
+            <option value="9648">Mystery</option>
+            <option value="10749">Romance</option>
+            <option value="878">Science Fiction</option>
+            <option value="10770">TV Movie</option>
+            <option value="53">Thriller</option>
+            <option value="10752">War</option>
+            <option value="37">Western</option>
         </select>
 
-        <!-- Input za pretragu sada ide u novi red ispod selektovanih dropdownova -->
-        <input type="text" id="searchInput" placeholder="Search movies...">
-    </header>
+<select id="popular-select">
+    <option value="">Popularnost</option>
+    <option value="hulu">Hulu</option>
+    <option value="marvel">Marvel</option>
+    <option value="netflix">Netflix</option>
+    <option value="disney">Disney+</option>
+    <option value="popular">Popularno</option>
+</select>
+
+    </div>
+
+    <!-- Input za pretragu sada ide u novi red ispod selektovanih dropdownova -->
+    <input type="text" id="searchInput" placeholder="Search movies...">
+</header>
+
     
     <div id="movie-list"></div>
     
@@ -587,6 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedGenre = '';
     let selectedYear = '';
     let selectedLanguage = 'en-US'; // Default language
+    
+    
 
     const fetchMovies = (page = 1, query = '', genre = '', year = '') => {
         let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&language=${selectedLanguage}`;
@@ -620,6 +651,18 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => console.error('Error fetching movies:', error));
     };
+
+// Popular select
+const popularSelect = document.getElementById('popular-select');
+if (popularSelect) {
+    popularSelect.addEventListener('change', () => {
+        currentQuery = popularSelect.value;
+        fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear); // Fetch movies by popularity
+    });
+} else {
+    console.error('Element with ID "popular-select" not found.');
+}
+
 
     // Function for filtering movies
     const filterMovies = () => {
