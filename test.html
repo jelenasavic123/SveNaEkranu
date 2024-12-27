@@ -55,8 +55,7 @@
         header input[type="text"]:focus {
             border-color: #007bff;
         }
-        
-        
+    
 
         header select {
             padding: 10px;
@@ -152,13 +151,13 @@
         }
 
         #movie-modal h2 {
-            margin: 20px 0;
-            font-size: 40px;
+            margin: 1px 0;
+            font-size: 25px;
             font-weight: bold;
         }
 
         #movie-modal p {
-            font-size: 14px;
+            font-size: 11px;
             margin: 10px 0;
         }
 
@@ -261,7 +260,7 @@
 
         
         /* Basic Reset */
-* {
+ {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -492,12 +491,22 @@ input[type="text"] {
     margin-top: 10px; /* Dodatni razmak između input polja i poslednjeg dropdown-a */
 }
 
+#movie-modal img {
+    width: 100px;
+    border-radius: 10px;
+    margin: 2px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
     </style>
 </head>
 
 
 <body>
   <header>
+
+    
+
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <select id="year-select">
             <option value="">Godine</option>
@@ -557,18 +566,22 @@ input[type="text"] {
         </select>
 
 <select id="popular-select">
-    <option value="">Popularnost</option>
-    <option value="hulu">Hulu</option>
-    <option value="marvel">Marvel</option>
+    <option value="">Odaberite po popularnosti</option>
+    <option value="popularity.desc">Popularno</option>
     <option value="netflix">Netflix</option>
+    <option value="marvel">Marvel</option>
+    <option value="hulu">Hulu</option>
     <option value="disney">Disney+</option>
-    <option value="popular">Popularno</option>
+    <option value="apple">Apple TV+</option>
+    <option value="vote_average.desc">Najbolje ocenjeni</option>
+    <option value="release_date.desc">Uskoro</option>
 </select>
+
 
     </div>
 
     <!-- Input za pretragu sada ide u novi red ispod selektovanih dropdownova -->
-    <input type="text" id="searchInput" placeholder="Search movies...">
+    <input type="text" id="searchInput" placeholder="Pretrazi Film na engleskom">
 </header>
 
     
@@ -577,7 +590,7 @@ input[type="text"] {
     <div id="pagination">
         <button id="prev-page">Nazad</button>
         <span id="current-page">1</span>
-        <button id="next-page">Sledeca Stranica</button>
+        <button id="next-page">Sledeca</button>
     </div>
 
     <div id="movie-list" class="movie-item-container"></div>
@@ -616,105 +629,63 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedGenre = '';
     let selectedYear = '';
     let selectedLanguage = 'en-US'; // Default language
-    
-    
+    let selectedSortBy = ''; // Selected sorting option from popular-select
 
-    const fetchMovies = (page = 1, query = '', genre = '', year = '') => {
+    // Fetch movies from API
+    const fetchMovies = (page = 1, query = '', genre = '', year = '', sortBy = '') => {
         let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&language=${selectedLanguage}`;
 
-        if (query) {
-            url += `&query=${encodeURIComponent(query)}`; // Dodajte query parametar ako postoji
-        }
-        if (genre) {
-            url += `&with_genres=${genre}`;
-        }
-        if (year) {
-            url += `&primary_release_year=${year}`;
-        }
-
-        console.log(`Requesting movies with URL: ${url}`);
+        if (query) url += `&query=${encodeURIComponent(query)}`;
+        if (genre) url += `&with_genres=${genre}`;
+        if (year) url += `&primary_release_year=${year}`;
+        if (sortBy) url += `&sort_by=${sortBy}`;
 
         fetch(url)
             .then(response => {
                 if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Network response was not ok: ${response.statusText}. Response text: ${text}`);
-                    });
+                    return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
                 }
                 return response.json();
             })
             .then(data => {
-                console.log('Movies API response:', data);
-                displayMovies(data.results); // Call displayMovies to add more movies
+                displayMovies(data.results);
                 currentPage = page;
-                document.getElementById('current-page').textContent = page; // Update current page display
+                document.getElementById('current-page').textContent = page;
             })
             .catch(error => console.error('Error fetching movies:', error));
     };
 
-// Popular select
-const popularSelect = document.getElementById('popular-select');
-if (popularSelect) {
-    popularSelect.addEventListener('change', () => {
-        currentQuery = popularSelect.value;
-        fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear); // Fetch movies by popularity
-    });
-} else {
-    console.error('Element with ID "popular-select" not found.');
-}
-
-
-    // Function for filtering movies
-    const filterMovies = () => {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Dohvata sadržaj iz inputa i konvertuje u mala slova
-        const movies = document.querySelectorAll('.movie-item'); // Selektuj sve filmove
+    // Display movies on the page
+    const displayMovies = (movies) => {
+        const movieList = document.getElementById('movie-list');
+        if (!movieList) {
+            console.error('Element with ID "movie-list" not found.');
+            return;
+        }
+        movieList.innerHTML = ''; // Clear previous movies
 
         movies.forEach(movie => {
-            const title = movie.querySelector('h2').textContent.toLowerCase(); // Uzimamo tekst naslova filma i konvertujemo u mala slova
-            if (title.includes(searchInput)) {
-                movie.style.display = 'block'; // Prikaži ako odgovara
-            } else {
-                movie.style.display = 'none'; // Sakrij ako ne odgovara
-            }
+            const movieItem = document.createElement('div');
+            movieItem.className = 'movie-item';
+            movieItem.dataset.id = movie.id; // Store movie ID
+            movieItem.dataset.type = 'movie'; // Mark as movie
+            movieItem.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <h2>${movie.title}</h2>
+                <p>${movie.release_date}</p>
+            `;
+            movieItem.addEventListener('click', () => showMovieDetails(movie.id, 'movie'));
+            movieList.appendChild(movieItem);
         });
     };
 
-    const displayMovies = (movies) => {
-        const movieList = document.getElementById('movie-list');
-        if (movieList) {
-            movieList.innerHTML = ''; // Clear previous movies
-
-            const newMovieContainer = document.createElement('div');
-            newMovieContainer.classList.add('movie-item-container');
-
-            movies.forEach(movie => {
-                const movieItem = document.createElement('div');
-                movieItem.className = 'movie-item';
-                movieItem.dataset.id = movie.id; // Store movie ID for later use
-                movieItem.dataset.type = 'movie'; // Mark as movie
-                movieItem.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <h2>${movie.title}</h2>
-                    <p>${movie.release_date}</p>
-                `;
-                movieItem.addEventListener('click', () => showMovieDetails(movie.id, 'movie')); // Add click event
-                newMovieContainer.appendChild(movieItem);
-            });
-
-            movieList.appendChild(newMovieContainer);
-        } else {
-            console.error('Element with ID "movie-list" not found.');
-        }
-    };
-
+    // Fetch movie details
     const showMovieDetails = (id, type) => {
         const endpoint = type === 'movie' ? `/movie/${id}` : `/tv/${id}`;
         fetch(`${baseURL}${endpoint}?api_key=${apiKey}&language=${selectedLanguage}`)
             .then(response => {
                 if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Network response was not ok: ${response.statusText}. Response text: ${text}`);
-                    });
+                    return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
                 }
                 return response.json();
             })
@@ -725,15 +696,7 @@ if (popularSelect) {
                 document.getElementById('modal-overview').textContent = overview;
                 document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
 
-                const mediaIframe = document.getElementById('media-iframe');
-                if (type === 'movie') {
-                    mediaIframe.src = `https://vidsrc.io/embed/movie/${id}`;
-                    document.getElementById('tv-options').style.display = 'none';
-                } else {
-                    mediaIframe.src = '';
-                    document.getElementById('tv-options').style.display = 'block';
-                }
-
+                document.getElementById('media-iframe').src = `https://vidsrc.io/embed/movie/${id}`;
                 document.getElementById('movie-modal').style.display = 'block';
             })
             .catch(error => console.error('Error fetching movie details:', error));
@@ -749,37 +712,33 @@ if (popularSelect) {
         console.error('Element with ID "close-modal" not found.');
     }
 
-    // Load More Button
+    // Load more button
     const loadMoreButton = document.getElementById('load-more');
     if (loadMoreButton) {
         loadMoreButton.addEventListener('click', () => {
-            fetchMovies(currentPage + 1, currentQuery, selectedGenre, selectedYear); // Fetch more movies
+            fetchMovies(currentPage + 1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
         });
     } else {
         console.error('Element with ID "load-more" not found.');
     }
 
-    // Pagination
-    const prevPageButton = document.getElementById('prev-page');
-    const nextPageButton = document.getElementById('next-page');
-    if (prevPageButton && nextPageButton) {
-        prevPageButton.addEventListener('click', () => {
-            if (currentPage > 1) {
-                fetchMovies(--currentPage, currentQuery, selectedGenre, selectedYear);
+    // Search movies
+    const filterMovies = () => {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const movies = document.querySelectorAll('.movie-item');
+        movies.forEach(movie => {
+            const title = movie.querySelector('h2').textContent.toLowerCase();
+            if (title.includes(searchInput)) {
+                movie.style.display = 'block';
+            } else {
+                movie.style.display = 'none';
             }
         });
+    };
 
-        nextPageButton.addEventListener('click', () => {
-            fetchMovies(++currentPage, currentQuery, selectedGenre, selectedYear);
-        });
-    } else {
-        console.error('Pagination buttons not found.');
-    }
-
-    // Search input
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', filterMovies); // Dodaje event za input polje pretrage
+        searchInput.addEventListener('input', filterMovies);
     } else {
         console.error('Element with ID "searchInput" not found.');
     }
@@ -789,7 +748,7 @@ if (popularSelect) {
     if (genreSelect) {
         genreSelect.addEventListener('change', () => {
             selectedGenre = genreSelect.value;
-            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear); // Fetch movies by genre
+            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
         });
     } else {
         console.error('Element with ID "genre-select" not found.');
@@ -800,11 +759,82 @@ if (popularSelect) {
     if (yearSelect) {
         yearSelect.addEventListener('change', () => {
             selectedYear = yearSelect.value;
-            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear); // Fetch movies by year
+            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
         });
     } else {
         console.error('Element with ID "year-select" not found.');
     }
+
+    // Popularity sort filter
+   // Ažurirani popular-select sa dodatnim opcijama
+const popularSelect = document.getElementById('popular-select');
+if (popularSelect) {
+    popularSelect.addEventListener('change', () => {
+        const selectedOption = popularSelect.value;
+
+       if (selectedOption === 'hulu') {
+            fetchHuluMovies();
+        } else if (selectedOption === 'marvel') {
+            fetchMarvelMovies();
+        } else if (selectedOption === 'netflix') {
+            fetchNetflixMovies();
+        } else if (selectedOption === 'disney') {
+            fetchDisneyMovies();
+        } else if (selectedOption === 'apple') { // Nova opcija
+            fetchAppleMovies();
+        } else {
+            selectedSortBy = selectedOption;
+            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+        }
+    });
+} else {
+    console.error('Element with ID "popular-select" not found.');
+}
+
+// Funkcija za Hulu filmove
+const fetchHuluMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=15&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+// Funkcija za Marvel filmove
+const fetchMarvelMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_companies=420&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+// Funkcija za Netflix filmove
+const fetchNetflixMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=8&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+// Funkcija za Disney+ filmove
+const fetchDisneyMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=337&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+// Funkcija za Apple TV+ filmove
+const fetchAppleMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=350&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+
+// Pomoćna funkcija za prikaz filmova
+const fetchAndDisplayMovies = (url) => {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
+            }
+            return response.json();
+        })
+        .then(data => displayMovies(data.results))
+        .catch(error => console.error('Error fetching filtered movies:', error));
+};
+
 
     // Initial load
     fetchMovies();
