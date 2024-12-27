@@ -220,6 +220,17 @@
 }
 
 .movie-item {
+    flex: 1 1 calc(50% - 20px); /* 50% širine minus razmak */
+    box-sizing: border-box; /* Osigurava da padding ne utiče na ukupnu širinu */
+}
+
+@media (min-width: 768px) {
+    .movie-item {
+        flex: 1 1 calc(33.33% - 20px); /* Tri stavke u redu za veće ekrane */
+    }
+}
+
+.movie-item {
     width: 200px; /* ili koliko god želite širinu */
     text-align: center;
 }
