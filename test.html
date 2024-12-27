@@ -55,6 +55,8 @@
         header input[type="text"]:focus {
             border-color: #007bff;
         }
+        
+        
 
         header select {
             padding: 10px;
@@ -80,6 +82,8 @@
             padding: 100px 20px 20px;
             width: 100%;
         }
+        
+        
 
         .movie-item {
             margin: 1px;
@@ -113,6 +117,8 @@
             color: #007bff;
         }
 
+
+
         #movie-modal {
             display: none;
             position: fixed;
@@ -138,6 +144,8 @@
             color: #920000;
             transition: color 0.3s ease;
         }
+
+
 
         #movie-modal #close-modal:hover {
             color: #007bff;
@@ -288,35 +296,6 @@
     height: 30px;
 }
 
-.search-bar {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    max-width: 600px;
-    margin: 0 20px;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 2px 0 0 2px;
-    background-color: #121212;
-    color: #FFF;
-}
-
-.search-button {
-    padding: 10px;
-    background-color: #323232;
-    border: none;
-    cursor: pointer;
-    border-radius: 0 2px 2px 0;
-}
-
-.search-button img {
-    filter: invert(1);
-}
-
 .user-menu {
     display: flex;
     align-items: center;
@@ -325,12 +304,12 @@
 .user-menu button {
     background-color: transparent;
     border: none;
-    margin-left: 20px;
+    margin-left: 50px;
     cursor: pointer;
 }
 
 .user-menu img {
-    width: 24px;
+    width: 25px;
     filter: invert(1);
 }
 
@@ -455,8 +434,8 @@ div {
     border-radius: 4px; /* Zaokružuje ivice input polja */
     border: 1px solid #ccc; /* Granična boja i debljina */
     font-size: 16px; /* Podešava font veličinu za čitljivost */
-    margin-top: 10px; /* Dodaje razmak između selektovanih dropdown-ova i input polja */
-    margin-bottom: 10px; /* Dodaje razmak između inputa i narednih elemenata */
+    margin-top: 107px; /* Dodaje razmak između selektovanih dropdown-ova i input polja */
+    margin-bottom: 20px; /* Dodaje razmak između inputa i narednih elemenata */
     box-sizing: border-box; /* Da padding i border ne budu uključeni u ukupnu širinu */
 }
 
@@ -569,13 +548,14 @@ select {
     <div id="pagination">
         <button id="prev-page">Nazad</button>
         <span id="current-page">1</span>
-        <button id="next-page">Sledeca</button>
+        <button id="next-page">Sledeca Stranica</button>
     </div>
 
     <div id="movie-list" class="movie-item-container"></div>
 
     <div id="popup-modal" class="modal">
         <div class="modal-content">
+        
             <span class="close">&times;</span>
             <iframe id="iframe-player" width="100%" height="400" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
         </div>
@@ -704,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const mediaIframe = document.getElementById('media-iframe');
                 if (type === 'movie') {
-                    mediaIframe.src = `https://vidlink.pro/movie/${id}`;
+                    mediaIframe.src = `https://vidsrc.pro/embed/movie/${id}`;
                     document.getElementById('tv-options').style.display = 'none';
                 } else {
                     mediaIframe.src = '';
