@@ -18,32 +18,22 @@
             transition: background-color 0.3s ease;
         }
 
-/* Stil za desktop i veće ekrane */
-header {
-    width: 100%;
-    background-color: #1c1c1c;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    border-radius: 0 0 0px 20px;
-    transition: background-color 0.3s ease;
-}
-
-/* Stil za mobilne uređaje */
-@media (max-width: 768px) {
-    header {
-        padding: 10px 15px; /* Smanjuje unutrašnje margine */
-        font-size: 14px; /* Smanjuje veličinu fonta */
-        border-radius: 0; /* Uklanja zaobljene ivice */
-    }
-}
+        header {
+            width: 100%;
+            background-color: #1c1c1c;
+            padding: 15px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            border-radius: 0 0 20px 20px; /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
 
         header h1 {
             margin: 0;
@@ -65,36 +55,25 @@ header {
         header input[type="text"]:focus {
             border-color: #007bff;
         }
-    
+        
+        
 
-       /* Stilovi za header selekt na desktop uređajima */
-header select {
-    padding: 1px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-    font-size: 14px;
-    background-color: #222;
-    color: #ddd;
-    margin-left: 1px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
+        header select {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 18px;
+            background-color: #222;
+            color: #ddd;
+            margin-left: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-/* Promena stila za mobilne uređaje (max-width: 768px) */
-@media screen and (max-width: 768px) {
-    header select {
-        width: 100%; /* Postavite širinu da se ne prelazi širina ekrana */
-        box-sizing: border-box; /* Osigurava da padding i margin ne utiču na širinu */
-        margin: 0 auto; /* Centriranje na mobilnim uređajima */
-        font-size: 12px; /* Smanjivanje fonta na mobilnim uređajima */
-    }
-
-    header select:hover {
-        background-color: #007bff;
-        color: #fff;
-    }
-}
-
+        header select:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
 
         #movie-list {
             display: flex;
@@ -162,7 +141,7 @@ header select {
             right: 20px;
             font-size: 60px;
             cursor: pointer;
-            color: #gg;
+            color: #920000;
             transition: color 0.3s ease;
         }
 
@@ -191,8 +170,8 @@ header select {
         }
 
         #movie-modal iframe {
-            width: 90%;
-            height: 400px;
+            width: 100%;
+            height: 300px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
@@ -229,6 +208,17 @@ header select {
             transform: scale(0.05);
         }
 
+        #load-more {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
 
 .movie-item-container {
     display: flex;
@@ -253,6 +243,30 @@ header select {
     text-align: center;
 }
 
+#load-more {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#load-more:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+
+        
+        /* Basic Reset */
+ {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 
 
 /* Navigation Bar */
@@ -261,7 +275,7 @@ header select {
     justify-content: space-between;
     align-items: center;
     background-color: #202020;
-    padding: 1px 10px;
+    padding: 10px 20px;
     position: fixed;
     top: 0;
     width: 100%;
@@ -376,25 +390,6 @@ header select {
     width: 100%;
 }
 
-#pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-#prev-page, #next-page {
-    margin: 0 10px;
-    padding: 12px 24px; /* Povećanje veličine dugmića */
-    border-radius: 8px; /* Blage ivice dugmića */
-    color: #ffffff; /* Bela boja teksta */
-    background-color: #cc0000; /* Crvena boja dugmića */
-    border: none;
-    font-size: 18px; /* Povećanje font veličine */
-    cursor: pointer;
-    font-weight: bold; /* Jači font */
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
 
 #prev-page:hover, #next-page:hover {
     background-color: #990000; /* Tamnija crvena boja na hover za bolji kontrast */
@@ -402,8 +397,8 @@ header select {
 }
 
 #current-page {
-    margin: 0 1px;
-    font-size: 18px; /* Povećanje font veličine */
+    margin: 0 10px;
+    font-size: 8px; /* Povećanje font veličine */
     color: #ffffff; /* Bela boja teksta */
     font-weight: bold; /* Jači font za bolju vidljivost */
 }
@@ -415,13 +410,13 @@ div {
 
 /* CSS za pretragu na mobilnim uređajima */
 #searchInput {
-    width: 80%; /* Puna širina za mobilne uređaje */
-    padding: 8px; /* Dodaje padding za bolje korisničko iskustvo */
-    border-radius: 10px; /* Zaokružuje ivice input polja */
+    width: 100%; /* Puna širina za mobilne uređaje */
+    padding: 10px; /* Dodaje padding za bolje korisničko iskustvo */
+    border-radius: 4px; /* Zaokružuje ivice input polja */
     border: 1px solid #ccc; /* Granična boja i debljina */
-    font-size: 12px; /* Podešava font veličinu za čitljivost */
+    font-size: 14px; /* Podešava font veličinu za čitljivost */
     margin-top: 10px; /* Dodaje razmak između selektovanih dropdown-ova i input polja */
-    margin-bottom: 20px; /* Dodaje razmak između inputa i narednih elemenata */
+    margin-bottom: 0px; /* Dodaje razmak između inputa i narednih elemenata */
     box-sizing: border-box; /* Da padding i border ne budu uključeni u ukupnu širinu */
 }
 
@@ -436,10 +431,10 @@ div {
 /* CSS za select elemente na mobilnim i tablet uređajima */
 select {
     width: 100%; /* Puna širina na mobilnim i tablet uređajima */
-    padding: 1px; /* Povećava prostranost i olakšava unos */
+    padding: 10px; /* Povećava prostranost i olakšava unos */
     font-size: 14px; /* Veličina fonta za bolje čitanje */
-    margin-bottom: 1px; /* Dodaje razmak između select elemenata */
-    border-radius: 10px; /* Zaokruženje ivica za bolji estetski izgled */
+    margin-bottom: 10px; /* Dodaje razmak između select elemenata */
+    border-radius: 4px; /* Zaokruženje ivica za bolji estetski izgled */
     border: 1px solid #ccc; /* Granična boja i debljina */
     box-sizing: border-box; /* Uključuje padding i border u ukupnu širinu/visinu */
 }
@@ -447,24 +442,36 @@ select {
 /* Medija query za tablete i mobilne uređaje */
 @media (max-width: 768px) {
     select {
-        width: 800%; /* Puna širina na mobilnim uređajima */
-        margin-bottom: 10px; /* Razmak između elemenata */
+        width: 100%; /* Puna širina na mobilnim uređajima */
+        margin-bottom: 1px; /* Razmak između elemenata */
     }
 }
 
+/* Header CSS - Poređivanje selektova horizontalno */
+header {
+    display: flex;
+    justify-content: space-between; /* Godine, Žanr i Hulu u jednom redu */
+    gap: 1px; /* Razmak između selektova */
+    padding: 1px;
+}
 
-
+/* Prilagodba za mobilne uređaje */
+@media (max-width: 768px) {
+    header select {
+        width: 100%; /* Puna širina za selektove na mobilnim uređajima */
+        margin-bottom: 1px; /* Dodatni razmak ispod svakog selekta */
+    }
+}
 header {
     display: flex;
     flex-direction: column; /* Postavljamo flex-direction na column kako bi elementi išli jedan ispod drugog */
-    padding: 10px;
+    padding: 1px;
 }
 
 input[type="text"] {
     width: 100%; /* Puna širina za input polje pretrage */
-    margin-top: 10px; /* Dodatni razmak između input polja i poslednjeg dropdown-a */
+    margin-top: 0px; /* Dodatni razmak između input polja i poslednjeg dropdown-a */
 }
-
 #movie-modal img {
     width: 100px;
     border-radius: 10px;
@@ -479,94 +486,85 @@ input[type="text"] {
 <body>
   <header>
 
+
     
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <select id="year-select">
+        <option value="">God</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+        <option value="2017">2017</option>
+        <option value="2016">2016</option>
+        <option value="2015">2015</option>
+        <option value="2014">2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        <option value="2011">2011</option>
+        <option value="2010">2010</option>
+        <option value="2009">2009</option>
+        <option value="2008">2008</option>
+        <option value="2007">2007</option>
+        <option value="2006">2006</option>
+        <option value="2005">2005</option>
+        <option value="2004">2004</option>
+        <option value="2003">2003</option>
+        <option value="2002">2002</option>
+        <option value="2001">2001</option>
+        <option value="2000">2000</option>
+        <option value="1990">1990</option>
+        <option value="1980">1980</option>
+        <option value="1970">1970</option>
+        <option value="1960">1960</option>
+        <option value="1950">1950</option>
+    </select>
 
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <select id="year-select">
-            <option value="">Godine</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-            <option value="2019">2019</option>
-            <option value="2018">2018</option>
-            <option value="2017">2017</option>
-            <option value="2016">2016</option>
-            <option value="2015">2015</option>
-            <option value="2014">2014</option>
-            <option value="2013">2013</option>
-            <option value="2012">2012</option>
-            <option value="2011">2011</option>
-            <option value="2010">2010</option>
-            <option value="2009">2009</option>
-            <option value="2008">2008</option>
-            <option value="2007">2007</option>
-            <option value="2006">2006</option>
-            <option value="2005">2005</option>
-            <option value="2004">2004</option>
-            <option value="2003">2003</option>
-            <option value="2002">2002</option>
-            <option value="2001">2001</option>
-            <option value="2000">2000</option>
-            <option value="1990">1990</option>
-            <option value="1980">1980</option>
-            <option value="1970">1970</option>
-            <option value="1960">1960</option>
-            <option value="1950">1950</option>
-        </select>
+    <select id="genre-select">
+        <option value="">Žanr</option>
+        <option value="28">Action</option>
+        <option value="12">Adventure</option>
+        <option value="16">Animation</option>
+        <option value="35">Comedy</option>
+        <option value="80">Crime</option>
+        <option value="99">Documentary</option>
+        <option value="18">Drama</option>
+        <option value="10751">Family</option>
+        <option value="14">Fantasy</option>
+        <option value="36">History</option>
+        <option value="27">Horror</option>
+        <option value="10402">Music</option>
+        <option value="9648">Mystery</option>
+        <option value="10749">Romance</option>
+        <option value="878">Science Fiction</option>
+        <option value="10770">TV Movie</option>
+        <option value="53">Thriller</option>
+        <option value="10752">War</option>
+        <option value="37">Western</option>
+    </select>
 
-        <select id="genre-select">
-            <option value="">Žanr</option>
-            <option value="28">Action</option>
-            <option value="12">Adventure</option>
-            <option value="16">Animation</option>
-            <option value="35">Comedy</option>
-            <option value="80">Crime</option>
-            <option value="99">Documentary</option>
-            <option value="18">Drama</option>
-            <option value="10751">Family</option>
-            <option value="14">Fantasy</option>
-            <option value="36">History</option>
-            <option value="27">Horror</option>
-            <option value="10402">Music</option>
-            <option value="9648">Mystery</option>
-            <option value="10749">Romance</option>
-            <option value="878">Science Fiction</option>
-            <option value="10770">TV Movie</option>
-            <option value="53">Thriller</option>
-            <option value="10752">War</option>
-            <option value="37">Western</option>
-        </select>
+    <select id="popular-select">
+        <option value="">Popularnosti</option>
+        <option value="popularity.desc">Popularno</option>
+        <option value="netflix">Netflix</option>
+        <option value="marvel">Marvel</option>
+        <option value="hulu">Hulu</option>
+        <option value="disney">Disney+</option>
+        <option value="apple">Apple TV+</option>
+        <option value="vote_average.desc">Najbolje ocenjeni</option>
+        <option value="release_date.desc">Uskoro</option>
+    </select>
+</div>
+    <input type="text" id="search-input" placeholder="Pretraga filmova/serija...">
 
-<select id="popular-select">
-    <option value="">Odaberite po popularnosti</option>
-    <option value="popularity.desc">Popularno</option>
-    <option value="netflix">Netflix</option>
-    <option value="marvel">Marvel</option>
-    <option value="hulu">Hulu</option>
-    <option value="disney">Disney+</option>
-    <option value="apple">Apple TV+</option>
-    <option value="vote_average.desc">Najbolje ocenjeni</option>
-    <option value="release_date.desc">Uskoro</option>
-</select>
-
-
-    </div>
-
-    <!-- Input za pretragu sada ide u novi red ispod selektovanih dropdownova -->
-    <input type="text" id="searchInput" placeholder="Pretrazi Film na engleskom">
 </header>
 
     
     <div id="movie-list"></div>
     
-    <div id="pagination">
-        <button id="prev-page">Nazad</button>
-        <span id="current-page">1</span>
-        <button id="next-page">Sledeca</button>
-    </div>
-
     <div id="movie-list" class="movie-item-container"></div>
 
     <div id="popup-modal" class="modal">
@@ -576,26 +574,36 @@ input[type="text"] {
             <iframe id="iframe-player" width="100%" height="400" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
         </div>
     </div>
-
-    <div id="movie-modal">
-        <span id="close-modal">×</span>
+<div id="movie-modal" style="display: none;">
+    <div id="modal-content">
+    
+        <span id="modal-close" onclick="closeModal()">&times;</span>
+           <span id="close-modal">×</span>
         <h2 id="modal-title"></h2>
         <p id="modal-release-date"></p>
-        <img id="modal-poster" src="" alt="Movie Poster">
+        <img id="modal-poster" alt="Poster">
         <p id="modal-overview"></p>
-        <iframe id="media-iframe" src="" allowfullscreen></iframe>
-        <div id="tv-options" style="display: none;">
-            <input type="number" id="season-number" placeholder="Season Number" min="1">
-            <input type="number" id="episode-number" placeholder="Episode Number" min="1">
-            <button id="update-embed">Update Embed</button>
-        </div>
+        <iframe id="media-iframe" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
     </div>
+</div>
+
+    <div id="movie-list" class="movie-list"></div>
+
+    <div id="movie-modal" style="display: none;">
+        <div>
+            <img id="modal-poster" src="" alt="Movie Poster">
+            <h2 id="modal-title"></h2>
+            <p id="modal-release-date"></p>
+            <p id="modal-overview"></p>
+        </div>
+<div
+ 
 </body>
 
     <script src="script.js"></script>
     
     <script>
-document.addEventListener('DOMContentLoaded', () => {
+   document.addEventListener('DOMContentLoaded', () => {
     const apiKey = '2701858e9bccab54d4d0e4931420a739';
     const baseURL = 'https://api.themoviedb.org/3';
     let currentPage = 1;
@@ -605,78 +613,65 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedLanguage = 'en-US'; // Default language
     let selectedSortBy = ''; // Selected sorting option from popular-select
 
-    // Fetch movies from API
     const fetchMovies = (page = 1, query = '', genre = '', year = '', sortBy = '') => {
-        let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&language=${selectedLanguage}`;
+    let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&language=en-US`;
 
-        if (query) url += `&query=${encodeURIComponent(query)}`;
-        if (genre) url += `&with_genres=${genre}`;
-        if (year) url += `&primary_release_year=${year}`;
-        if (sortBy) url += `&sort_by=${sortBy}`;
+    if (query) {
+        url = `${baseURL}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&page=${page}&language=en-US`;
+    }
+    if (genre) url += `&with_genres=${genre}`;
+    if (year) url += `&primary_release_year=${year}`;
+    if (sortBy) url += `&sort_by=${sortBy}`;
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                displayMovies(data.results);
-                currentPage = page;
-                document.getElementById('current-page').textContent = page;
-            })
-            .catch(error => console.error('Error fetching movies:', error));
-    };
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const movieList = document.getElementById('movie-list');
+            movieList.innerHTML = '';
 
-    // Display movies on the page
-    const displayMovies = (movies) => {
-        const movieList = document.getElementById('movie-list');
-        if (!movieList) {
-            console.error('Element with ID "movie-list" not found.');
-            return;
-        }
-        movieList.innerHTML = ''; // Clear previous movies
+            data.results.forEach(movie => {
+                const movieItem = document.createElement('div');
+                movieItem.className = 'movie-item';
+                movieItem.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" onclick="showMovieDetails(${movie.id}, 'movie')">
+                    <h2>${movie.title}</h2>
+                    <p>${movie.release_date}</p>
+                `;
+                movieList.appendChild(movieItem);
 
-        movies.forEach(movie => {
-            const movieItem = document.createElement('div');
-            movieItem.className = 'movie-item';
-            movieItem.dataset.id = movie.id; // Store movie ID
-            movieItem.dataset.type = 'movie'; // Mark as movie
-            movieItem.innerHTML = `
-                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                <h2>${movie.title}</h2>
-                <p>${movie.release_date}</p>
-            `;
-            movieItem.addEventListener('click', () => showMovieDetails(movie.id, 'movie'));
-            movieList.appendChild(movieItem);
-        });
-    };
+                // Automatski prikaži detalje klikom na sliku
+                movieItem.querySelector('img').addEventListener('click', () => {
+                    fetch(`${baseURL}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
+                            }
+                            return response.json();
+                        })
+                        .then(details => {
+                            const { title, release_date, overview, poster_path } = details;
+                            document.getElementById('modal-title').textContent = title;
+                            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+                            document.getElementById('modal-overview').textContent = overview;
+                            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+                            document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movie.id}`;
+                            document.getElementById('movie-modal').style.display = 'flex';
+                        })
+                        .catch(error => console.error('Error fetching movie details:', error));
+                });
+            });
 
-    // Fetch movie details
-    const showMovieDetails = (id, type) => {
-        const endpoint = type === 'movie' ? `/movie/${id}` : `/tv/${id}`;
-        fetch(`${baseURL}${endpoint}?api_key=${apiKey}&language=${selectedLanguage}`)
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
-                }
-                return response.json();
-            })
-            .then(details => {
-                const { title, release_date, overview, poster_path } = details;
-                document.getElementById('modal-title').textContent = title;
-                document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-                document.getElementById('modal-overview').textContent = overview;
-                document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+            currentPage = page;
+        })
+        .catch(error => console.error('Error fetching movies:', error));
+};
 
-                document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${id}`;
-                document.getElementById('movie-modal').style.display = 'block';
-            })
-            .catch(error => console.error('Error fetching movie details:', error));
-    };
-
-    // Close modal
+ // Close modal
     const closeModalButton = document.getElementById('close-modal');
     if (closeModalButton) {
         closeModalButton.addEventListener('click', () => {
@@ -686,80 +681,68 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Element with ID "close-modal" not found.');
     }
 
-    // Load more button
-    const loadMoreButton = document.getElementById('load-more');
-    if (loadMoreButton) {
-        loadMoreButton.addEventListener('click', () => {
-            fetchMovies(currentPage + 1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
-        });
-    } else {
-        console.error('Element with ID "load-more" not found.');
-    }
 
-    // Search movies
-    const filterMovies = () => {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const movies = document.querySelectorAll('.movie-item');
+    // Display movies on the page
+    const displayMovies = (movies) => {
+        const movieList = document.getElementById('movie-list');
+        movieList.innerHTML = ''; // Clear previous movies
+
         movies.forEach(movie => {
-            const title = movie.querySelector('h2').textContent.toLowerCase();
-            if (title.includes(searchInput)) {
-                movie.style.display = 'block';
-            } else {
-                movie.style.display = 'none';
-            }
+            const movieItem = document.createElement('div');
+            movieItem.className = 'movie-item';
+            movieItem.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <h2>${movie.title}</h2>
+                <p>${movie.release_date}</p>
+            `;
+            movieList.appendChild(movieItem);
         });
     };
 
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', filterMovies);
-    } else {
-        console.error('Element with ID "searchInput" not found.');
-    }
+    // Event listeners for filters
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        currentQuery = e.target.value;
+        fetchMovies(1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+    });
 
-    // Genre filter
-    const genreSelect = document.getElementById('genre-select');
-    if (genreSelect) {
-        genreSelect.addEventListener('change', () => {
-            selectedGenre = genreSelect.value;
-            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
-        });
-    } else {
-        console.error('Element with ID "genre-select" not found.');
-    }
+    document.getElementById('genre-select').addEventListener('change', (e) => {
+        selectedGenre = e.target.value;
+        fetchMovies(1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+    });
 
-    // Year filter
-    const yearSelect = document.getElementById('year-select');
-    if (yearSelect) {
-        yearSelect.addEventListener('change', () => {
-            selectedYear = yearSelect.value;
-            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
-        });
-    } else {
-        console.error('Element with ID "year-select" not found.');
-    }
+    document.getElementById('year-select').addEventListener('change', (e) => {
+        selectedYear = e.target.value;
+        fetchMovies(1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+    });
 
-    // Popularity sort filter
-   // Ažurirani popular-select sa dodatnim opcijama
+    document.getElementById('popular-select').addEventListener('change', (e) => {
+        selectedSortBy = e.target.value;
+        fetchMovies(1, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+    });
+
 const popularSelect = document.getElementById('popular-select');
 if (popularSelect) {
     popularSelect.addEventListener('change', () => {
         const selectedOption = popularSelect.value;
 
        if (selectedOption === 'hulu') {
-            fetchHuluMovies();
-        } else if (selectedOption === 'marvel') {
-            fetchMarvelMovies();
-        } else if (selectedOption === 'netflix') {
-            fetchNetflixMovies();
-        } else if (selectedOption === 'disney') {
-            fetchDisneyMovies();
-        } else if (selectedOption === 'apple') { // Nova opcija
-            fetchAppleMovies();
-        } else {
-            selectedSortBy = selectedOption;
-            fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
-        }
+    fetchHuluMovies();
+} else if (selectedOption === 'marvel') {
+    fetchMarvelMovies();
+} else if (selectedOption === 'netflix') {
+    fetchNetflixMovies();
+} else if (selectedOption === 'disney') {
+    fetchDisneyMovies();
+} else if (selectedOption === 'apple') {
+    fetchAppleMovies();
+} else if (selectedOption === 'hbo') {
+    fetchHBOMovies();
+} else if (selectedOption === 'prime') { // Dodato za Prime Video
+    fetchPrimeMovies();
+} else {
+    selectedSortBy = selectedOption;
+    fetchMovies(currentPage, currentQuery, selectedGenre, selectedYear, selectedSortBy);
+}
     });
 } else {
     console.error('Element with ID "popular-select" not found.');
@@ -795,6 +778,17 @@ const fetchAppleMovies = () => {
     fetchAndDisplayMovies(url);
 };
 
+// Funkcija za HBO filmove
+const fetchHBOMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=8&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
+
+// Funkcija za Prime Video filmove
+const fetchPrimeMovies = () => {
+    const url = `${baseURL}/discover/movie?api_key=${apiKey}&with_watch_providers=9&watch_region=US&language=${selectedLanguage}`;
+    fetchAndDisplayMovies(url);
+};
 
 // Pomoćna funkcija za prikaz filmova
 const fetchAndDisplayMovies = (url) => {
@@ -813,8 +807,6 @@ const fetchAndDisplayMovies = (url) => {
     // Initial load
     fetchMovies();
 });
-
-
 </script>
 </body>
 </html>
