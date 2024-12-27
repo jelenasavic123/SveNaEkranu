@@ -67,22 +67,34 @@ header {
         }
     
 
-        header select {
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-            font-size: 18px;
-            background-color: #222;
-            color: #ddd;
-            margin-left: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+       /* Stilovi za header selekt na desktop uređajima */
+header select {
+    padding: 1px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    background-color: #222;
+    color: #ddd;
+    margin-left: 1px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-        header select:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
+/* Promena stila za mobilne uređaje (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    header select {
+        width: 100%; /* Postavite širinu da se ne prelazi širina ekrana */
+        box-sizing: border-box; /* Osigurava da padding i margin ne utiču na širinu */
+        margin: 0 auto; /* Centriranje na mobilnim uređajima */
+        font-size: 12px; /* Smanjivanje fonta na mobilnim uređajima */
+    }
+
+    header select:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+}
+
 
         #movie-list {
             display: flex;
@@ -390,7 +402,7 @@ header {
 }
 
 #current-page {
-    margin: 0 10px;
+    margin: 0 1px;
     font-size: 18px; /* Povećanje font veličine */
     color: #ffffff; /* Bela boja teksta */
     font-weight: bold; /* Jači font za bolju vidljivost */
