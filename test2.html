@@ -446,7 +446,17 @@ header select {
             cursor: pointer;
             background-color: #f0f0f0;
         }
+  .focusable {
+            border: 2px solid transparent;
+            padding: 10px;
+            display: inline-block;
+            margin: 5px;
+            text-align: center;
+        }
 
+        .focused {
+            border-color: red;
+        }
   </style>
 </head>
 
@@ -898,54 +908,36 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
 
   </script>
   
-<script type="text/javascript">
-    // Funkcija za taster F (pritisnut taster 1 sa daljinskog)
-    function pressF() {
-        console.log("F pritisnut!"); 
-        // Primer funkcije: Pretraga ili neka druga akcija
-        alert("Pokrenuta pretraga!");
-    }
+<script document.addEventListener('DOMContentLoaded', () => {
+    const focusableElements = Array.from(document.querySelectorAll('.focusable'));
+    let currentIndex = 0;
 
-    // Funkcija za taster C (pritisnut taster 2 sa daljinskog)
-    function pressC() {
-        console.log("C pritisnut!");
-        // Primer funkcije: Otkazivanje ili zatvaranje dijaloga
-        alert("Otkazivanje!");
-    }
+    // Initialize the first focusable element
+    focusableElements[currentIndex].classList.add('focused');
 
-    // Funkcija za taster Tab (pritisnut taster 3 sa daljinskog)
-    function pressTab() {
-        console.log("Tab pritisnut!");
-        // Primer funkcije: Navigacija (Tab simulacija)
-        let focusableElements = document.querySelectorAll('.focusable');
-        let currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
-        if (currentIndex < focusableElements.length - 1) {
-            focusableElements[currentIndex + 1].focus();
-        } else {
-            focusableElements[0].focus();  // Ako je na poslednjem elementu, vrati na prvi
+    document.addEventListener('keydown', (event) => {
+        focusableElements[currentIndex].classList.remove('focused');
+
+        if (event.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % focusableElements.length;
+        } else if (event.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+        } else if (event.key === 'Enter') {
+            // Simulate a click or perform an action
+            focusableElements[currentIndex].click();
         }
-    }
 
-    // Navigacija (strelice)
-    function moveUp() {
-        console.log("Pomera se gore!");
-        // Vaša logika za pomeranje gore
-    }
+        focusableElements[currentIndex].classList.add('focused');
+    });
 
-    function moveDown() {
-        console.log("Pomera se dole!");
-        // Vaša logika za pomeranje dole
-    }
+    // Optional: Handle click events on focusable elements
+    focusableElements.forEach((el) => {
+        el.addEventListener('click', () => {
+            alert(`You selected: ${el.textContent}`);
+        });
+    });
+});
 
-    function moveLeft() {
-        console.log("Pomera se levo!");
-        // Vaša logika za pomeranje levo
-    }
-
-    function moveRight() {
-        console.log("Pomera se desno!");
-        // Vaša logika za pomeranje desno
-    }
 </script>
 
 
