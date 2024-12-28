@@ -79,30 +79,30 @@
         font-weight: bold;
     }
 
-    /* Mali televizori (720p) */
-    @media (min-width: 1280px) and (max-width: 1919px) {
-        .movie-item {
-            width: 180px;
-            height: 270px;
-        }
+   /* Mali televizori (720p) */
+@media (min-width: 1280px) and (max-width: 1919px) {
+    .movie-item {
+        width: 126px; /* 180px - 30% */
+        height: 189px; /* 270px - 30% */
     }
+}
 
-    /* Veliki televizori (1080p) */
-    @media (min-width: 1920px) and (max-width: 3839px) {
-        .movie-item {
-            width: 250px;
-            height: 375px;
-        }
+/* Veliki televizori (1080p) */
+@media (min-width: 1920px) and (max-width: 3839px) {
+    .movie-item {
+        width: 175px; /* 250px - 30% */
+        height: 262.5px; /* 375px - 30% */
     }
+}
 
-    /* Ultra veliki televizori (4K i veći) */
-    @media (min-width: 3840px) {
-        .movie-item {
-            width: 300px;
-            height: 450px;
-        }
+/* Ultra veliki televizori (4K i veći) */
+@media (min-width: 3840px) {
+    .movie-item {
+        width: 210px; /* 300px - 30% */
+        height: 315px; /* 450px - 30% */
     }
-    
+}
+
         .logo {
         margin: 0px 0;
         text-align: center;
