@@ -789,7 +789,7 @@ const fetchAndDisplayMovies = (url) => {
       document.getElementById('modal-release-date').textContent = `Release Date: ${movie.release_date}`;
       document.getElementById('modal-overview').textContent = movie.overview;
       document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-      document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movie.id}`;
+      document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
       document.getElementById('movie-modal').style.display = 'flex';
     };
 
