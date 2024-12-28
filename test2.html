@@ -898,96 +898,55 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
 
   </script>
   
-<script>
-    function handleKeyPress(key) {
-        switch (key) {
-            case 'tab':
-                alert('Tab key pressed');
-                break;
-            case 'c':
-                alert('C key pressed');
-                break;
-            case 'f':
-                alert('F key pressed');
-                break;
-            case '1':
-                alert('Video speed: 1x');
-                // Dodajte funkcionalnost za 1x brzinu
-                document.querySelector('video').playbackRate = 1;
-                break;
-            case '2':
-                alert('Video speed: 2x');
-                // Dodajte funkcionalnost za 2x brzinu
-                document.querySelector('video').playbackRate = 2;
-                break;
-            case '3':
-                alert('Video speed: 3x');
-                // Dodajte funkcionalnost za 3x brzinu
-                document.querySelector('video').playbackRate = 3;
-                break;
-            default:
-                console.log('Unhandled key press:', key);
+<script type="text/javascript">
+    // Funkcija za taster F (pritisnut taster 1 sa daljinskog)
+    function pressF() {
+        console.log("F pritisnut!"); 
+        // Primer funkcije: Pretraga ili neka druga akcija
+        alert("Pokrenuta pretraga!");
+    }
+
+    // Funkcija za taster C (pritisnut taster 2 sa daljinskog)
+    function pressC() {
+        console.log("C pritisnut!");
+        // Primer funkcije: Otkazivanje ili zatvaranje dijaloga
+        alert("Otkazivanje!");
+    }
+
+    // Funkcija za taster Tab (pritisnut taster 3 sa daljinskog)
+    function pressTab() {
+        console.log("Tab pritisnut!");
+        // Primer funkcije: Navigacija (Tab simulacija)
+        let focusableElements = document.querySelectorAll('.focusable');
+        let currentIndex = Array.from(focusableElements).indexOf(document.activeElement);
+        if (currentIndex < focusableElements.length - 1) {
+            focusableElements[currentIndex + 1].focus();
+        } else {
+            focusableElements[0].focus();  // Ako je na poslednjem elementu, vrati na prvi
         }
     }
+
+    // Navigacija (strelice)
+    function moveUp() {
+        console.log("Pomera se gore!");
+        // Vaša logika za pomeranje gore
+    }
+
+    function moveDown() {
+        console.log("Pomera se dole!");
+        // Vaša logika za pomeranje dole
+    }
+
+    function moveLeft() {
+        console.log("Pomera se levo!");
+        // Vaša logika za pomeranje levo
+    }
+
+    function moveRight() {
+        console.log("Pomera se desno!");
+        // Vaša logika za pomeranje desno
+    }
 </script>
-
-<script>
-function handleKeyPress(key) {
-    switch (key) {
-        case '1':
-            playPause(); // Play/Pause
-            break;
-        case '2':
-            increaseVolume(); // Increase volume
-            break;
-        case '3':
-            decreaseVolume(); // Decrease volume
-            break;
-        case '4':
-            seekForward(); // Seek forward
-            break;
-        case '5':
-            seekBackward(); // Seek backward
-            break;
-        default:
-            console.log('Unhandled key press: ' + key);
-    }
-}
-
-function playPause() {
-    let video = document.querySelector('video');
-    if (video.paused) {
-        video.play();
-    } else {
-        video.pause();
-    }
-}
-
-function increaseVolume() {
-    let video = document.querySelector('video');
-    if (video.volume < 1) {
-        video.volume = Math.min(video.volume + 0.1, 1);
-    }
-}
-
-function decreaseVolume() {
-    let video = document.querySelector('video');
-    if (video.volume > 0) {
-        video.volume = Math.max(video.volume - 0.1, 0);
-    }
-}
-
-function seekForward() {
-    let video = document.querySelector('video');
-    video.currentTime += 10;
-}
-
-function seekBackward() {
-    let video = document.querySelector('video');
-    video.currentTime -= 10;
-}
-
-    </script>
 
 
 </body>
