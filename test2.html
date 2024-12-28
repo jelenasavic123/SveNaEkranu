@@ -429,6 +429,17 @@ header select {
     background: #222; /* Boja dropdown-a i input-a */
 }
 
+
+       iframe {
+            width: 100%;
+            max-width: 600px;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        
+        
+
   </style>
 </head>
 
@@ -573,6 +584,12 @@ Da biste uključili prevod, kliknite na ikonu 👉CC (titlovi)  u desnom donjem 
   <div class="section-title">Apple TV+ Popularno</div>
   <div class="content-container" id="apple-tv-content-container"></div>
 
+ <div>
+        <iframe id="jwIframe" src="https://player.example.com/video" frameborder="0" allowfullscreen></iframe>
+        <div class="controls">
+            <button id="fullscreenBtn">Full Screen</button>
+        </div>
+    </div>
  
 </body>
 
@@ -868,6 +885,24 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
   </script>
   
   <script>
+  
+  
+  
+  
+          const iframe = document.getElementById('videoIframe');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen(); // Za fullscreen
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen(); // Za Internet Explorer
+            } else if (iframe.mozRequestFullScreen) {
+                iframe.mozRequestFullScreen(); // Za Firefox
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen(); // Za Chrome i Safari
+            }
+        });
         // Filmovi podaci
         const movies = [
             {
