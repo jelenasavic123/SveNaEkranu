@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sve na Ekranu</title>
-<style>
-body {
+<style>body {
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #121212;
@@ -153,42 +152,11 @@ body {
     text-align: center;
 }
 
-#load-more {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: inline-block;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#load-more:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-
-        
-        /* Basic Reset */
- {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-
-
-
-
-
-
-
 
         header {
-            width: 100%;
+            width: 95%;
             background-color: #1c1c1c;
-            padding: 15px 20px;
+            padding: 1px 2px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             position: fixed;
             top: 0;
@@ -214,8 +182,8 @@ body {
             border: none;
             border-radius: 5px;
             outline: none;
-            font-size: 18px;
-            width: 300px;
+            font-size: 14px;
+            width: 280px;
             transition: border-color 0.3s ease;
         }
 
@@ -223,19 +191,15 @@ body {
             border-color: #007bff;
         }
         
-
-
-
-
         header select {
             padding: 10px;
             border: none;
             border-radius: 5px;
             outline: none;
-            font-size: 18px;
+            font-size: 16px;
             background-color: #222;
             color: #ddd;
-            margin-left: 20px;
+            margin-left: 10px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -252,9 +216,6 @@ body {
             width: 100%;
         }
         
-
-
-
         .movie-item {
             margin: 1px;
             width: 100px;
@@ -267,7 +228,7 @@ body {
         }
 
         .movie-item img {
-            width: 100%;
+            width: 95%;
             height: auto;
             transition: transform 0.3s ease;
         }
@@ -307,7 +268,7 @@ body {
 
         #movie-modal #close-modal {
             position: absolute;
-            top: 30px;
+            top: 40px;
             right: 20px;
             font-size: 60px;
             cursor: pointer;
@@ -317,215 +278,10 @@ body {
 
 
 
-        #movie-modal #close-modal:hover {
-            color: #007bff;
-        }
-
-        #movie-modal h2 {
-            margin: 1px 0;
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        #movie-modal p {
-            font-size: 11px;
-            margin: 10px 0;
-        }
-
-        #movie-modal img {
-            width: 20px;
-            border-radius: 10px;
-            margin: 2px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #movie-modal iframe {
-            width: 100%;
-            height: 300px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #tv-options {
-            margin-top: 2px;
-        }
-
-        #tv-options input, #tv-options button {
-            padding: 12px;
-            font-size: 18px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #222;
-            color: #ddd;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        #tv-options input:focus {
-            border-color: #007bff;
-        }
-
-        #tv-options button {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        #tv-options button:hover {
-            background-color: #0056b3;
-            transform: scale(0.05);
-        }
-
-        #load-more {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 24px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 20px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-    
-    /* Navigation Bar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #202020;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.menu-icon {
-    margin-right: 20px;
-    cursor: pointer;
-}
-
-.logo img {
-    height: 30px;
-}
-
-.user-menu {
-    display: flex;
-    align-items: center;
-}
-
-.user-menu button {
-    background-color: transparent;
-    border: none;
-    margin-left: 50px;
-    cursor: pointer;
-}
-
-.user-menu img {
-    width: 25px;
-    filter: invert(1);
-}
-
-/* Sidebar */
-.sidebar {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    width: 240px;
-    height: 100%;
-    background-color: #202020;
-    padding-top: 20px;
-    z-index: 1000;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-    
-    
-.sidebar ul li {
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    color: #FFF;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.sidebar ul li img {
-    margin-right: 20px;
-}
-
-.sidebar ul li:hover,
-.sidebar ul li.active {
-    background-color: #383838;
-}
-
-/* Main Content */
-.main-content {
-    margin-left: 260px;
-    padding: 80px 20px 20px 20px;
-    background-color: #181818;
-}
-
-
-.video-info {
-    display: flex;
-    padding: 15px;
-    align-items: center;
-}
-
-.channel-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-}
-
-.video-details h4 {
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: #FFF;
-}
-
-.video-details p {
-    font-size: 14px;
-    color: #AAA;
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #202020;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
 
 
 
-#current-page {
-    margin: 0 10px;
-    font-size: 8px; /* Povećanje font veličine */
-    color: #ffffff; /* Bela boja teksta */
-    font-weight: bold; /* Jači font za bolju vidljivost */
-}
-
-
-div {
-    margin-top: 0px;
-}
+ 
 
 /* CSS za pretragu na mobilnim uređajima */
 #searchInput {
@@ -695,7 +451,7 @@ input[type="text"] {
 <div id="movie-modal" style="display: none;">
     <div id="modal-content">
     
-        <span id="modal-close" onclick="closeModal()">&times;</span>
+
            <span id="close-modal">×</span>
         <h2 id="modal-title"></h2>
         <p id="modal-release-date"></p>
@@ -743,25 +499,8 @@ input[type="text"] {
   <div class="section-title">Apple TV+ Popularno</div>
   <div class="content-container" id="apple-tv-content-container"></div>
 
-  <!-- Modal for Movie Details -->
-  <div id="movie-modal">
-    <div class="modal-content">
-      <span id="modal-close" onclick="closeModal()">&times;</span>
-      <h2 id="modal-title"></h2>
-      <p id="modal-release-date"></p>
-      <img id="modal-poster" alt="Poster">
-      <p id="modal-overview"></p>
-      <iframe id="media-iframe" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </div>
-    <div id="movie-modal" style="display: none;">
-        <div>
-            <img id="modal-poster" src="" alt="Movie Poster">
-            <h2 id="modal-title"></h2>
-            <p id="modal-release-date"></p>
-            <p id="modal-overview"></p>
-        </div>
-<div
+
+
  
 </body>
 
