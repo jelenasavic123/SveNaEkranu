@@ -584,26 +584,28 @@ Da biste uključili prevod, kliknite na ikonu 👉CC (titlovi)  u desnom donjem 
                 `;
                 movieList.appendChild(movieItem);
 
-                // Automatski prikaži detalje klikom na sliku
                 movieItem.querySelector('img').addEventListener('click', () => {
-                    fetch(`${baseURL}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
-                            }
-                            return response.json();
-                        })
-                        .then(details => {
-                            const { title, release_date, overview, poster_path } = details;
-                            document.getElementById('modal-title').textContent = title;
-                            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-                            document.getElementById('modal-overview').textContent = overview;
-                            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-                            document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                            document.getElementById('movie-modal').style.display = 'flex';
-                        })
-                        .catch(error => console.error('Error fetching movie details:', error));
-                });
+    fetch(`${baseURL}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
+            }
+            return response.json();
+        })
+        .then(details => {
+            const { title, release_date, overview, poster_path } = details;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+            document.getElementById('modal-overview').textContent = overview;
+            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+            document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
+            document.getElementById('movie-modal').style.display = 'flex';
+
+            // Redirect to the movie page
+            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+        })
+        .catch(error => console.error('Error fetching movie details:', error));
+});
             });
 
             currentPage = page;
