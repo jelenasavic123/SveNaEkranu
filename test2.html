@@ -391,6 +391,44 @@ input[type="text"] {
             color: red;
             font-size: 18px;
         }
+        
+        
+        #movie-modal img {
+    width: 100%;
+    max-width: 600px; /* Prilagođavanje širine slike unutar modalnog prozora */
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+#close-modal {
+    cursor: pointer;
+    color: white; /* Promena boje prilikom klika */
+    font-size: 24px;
+    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+#close-modal:hover {
+    color: red;
+    transform: scale(1.2); /* Zoom efekt na hover */
+}
+
+.content-item {
+    background-attachment: fixed; /* Parallax efekat pozadine */
+}
+
+html {
+    scroll-behavior: smooth; /* Glatko scrollovanje */
+}
+
+header input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+header select {
+    background: #222; /* Boja dropdown-a i input-a */
+}
+
   </style>
 </head>
 
@@ -828,5 +866,76 @@ document.getElementById("load-more-disneyplus").addEventListener("click", () => 
 document.getElementById("load-more-apple-tv").addEventListener("click", () => fetchMovies());
 
   </script>
+  
+  <script>
+        // Filmovi podaci
+        const movies = [
+            {
+                title: 'Inception',
+                year: '2010',
+                genre: 'Sci-Fi',
+                rating: '8.8',
+                poster: 'inception.jpg', // Putanja do slike
+                description: 'A skilled thief is given a chance at redemption if he can successfully perform inception on a target.'
+            },
+            {
+                title: 'The Dark Knight',
+                year: '2008',
+                genre: 'Action',
+                rating: '9.0',
+                poster: 'dark-knight.jpg',
+                description: 'Batman faces the Joker, a criminal mastermind who seeks to create chaos in Gotham.'
+            }
+            // Dodajte ostale filmove ovde...
+        ];
+
+        // Funkcija za prikazivanje filmova
+        function displayMovies(filterGenre = '') {
+            const movieList = document.getElementById('movie-list');
+            movieList.innerHTML = ''; // Čisti prethodne filmove
+
+            const filteredMovies = movies.filter(movie => !filterGenre || movie.genre === filterGenre);
+            
+            filteredMovies.forEach(movie => {
+                const movieItem = document.createElement('div');
+                movieItem.classList.add('movie-item');
+                movieItem.dataset.title = movie.title;
+
+                movieItem.innerHTML = `
+                    <img src="${movie.poster}" alt="${movie.title} Poster">
+                    <h2>${movie.title}</h2>
+                    <p>(${movie.year})</p>
+                    <p>Rating: ${movie.rating}</p>
+                `;
+
+                movieItem.addEventListener('click', () => showModal(movie));
+                movieList.appendChild(movieItem);
+            });
+        }
+
+        // Funkcija za prikazivanje modal-a
+        function showModal(movie) {
+            const modal = document.getElementById('movie-modal');
+            document.getElementById('modal-film-title').textContent = movie.title;
+            document.getElementById('modal-film-description').textContent = movie.description;
+            document.getElementById('modal-film-poster').src = movie.poster;
+
+            modal.style.display = 'flex';
+        }
+
+        // Blokiraj modal kada klikneš na close
+        document.getElementById('close-modal').addEventListener('click', () => {
+            document.getElementById('movie-modal').style.display = 'none';
+        });
+
+        // Filtriranje po žanru
+        document.getElementById('genreSelect').addEventListener('change', function() {
+            const selectedGenre = this.value;
+            displayMovies(selectedGenre);
+        });
+
+        // Prikaz svih filmova na učitavanje
+        displayMovies();
+    </script>
 </body>
 </html>
