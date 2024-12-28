@@ -932,23 +932,61 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
 </script>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('tab-button').addEventListener('click', function() {
-                sendKeyEvent('tab');
-            });
-            document.getElementById('c-button').addEventListener('click', function() {
-                sendKeyEvent('c');
-            });
-            document.getElementById('f-button').addEventListener('click', function() {
-                sendKeyEvent('f');
-            });
+function handleKeyPress(key) {
+    switch (key) {
+        case '1':
+            playPause(); // Play/Pause
+            break;
+        case '2':
+            increaseVolume(); // Increase volume
+            break;
+        case '3':
+            decreaseVolume(); // Decrease volume
+            break;
+        case '4':
+            seekForward(); // Seek forward
+            break;
+        case '5':
+            seekBackward(); // Seek backward
+            break;
+        default:
+            console.log('Unhandled key press: ' + key);
+    }
+}
 
-            function sendKeyEvent(keyCode) {
-                const intent = new Intent('com.yourapp.KEY_EVENT');
-                intent.putExtra('keyCode', keyCode);
-                sendBroadcast(intent); // šalje Intent ka aplikaciji
-            }
-        });
+function playPause() {
+    let video = document.querySelector('video');
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
+    }
+}
+
+function increaseVolume() {
+    let video = document.querySelector('video');
+    if (video.volume < 1) {
+        video.volume = Math.min(video.volume + 0.1, 1);
+    }
+}
+
+function decreaseVolume() {
+    let video = document.querySelector('video');
+    if (video.volume > 0) {
+        video.volume = Math.max(video.volume - 0.1, 0);
+    }
+}
+
+function seekForward() {
+    let video = document.querySelector('video');
+    video.currentTime += 10;
+}
+
+function seekBackward() {
+    let video = document.querySelector('video');
+    video.currentTime -= 10;
+}
+
     </script>
 
 
