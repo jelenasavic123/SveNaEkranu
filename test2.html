@@ -885,16 +885,38 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
   </script>
   
 <script>
-    function handleKeyPress(command) {
-        if (command === 'c') {
-            document.execCommand('copy');
-        } else if (command === 'f') {
-            document.execCommand('find');
-        } else if (command === 'tab') {
-            document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', keyCode: 9 }));
+    function handleKeyPress(key) {
+        switch (key) {
+            case 'tab':
+                alert('Tab key pressed');
+                break;
+            case 'c':
+                alert('C key pressed');
+                break;
+            case 'f':
+                alert('F key pressed');
+                break;
+            case '1':
+                alert('Video speed: 1x');
+                // Dodajte funkcionalnost za 1x brzinu
+                document.querySelector('video').playbackRate = 1;
+                break;
+            case '2':
+                alert('Video speed: 2x');
+                // Dodajte funkcionalnost za 2x brzinu
+                document.querySelector('video').playbackRate = 2;
+                break;
+            case '3':
+                alert('Video speed: 3x');
+                // Dodajte funkcionalnost za 3x brzinu
+                document.querySelector('video').playbackRate = 3;
+                break;
+            default:
+                console.log('Unhandled key press:', key);
         }
     }
 </script>
+
 
 </body>
 </html>
