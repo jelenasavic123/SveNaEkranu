@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney Movies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Disney plava */
+            color: #000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 20px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .filter-button {
+            padding: 8px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #1e90ff; /* Disney plava */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-button:hover {
+            background-color: #1c86ee; /* Tamnija plava */
+        }
+
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .movie-item {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .movie-item:hover {
+            transform: scale(1.05);
+        }
+
+        .movie-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .movie-item h3 {
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            color: #000;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .movie-item .genre, .movie-item .release-year {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #000;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .movie-item .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #000;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #000;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+
+        .logo {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .logo img {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney Logo">
+    </div>
+
+    <div class="filters" id="year-filters"></div>
+    <div class="filters" id="genre-filters"></div>
+
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
+
+    <script>
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = `https://api.themoviedb.org/3/`;
+        const disneyProviderId = 337; // Disney+ ID
+
+        let currentPage = 1;
+        let currentFilter = { type: 'popular', value: '' };
+        let isLoading = false;
+
+        const yearFilters = document.getElementById('year-filters');
+        const genreFilters = document.getElementById('genre-filters');
+
+        // Generate year buttons
+        for (let year = 2024; year >= 2000; year--) {
+            const button = document.createElement('button');
+            button.classList.add('filter-button');
+            button.textContent = year;
+            button.onclick = () => fetchFilteredMovies('year', year);
+            yearFilters.appendChild(button);
+        }
+
+        // Fetch and display genres
+        fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
+            .then(response => response.json())
+            .then(data => {
+                data.genres.forEach(genre => {
+                    const button = document.createElement('button');
+                    button.classList.add('filter-button');
+                    button.textContent = genre.name;
+                    button.onclick = () => fetchFilteredMovies('genre', genre.id);
+                    genreFilters.appendChild(button);
+                });
+            })
+            .catch(error => console.error('Greška pri učitavanju žanrova:', error));
+
+        function fetchFilteredMovies(type, value) {
+            currentPage = 1;
+            currentFilter = { type, value };
+            document.getElementById('movie-list').innerHTML = '';
+            fetchMovies();
+        }
+
+        function fetchMovies() {
+            if (isLoading) return;
+
+            isLoading = true;
+            document.getElementById('loading').style.display = 'block';
+
+            let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${disneyProviderId}&watch_region=RS&page=${currentPage}`;
+
+            if (currentFilter.type === 'year') {
+                url += `&primary_release_year=${currentFilter.value}`;
+            } else if (currentFilter.type === 'genre') {
+                url += `&with_genres=${currentFilter.value}`;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results;
+                    const movieList = document.getElementById('movie-list');
+
+                    movies.forEach(movie => {
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+
+                        const movieImage = document.createElement('img');
+                        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                        movieImage.alt = movie.title;
+
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = movie.title;
+
+                        const movieGenre = document.createElement('div');
+                        movieGenre.classList.add('genre');
+                        movieGenre.textContent = 'Žanr: ' + (movie.genre_ids || []).join(', ');
+
+                        const movieYear = document.createElement('div');
+                        movieYear.classList.add('release-year');
+                        movieYear.textContent = `Godina: ${movie.release_date?.slice(0, 4) || 'Nepoznata'}`;
+
+                        const movieRating = document.createElement('div');
+                        movieRating.classList.add('rating');
+                        movieRating.textContent = `TMDB: ${movie.vote_average}`;
+
+                        movieItem.appendChild(movieImage);
+                        movieItem.appendChild(movieTitle);
+                        movieItem.appendChild(movieGenre);
+                        movieItem.appendChild(movieYear);
+                        movieItem.appendChild(movieRating);
+                        movieList.appendChild(movieItem);
+                    });
+
+                    currentPage++;
+                    isLoading = false;
+                    document.getElementById('loading').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Greška pri učitavanju filmova:', error);
+                    isLoading = false;
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        window.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading) {
+                fetchMovies();
+            }
+        });
+
+        fetchMovies();
+    </script>
+</body>
+</html>

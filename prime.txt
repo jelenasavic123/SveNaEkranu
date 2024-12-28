@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Video Sadržaj</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin: 20px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .filter-button {
+            padding: 8px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-button:hover {
+            background-color: #0056b3;
+        }
+
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .movie-item {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .movie-item:hover {
+            transform: scale(1.05);
+        }
+
+        .movie-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .movie-item h3 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .movie-item .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        
+        .logo {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .logo img {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Prime Video Logo">
+    </div>
+    <div class="filters" id="year-filters"></div>
+    <div class="filters" id="genre-filters"></div>
+
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
+
+    <script>
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = `https://api.themoviedb.org/3/`;
+        const primeVideoProviderId = 119; // Prime Video ID
+
+        let currentPage = 1;
+        let currentFilter = { type: 'popular', value: '' };
+        let isLoading = false;
+
+        const yearFilters = document.getElementById('year-filters');
+        const genreFilters = document.getElementById('genre-filters');
+
+        // Generišemo dugmad za godine
+        for (let year = 2024; year >= 2000; year--) {
+            const button = document.createElement('button');
+            button.classList.add('filter-button');
+            button.textContent = year;
+            button.onclick = () => fetchFilteredMovies('year', year);
+            yearFilters.appendChild(button);
+        }
+
+        // Učitavanje i prikazivanje žanrova
+        fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Greška u preuzimanju žanrova: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                data.genres.forEach(genre => {
+                    const button = document.createElement('button');
+                    button.classList.add('filter-button');
+                    button.textContent = genre.name;
+                    button.onclick = () => fetchFilteredMovies('genre', genre.id);
+                    genreFilters.appendChild(button);
+                });
+            })
+            .catch(error => console.error('Greška pri učitavanju žanrova:', error));
+
+        // Funkcija za učitavanje filmova
+        function fetchFilteredMovies(type, value) {
+            currentPage = 1;
+            currentFilter = { type, value };
+            document.getElementById('movie-list').innerHTML = '';
+            fetchMovies();
+        }
+
+        // Fetch movies by filter
+        function fetchMovies() {
+            if (isLoading) return;
+
+            isLoading = true;
+            document.getElementById('loading').style.display = 'block';
+
+            let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${primeVideoProviderId}&watch_region=RS&page=${currentPage}`;
+
+            if (currentFilter.type === 'year') {
+                url += `&primary_release_year=${currentFilter.value}`;
+            } else if (currentFilter.type === 'genre') {
+                url += `&with_genres=${currentFilter.value}`;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results;
+                    const movieList = document.getElementById('movie-list');
+
+                    movies.forEach(movie => {
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+
+                        const movieImage = document.createElement('img');
+                        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                        movieImage.alt = movie.title;
+
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = movie.title;
+
+                        const movieRating = document.createElement('div');
+                        movieRating.classList.add('rating');
+                        movieRating.textContent = `TMDB: ${movie.vote_average}`;
+
+                        movieItem.appendChild(movieImage);
+                        movieItem.appendChild(movieTitle);
+                        movieItem.appendChild(movieRating);
+                        movieList.appendChild(movieItem);
+                    });
+
+                    currentPage++;
+                    isLoading = false;
+                    document.getElementById('loading').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Greška pri učitavanju filmova:', error);
+                    isLoading = false;
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        // Infinite scroll
+        window.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading) {
+                fetchMovies();
+            }
+        });
+
+        // Početno učitavanje filmova
+        fetchMovies();
+    </script>
+</body>
+</html>
