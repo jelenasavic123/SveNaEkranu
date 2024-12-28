@@ -391,72 +391,6 @@ input[type="text"] {
             color: red;
             font-size: 18px;
         }
-        
-        
-        #movie-modal img {
-    width: 100%;
-    max-width: 600px; /* Prilagođavanje širine slike unutar modalnog prozora */
-    border-radius: 10px;
-    margin: 20px auto;
-}
-
-#close-modal {
-    cursor: pointer;
-    color: white; /* Promena boje prilikom klika */
-    font-size: 24px;
-    transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
-}
-
-#close-modal:hover {
-    color: red;
-    transform: scale(1.2); /* Zoom efekt na hover */
-}
-
-.content-item {
-    background-attachment: fixed; /* Parallax efekat pozadine */
-}
-
-html {
-    scroll-behavior: smooth; /* Glatko scrollovanje */
-}
-
-header input[type="text"]::placeholder {
-    color: rgba(255, 255, 255, 0.7);
-    font-style: italic;
-}
-
-header select {
-    background: #222; /* Boja dropdown-a i input-a */
-}
-
-
-       iframe {
-            width: 100%;
-            max-width: 600px;
-        }
-        .controls {
-            margin-top: 20px;
-        }
-        
-                .controller-button {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            background-color: #f0f0f0;
-        }
-  .focusable {
-            border: 2px solid transparent;
-            padding: 10px;
-            display: inline-block;
-            margin: 5px;
-            text-align: center;
-        }
-
-        .focused {
-            border-color: red;
-        }
   </style>
 </head>
 
@@ -536,7 +470,7 @@ header select {
         <option value="release_date.desc">Uskoro</option>
     </select>
 </div>
-
+    <input type="text" id="search-input" placeholder="Pretraga filmova/serija...">
 
 </header>
 
@@ -552,13 +486,6 @@ header select {
         <img id="modal-poster" alt="Poster">
         <p id="modal-overview"></p>
         <iframe id="media-iframe" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
-       <body>
-    <h1>Remote Controller</h1>
-    <div class="controller-button" id="tab-button">Tab</div>
-    <div class="controller-button" id="c-button">C</div>
-    <div class="controller-button" id="f-button">F</div>
-</body>
-        
         <div style="background-color: #141414; color: #fff; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
     <p style="font-size: 13px; line-height: 1.8; margin: 0;">
     Obaveštenje:
@@ -608,12 +535,6 @@ Da biste uključili prevod, kliknite na ikonu 👉CC (titlovi)  u desnom donjem 
   <div class="section-title">Apple TV+ Popularno</div>
   <div class="content-container" id="apple-tv-content-container"></div>
 
- <div>
-        <iframe id="jwIframe" src="https://player.example.com/video" frameborder="0" allowfullscreen></iframe>
-        <div class="controls">
-            <button id="fullscreenBtn">Full Screen</button>
-        </div>
-    </div>
  
 </body>
 
@@ -663,28 +584,26 @@ Da biste uključili prevod, kliknite na ikonu 👉CC (titlovi)  u desnom donjem 
                 `;
                 movieList.appendChild(movieItem);
 
+                // Automatski prikaži detalje klikom na sliku
                 movieItem.querySelector('img').addEventListener('click', () => {
-    fetch(`${baseURL}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
-            }
-            return response.json();
-        })
-        .then(details => {
-            const { title, release_date, overview, poster_path } = details;
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-            document.getElementById('modal-overview').textContent = overview;
-            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-            document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
-            document.getElementById('movie-modal').style.display = 'flex';
-
-            // Redirect to the movie page
-            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-        })
-        .catch(error => console.error('Error fetching movie details:', error));
-});
+                    fetch(`${baseURL}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => { throw new Error(`API Error: ${err.status_message}`); });
+                            }
+                            return response.json();
+                        })
+                        .then(details => {
+                            const { title, release_date, overview, poster_path } = details;
+                            document.getElementById('modal-title').textContent = title;
+                            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+                            document.getElementById('modal-overview').textContent = overview;
+                            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+                            document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                            document.getElementById('movie-modal').style.display = 'flex';
+                        })
+                        .catch(error => console.error('Error fetching movie details:', error));
+                });
             });
 
             currentPage = page;
@@ -840,106 +759,83 @@ const fetchAndDisplayMovies = (url) => {
 </script>
 
 <script>
-const API_KEY = '2701858e9bccab54d4d0e4931420a739';
-const baseURL = 'https://api.themoviedb.org/3';
-let page = 1;
-const selectedLanguage = 'en-US';
+    const API_KEY = '2701858e9bccab54d4d0e4931420a739';
+    const baseURL = 'https://api.themoviedb.org/3';
+    let page = 1;
+    const selectedLanguage = 'en-US';
 
-const fetchAndDisplayMovies = (url, containerId) => {
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      const container = document.getElementById(containerId);
-      data.results.forEach(movie => {
-        const contentItem = document.createElement("div");
-        contentItem.classList.add("content-item");
+    const fetchAndDisplayMovies = (url, containerId) => {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById(containerId);
+          data.results.forEach(movie => {
+            const contentItem = document.createElement("div");
+            contentItem.classList.add("content-item");
 
-        const movieImage = document.createElement("img");
-        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-        movieImage.alt = movie.title;
+            const movieImage = document.createElement("img");
+            movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+            movieImage.alt = movie.title;
 
-        const rating = document.createElement("div");
-        rating.classList.add("rating");
-        rating.textContent = movie.vote_average.toFixed(1);
+            const rating = document.createElement("div");
+            rating.classList.add("rating");
+            rating.textContent = movie.vote_average.toFixed(1);
 
-        const year = document.createElement("div");
-        year.classList.add("year");
-        year.textContent = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+            const year = document.createElement("div");
+            year.classList.add("year");
+            year.textContent = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
 
-        contentItem.appendChild(movieImage);
-        contentItem.appendChild(rating);
-        contentItem.appendChild(year);
+            contentItem.appendChild(movieImage);
+            contentItem.appendChild(rating);
+            contentItem.appendChild(year);
 
-        // Navigate to URL in the same page on image click
-        movieImage.addEventListener('click', () => {
-          window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-        });
+            // Open modal on click
+            contentItem.addEventListener('click', () => openModal(movie));
 
-        container.appendChild(contentItem);
-      });
-      page++;
-    })
-    .catch(error => console.error('Error fetching movies:', error));
-};
+            container.appendChild(contentItem);
+          });
+          page++;
+        })
+        .catch(error => console.error('Error fetching movies:', error));
+    };
 
-const fetchMovies = () => {
-  const urls = {
-    netflix: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=8&watch_region=US&language=${selectedLanguage}&page=${page}`,
-    marvel: `${baseURL}/discover/movie?api_key=${API_KEY}&with_companies=420&language=${selectedLanguage}&page=${page}`,
-    hulu: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=15&watch_region=US&language=${selectedLanguage}&page=${page}`,
-    disneyplus: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=337&watch_region=US&language=${selectedLanguage}&page=${page}`,
-    appleTv: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=350&watch_region=US&language=${selectedLanguage}&page=${page}`
-  };
+    const openModal = (movie) => {
+      document.getElementById('modal-title').textContent = movie.title;
+      document.getElementById('modal-release-date').textContent = `Release Date: ${movie.release_date}`;
+      document.getElementById('modal-overview').textContent = movie.overview;
+      document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+      document.getElementById('media-iframe').src = `https://vidsrc.vip/embed/movie/${movie.id}`;
+      document.getElementById('movie-modal').style.display = 'flex';
+    };
 
-  fetchAndDisplayMovies(urls.netflix, 'netflix-content-container');
-  fetchAndDisplayMovies(urls.marvel, 'marvel-content-container');
-  fetchAndDisplayMovies(urls.hulu, 'hulu-content-container');
-  fetchAndDisplayMovies(urls.disneyplus, 'disneyplus-content-container');
-  fetchAndDisplayMovies(urls.appleTv, 'apple-tv-content-container');
-};
+    const closeModal = () => {
+      document.getElementById('movie-modal').style.display = 'none';
+    };
 
-fetchMovies();
+    // Load movie lists for all platforms
+    const fetchMovies = () => {
+      const urls = {
+        netflix: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=8&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        marvel: `${baseURL}/discover/movie?api_key=${API_KEY}&with_companies=420&language=${selectedLanguage}&page=${page}`,
+        hulu: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=15&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        disneyplus: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=337&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        appleTv: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=350&watch_region=US&language=${selectedLanguage}&page=${page}`
+      };
 
-document.getElementById("load-more-netflix").addEventListener("click", () => fetchMovies());
-document.getElementById("load-more-marvel").addEventListener("click", () => fetchMovies());
-document.getElementById("load-more-hulu").addEventListener("click", () => fetchMovies());
-document.getElementById("load-more-disneyplus").addEventListener("click", () => fetchMovies());
-document.getElementById("load-more-apple-tv").addEventListener("click", () => fetchMovies());
+      fetchAndDisplayMovies(urls.netflix, 'netflix-content-container');
+      fetchAndDisplayMovies(urls.marvel, 'marvel-content-container');
+      fetchAndDisplayMovies(urls.hulu, 'hulu-content-container');
+      fetchAndDisplayMovies(urls.disneyplus, 'disneyplus-content-container');
+      fetchAndDisplayMovies(urls.appleTv, 'apple-tv-content-container');
+    };
 
+    fetchMovies();
+
+    document.getElementById("load-more-netflix").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-marvel").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-hulu").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-disneyplus").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-apple-tv").addEventListener("click", () => fetchMovies());
   </script>
-  
-<script document.addEventListener('DOMContentLoaded', () => {
-    const focusableElements = Array.from(document.querySelectorAll('.focusable'));
-    let currentIndex = 0;
-
-    // Initialize the first focusable element
-    focusableElements[currentIndex].classList.add('focused');
-
-    document.addEventListener('keydown', (event) => {
-        focusableElements[currentIndex].classList.remove('focused');
-
-        if (event.key === 'ArrowRight') {
-            currentIndex = (currentIndex + 1) % focusableElements.length;
-        } else if (event.key === 'ArrowLeft') {
-            currentIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
-        } else if (event.key === 'Enter') {
-            // Simulate a click or perform an action
-            focusableElements[currentIndex].click();
-        }
-
-        focusableElements[currentIndex].classList.add('focused');
-    });
-
-    // Optional: Handle click events on focusable elements
-    focusableElements.forEach((el) => {
-        el.addEventListener('click', () => {
-            alert(`You selected: ${el.textContent}`);
-        });
-    });
-});
-
-</script>
-
-
 </body>
 </html>
