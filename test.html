@@ -122,12 +122,44 @@
       cursor: pointer;
     }
 
-    #media-iframe {
-      margin-top: 20px;
-      width: 95%;
-      height: auto;
-      border: none;
-    }
+/* Kontejner za iframe */
+.iframe-container {
+  display: flex; /* Koristi flexbox za poravnanje */
+  justify-content: center; /* Horizontalo centriranje */
+  align-items: center; /* Vertikalno centriranje */
+  width: 100%; /* Širina kontejnera */
+  height: 100vh; /* Visina celog ekrana */
+  margin: 0; /* Uklanjanje margina */
+  padding: 0; /* Uklanjanje paddinga */
+  box-sizing: border-box; /* Uklanja nepotrebne dimenzijske anomalije */
+}
+
+/* Sam iframe */
+#iframe-container iframe,
+#media-iframe {
+  width: 95%; /* Prilagodljiva širina */
+  height: auto; /* Automatska visina */
+  max-width: 600px; /* Maksimalna širina za veće ekrane */
+  aspect-ratio: 16 / 9; /* Odnos stranica (opciono) */
+  border: none; /* Bez okvira */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lep vizuelni efekat */
+  border-radius: 10px; /* Zaobljeni uglovi */
+}
+
+/* Medijski upiti za dodatne prilagodbe */
+@media screen and (max-width: 480px) {
+  #media-iframe {
+    width: 90%; /* Još manja širina za uske ekrane */
+    height: auto; /* Automatska visina */
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #media-iframe {
+    max-width: 700px; /* Povećana širina za tablete */
+  }
+}
+
  
 .movie-item-container {
     display: flex;
