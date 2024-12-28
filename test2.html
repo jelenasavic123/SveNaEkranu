@@ -885,27 +885,45 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
   </script>
   
  <script>
-        // Function to toggle captions on/off
+        const videoElement = document.getElementById('videoElement');
+
+        // Function to toggle captions
         function toggleCaptions() {
-            // Replace this with the logic to toggle captions
+            // Replace with your logic to toggle captions
             alert('Captions toggled!');
         }
 
-        // Function to toggle fullscreen mode
+        // Function to toggle fullscreen
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
+                videoElement.requestFullscreen();
             } else {
                 document.exitFullscreen();
             }
         }
 
-        // Function to handle remote control input
+        // Function to control playback speed
+        function changePlaybackSpeed(speed) {
+            videoElement.playbackRate = speed;
+        }
+
+        // Handle remote control input
         function handleRemoteInput(event) {
-            if (event.key === '1') {
-                toggleCaptions(); // Toggle captions
-            } else if (event.key === '2') {
-                toggleFullscreen(); // Toggle fullscreen
+            switch (event.key) {
+                case '1':
+                    toggleCaptions(); // Toggle captions
+                    break;
+                case '2':
+                    toggleFullscreen(); // Toggle fullscreen
+                    break;
+                case '3':
+                    changePlaybackSpeed(0.75); // Slower playback
+                    break;
+                case '4':
+                    changePlaybackSpeed(1.25); // Faster playback
+                    break;
+                default:
+                    break;
             }
         }
 
