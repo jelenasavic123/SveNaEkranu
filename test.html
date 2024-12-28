@@ -4,24 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sve na Ekranu</title>
-    <style>
-        body {
+<style>body {
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #121212;
             color: #e0e0e0;
             display: flex;
             flex-direction: column;
-            align-items: center;
+
             padding: 0;
             overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
 
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+      background-color: #141414;
+      border-bottom: 2px solid #e50914;
+    }
+
+    .logo-container img {
+      width: 150px;
+      height: auto;
+    }
+
+    .section-title {
+      font-size: 24px;
+      text-align: center;
+      margin: 20px 0;
+      color: white;
+    }
+
+    .content-container {
+      display: flex;
+      overflow-x: scroll;
+      padding: 20px;
+      gap: 15px;
+    }
+
+    .content-item {
+      min-width: 200px;
+      height: 300px;
+      background-color: #333;
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .content-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .rating {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border-radius: 50%;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .year {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: white;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+
+    #movie-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background-color: #141414;
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+    }
+
+    #modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #media-iframe {
+      margin-top: 20px;
+      width: 95%;
+      height: 400px;
+      border: none;
+    }
+ 
+.movie-item-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* razmak između filmova */
+    justify-content: center;
+}
+
+.movie-item {
+    flex: 1 1 calc(50% - 20px); /* 50% širine minus razmak */
+    box-sizing: border-box; /* Osigurava da padding ne utiče na ukupnu širinu */
+}
+
+@media (min-width: 768px) {
+    .movie-item {
+        flex: 1 1 calc(33.33% - 20px); /* Tri stavke u redu za veće ekrane */
+    }
+}
+
+.movie-item {
+    width: 200px; /* ili koliko god želite širinu */
+    text-align: center;
+}
+
+
         header {
-            width: 100%;
+            width: 95%;
             background-color: #1c1c1c;
-            padding: 15px 20px;
+            padding: 1px 2px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             position: fixed;
             top: 0;
@@ -47,8 +182,8 @@
             border: none;
             border-radius: 5px;
             outline: none;
-            font-size: 18px;
-            width: 300px;
+            font-size: 14px;
+            width: 280px;
             transition: border-color 0.3s ease;
         }
 
@@ -56,17 +191,15 @@
             border-color: #007bff;
         }
         
-        
-
         header select {
             padding: 10px;
             border: none;
             border-radius: 5px;
             outline: none;
-            font-size: 18px;
+            font-size: 16px;
             background-color: #222;
             color: #ddd;
-            margin-left: 20px;
+            margin-left: 10px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -83,8 +216,6 @@
             width: 100%;
         }
         
-        
-
         .movie-item {
             margin: 1px;
             width: 100px;
@@ -97,7 +228,7 @@
         }
 
         .movie-item img {
-            width: 100%;
+            width: 95%;
             height: auto;
             transition: transform 0.3s ease;
         }
@@ -137,7 +268,7 @@
 
         #movie-modal #close-modal {
             position: absolute;
-            top: 30px;
+            top: 40px;
             right: 20px;
             font-size: 60px;
             cursor: pointer;
@@ -147,266 +278,10 @@
 
 
 
-        #movie-modal #close-modal:hover {
-            color: #007bff;
-        }
-
-        #movie-modal h2 {
-            margin: 1px 0;
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        #movie-modal p {
-            font-size: 11px;
-            margin: 10px 0;
-        }
-
-        #movie-modal img {
-            width: 20px;
-            border-radius: 10px;
-            margin: 2px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #movie-modal iframe {
-            width: 100%;
-            height: 300px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        #tv-options {
-            margin-top: 2px;
-        }
-
-        #tv-options input, #tv-options button {
-            padding: 12px;
-            font-size: 18px;
-            margin: 5px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #222;
-            color: #ddd;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        #tv-options input:focus {
-            border-color: #007bff;
-        }
-
-        #tv-options button {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        #tv-options button:hover {
-            background-color: #0056b3;
-            transform: scale(0.05);
-        }
-
-        #load-more {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 24px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 20px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-.movie-item-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* razmak između filmova */
-    justify-content: center;
-}
-
-.movie-item {
-    flex: 1 1 calc(50% - 20px); /* 50% širine minus razmak */
-    box-sizing: border-box; /* Osigurava da padding ne utiče na ukupnu širinu */
-}
-
-@media (min-width: 768px) {
-    .movie-item {
-        flex: 1 1 calc(33.33% - 20px); /* Tri stavke u redu za veće ekrane */
-    }
-}
-
-.movie-item {
-    width: 200px; /* ili koliko god želite širinu */
-    text-align: center;
-}
-
-#load-more {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: inline-block;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#load-more:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-
-        
-        /* Basic Reset */
- {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 
 
-/* Navigation Bar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #202020;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.menu-icon {
-    margin-right: 20px;
-    cursor: pointer;
-}
-
-.logo img {
-    height: 30px;
-}
-
-.user-menu {
-    display: flex;
-    align-items: center;
-}
-
-.user-menu button {
-    background-color: transparent;
-    border: none;
-    margin-left: 50px;
-    cursor: pointer;
-}
-
-.user-menu img {
-    width: 25px;
-    filter: invert(1);
-}
-
-/* Sidebar */
-.sidebar {
-    position: fixed;
-    top: 50px;
-    left: 0;
-    width: 240px;
-    height: 100%;
-    background-color: #202020;
-    padding-top: 20px;
-    z-index: 1000;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    color: #FFF;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.sidebar ul li img {
-    margin-right: 20px;
-}
-
-.sidebar ul li:hover,
-.sidebar ul li.active {
-    background-color: #383838;
-}
-
-/* Main Content */
-.main-content {
-    margin-left: 260px;
-    padding: 80px 20px 20px 20px;
-    background-color: #181818;
-}
-
-
-.video-info {
-    display: flex;
-    padding: 15px;
-    align-items: center;
-}
-
-.channel-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-}
-
-.video-details h4 {
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: #FFF;
-}
-
-.video-details p {
-    font-size: 14px;
-    color: #AAA;
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #202020;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-
-#prev-page:hover, #next-page:hover {
-    background-color: #990000; /* Tamnija crvena boja na hover za bolji kontrast */
-    color: #ffffff; /* Bela boja teksta na hover */
-}
-
-#current-page {
-    margin: 0 10px;
-    font-size: 8px; /* Povećanje font veličine */
-    color: #ffffff; /* Bela boja teksta */
-    font-weight: bold; /* Jači font za bolju vidljivost */
-}
-
-
-div {
-    margin-top: 0px;
-}
+ 
 
 /* CSS za pretragu na mobilnim uređajima */
 #searchInput {
@@ -478,8 +353,7 @@ input[type="text"] {
     margin: 2px 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
-    </style>
+  </style>
 </head>
 
 
@@ -562,22 +436,11 @@ input[type="text"] {
 
 </header>
 
-    
-    <div id="movie-list"></div>
-    
-    <div id="movie-list" class="movie-item-container"></div>
+ 
 
-    <div id="popup-modal" class="modal">
-        <div class="modal-content">
-        
-            <span class="close">&times;</span>
-            <iframe id="iframe-player" width="100%" height="400" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-        </div>
-    </div>
 <div id="movie-modal" style="display: none;">
     <div id="modal-content">
-    
-        <span id="modal-close" onclick="closeModal()">&times;</span>
+
            <span id="close-modal">×</span>
         <h2 id="modal-title"></h2>
         <p id="modal-release-date"></p>
@@ -585,18 +448,49 @@ input[type="text"] {
         <p id="modal-overview"></p>
         <iframe id="media-iframe" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
     </div>
+    
 </div>
 
-    <div id="movie-list" class="movie-list"></div>
+ 
 
-    <div id="movie-modal" style="display: none;">
-        <div>
-            <img id="modal-poster" src="" alt="Movie Poster">
-            <h2 id="modal-title"></h2>
-            <p id="modal-release-date"></p>
-            <p id="modal-overview"></p>
-        </div>
-<div
+ <div id="movie-list" class="movie-list"></div>
+  <!-- Netflix Logo -->
+  <div class="logo-container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Netflix_logo.svg" alt="Netflix Logo">
+  </div>
+  <div class="section-title">Netflix Popularno</div>
+  <div class="content-container" id="netflix-content-container"></div>
+
+  <!-- Marvel Logo -->
+  <div class="logo-container">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghh-slX_oB93PPVFmX_52y73TrinUmtTyeZ_Du9x5da0WQWK_PYmh19qbVr-HxZsPYMHmTEF__SNUsxl-AGpAaq4mwuXjVVhNH3vGOs-tW2POTH77D0IYmCaJcnWo4wYRSj24YpadfldsBA4uspYToxB_kGvsQNezcb_3UPxrRz0F-gtEngHTOJUpaDr-7/s320/10.png" alt="Marvel Logo">
+  </div>
+  <div class="section-title">Marvel Popularno</div>
+  <div class="content-container" id="marvel-content-container"></div>
+
+
+  <!-- Hulu Logo -->
+  <div class="logo-container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Hulu_2019.svg" alt="Hulu Logo">
+  </div>
+  <div class="section-title">Hulu Popularno</div>
+  <div class="content-container" id="hulu-content-container"></div>
+
+
+  <!-- Disney+ Logo -->
+  <div class="logo-container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+ Logo">
+  </div>
+  <div class="section-title">Disney+ Popularno</div>
+  <div class="content-container" id="disneyplus-content-container"></div>
+
+  <!-- Apple TV+ Logo -->
+  <div class="logo-container">
+    <img src="https://cdn2.steamgriddb.com/logo_thumb/e88b7ed1cb586cf4a763bb4eef4e07ac.png" alt="Apple TV+ Logo">
+  </div>
+  <div class="section-title">Apple TV+ Popularno</div>
+  <div class="content-container" id="apple-tv-content-container"></div>
+
  
 </body>
 
@@ -612,6 +506,8 @@ input[type="text"] {
     let selectedYear = '';
     let selectedLanguage = 'en-US'; // Default language
     let selectedSortBy = ''; // Selected sorting option from popular-select
+    
+    
 
     const fetchMovies = (page = 1, query = '', genre = '', year = '', sortBy = '') => {
     let url = `${baseURL}/discover/movie?api_key=${apiKey}&page=${page}&language=en-US`;
@@ -808,5 +704,85 @@ const fetchAndDisplayMovies = (url) => {
     fetchMovies();
 });
 </script>
+
+<script>
+    const API_KEY = '2701858e9bccab54d4d0e4931420a739';
+    const baseURL = 'https://api.themoviedb.org/3';
+    let page = 1;
+    const selectedLanguage = 'en-US';
+
+    const fetchAndDisplayMovies = (url, containerId) => {
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById(containerId);
+          data.results.forEach(movie => {
+            const contentItem = document.createElement("div");
+            contentItem.classList.add("content-item");
+
+            const movieImage = document.createElement("img");
+            movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+            movieImage.alt = movie.title;
+
+            const rating = document.createElement("div");
+            rating.classList.add("rating");
+            rating.textContent = movie.vote_average.toFixed(1);
+
+            const year = document.createElement("div");
+            year.classList.add("year");
+            year.textContent = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+
+            contentItem.appendChild(movieImage);
+            contentItem.appendChild(rating);
+            contentItem.appendChild(year);
+
+            // Open modal on click
+            contentItem.addEventListener('click', () => openModal(movie));
+
+            container.appendChild(contentItem);
+          });
+          page++;
+        })
+        .catch(error => console.error('Error fetching movies:', error));
+    };
+
+    const openModal = (movie) => {
+      document.getElementById('modal-title').textContent = movie.title;
+      document.getElementById('modal-release-date').textContent = `Release Date: ${movie.release_date}`;
+      document.getElementById('modal-overview').textContent = movie.overview;
+      document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+      document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movie.id}`;
+      document.getElementById('movie-modal').style.display = 'flex';
+    };
+
+    const closeModal = () => {
+      document.getElementById('movie-modal').style.display = 'none';
+    };
+
+    // Load movie lists for all platforms
+    const fetchMovies = () => {
+      const urls = {
+        netflix: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=8&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        marvel: `${baseURL}/discover/movie?api_key=${API_KEY}&with_companies=420&language=${selectedLanguage}&page=${page}`,
+        hulu: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=15&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        disneyplus: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=337&watch_region=US&language=${selectedLanguage}&page=${page}`,
+        appleTv: `${baseURL}/discover/movie?api_key=${API_KEY}&with_watch_providers=350&watch_region=US&language=${selectedLanguage}&page=${page}`
+      };
+
+      fetchAndDisplayMovies(urls.netflix, 'netflix-content-container');
+      fetchAndDisplayMovies(urls.marvel, 'marvel-content-container');
+      fetchAndDisplayMovies(urls.hulu, 'hulu-content-container');
+      fetchAndDisplayMovies(urls.disneyplus, 'disneyplus-content-container');
+      fetchAndDisplayMovies(urls.appleTv, 'apple-tv-content-container');
+    };
+
+    fetchMovies();
+
+    document.getElementById("load-more-netflix").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-marvel").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-hulu").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-disneyplus").addEventListener("click", () => fetchMovies());
+    document.getElementById("load-more-apple-tv").addEventListener("click", () => fetchMovies());
+  </script>
 </body>
 </html>
