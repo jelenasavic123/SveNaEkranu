@@ -917,6 +917,31 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
     }
 </script>
 
+    <script>
+    document.addEventListener('keydown', function(event) {
+        handleKeyPress(event.key); // event.key nam omogućava detekciju pritisnutih tastatura
+    });
+
+    function handleKeyPress(key) {
+        switch (key) {
+            case 'Tab':
+                alert('Tab key pressed');
+                // Dodajte funkcionalnost za tab
+                break;
+            case 'c':
+                alert('C key pressed');
+                // Dodajte funkcionalnost za c
+                break;
+            case 'f':
+                alert('F key pressed');
+                // Dodajte funkcionalnost za f
+                break;
+            default:
+                console.log('Unhandled key press:', key);
+        }
+    }
+</script>
+
 
 </body>
 </html>
