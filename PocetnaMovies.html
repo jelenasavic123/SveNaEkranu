@@ -17,13 +17,13 @@
     }
 
     h1 {
-        font-size: 30px;
-        margin: 20px 0;
+        font-size: 15px;
+        margin: 5px 0;
     }
 
     .movie-section {
         width: 100%;
-        margin-bottom: 40px;
+        margin-bottom: 4px;
     }
 
     .movie-list {
@@ -36,7 +36,7 @@
 
     .movie-item {
         position: relative;
-        width: 120px; /* Default širina */
+        width: 100px; /* Default širina */
         height: auto; /* Default visina */
         background-color: #333;
         border-radius: 10px;
@@ -65,7 +65,7 @@
         background-color: rgba(0, 0, 0, 0.6);
         padding: 5px;
         border-radius: 5px;
-        font-size: 14px;
+        font-size: 11px;
         max-width: 80%;
         word-wrap: break-word;
     }
@@ -104,12 +104,12 @@
     }
     
         .logo {
-        margin: 20px 0;
+        margin: 0px 0;
         text-align: center;
     }
 
     .logo img {
-        width: 150px;
+        width: 50px;
     }
     
 .button-container {
@@ -121,14 +121,13 @@
 .button {
     display: inline-flex;
     align-items: center;
-    padding: 10px 20px;
-    margin: 10px;
+    margin: 7px;
     border-radius: 5px;
     background-color: #333;
     color: white;
     text-decoration: none;
     justify-content: center;
-    gap: 10px;             /* Razmak između dugmadi */
+    gap: 2px;             /* Razmak između dugmadi */
 }
 
 .button img {
@@ -139,6 +138,10 @@
 
 .button:hover {
     background-color: #555;
+}
+
+.movie-item:focus {
+    outline: 3px solid red;
 }
 
 
@@ -325,6 +328,28 @@ function getStarRating(rating) {
 function capitalizeTitle(title) {
     return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const movieItems = document.querySelectorAll('.movie-item img');
+    
+    movieItems.forEach(item => {
+        item.setAttribute('tabindex', '0'); // Dodavanje tabindex za lakšu navigaciju tastaturom
+        item.addEventListener('keydown', handleKeydown);
+        item.addEventListener('focus', handleFocus); // Dodajemo fokus event za crveni okvir
+    });
+
+    function handleKeydown(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            this.click(); // Simulira klik kada se pritisne Enter ili Space
+        }
+    }
+
+    function handleFocus() {
+        movieItems.forEach(item => item.closest('.movie-item').classList.remove('focused')); // Uklanja fokus iz drugih elemenata
+        this.closest('.movie-item').classList.add('focused'); // Dodaje crveni okvir na trenutno fokusiran element
+    }
+});
+
 </script>
 
 </body>
