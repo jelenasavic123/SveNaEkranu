@@ -145,6 +145,12 @@
 }
 
 
+.movie-item.focused {
+    outline: 3px solid red; /* Crveni okvir */
+    border-radius: 4px;
+}
+
+
 </style>
 
 </head>
@@ -182,6 +188,13 @@
             Disney+
         </a>
     </div>
+
+
+<div class="movie-item">
+    <img src="..." alt="..." tabindex="0"> <!-- Slika filma -->
+    <div class="movie-title">...Naslov...</div>
+    <div class="rating">...</div>
+</div>
 
 
 
@@ -235,121 +248,134 @@
     </div>
 
    <script>
-const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
-// Konfiguracija provajdera
-const providers = [
-    { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
-    { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
-    { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
-    { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
-    { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
-    { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
-];
+        // Konfiguracija provajdera
+        const providers = [
+            { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
+            { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
+            { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
+            { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
+            { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
+            { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
+        ];
 
-// Postavljanje za svaki provajder
-providers.forEach(provider => {
-    if (provider.id === 'top-rated') {
-        initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=sr-SR`, provider.elementId, provider.loadingId);
-    } else {
-        initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
-    }
-});
+        // Postavljanje za svaki provajder
+        providers.forEach(provider => {
+            if (provider.id === 'top-rated') {
+                initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=sr-SR`, provider.elementId, provider.loadingId);
+            } else {
+                initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
+            }
+        });
 
-function initializeInfiniteScroll(apiBase, listId, loadingId) {
-    const movieList = document.getElementById(listId);
-    const loading = document.getElementById(loadingId);
-    let currentPage = 1;
-    let isLoading = false;
+        function initializeInfiniteScroll(apiBase, listId, loadingId) {
+            const movieList = document.getElementById(listId);
+            const loading = document.getElementById(loadingId);
+            let currentPage = 1;
+            let isLoading = false;
 
-    function loadMovies() {
-        if (isLoading) return;
+            function loadMovies() {
+                if (isLoading) return;
 
-        isLoading = true;
-        loading.style.display = 'block';
+                isLoading = true;
+                loading.style.display = 'block';
 
-        fetch(`${apiBase}&page=${currentPage}`)
-            .then(response => response.json())
-            .then(data => {
-                data.results.forEach(movie => {
-                    const movieItem = document.createElement('div');
-                    movieItem.classList.add('movie-item');
+                fetch(`${apiBase}&page=${currentPage}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.results.forEach(movie => {
+                            const movieItem = document.createElement('div');
+                            movieItem.classList.add('movie-item');
 
-                    const movieImage = document.createElement('img');
-                    movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                    movieImage.alt = movie.title;
+                            const movieImage = document.createElement('img');
+                            movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                            movieImage.alt = movie.title;
 
-                    const movieTitle = document.createElement('div');
-                    movieTitle.classList.add('movie-title');
-                    movieTitle.textContent = capitalizeTitle(movie.title);
+                            const movieTitle = document.createElement('div');
+                            movieTitle.classList.add('movie-title');
+                            movieTitle.textContent = capitalizeTitle(movie.title);
 
-                    const movieRating = document.createElement('div');
-                    movieRating.classList.add('rating');
-                    movieRating.innerHTML = getStarRating(movie.vote_average);
+                            const movieRating = document.createElement('div');
+                            movieRating.classList.add('rating');
+                            movieRating.innerHTML = getStarRating(movie.vote_average);
 
-                    movieItem.appendChild(movieImage);
-                    movieItem.appendChild(movieTitle);
-                    movieItem.appendChild(movieRating);
-                    movieList.appendChild(movieItem);
+                            movieItem.appendChild(movieImage);
+                            movieItem.appendChild(movieTitle);
+                            movieItem.appendChild(movieRating);
+                            movieList.appendChild(movieItem);
 
-                    movieItem.querySelector('img').addEventListener('click', () => {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                            movieItem.querySelector('img').addEventListener('click', () => {
+                                window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                            });
+                        });
+
+                        currentPage++;
+                        isLoading = false;
+                        loading.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Greška prilikom preuzimanja podataka:', error);
+                        isLoading = false;
+                        loading.style.display = 'none';
                     });
-                });
+            }
 
-                currentPage++;
-                isLoading = false;
-                loading.style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Greška prilikom preuzimanja podataka:', error);
-                isLoading = false;
-                loading.style.display = 'none';
+            // Praćenje skrola i učitavanje dodatnih filmova
+            movieList.addEventListener('scroll', () => {
+                if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
+                    loadMovies();
+                }
             });
-    }
 
-    // Praćenje skrola i učitavanje dodatnih filmova
-    movieList.addEventListener('scroll', () => {
-        if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
+            // Inicijalno učitavanje
             loadMovies();
         }
-    });
 
-    // Inicijalno učitavanje
-    loadMovies();
-}
-
-function getStarRating(rating) {
-    const fullStars = Math.floor(rating / 2);
-    const emptyStars = 5 - fullStars;
-    return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
-}
-
-function capitalizeTitle(title) {
-    return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const movieItems = document.querySelectorAll('.movie-item img');
-    
-    movieItems.forEach(item => {
-        item.setAttribute('tabindex', '0'); // Dodavanje tabindex za lakšu navigaciju tastaturom
-        item.addEventListener('keydown', handleKeydown);
-        item.addEventListener('focus', handleFocus); // Dodajemo fokus event za crveni okvir
-    });
-
-    function handleKeydown(event) {
-        if (event.key === 'Enter' || event.key === ' ') {
-            this.click(); // Simulira klik kada se pritisne Enter ili Space
+        function getStarRating(rating) {
+            const fullStars = Math.floor(rating / 2);
+            const emptyStars = 5 - fullStars;
+            return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
         }
-    }
 
-    function handleFocus() {
-        movieItems.forEach(item => item.closest('.movie-item').classList.remove('focused')); // Uklanja fokus iz drugih elemenata
-        this.closest('.movie-item').classList.add('focused'); // Dodaje crveni okvir na trenutno fokusiran element
-    }
-});
+        function capitalizeTitle(title) {
+            return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const movieItems = document.querySelectorAll('.movie-item img');
+            let currentFocusedIndex = 0;
+
+            movieItems.forEach((item, index) => {
+                item.setAttribute('tabindex', '0'); // Dodavanje tabindex za lakšu navigaciju tastaturom
+                item.addEventListener('keydown', handleKeydown);
+                item.addEventListener('focus', handleFocus); // Dodajemo fokus event za crveni okvir
+            });
+
+            function handleKeydown(event) {
+                const totalItems = movieItems.length;
+
+                if (event.key === 'ArrowRight') {
+                    currentFocusedIndex = (currentFocusedIndex + 1) % totalItems;
+                    updateFocus();
+                } else if (event.key === 'ArrowLeft') {
+                    currentFocusedIndex = (currentFocusedIndex - 1 + totalItems) % totalItems;
+                    updateFocus();
+                } else if (event.key === 'Enter' || event.key === ' ') {
+                    movieItems[currentFocusedIndex].click(); // Simulira klik kada se pritisne Enter ili Space
+                }
+            }
+
+            function handleFocus() {
+                currentFocusedIndex = Array.from(movieItems).indexOf(this); // Indeks trenutnog fokusa
+                updateFocus();
+            }
+
+            function updateFocus() {
+                movieItems.forEach(item => item.closest('.movie-item').classList.remove('focused')); // Uklanja fokus iz drugih elemenata
+                movieItems[currentFocusedIndex].closest('.movie-item').classList.add('focused'); // Dodaje crveni okvir na trenutnu selektovanu stavku
+            }
+        });
 </script>
 
 </body>
