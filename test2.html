@@ -889,88 +889,68 @@ document.getElementById("load-more-apple-tv").addEventListener("click", () => fe
   
   
   
-          const iframe = document.getElementById('videoIframe');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        fullscreenBtn.addEventListener('click', () => {
-            if (iframe.requestFullscreen) {
-                iframe.requestFullscreen(); // Za fullscreen
-            } else if (iframe.msRequestFullscreen) {
-                iframe.msRequestFullscreen(); // Za Internet Explorer
-            } else if (iframe.mozRequestFullScreen) {
-                iframe.mozRequestFullScreen(); // Za Firefox
-            } else if (iframe.webkitRequestFullscreen) {
-                iframe.webkitRequestFullscreen(); // Za Chrome i Safari
+        // Funkcija za povećanje jačine zvuka
+        function increaseVolume() {
+            const audioElement = document.querySelector('audio');
+            if (audioElement) {
+                audioElement.volume = Math.min(audioElement.volume + 0.1, 1);
+                console.log('Povećana zvučna jačina:', audioElement.volume);
             }
-        });
-        // Filmovi podaci
-        const movies = [
-            {
-                title: 'Inception',
-                year: '2010',
-                genre: 'Sci-Fi',
-                rating: '8.8',
-                poster: 'inception.jpg', // Putanja do slike
-                description: 'A skilled thief is given a chance at redemption if he can successfully perform inception on a target.'
-            },
-            {
-                title: 'The Dark Knight',
-                year: '2008',
-                genre: 'Action',
-                rating: '9.0',
-                poster: 'dark-knight.jpg',
-                description: 'Batman faces the Joker, a criminal mastermind who seeks to create chaos in Gotham.'
-            }
-            // Dodajte ostale filmove ovde...
-        ];
-
-        // Funkcija za prikazivanje filmova
-        function displayMovies(filterGenre = '') {
-            const movieList = document.getElementById('movie-list');
-            movieList.innerHTML = ''; // Čisti prethodne filmove
-
-            const filteredMovies = movies.filter(movie => !filterGenre || movie.genre === filterGenre);
-            
-            filteredMovies.forEach(movie => {
-                const movieItem = document.createElement('div');
-                movieItem.classList.add('movie-item');
-                movieItem.dataset.title = movie.title;
-
-                movieItem.innerHTML = `
-                    <img src="${movie.poster}" alt="${movie.title} Poster">
-                    <h2>${movie.title}</h2>
-                    <p>(${movie.year})</p>
-                    <p>Rating: ${movie.rating}</p>
-                `;
-
-                movieItem.addEventListener('click', () => showModal(movie));
-                movieList.appendChild(movieItem);
-            });
         }
 
-        // Funkcija za prikazivanje modal-a
-        function showModal(movie) {
-            const modal = document.getElementById('movie-modal');
-            document.getElementById('modal-film-title').textContent = movie.title;
-            document.getElementById('modal-film-description').textContent = movie.description;
-            document.getElementById('modal-film-poster').src = movie.poster;
-
-            modal.style.display = 'flex';
+        // Funkcija za smanjenje jačine zvuka
+        function decreaseVolume() {
+            const audioElement = document.querySelector('audio');
+            if (audioElement) {
+                audioElement.volume = Math.max(audioElement.volume - 0.1, 0);
+                console.log('Smanjena zvučna jačina:', audioElement.volume);
+            }
         }
 
-        // Blokiraj modal kada klikneš na close
-        document.getElementById('close-modal').addEventListener('click', () => {
-            document.getElementById('movie-modal').style.display = 'none';
+        // Event listener za daljinski upravljač
+        function handleIRInput(code) {
+            switch (code) {
+                case 'KEY_VOLUMEUP':
+                    increaseVolume();
+                    break;
+                case 'KEY_VOLUMEDOWN':
+                    decreaseVolume();
+                    break;
+                default:
+                    console.log('Nepoznata komanda:', code);
+            }
+        }
+
+        // IR daljinski kontroler
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowUp') {
+                increaseVolume();
+            } else if (event.key === 'ArrowDown') {
+                decreaseVolume();
+            }
         });
 
-        // Filtriranje po žanru
-        document.getElementById('genreSelect').addEventListener('change', function() {
-            const selectedGenre = this.value;
-            displayMovies(selectedGenre);
-        });
+        // Dodajte podršku za IR daljinski
+        function initializeIR() {
+            // Provera da li je IR daljinski povezan
+            if (typeof require !== 'undefined') {
+                const { execSync } = require('child_process');
+                const irKeytable = execSync('ir-keytable').toString(); // Provera IR kontrole
+                console.log('IR keytable:', irKeytable);
+            } else {
+                console.log('IR daljinski nije detektovan.');
+            }
+        }
 
-        // Prikaz svih filmova na učitavanje
-        displayMovies();
+        initializeIR();
+
+        // Add event listener for IR remote
+        document.addEventListener('keydown', function(event) {
+            if (event.key.match(/^KEY_/)) {  // Regex to check IR keys
+                handleIRInput(event.key);
+            }
+        });
     </script>
 </body>
 </html>
