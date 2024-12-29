@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+    </div>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,35 +18,21 @@
             align-items: center;
         }
 
-        h1 {
-            font-size: 20px;
-            margin: 20px;
-        }
-
-        .filters-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 90%; /* Širina kontejnera za filtriranje */
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-
         .filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px; /* Razmak između dugmadi */
-            flex: 1; /* Svaka strana zauzima jednak prostor */
+            gap: 5px;
             justify-content: center;
+            margin: 2px 0;
         }
 
         .filter-button {
-            padding: 6px 10px; /* Smanjen padding za dugmad */
-            font-size: 12px; /* Smanjen font */
+            padding: 8px 10px;
+            font-size: 8px;
             color: white;
             background-color: #e50914;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -52,14 +41,10 @@
             background-color: #b20610;
         }
 
-        .filter-button:focus {
-            outline: 2px solid white; /* Fokus vidljiv za TV navigaciju */
-        }
-
-        .movie-list {
+       .movie-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px; /* Više prostora između elemenata */
+            gap: 20px;
             justify-content: center;
             padding: 20px 0;
             width: 100%;
@@ -67,8 +52,8 @@
 
         .movie-item {
             position: relative;
-            width: 180px; /* Smanjena širina za TV ekran */
-            height: 270px; /* Smanjena visina */
+            width: 200px;
+            height: 300px;
             background-color: #333;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -91,8 +76,18 @@
             bottom: 10px;
             left: 10px;
             color: white;
-            font-size: 14px; /* Smanjen font */
+            font-size: 16px;
             background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .movie-item .genre {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 11px;
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 5px;
             border-radius: 5px;
         }
@@ -102,7 +97,7 @@
             top: 10px;
             right: 10px;
             color: white;
-            font-size: 12px; /* Smanjen font */
+            font-size: 7px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 5px;
             border-radius: 5px;
@@ -114,191 +109,212 @@
             font-size: 24px;
             margin: 20px 0;
         }
-
-        .logo {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .logo img {
-            width: 150px;
-        }
         
-        .filter-button:focus,
-        .movie-item:focus {
-            outline: 2px solid #e50914;
-            outline-offset: 3px;
-            transform: scale(1.1); /* Uvećanje fokusa */
-        }
+                        .logo {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .logo img {
+        width: 150px;
+    }
+    
     </style>
 </head>
 <body>
 
-<div class="logo">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-</div>
+    <div class="filters" id="year-filters"></div>
+    <div class="filters" id="genre-filters"></div>
 
-<div class="filters-container">
-    <div class="filters" id="year-filters"></div> <!-- Leva strana - Godine -->
-    <div class="filters" id="genre-filters"></div> <!-- Desna strana - Žanrovi -->
-</div>
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
-<div class="movie-list" id="movie-list"></div>
-<div id="loading" class="loading" style="display: none;">Učitavanje...</div>
+    <script>
+     const apiKey = '2701858e9bccab54d4d0e4931420a739';
+const baseUrl = `https://api.themoviedb.org/3/`;
+const netflixProviderId = 8; // Netflix ID
 
-<script>
-    const apiKey = '2701858e9bccab54d4d0e4931420a739';
-    const baseUrl = `https://api.themoviedb.org/3/`;
-    const netflixProviderId = 8; // Netflix ID
-    
-    let currentPage = 1;
-    let currentFilter = { type: 'popular', value: '' };
-    let isLoading = false;
+let currentPage = 1;
+let currentFilter = { type: 'popular', value: '' };
+let isLoading = false;
 
-    const yearFilters = document.getElementById('year-filters');
-    const genreFilters = document.getElementById('genre-filters');
+const movieList = document.getElementById('movie-list');
+const yearFilters = document.getElementById('year-filters');
+const genreFilters = document.getElementById('genre-filters');
 
-    // Funkcija za konverziju ćirilice u latinicu
-    function toLatin(text) {
-        const cyrillicToLatinMap = {
-            А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Ђ: 'Đ', Е: 'E', Ж: 'Ž',
-            З: 'Z', И: 'I', Ј: 'J', К: 'K', Л: 'L', Љ: 'Lj', М: 'M', Н: 'N',
-            Њ: 'Nj', О: 'O', П: 'P', Р: 'R', С: 'S', Т: 'T', Ћ: 'Ć', У: 'U',
-            Ф: 'F', Х: 'H', Ц: 'C', Ч: 'Č', Џ: 'Dž', Ш: 'Š', а: 'a', б: 'b',
-            в: 'v', г: 'g', д: 'd', ђ: 'đ', е: 'e', ж: 'ž', з: 'z', и: 'i',
-            ј: 'j', к: 'k', л: 'l', љ: 'lj', м: 'm', н: 'n', њ: 'nj', о: 'o',
-            п: 'p', р: 'r', с: 's', т: 't', ћ: 'ć', у: 'u', ф: 'f', х: 'h',
-            ц: 'c', ч: 'č', џ: 'dž', ш: 'š'
-        };
-        return text.replace(/[А-Яа-яЀ-ӿ]/g, char => cyrillicToLatinMap[char] || char);
-    }
+// Generišemo dugmad za godine
+for (let year = 2024; year >= 2000; year--) {
+    const button = document.createElement('button');
+    button.classList.add('filter-button');
+    button.textContent = year;
+    button.onclick = () => fetchFilteredMovies('year', year);
+    yearFilters.appendChild(button);
+}
 
-    // Generišemo dugmad za godine
-    for (let year = 2024; year >= 2000; year--) {
-        const button = document.createElement('button');
-        button.classList.add('filter-button');
-        button.textContent = year;
-        button.onclick = () => fetchFilteredMovies('year', year);
-        yearFilters.appendChild(button);
-    }
-
-    // Učitavanje i prikazivanje žanrova
-    fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Greška u preuzimanju žanrova: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            data.genres.forEach(genre => {
-                const button = document.createElement('button');
-                button.classList.add('filter-button');
-                button.textContent = toLatin(genre.name);
-                button.onclick = () => fetchFilteredMovies('genre', genre.id);
-                genreFilters.appendChild(button);
-            });
-        })
-        .catch(error => console.error('Greška pri učitavanju žanrova:', error));
-
-    // Funkcija za učitavanje filmova
-    function fetchFilteredMovies(type, value) {
-        currentPage = 1;
-        currentFilter = { type, value };
-        document.getElementById('movie-list').innerHTML = '';
-        fetchMovies();
-    }
-
-    // Fetch movies by filter
-    function fetchMovies() {
-        if (isLoading) return;
-
-        isLoading = true;
-        document.getElementById('loading').style.display = 'block';
-
-        let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${netflixProviderId}&watch_region=RS&page=${currentPage}`;
-
-        if (currentFilter.type === 'year') {
-            url += `&primary_release_year=${currentFilter.value}`;
-        } else if (currentFilter.type === 'genre') {
-            url += `&with_genres=${currentFilter.value}`;
+// Generišemo dugmad za žanrove
+fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Greška u preuzimanju žanrova: ${response.status}`);
         }
+        return response.json();
+    })
+    .then(data => {
+        data.genres.forEach(genre => {
+            const button = document.createElement('button');
+            button.classList.add('filter-button');
+            button.textContent = genre.name;
+            button.onclick = () => fetchFilteredMovies('genre', genre.id);
+            genreFilters.appendChild(button);
+        });
+    })
+    .catch(error => console.error('Greška pri učitavanju žanrova:', error));
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const movies = data.results;
-                const movieList = document.getElementById('movie-list');
+// Funkcija za učitavanje filmova
+function fetchFilteredMovies(type, value) {
+    currentPage = 1;
+    currentFilter = { type, value };
+    movieList.innerHTML = '';
+    fetchMovies();
+}
 
-                movies.forEach(movie => {
-                    const movieItem = document.createElement('div');
-                    movieItem.classList.add('movie-item');
+// Fetch movies by filter
+function fetchMovies() {
+    if (isLoading) return;
 
-                    const movieImage = document.createElement('img');
-                    movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                    movieImage.alt = movie.title;
+    isLoading = true;
+    document.getElementById('loading').style.display = 'block';
 
-                    const movieTitle = document.createElement('h3');
-                    movieTitle.textContent = toLatin(movie.title);
+    let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${netflixProviderId}&watch_region=US&page=${currentPage}`;
 
-                    const movieRating = document.createElement('div');
-                    movieRating.classList.add('rating');
-                    movieRating.textContent = `TMDB: ${movie.vote_average}`;
 
-                    movieItem.appendChild(movieImage);
-                    movieItem.appendChild(movieTitle);
-                    movieItem.appendChild(movieRating);
-                    movieList.appendChild(movieItem);
+    if (currentFilter.type === 'year') {
+        url += `&primary_release_year=${currentFilter.value}`;
+    } else if (currentFilter.type === 'genre') {
+        url += `&with_genres=${currentFilter.value}`;
+    }
 
-                    // Navigate to URL in the same page on image click
-                    movieImage.addEventListener('click', () => {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                    });
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const movies = data.results;
 
-                    // Open URL in a new tab on title click
-                    movieTitle.addEventListener('click', () => {
-                        window.open(`https://vidsrc.vip/embed/movie/${movie.id}`, '_blank');
-                    });
+            movies.forEach(movie => {
+                const movieItem = document.createElement('div');
+                movieItem.classList.add('movie-item');
+                movieItem.setAttribute('tabindex', 0); // Dodaje fokus za navigaciju tastaturom
+
+                const movieImage = document.createElement('img');
+                movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                movieImage.alt = movie.title;
+
+                const movieTitle = document.createElement('h3');
+                movieTitle.textContent = movie.title;
+
+                const movieGenre = document.createElement('div');
+                movieGenre.classList.add('genre');
+                movieGenre.textContent = currentFilter.type === 'genre' ? '' : ''; // Dodaje žanr ako je potrebno
+
+                const movieRating = document.createElement('div');
+                movieRating.classList.add('rating');
+                movieRating.textContent = `TMDB: ${movie.vote_average}`;
+
+                movieItem.appendChild(movieImage);
+                movieItem.appendChild(movieTitle);
+                movieItem.appendChild(movieGenre);
+                movieItem.appendChild(movieRating);
+
+                // Dodavanje eventa na klik na film
+                movieItem.addEventListener('click', () => {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                 });
 
-                currentPage++;
-                isLoading = false;
-                document.getElementById('loading').style.display = 'none';
-            })
-            .catch(error => {
-                console.error('Greška pri učitavanju filmova:', error);
-                isLoading = false;
-                document.getElementById('loading').style.display = 'none';
+                movieList.appendChild(movieItem);
             });
+
+            currentPage++;
+            isLoading = false;
+            document.getElementById('loading').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Greška pri učitavanju filmova:', error);
+            isLoading = false;
+            document.getElementById('loading').style.display = 'none';
+        });
+}
+
+// Funkcija za navigaciju kroz filmove
+function navigateMovies(direction) {
+    const movieItems = document.querySelectorAll('.movie-item');
+    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+
+    if (currentIndex === -1) {
+        currentIndex = 0; // Početno selektovan prvi film
+        movieItems[currentIndex].classList.add('selected');
+        movieItems[currentIndex].focus(); // Fokus na prvi film
     }
 
-    // Infinite scroll
-    window.addEventListener('scroll', () => {
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading) {
-            fetchMovies();
-        }
-    });
+    let newIndex = -1;
 
-    // Početno učitavanje filmova
-    fetchMovies();
-    
-    // Funkcija za navigaciju pomoću strelica
-    document.addEventListener('keydown', (event) => {
-        const focusableButtons = Array.from(document.querySelectorAll('.filter-button, .movie-item'));
-        let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
+    switch (direction) {
+        case 'left': // Levo
+            if (currentIndex % 1 > 0) { // Ako nije prvi film u redu
+                newIndex = currentIndex - 1;
+            }
+            break;
+        case 'right': // Desno
+            if ((currentIndex + 1) % 1 !== 0) { // Ako nije poslednji film u redu
+                newIndex = currentIndex + 1;
+            }
+            break;
+        case 'up': // Gore
+            if (currentIndex >= 1) { // Ako indeks nije na prvoj grupi redova
+                newIndex = currentIndex - 1; // Idemo na gore
+            }
+            break;
+        case 'down': // Dole
+            if (currentIndex + 1 < movieItems.length) { // Ako postoji sledeći red
+                newIndex = currentIndex + 1; // Idemo na dole
+            }
+            break;
+    }
 
-        if (event.key === 'ArrowRight') {
-            focusedIndex = (focusedIndex + 1) % focusableButtons.length;
-        } else if (event.key === 'ArrowLeft') {
-            focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length;
-        }
+    if (newIndex !== -1) {
+        movieItems[currentIndex].classList.remove('selected'); // Ukloni selektovan film
+        movieItems[newIndex].classList.add('selected'); // Dodaj novi selektovani film
+        movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
+    }
+}
 
-        if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
-            focusableButtons[focusedIndex].focus();
-        }
-    });
-</script>
+// Event za tastaturu
+document.addEventListener('keydown', event => {
+    switch (event.key) {
+        case 'ArrowUp':
+            navigateMovies('up');
+            break;
+        case 'ArrowDown':
+            navigateMovies('down');
+            break;
+        case 'ArrowLeft':
+            navigateMovies('left');
+            break;
+        case 'ArrowRight':
+            navigateMovies('right');
+            break;
+    }
+});
+
+// Event za scroll
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+        fetchMovies();
+    }
+});
+
+// Učitavanje početnih filmova
+fetchMovies();
+
+    </script>
 
 </body>
 </html>
