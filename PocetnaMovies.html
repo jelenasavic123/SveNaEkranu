@@ -151,6 +151,11 @@
 }
 
 
+.movie-item.selected {
+    outline: 3px solid red; /* Crveni okvir za aktivni film */
+    border-radius: 4px; /* Dodaje zaobljenje ivica */
+}
+
 </style>
 
 </head>
@@ -359,6 +364,7 @@
         
         
         // Funkcija za navigaciju kroz filmove
+// Funkcija za navigaciju kroz filmove
 function navigateMovies(direction) {
     const movieItems = document.querySelectorAll('.movie-item');
     let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
@@ -373,23 +379,13 @@ function navigateMovies(direction) {
 
     switch (direction) {
         case 'left': // Levo
-            if (currentIndex % 1 > 0) { // Ako nije prvi film u redu
+            if (currentIndex > 0) { // Ako nije prvi film u redu
                 newIndex = currentIndex - 1;
             }
             break;
         case 'right': // Desno
-            if ((currentIndex + 1) % 1 !== 0) { // Ako nije poslednji film u redu
+            if (currentIndex < movieItems.length - 1) { // Ako nije poslednji film u redu
                 newIndex = currentIndex + 1;
-            }
-            break;
-        case 'up': // Gore
-            if (currentIndex >= 1) { // Ako indeks nije na prvoj grupi redova
-                newIndex = currentIndex - 1; // Idemo na gore
-            }
-            break;
-        case 'down': // Dole
-            if (currentIndex + 1 < movieItems.length) { // Ako postoji sledeći red
-                newIndex = currentIndex + 1; // Idemo na dole
             }
             break;
     }
@@ -404,12 +400,6 @@ function navigateMovies(direction) {
 // Event za tastaturu
 document.addEventListener('keydown', event => {
     switch (event.key) {
-        case 'ArrowUp':
-            navigateMovies('up');
-            break;
-        case 'ArrowDown':
-            navigateMovies('down');
-            break;
         case 'ArrowLeft':
             navigateMovies('left');
             break;
@@ -418,6 +408,7 @@ document.addEventListener('keydown', event => {
             break;
     }
 });
+
 
     </script>
 </body>
