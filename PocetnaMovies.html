@@ -3,413 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popularni Filmovi</title>
+    <title>Popularni Netflix Filmovi</title>
     <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: white;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
 
-    h1 {
-        font-size: 15px;
-        margin: 5px 0;
-    }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
 
-    .movie-section {
-        width: 100%;
-        margin-bottom: 4px;
-    }
+        .movie-list {
+            display: flex;
+            overflow-x: scroll;
+            gap: 20px;
+            padding: 20px 0;
+            scroll-snap-type: x mandatory;
+            width: 100%;
+            justify-content: flex-start;
+        }
 
-    .movie-list {
-        display: flex;
-        overflow-x: scroll;
-        gap: 20px;
-        padding: 20px 0;
-        scroll-snap-type: x mandatory;
-    }
+        .movie-item {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            scroll-snap-align: start;
+        }
 
-    .movie-item {
-        position: relative;
-        width: 100px; /* Default širina */
-        height: auto; /* Default visina */
-        background-color: #333;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-        scroll-snap-align: start;
-    }
+        .movie-item:hover {
+            transform: scale(1.05);
+        }
 
-    .movie-item:hover {
-        transform: scale(1.05);
-    }
+        .movie-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
 
-    .movie-item img {
-        width: 100%;
-        height: 100%;
-        border-radius: 10px;
-        object-fit: cover;
-    }
+        .movie-item h3 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
 
-    .movie-title {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 5px;
-        border-radius: 5px;
-        font-size: 11px;
-        max-width: 80%;
-        word-wrap: break-word;
-    }
+        .loading {
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 20px 0;
+        }
 
-    .rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: gold;
-        font-size: 7px;
-        font-weight: bold;
-    }
+        .movie-item.focused {
+            outline: 3px solid red; /* Crveni okvir */
+            border-radius: 4px;
+        }
 
-   /* Mali televizori (720p) */
-@media (min-width: 1280px) and (max-width: 1919px) {
-    .movie-item {
-        width: 126px; /* 180px - 30% */
-        height: 189px; /* 270px - 30% */
-    }
-}
-
-/* Veliki televizori (1080p) */
-@media (min-width: 1920px) and (max-width: 3839px) {
-    .movie-item {
-        width: 175px; /* 250px - 30% */
-        height: 262.5px; /* 375px - 30% */
-    }
-}
-
-/* Ultra veliki televizori (4K i veći) */
-@media (min-width: 3840px) {
-    .movie-item {
-        width: 210px; /* 300px - 30% */
-        height: 315px; /* 450px - 30% */
-    }
-}
-
-        .logo {
-        margin: 0px 0;
-        text-align: center;
-    }
-
-    .logo img {
-        width: 50px;
-    }
-    
-.button-container {
-    display: flex;
-    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
-    justify-content: space-around; /* Razmak između dugmadi */
-}
-
-.button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
-}
-
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-.button:hover {
-    background-color: #555;
-}
-
-.movie-item:focus {
-    outline: 3px solid red;
-}
-
-
-.movie-item.focused {
-    outline: 3px solid red; /* Crveni okvir */
-    border-radius: 4px;
-}
-
-
-.movie-item.selected {
-    outline: 3px solid red; /* Crveni okvir za aktivni film */
-    border-radius: 4px; /* Dodaje zaobljenje ivica */
-}
-
-</style>
-
+        .movie-item.selected {
+            outline: 3px solid red; /* Crveni okvir za aktivni film */
+            border-radius: 4px; /* Dodaje zaobljenje ivica */
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Ostatak HTML koda vašeg dokumenta -->
 
-    <div class="button-container">
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-            Netflix
-        </a>
-
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-            Marvel
-        </a>
-
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-            Hulu
-        </a>
-
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
-            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-            Apple TV+
-        </a>
-
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-            Prime Video
-        </a>
-
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-            Disney+
-        </a>
-    </div>
-
-    <div class="movie-item">
-        <img src="..." alt="..." tabindex="0"> <!-- Slika filma -->
-        <div class="movie-title">...Naslov...</div>
-        <div class="rating">...</div>
-    </div>
-
-    <div class="movie-section">
-        <h1>Najbolje Ocenjeni Filmovi</h1>
-        <div class="movie-list" id="top-rated-list"></div>
-        <div id="top-rated-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
-
-    <div class="movie-section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-        </div>
-        <div class="movie-list" id="netflix-list"></div>
-        <div id="netflix-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
-
-    <div class="movie-section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Amazon Prime Video Logo">
-        </div>
-        <div class="movie-list" id="prime-list"></div>
-        <div id="prime-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
-
-    <div class="movie-section">
-        <div class="logo">
-            <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Apple TV+ Logo">
-        </div>
-        <div class="movie-list" id="apple-list"></div>
-        <div id="apple-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
-
-    <div class="movie-section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Hulu_2019.svg/2560px-Hulu_2019.svg.png" alt="Hulu Logo">
-        </div>
-        <div class="movie-list" id="hulu-list"></div>
-        <div id="hulu-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
-
-    <div class="movie-section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1280px-Disney%2B_logo.svg.png" alt="Disney+ Logo">
-        </div>
-        <div class="movie-list" id="disney-list"></div>
-        <div id="disney-loading" class="loading" style="display: none;">Učitavanje...</div>
-    </div>
+    <h1>Popularni Netflix Filmovi</h1>
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const apiBase = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=sr-SR`;
 
-        // Konfiguracija provajdera
-        const providers = [
-            { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
-            { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
-            { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
-            { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
-            { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
-            { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
-        ];
+        let currentPage = 1;
+        let isLoading = false;
 
-        // Postavljanje za svaki provajder
-        providers.forEach(provider => {
-            if (provider.id === 'top-rated') {
-                initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=sr-SR`, provider.elementId, provider.loadingId);
-            } else {
-                initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
-            }
-        });
+        // Funkcija za prikazivanje filmova
+        function fetchMovies(page) {
+            if (isLoading) return; // Prevent multiple requests at the same time
 
-        function initializeInfiniteScroll(apiBase, listId, loadingId) {
-            const movieList = document.getElementById(listId);
-            const loading = document.getElementById(loadingId);
-            let currentPage = 1;
-            let isLoading = false;
+            isLoading = true;
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
 
-            function loadMovies() {
-                if (isLoading) return;
+            fetch(`${apiBase}&page=${currentPage}`)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results;
+                    const movieList = document.getElementById('movie-list');
 
-                isLoading = true;
-                loading.style.display = 'block';
+                    // Loop through the movies and add them to the list
+                    movies.forEach(movie => {
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+                        movieItem.setAttribute('data-id', movie.id); // Dodano data-id atribut
 
-                fetch(`${apiBase}&page=${currentPage}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.results.forEach(movie => {
-                            const movieItem = document.createElement('div');
-                            movieItem.classList.add('movie-item');
+                        const movieImage = document.createElement('img');
+                        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                        movieImage.alt = movie.title;
 
-                            const movieImage = document.createElement('img');
-                            movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                            movieImage.alt = movie.title;
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = capitalizeTitle(movie.title);
 
-                            const movieTitle = document.createElement('div');
-                            movieTitle.classList.add('movie-title');
-                            movieTitle.textContent = capitalizeTitle(movie.title);
+                        movieItem.appendChild(movieImage);
+                        movieItem.appendChild(movieTitle);
+                        movieList.appendChild(movieItem);
 
-                            const movieRating = document.createElement('div');
-                            movieRating.classList.add('rating');
-                            movieRating.innerHTML = getStarRating(movie.vote_average);
-
-                            movieItem.appendChild(movieImage);
-                            movieItem.appendChild(movieTitle);
-                            movieItem.appendChild(movieRating);
-                            movieList.appendChild(movieItem);
-
-                            movieItem.querySelector('img').addEventListener('click', () => {
-                                window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                            });
+                        movieItem.addEventListener('click', () => {
+                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                         });
-
-                        currentPage++;
-                        isLoading = false;
-                        loading.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Greška prilikom preuzimanja podataka:', error);
-                        isLoading = false;
-                        loading.style.display = 'none';
                     });
-            }
 
-            // Praćenje skrola i učitavanje dodatnih filmova
-            movieList.addEventListener('scroll', () => {
-                if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
-                    loadMovies();
-                }
-            });
-
-            // Inicijalno učitavanje
-            loadMovies();
-        }
-
-        function getStarRating(rating) {
-            const fullStars = Math.floor(rating / 2);
-            const emptyStars = 5 - fullStars;
-            return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
-        }
-
-        function capitalizeTitle(title) {
-            return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const movieItems = document.querySelectorAll('.movie-item img');
-            let currentFocusedIndex = 0;
-
-            movieItems.forEach((item, index) => {
-                item.setAttribute('tabindex', '0'); // Omogućavanje fokusa na slike
-                item.addEventListener('keydown', (event) => {
-                    if (event.key === 'ArrowRight' && currentFocusedIndex < movieItems.length - 1) {
-                        movieItems[currentFocusedIndex + 4].focus();
-                        currentFocusedIndex++;
-                    } else if (event.key === 'ArrowLeft' && currentFocusedIndex > 0) {
-                        movieItems[currentFocusedIndex - 2].focus();
-                        currentFocusedIndex--;
-                    }
+                    currentPage++;
+                    isLoading = false;
+                    loading.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Greška prilikom preuzimanja podataka:', error);
+                    isLoading = false;
+                    loading.style.display = 'none';
                 });
-            });
+        }
 
-            movieItems[currentFocusedIndex].focus(); // Postavljanje fokusa na prvu sliku
-        });
-        
-        
+        // Utility funkcije
+        function capitalizeTitle(title) {
+            return title.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        // Initial fetch
+        fetchMovies(currentPage);
+
         // Funkcija za navigaciju kroz filmove
-// Funkcija za navigaciju kroz filmove
-function navigateMovies(direction) {
-    const movieItems = document.querySelectorAll('.movie-item');
-    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+        function navigateMovies(direction) {
+            const movieItems = document.querySelectorAll('.movie-item');
+            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
 
-    if (currentIndex === -1) {
-        currentIndex = 0; // Početno selektovan prvi film
-        movieItems[currentIndex].classList.add('selected');
-        movieItems[currentIndex].focus(); // Fokus na prvi film
-    }
-
-    let newIndex = -1;
-
-    switch (direction) {
-        case 'left': // Levo
-            if (currentIndex > 0) { // Ako nije prvi film u redu
-                newIndex = currentIndex - 1;
+            if (currentIndex === -1) {
+                currentIndex = 0; // Početno selektovan prvi film
+                movieItems[currentIndex].classList.add('selected', 'focused'); // Dodavanje klasi za selektovani i fokusirani film
+                movieItems[currentIndex].focus(); // Fokus na prvi film
             }
-            break;
-        case 'right': // Desno
-            if (currentIndex < movieItems.length - 1) { // Ako nije poslednji film u redu
-                newIndex = currentIndex + 1;
+
+            let newIndex = -1;
+
+            switch (direction) {
+                case 'left': // Levo
+                    if (currentIndex > 0) { // Ako nije prvi film
+                        newIndex = currentIndex - 1;
+                    }
+                    break;
+                case 'right': // Desno
+                    if (currentIndex < movieItems.length - 1) { // Ako nije poslednji film
+                        newIndex = currentIndex + 1;
+                    }
+                    break;
+                case 'enter': // Enter
+                    if (currentIndex !== -1) {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`; // Klik na selektovani film
+                    }
+                    break;
             }
-            break;
-    }
 
-    if (newIndex !== -1) {
-        movieItems[currentIndex].classList.remove('selected'); // Ukloni selektovan film
-        movieItems[newIndex].classList.add('selected'); // Dodaj novi selektovani film
-        movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
-    }
-}
+            if (newIndex !== -1) {
+                movieItems[currentIndex].classList.remove('selected', 'focused'); // Ukloni selekciju iz starog filma
+                movieItems[newIndex].classList.add('selected', 'focused'); // Dodaj novi selektovani film
+                movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
+            } else {
+                movieItems[currentIndex].classList.remove('selected', 'focused'); // Ukloni selekciju iz starog filma
+            }
+        }
 
-// Event za tastaturu
-document.addEventListener('keydown', event => {
-    switch (event.key) {
-        case 'ArrowLeft':
-            navigateMovies('left');
-            break;
-        case 'ArrowRight':
-            navigateMovies('right');
-            break;
-    }
-});
-
-
+        // Event za tastaturu
+        document.addEventListener('keydown', event => {
+            switch (event.key) {
+                case 'ArrowLeft':
+                    navigateMovies('left');
+                    break;
+                case 'ArrowRight':
+                    navigateMovies('right');
+                    break;
+                case 'Enter': // Enter
+                    navigateMovies('enter');
+                    break;
+            }
+        });
     </script>
+
 </body>
 </html>
