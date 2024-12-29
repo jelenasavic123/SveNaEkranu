@@ -13,12 +13,13 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-
+            align-items: center;
+            overflow: hidden;
         }
 
         h1 {
-            font-size:6px;
-            margin-bottom: 2px;
+            font-size: 36px;
+            margin-bottom: 20px;
         }
 
         .section {
@@ -27,7 +28,7 @@
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 24px;
             margin: 20px 0;
             text-align: left;
             width: 100%;
@@ -45,8 +46,8 @@
 
         .movie-item {
             position: relative;
-            width: 120px;
-            height: auto;
+            width: 200px;
+            height: 300px;
             background-color: #333;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -67,7 +68,7 @@
             bottom: 10px;
             left: 10px;
             color: white;
-            font-size: 10px;
+            font-size: 18px;
             background-color: rgba(0, 0, 0, 0.5);
             padding: 5px;
             border-radius: 5px;
@@ -78,17 +79,22 @@
             border-radius: 10px;
         }
         
-                .logo {
-        margin: 0px 0;
-        text-align: center;
-    }
+        
+        .button img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
 
-    .logo img {
-        width: 50px;
-    }
-    
-   
-    
+.button:hover {
+    background-color: #555;
+}
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
+    justify-content: space-around; /* Razmak između dugmadi */
+}
 
 .button {
     display: inline-flex;
@@ -100,16 +106,6 @@
     text-decoration: none;
     justify-content: center;
     gap: 2px;             /* Razmak između dugmadi */
-}
-
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-.button:hover {
-    background-color: #555;
 }
     </style>
 </head>
@@ -147,100 +143,78 @@
         </a>
     </div>
 
+    <h1>Popularni Filmovi</h1>
 
- <div class="section">
-    <div class="section-title">Top Rated</div>
-    <div class="movie-list" id="top-rated-list"></div>
-</div>
     <div class="section">
- <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-        </div>
+        <div class="section-title">Netflix</div>
         <div class="movie-list" id="netflix-list"></div>
     </div>
     <div class="section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1280px-Disney%2B_logo.svg.png" alt="Disney+ Logo">
-        </div>
+        <div class="section-title">Disney+</div>
         <div class="movie-list" id="disney-list"></div>
     </div>
     <div class="section">
-        <div class="logo">
-            <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Apple TV+ Logo">
-        </div>
+        <div class="section-title">Marvel Studios</div>
+        <div class="movie-list" id="marvel-list"></div>
+    </div>
+    <div class="section">
+        <div class="section-title">Apple TV+</div>
         <div class="movie-list" id="apple-tv-list"></div>
     </div>
     <div class="section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Hulu_2019.svg/2560px-Hulu_2019.svg.png" alt="Hulu Logo">
-        </div>
+        <div class="section-title">Hulu</div>
         <div class="movie-list" id="hulu-list"></div>
     </div>
     <div class="section">
-<div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Amazon Prime Video Logo">
-        </div>
+        <div class="section-title">Amazon Prime Video</div>
         <div class="movie-list" id="prime-list"></div>
     </div>
-
+    <div class="section">
+        <div class="section-title">HBO Max</div>
+        <div class="movie-list" id="hbo-max-list"></div>
+    </div>
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
         // Funkcija za preuzimanje filmova
-function fetchMovies(listId, serviceId) {
-    const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=US`;
+        function fetchMovies(listId, serviceId) {
+            const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=RS`;
 
-    fetch(apiBase)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('API greška: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const movies = data.results;
-            const movieList = document.getElementById(listId);
+            fetch(apiBase)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results;
+                    const movieList = document.getElementById(listId);
 
-            // Provera da li je lista validna
-            if (!movieList) {
-                console.error(`Element s ID ${listId} nije pronađen.`);
-                return;
-            }
+                    movies.forEach(movie => {
+                        const movieItem = document.createElement('div');
+                        movieItem.classList.add('movie-item');
+                        movieItem.setAttribute('data-id', movie.id);
 
-            movies.forEach(movie => {
-                const movieItem = document.createElement('div');
-                movieItem.classList.add('movie-item');
-                movieItem.setAttribute('data-id', movie.id);
+                        const movieImage = document.createElement('img');
+                        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                        movieImage.alt = movie.title;
 
-                const movieImage = document.createElement('img');
-                movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                movieImage.alt = movie.title;
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = movie.title;
 
-                const movieTitle = document.createElement('h3');
-                movieTitle.textContent = movie.title;
-
-                movieItem.appendChild(movieImage);
-                movieItem.appendChild(movieTitle);
-                movieList.appendChild(movieItem);
-            });
-        })
-        .catch(error => {
-            console.error('Greška prilikom preuzimanja filmova:', error);
-        });
-}
-
+                        movieItem.appendChild(movieImage);
+                        movieItem.appendChild(movieTitle);
+                        movieList.appendChild(movieItem);
+                    });
+                })
+                .catch(error => console.error('Greška prilikom preuzimanja filmova:', error));
+        }
 
         // Poziv funkcija za svaki streaming servis
-         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
         fetchMovies('netflix-list', 8);      // Netflix ID 8
         fetchMovies('disney-list', 337);     // Disney+ ID 337
-        fetchMovies('top-rated', );
-        fetchMovies('apple-tv-list', 10);   // Apple TV+ ID 213
+        fetchMovies('marvel-list', 420);     // Marvel ID 420
+        fetchMovies('apple-tv-list', 213);   // Apple TV+ ID 213
         fetchMovies('hulu-list', 15);        // Hulu ID 15
         fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
-        fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
-
+        fetchMovies('hbo-max-list', 49);     // HBO Max ID 49
 
         // Funkcija za centriranje selektovanog elementa
         function centerSelectedItem(selectedItem, container) {
