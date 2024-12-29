@@ -275,12 +275,7 @@
         // Učitavanje početnih filmova
         fetchMovies();
         
-        // Event za scroll
-window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-        fetchMovies();
-    }
-});
+
 
 
 
