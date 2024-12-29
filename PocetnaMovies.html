@@ -74,61 +74,90 @@
     justify-content: space-around; /* Razmak između dugmadi */
 }
 
-.button {
-    display: inline-flex;
+.navbar {
+    display: flex;
+    justify-content: space-around;
     align-items: center;
-    margin: 7px;
-    border-radius: 5px;
     background-color: #333;
-    color: white;
+    padding: 1rem;
+}
+
+.navbar-list {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-item {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-link {
     text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.button img {
+.navbar-link img {
     width: 30px;
-    height: 30px;
-    margin-right: 10px;
+    height: auto;
 }
 
-.button:hover {
-    background-color: #555;
-}
     </style>
 </head>
 <body>
-<div class="button-container">
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-            Netflix
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-            Marvel
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-            Hulu
-        </a>
+<nav class="navbar">
+    <ul class="navbar-list">
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="navbar-link">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+                Netflix
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="navbar-link">
+                <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
+                Marvel
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="navbar-link">
+                <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
+                Hulu
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="navbar-link">
+                <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
+                Apple TV+
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="navbar-link">
+                <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
+                Prime Video
+            </a>
+        </li>
+        <li class="navbar-item">
+            <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="navbar-link">
+                <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
+                Disney+
+            </a>
+        </li>
+    </ul>
+</nav>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
-            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-            Apple TV+
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-            Prime Video
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-            Disney+
-        </a>
-    </div>
+
+
     <div class="container">
         <!-- Netflix Section -->
         <div class="section" id="netflixSection">
