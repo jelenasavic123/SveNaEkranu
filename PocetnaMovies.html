@@ -75,27 +75,57 @@
     </style>
 </head>
 <body>
-    <!-- Button Section -->
-    <div class="button-container" id="buttonContainer">
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 1">
-        </button>
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 2">
-        </button>
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 3">
-        </button>
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 4">
-        </button>
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 5">
-        </button>
-        <button>
-            <img src="https://via.placeholder.com/50" alt="Button 6">
-        </button>
-    </div>
+<!-- Button Section -->
+<div class="button-container">
+    <button onclick="alert('Button 1 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 1">
+    </button>
+    <button onclick="alert('Button 2 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 2">
+    </button>
+    <button onclick="alert('Button 3 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 3">
+    </button>
+    <button onclick="alert('Button 4 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 4">
+    </button>
+    <button onclick="alert('Button 5 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 5">
+    </button>
+    <button onclick="alert('Button 6 clicked!')">
+        <img src="https://via.placeholder.com/50" alt="Button 6">
+    </button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let buttons = document.querySelectorAll('.button-container button');
+        let currentIndex = 0;
+
+        function highlightButton(index) {
+            buttons[currentIndex].classList.remove('active');
+            currentIndex = index;
+            buttons[currentIndex].classList.add('active');
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                highlightButton((currentIndex + 1) % buttons.length);
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                highlightButton((currentIndex - 1 + buttons.length) % buttons.length);
+            }
+        }
+
+        buttons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                alert(`Button ${index + 1} clicked!`);
+            });
+        });
+
+        document.addEventListener('keydown', handleKeyDown);
+    });
+</script>
+
 
     <!-- Netflix Section -->
     <div class="section" id="netflixSection">
@@ -143,70 +173,68 @@
             handleKeyboardNavigation(); // Enable keyboard navigation
         }
 
-        function handleKeyboardNavigation() {
-            const sections = document.querySelectorAll('.section');
-            let currentSectionIndex = 0;
-            let currentImageIndex = 0;
+function handleKeyboardNavigation() {
+    const sections = document.querySelectorAll('.section');
+    const buttons = document.querySelectorAll('.button-container button'); // Dugmad koja ćemo navigirati
+    let currentSectionIndex = 0;
+    let currentImageIndex = 0;
+    let currentButtonIndex = 0; // Indeks aktivnog dugmeta
 
-            const focusImage = () => {
-                const currentSection = sections[currentSectionIndex];
-                const imageContainer = currentSection.querySelector('.image-container');
-                const images = imageContainer.querySelectorAll('img');
-                if (images.length > 0) {
-                    images[currentImageIndex].focus();
-                }
-            };
+    const focusImage = () => {
+        const currentSection = sections[currentSectionIndex];
+        const imageContainer = currentSection.querySelector('.image-container');
+        const images = imageContainer.querySelectorAll('img');
+        if (images.length > 0) {
+            images[currentImageIndex].focus();
+        }
+    };
 
-            focusImage(); // Initial focus
+    const focusButton = () => {
+        buttons.forEach(button => button.classList.remove('active'));
+        buttons[currentButtonIndex].classList.add('active'); // Dodajemo klasu active na aktivno dugme
+        buttons[currentButtonIndex].focus();
+    };
 
-            document.addEventListener('keydown', (event) => {
-                const currentSection = sections[currentSectionIndex];
-                const imageContainer = currentSection.querySelector('.image-container');
-                const images = imageContainer.querySelectorAll('img');
+    // Initial focus
+    focusImage();
+    focusButton();
 
-                if (event.key === 'ArrowRight') {
-                    currentImageIndex = (currentImageIndex + 1) % images.length;
-                } else if (event.key === 'ArrowLeft') {
-                    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-                } else if (event.key === 'ArrowDown') {
-                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                    currentImageIndex = 0;
-                } else if (event.key === 'ArrowUp') {
-                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                    currentImageIndex = 0;
-                }
+    document.addEventListener('keydown', (event) => {
+        const currentSection = sections[currentSectionIndex];
+        const imageContainer = currentSection.querySelector('.image-container');
+        const images = imageContainer.querySelectorAll('img');
 
-                focusImage();
-            });
+        if (event.key === 'ArrowRight') {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+        } else if (event.key === 'ArrowLeft') {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+        } else if (event.key === 'ArrowDown') {
+            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+            currentImageIndex = 0;
+        } else if (event.key === 'ArrowUp') {
+            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+            currentImageIndex = 0;
+        } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+            // Navigacija između dugmadi
+            currentButtonIndex = (currentButtonIndex + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
         }
 
-        function handleButtonKeyboardNavigation() {
-            const buttons = document.querySelectorAll('.button-container button');
-            let currentButtonIndex = 0;
+        focusImage(); // Fokusiranje slike
+        focusButton(); // Fokusiranje dugmeta
+    });
+}
 
-            const focusButton = () => {
-                buttons[currentButtonIndex].focus();
-            };
+// Pozivanje funkcije za navigaciju
+handleKeyboardNavigation();
 
-            focusButton(); // Initial focus
-
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'ArrowRight') {
-                    currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
-                } else if (event.key === 'ArrowLeft') {
-                    currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
-                }
-
-                focusButton();
-            });
-        }
-
-        handleButtonKeyboardNavigation();
+        
 
         // Fetch data for each section
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated');
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'upcoming');
+        
+        
     </script>
 </body>
 </html>
