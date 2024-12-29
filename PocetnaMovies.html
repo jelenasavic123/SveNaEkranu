@@ -125,7 +125,7 @@
 
 
  <div class="section">
-
+    <div class="section-title">Top Rated</div>
     <div class="movie-list" id="top-rated-list"></div>
 </div>
     <div class="section">
@@ -240,28 +240,52 @@ function fetchMovies(listId, serviceId) {
                 Array.from(section.children).some(item => item.classList.contains('selected'))
             );
 
+           if (activeSectionIndex === -1) activeSectionIndex = 0;
 
+const activeSection = sections[activeSectionIndex];
+const movieItems = activeSection.querySelectorAll('.movie-item');
 
-            let newIndex = -1;
+let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
 
-            switch (direction) {
-                case 'left':
-                    if (currentIndex > 0) newIndex = currentIndex - 1;
-                    break;
-                case 'right':
-                    if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
-                    break;
-                case 'up':
-                    if (activeSectionIndex > 0) {
-                        clearSelection();
-                        const prevSection = sections[activeSectionIndex - 1];
-                        const prevItems = prevSection.querySelectorAll('.movie-item');
-                        if (prevItems.length > 0) {
-                            prevItems[0].classList.add('selected');
-                            prevSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                    return;
+if (currentIndex === -1) {
+    clearSelection();
+    currentIndex = 0;
+    movieItems[currentIndex].classList.add('selected');
+    centerSelectedItem(movieItems[currentIndex], activeSection);
+    return;
+}
+
+let newIndex = -1;
+
+switch (direction) {
+    case 'left':
+        if (currentIndex > 0) newIndex = currentIndex - 1;
+        break;
+    case 'right':
+        if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
+        break;
+    case 'up':
+        if (activeSectionIndex > 0) {
+            clearSelection();
+            const prevSection = sections[activeSectionIndex - 1];
+            const prevItems = prevSection.querySelectorAll('.movie-item');
+            if (prevItems.length > 0) {
+                prevItems[0].classList.add('selected');
+                prevSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        return;
+    case 'down':
+        if (activeSectionIndex < sections.length - 1) {
+            clearSelection();
+            const nextSection = sections[activeSectionIndex + 1];
+            const nextItems = nextSection.querySelectorAll('.movie-item');
+            if (nextItems.length > 0) {
+                nextItems[0].classList.add('selected');
+                nextSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        return;
                 case 'down':
                     if (activeSectionIndex < sections.length - 1) {
                         clearSelection();
