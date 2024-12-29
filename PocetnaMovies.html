@@ -284,20 +284,21 @@
     fetchMovies();
     
     // Funkcija za navigaciju pomoću strelica
-    document.addEventListener('keydown', (event) => {
-        const focusableButtons = Array.from(document.querySelectorAll('.filter-button, .movie-item'));
-        let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
+document.addEventListener('keydown', (event) => {
+    const focusableButtons = Array.from(document.querySelectorAll('.filter-button, .movie-item'));
+    let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
 
-        if (event.key === 'ArrowRight') {
-            focusedIndex = (focusedIndex + 1) % focusableButtons.length;
-        } else if (event.key === 'ArrowLeft') {
-            focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length;
-        }
+    if (event.key === 'ArrowRight') {
+        focusedIndex = (focusedIndex + 10) % focusableButtons.length;
+    } else if (event.key === 'ArrowLeft') {
+        focusedIndex = (focusedIndex - 10 + focusableButtons.length) % focusableButtons.length;
+    }
 
-        if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
-            focusableButtons[focusedIndex].focus();
-        }
-    });
+    if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
+        focusableButtons[focusedIndex].focus();
+    }
+});
+
 </script>
 
 </body>
