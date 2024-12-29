@@ -101,6 +101,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
+            
             color: white;
             font-size: 12px; /* Smanjen font */
             background-color: rgba(0, 0, 0, 0.7);
@@ -301,7 +302,7 @@ document.addEventListener('keydown', (event) => {
             focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length; // Levo - ide na prethodni element
             break;
         case 'ArrowDown':
-            focusedIndex = (focusedIndex + 3) % focusableButtons.length; // Ako je fokus na poslednjem dugmetu prvog filtera, prelazi na prvi dugme drugog filtera
+            focusedIndex = (focusedIndex + 10) % focusableButtons.length; // Ako je fokus na poslednjem dugmetu prvog filtera, prelazi na prvi dugme drugog filtera
             break;
         case 'ArrowUp':
             focusedIndex = (focusedIndex - 3 + focusableButtons.length) % focusableButtons.length; // Ako je fokus na prvom dugmetu drugog filtera, prelazi na poslednje dugme prvog filtera
