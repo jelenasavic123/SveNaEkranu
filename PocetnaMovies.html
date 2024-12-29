@@ -6,11 +6,8 @@
     <title>Horizontal Scrolling with Remote Navigation</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #181818; /* Tamna pozadina */
-            color: #fff; /* Bela boja za tekst */
+        background-color: #181818; /* Tamna pozadina */
+  
         }
         .container {
             display: flex;
@@ -51,12 +48,33 @@
         }
         
         .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            background-color: #444;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .button-container button:hover {
+            background-color: #666;
+        }
+        
+            
+.button-container {
     display: flex;
     flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
     justify-content: space-around; /* Razmak između dugmadi */
 }
-        
-        .button {
+
+.button {
     display: inline-flex;
     align-items: center;
     margin: 7px;
@@ -74,12 +92,13 @@
     margin-right: 10px;
 }
 
-
+.button:hover {
+    background-color: #555;
+}
     </style>
 </head>
 <body>
-
- <div class="button-container">
+<div class="button-container">
         <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
             Netflix
@@ -110,8 +129,6 @@
             Disney+
         </a>
     </div>
-
-
     <div class="container">
         <!-- Netflix Section -->
         <div class="section" id="netflixSection">
@@ -129,6 +146,12 @@
         <div class="section" id="popularSection">
             <h2>Popular</h2>
             <div class="image-container" id="popularImages"></div>
+        </div>
+
+        <!-- Button Container for Controls -->
+        <div class="button-container">
+            <button id="prevSection">Previous Section</button>
+            <button id="nextSection">Next Section</button>
         </div>
     </div>
 
@@ -190,6 +213,19 @@
                     currentImageIndex = 0; // Reset image index
                     sections[currentSectionIndex].querySelector('img').focus();
                 }
+            });
+
+            // Add navigation buttons functionality
+            document.getElementById('prevSection').addEventListener('click', () => {
+                currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                currentImageIndex = 0;
+                sections[currentSectionIndex].querySelector('img').focus();
+            });
+
+            document.getElementById('nextSection').addEventListener('click', () => {
+                currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                currentImageIndex = 0;
+                sections[currentSectionIndex].querySelector('img').focus();
             });
         }
 
