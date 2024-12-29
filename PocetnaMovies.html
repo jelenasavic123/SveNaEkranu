@@ -345,10 +345,10 @@
                 item.setAttribute('tabindex', '0'); // Omogućavanje fokusa na slike
                 item.addEventListener('keydown', (event) => {
                     if (event.key === 'ArrowRight' && currentFocusedIndex < movieItems.length - 1) {
-                        movieItems[currentFocusedIndex + 1].focus();
+                        movieItems[currentFocusedIndex + 4].focus();
                         currentFocusedIndex++;
                     } else if (event.key === 'ArrowLeft' && currentFocusedIndex > 0) {
-                        movieItems[currentFocusedIndex - 1].focus();
+                        movieItems[currentFocusedIndex - 2].focus();
                         currentFocusedIndex--;
                     }
                 });
@@ -356,6 +356,69 @@
 
             movieItems[currentFocusedIndex].focus(); // Postavljanje fokusa na prvu sliku
         });
+        
+        
+        // Funkcija za navigaciju kroz filmove
+function navigateMovies(direction) {
+    const movieItems = document.querySelectorAll('.movie-item');
+    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+
+    if (currentIndex === -1) {
+        currentIndex = 0; // Početno selektovan prvi film
+        movieItems[currentIndex].classList.add('selected');
+        movieItems[currentIndex].focus(); // Fokus na prvi film
+    }
+
+    let newIndex = -1;
+
+    switch (direction) {
+        case 'left': // Levo
+            if (currentIndex % 1 > 0) { // Ako nije prvi film u redu
+                newIndex = currentIndex - 1;
+            }
+            break;
+        case 'right': // Desno
+            if ((currentIndex + 1) % 1 !== 0) { // Ako nije poslednji film u redu
+                newIndex = currentIndex + 1;
+            }
+            break;
+        case 'up': // Gore
+            if (currentIndex >= 1) { // Ako indeks nije na prvoj grupi redova
+                newIndex = currentIndex - 1; // Idemo na gore
+            }
+            break;
+        case 'down': // Dole
+            if (currentIndex + 1 < movieItems.length) { // Ako postoji sledeći red
+                newIndex = currentIndex + 1; // Idemo na dole
+            }
+            break;
+    }
+
+    if (newIndex !== -1) {
+        movieItems[currentIndex].classList.remove('selected'); // Ukloni selektovan film
+        movieItems[newIndex].classList.add('selected'); // Dodaj novi selektovani film
+        movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
+    }
+}
+
+// Event za tastaturu
+document.addEventListener('keydown', event => {
+    switch (event.key) {
+        case 'ArrowUp':
+            navigateMovies('up');
+            break;
+        case 'ArrowDown':
+            navigateMovies('down');
+            break;
+        case 'ArrowLeft':
+            navigateMovies('left');
+            break;
+        case 'ArrowRight':
+            navigateMovies('right');
+            break;
+    }
+});
+
     </script>
 </body>
 </html>
