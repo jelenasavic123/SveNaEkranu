@@ -44,10 +44,12 @@
             gap: 10px;
             justify-content: center;
             padding: 20px 0;
-            width: 120%;
+            width: 100%; /* Ograničava širinu na 100% ekrana */
         }
 
         .movie-item {
+            flex: 1 1 calc(13.333% - 10px); /* Postavlja širinu na trećinu ekrana i oduzima razmak */
+            max-width: calc(13.333% - 10px); /* Maksimalna širina slike */
             position: relative;
             width: 100px;
             height: auto;
@@ -56,6 +58,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
             outline: none; /* Za navigaciju tastaturom */
+            cursor: pointer;
         }
 
         .movie-item.selected {
@@ -118,7 +121,7 @@
     <div class="movie-list" id="movie-list"></div>
     <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
- <script>
+    <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
         const baseUrl = `https://api.themoviedb.org/3/`;
         const netflixProviderId = 8; // Netflix ID
@@ -226,33 +229,49 @@
         }
 
         // Funkcija za navigaciju kroz filmove
-        function navigateMovies(direction) {
-            const movieItems = document.querySelectorAll('.movie-item');
-            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+function navigateMovies(direction) {
+    const movieItems = document.querySelectorAll('.movie-item');
+    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
 
-            if (currentIndex === -1) {
-                currentIndex = 0;
-                movieItems[currentIndex].classList.add('selected'); // Ističe prvi film na početku
-            }
+    if (currentIndex === -1) {
+        currentIndex = 0; // Početno selektovan prvi film
+        movieItems[currentIndex].classList.add('selected');
+        movieItems[currentIndex].focus(); // Fokus na prvi film
+    }
 
-            let newIndex = -1;
+    let newIndex = -1;
 
-            if (direction === 'left' && currentIndex % 5 > 0) { // Levo
+    switch (direction) {
+        case 'left': // Levo
+            if (currentIndex % 1 > 0) { // Ako nije prvi film u redu
                 newIndex = currentIndex - 1;
-            } else if (direction === 'right' && (currentIndex + 1) % 5 !== 0) { // Desno
+            }
+            break;
+        case 'right': // Desno
+            if ((currentIndex + 1) % 1 !== 0) { // Ako nije poslednji film u redu
                 newIndex = currentIndex + 1;
-            } else if (direction === 'up' && currentIndex >= 5) { // Gore
-                newIndex = currentIndex - 5;
-            } else if (direction === 'down' && currentIndex + 5 < movieItems.length) { // Dole
-                newIndex = currentIndex + 5;
             }
+            break;
+        case 'up': // Gore
+            if (currentIndex >= 1) { // Ako indeks nije na prvoj grupi redova
+                newIndex = currentIndex - 1; // Idemo na gore
+            }
+            break;
+        case 'down': // Dole
+            if (currentIndex + 1 < movieItems.length) { // Ako postoji sledeći red
+                newIndex = currentIndex + 1; // Idemo na dole
+            }
+            break;
+    }
 
-            if (newIndex !== -1) {
-                movieItems[currentIndex].classList.remove('selected');
-                movieItems[newIndex].classList.add('selected');
-                movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
-            }
-        }
+    if (newIndex !== -1) {
+        movieItems[currentIndex].classList.remove('selected'); // Ukloni selektovan film
+        movieItems[newIndex].classList.add('selected'); // Dodaj novi selektovani film
+        movieItems[newIndex].focus(); // Fokusiraj novi izabrani film
+    }
+}
+
+
 
         // Event za tastaturu
         document.addEventListener('keydown', event => {
