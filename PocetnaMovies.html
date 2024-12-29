@@ -246,6 +246,22 @@ function fetchMovies(listId, serviceId) {
         fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
 
+
+  // Funkcija za centriranje selektovanog elementa
+function centerSelectedItem(selectedItem, container) {
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = selectedItem.getBoundingClientRect();
+
+    const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
+    container.scrollLeft += offsetX;
+}
+
+// Funkcija za uklanjanje selekcije iz svih sekcija
+function clearSelection() {
+    const allSelectedItems = document.querySelectorAll('.movie-item.selected');
+    allSelectedItems.forEach(item => item.classList.remove('selected'));
+}
+
 // Funkcija za navigaciju
 function navigateMovies(direction) {
     const sections = document.querySelectorAll('.section');
@@ -262,7 +278,7 @@ function navigateMovies(direction) {
 
     if (currentIndex === -1) {
         clearSelection();
-        currentIndex = 0;
+        currentIndex = 1;
         movieItems[currentIndex].classList.add('selected');
         centerSelectedItem(movieItems[currentIndex], activeSection);
         return;
@@ -272,19 +288,18 @@ function navigateMovies(direction) {
 
     switch (direction) {
         case 'left':
-            if (currentIndex > 0) newIndex = currentIndex - 1;
+            if (currentIndex > 1) newIndex = currentIndex - 1;
             break;
         case 'right':
             if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
             break;
         case 'up':
-            if (activeSectionIndex > 0) {
+            if (activeSectionIndex > 1) {
                 clearSelection();
                 const prevSection = sections[activeSectionIndex - 1];
                 const prevItems = prevSection.querySelectorAll('.movie-item');
                 if (prevItems.length > 0) {
-                    // Selektuje poslednji item iz prethodne sekcije
-                    prevItems[prevItems.length - 1].classList.add('selected');
+                    prevItems[0].classList.add('selected');
                     prevSection.scrollIntoView({ behavior: 'smooth' });
                 }
             }
@@ -295,7 +310,7 @@ function navigateMovies(direction) {
                 const nextSection = sections[activeSectionIndex + 1];
                 const nextItems = nextSection.querySelectorAll('.movie-item');
                 if (nextItems.length > 0) {
-                    nextItems[0].classList.add('selected'); // Selektuje prvi item iz sledeće sekcije
+                    nextItems[0].classList.add('selected');
                     nextSection.scrollIntoView({ behavior: 'smooth' });
                 }
             }
@@ -315,6 +330,27 @@ function navigateMovies(direction) {
     }
 }
 
+
+// Dodajemo event listener za navigaciju strelicama
+document.addEventListener('keydown', event => {
+    switch (event.key) {
+        case 'ArrowLeft':
+            navigateMovies('left');
+            break;
+        case 'ArrowRight':
+            navigateMovies('right');
+            break;
+        case 'ArrowUp':
+            navigateMovies('up');
+            break;
+        case 'ArrowDown':
+            navigateMovies('down');
+            break;
+        case 'Enter':
+            navigateMovies('enter');
+            break;
+    }
+});
 
     </script>
 </body>
