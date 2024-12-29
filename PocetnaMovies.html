@@ -289,7 +289,7 @@ document.addEventListener('keydown', (event) => {
     let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
 
     if (event.key === 'ArrowRight') {
-        focusedIndex = (focusedIndex + 10) % focusableButtons.length;
+        focusedIndex = (focusedIndex + 1) % focusableButtons.length;
     } else if (event.key === 'ArrowLeft') {
         focusedIndex = (focusedIndex - 10 + focusableButtons.length) % focusableButtons.length;
     }
