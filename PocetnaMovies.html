@@ -35,7 +35,7 @@
 
         .movie-list {
             display: flex;
-            overflow-x: scroll;
+            overflow-x: auto;
             gap: 20px;
             padding: 10px 0;
             scroll-snap-type: x mandatory;
@@ -163,6 +163,7 @@
                         if (prevItems.length > 0) {
                             movieItems[currentIndex].classList.remove('selected');
                             prevItems[0].classList.add('selected');
+                            prevSection.scrollIntoView({ behavior: 'smooth' });
                         }
                     }
                     return;
@@ -173,6 +174,7 @@
                         if (nextItems.length > 0) {
                             movieItems[currentIndex].classList.remove('selected');
                             nextItems[0].classList.add('selected');
+                            nextSection.scrollIntoView({ behavior: 'smooth' });
                         }
                     }
                     return;
@@ -186,6 +188,7 @@
             if (newIndex !== -1) {
                 movieItems[currentIndex].classList.remove('selected');
                 movieItems[newIndex].classList.add('selected');
+                movieItems[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }
 
