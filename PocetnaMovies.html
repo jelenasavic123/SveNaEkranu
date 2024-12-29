@@ -242,14 +242,7 @@ function fetchMovies(listId, serviceId) {
         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
 
 
-        // Funkcija za centriranje selektovanog elementa
-        function centerSelectedItem(selectedItem, container) {
-            const containerRect = container.getBoundingClientRect();
-            const itemRect = selectedItem.getBoundingClientRect();
-
-            const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
-            container.scrollLeft += offsetX;
-        }
+        
 
         // Funkcija za uklanjanje selekcije iz svih sekcija
         function clearSelection() {
