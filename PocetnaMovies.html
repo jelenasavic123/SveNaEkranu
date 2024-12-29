@@ -195,12 +195,6 @@
         </a>
     </div>
 
-    <div class="movie-item">
-        <img src="..." alt="..." tabindex="0"> <!-- Slika filma -->
-        <div class="movie-title">...Naslov...</div>
-        <div class="rating">...</div>
-    </div>
-
     <div class="movie-section">
         <h1>Najbolje Ocenjeni Filmovi</h1>
         <div class="movie-list" id="top-rated-list"></div>
@@ -263,7 +257,7 @@
         // Postavljanje za svaki provajder
         providers.forEach(provider => {
             if (provider.id === 'top-rated') {
-                initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=sr-SR`, provider.elementId, provider.loadingId);
+                initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=hr-HR`, provider.elementId, provider.loadingId);
             } else {
                 initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
             }
