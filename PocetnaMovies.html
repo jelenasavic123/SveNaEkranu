@@ -74,10 +74,16 @@
             border-radius: 5px;
         }
 
-        .movie-item.selected {
-            outline: 3px solid red; /* Crveni okvir */
-            border-radius: 10px;
-        }
+.movie-item.selected {
+    outline: 3px solid red; /* Crveni okvir */
+    border-radius: 10px;
+    position: absolute; /* Postavljanje u odnosu na najbliži roditeljski element */
+    top: 50%; /* Pomiče se vertikalno na sredinu */
+    transform: translateY(-50%); /* Centriranje vertikalno */
+    left: 0; /* Uzimanje levo poravnanja */
+    right: 0; /* Fiksiranje horizontalnog pozicioniranja */
+}
+
         
                 .logo {
         margin: 0px 0;
@@ -218,21 +224,7 @@ function fetchMovies(listId, serviceId) {
         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
 
 
-        // Funkcija za centriranje selektovanog elementa
-        function centerSelectedItem(selectedItem, container) {
-            const containerRect = container.getBoundingClientRect();
-            const itemRect = selectedItem.getBoundingClientRect();
-
-            const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
-            container.scrollLeft += offsetX;
-        }
-
-        // Funkcija za uklanjanje selekcije iz svih sekcija
-        function clearSelection() {
-            const allSelectedItems = document.querySelectorAll('.movie-item.selected');
-            allSelectedItems.forEach(item => item.classList.remove('selected'));
-        }
-
+        
         // Funkcija za navigaciju
         function navigateMovies(direction) {
             const sections = document.querySelectorAll('.movie-list');
@@ -240,59 +232,48 @@ function fetchMovies(listId, serviceId) {
                 Array.from(section.children).some(item => item.classList.contains('selected'))
             );
 
-           if (activeSectionIndex === -1) activeSectionIndex = 0;
+            if (activeSectionIndex === -1) activeSectionIndex = 1;
 
-const activeSection = sections[activeSectionIndex];
-const movieItems = activeSection.querySelectorAll('.movie-item');
+            const activeSection = sections[activeSectionIndex];
+            const movieItems = activeSection.querySelectorAll('.movie-item');
 
-let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
 
-if (currentIndex === -1) {
-    clearSelection();
-    currentIndex = 0;
-    movieItems[currentIndex].classList.add('selected');
-    centerSelectedItem(movieItems[currentIndex], activeSection);
-    return;
-}
-
-let newIndex = -1;
-
-switch (direction) {
-    case 'left':
-        if (currentIndex > 0) newIndex = currentIndex - 1;
-        break;
-    case 'right':
-        if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
-        break;
-    case 'up':
-        if (activeSectionIndex > 0) {
-            clearSelection();
-            const prevSection = sections[activeSectionIndex - 1];
-            const prevItems = prevSection.querySelectorAll('.movie-item');
-            if (prevItems.length > 0) {
-                prevItems[0].classList.add('selected');
-                prevSection.scrollIntoView({ behavior: 'smooth' });
+            if (currentIndex === -1) {
+                clearSelection();
+                currentIndex = 1;
+                movieItems[currentIndex].classList.add('selected');
+                centerSelectedItem(movieItems[currentIndex], activeSection);
+                return;
             }
-        }
-        return;
-    case 'down':
-        if (activeSectionIndex < sections.length - 1) {
-            clearSelection();
-            const nextSection = sections[activeSectionIndex + 1];
-            const nextItems = nextSection.querySelectorAll('.movie-item');
-            if (nextItems.length > 0) {
-                nextItems[0].classList.add('selected');
-                nextSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-        return;
+
+            let newIndex = -1;
+
+            switch (direction) {
+                case 'left':
+                    if (currentIndex > 1) newIndex = currentIndex - 1;
+                    break;
+                case 'right':
+                    if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
+                    break;
+                case 'up':
+                    if (activeSectionIndex > 1) {
+                        clearSelection();
+                        const prevSection = sections[activeSectionIndex - 1];
+                        const prevItems = prevSection.querySelectorAll('.movie-item');
+                        if (prevItems.length > 1) {
+                            prevItems[1].classList.add('selected');
+                            prevSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                    return;
                 case 'down':
                     if (activeSectionIndex < sections.length - 1) {
                         clearSelection();
                         const nextSection = sections[activeSectionIndex + 1];
                         const nextItems = nextSection.querySelectorAll('.movie-item');
-                        if (nextItems.length > 0) {
-                            nextItems[0].classList.add('selected');
+                        if (nextItems.length > 1) {
+                            nextItems[1].classList.add('selected');
                             nextSection.scrollIntoView({ behavior: 'smooth' });
                         }
                     }
