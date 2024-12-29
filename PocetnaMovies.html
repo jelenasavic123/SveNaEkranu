@@ -291,13 +291,18 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowRight') {
         focusedIndex = (focusedIndex + 1) % focusableButtons.length;
     } else if (event.key === 'ArrowLeft') {
+        focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length;
+    } else if (event.key === 'ArrowUp') {
         focusedIndex = (focusedIndex - 10 + focusableButtons.length) % focusableButtons.length;
+    } else if (event.key === 'ArrowDown') {
+        focusedIndex = (focusedIndex + 10) % focusableButtons.length;
     }
 
     if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
         focusableButtons[focusedIndex].focus();
     }
 });
+
 
 
     </script>
