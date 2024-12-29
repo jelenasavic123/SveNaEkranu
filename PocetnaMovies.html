@@ -246,8 +246,7 @@ function fetchMovies(listId, serviceId) {
         fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
 
-
-       // Funkcija za centriranje selektovanog elementa
+// Funkcija za centriranje selektovanog elementa
 function centerSelectedItem(selectedItem, container) {
     const containerRect = container.getBoundingClientRect();
     const itemRect = selectedItem.getBoundingClientRect();
@@ -299,7 +298,7 @@ function navigateMovies(direction) {
                 const prevSection = sections[activeSectionIndex - 1];
                 const prevItems = prevSection.querySelectorAll('.movie-item');
                 if (prevItems.length > 0) {
-                    prevItems[0].classList.add('selected');
+                    prevItems[prevItems.length - 1].classList.add('selected'); // Selektuje poslednji item iz prethodne sekcije
                     prevSection.scrollIntoView({ behavior: 'smooth' });
                 }
             }
@@ -310,7 +309,7 @@ function navigateMovies(direction) {
                 const nextSection = sections[activeSectionIndex + 1];
                 const nextItems = nextSection.querySelectorAll('.movie-item');
                 if (nextItems.length > 0) {
-                    nextItems[0].classList.add('selected');
+                    nextItems[0].classList.add('selected'); // Selektuje prvi item iz sledeće sekcije
                     nextSection.scrollIntoView({ behavior: 'smooth' });
                 }
             }
@@ -350,6 +349,7 @@ document.addEventListener('keydown', event => {
             break;
     }
 });
+
 
     </script>
 </body>
