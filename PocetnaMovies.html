@@ -13,8 +13,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            overflow: hidden;
+
         }
 
         h1 {
@@ -90,8 +89,18 @@
     
    
     
-    
 
+.button {
+    display: inline-flex;
+    align-items: center;
+    margin: 7px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    justify-content: center;
+    gap: 2px;             /* Razmak između dugmadi */
+}
 
 .button img {
     width: 30px;
@@ -99,42 +108,14 @@
     margin-right: 10px;
 }
 
-        .button-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            background-color: #333;
-            padding: 10px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .button {
-            display: flex;
-            align-items: center;
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .button img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
-
-        .button:hover {
-            background-color: #555;
-        }
-
-
+.button:hover {
+    background-color: #555;
+}
     </style>
 </head>
 <body>
 
-   <div class="section">
+ <div class="button-container">
         <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
             Netflix
@@ -164,10 +145,6 @@
             <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
             Disney+
         </a>
-    </div>
-
-    <div style="padding: 20px;">
-        <!-- Content of your page goes here -->
     </div>
 
 
