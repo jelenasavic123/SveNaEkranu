@@ -3,501 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popularni Filmovi</title>
     <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #121212;
-        color: white;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    h1 {
-        font-size: 15px;
-        margin: 5px 0;
-    }
+        h1 {
+            font-size: 20px;
+            margin: 20px;
+        }
 
-    .movie-section {
-        width: 100%;
-        margin-bottom: 4px;
-    }
+        .filters-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            width: 90%; /* Širina kontejnera za filtriranje */
+            max-width: 1200px;
+            margin: 20px auto;
+        }
 
-    .movie-list {
-        display: flex;
-        overflow-x: scroll;
-        gap: 20px;
-        padding: 20px 0;
-        scroll-snap-type: x mandatory;
-    }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Razmak između dugmadi */
+            flex: 1; /* Svaka strana zauzima jednak prostor */
+            justify-content: center;
+        }
 
-    .movie-item {
-        position: relative;
-        width: 100px; /* Default širina */
-        height: auto; /* Default visina */
-        background-color: #333;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-        scroll-snap-align: start;
-    }
+        .filter-button {
+            padding: 6px 10px; /* Smanjen padding za dugmad */
+            font-size: 12px; /* Smanjen font */
+            color: white;
+            background-color: #e50914;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    .movie-item:hover {
-        transform: scale(1.05);
-    }
+        .filter-button:hover {
+            background-color: #b20610;
+        }
 
-    .movie-item img {
-        width: 100%;
-        height: 100%;
-        border-radius: 10px;
-        object-fit: cover;
-    }
+        .filter-button:focus {
+            outline: 2px solid white; /* Fokus vidljiv za TV navigaciju */
+        }
 
-    .movie-title {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 5px;
-        border-radius: 5px;
-        font-size: 11px;
-        max-width: 80%;
-        word-wrap: break-word;
-    }
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Više prostora između elemenata */
+            justify-content: center;
+            padding: 20px 0;
+            width: 100%;
+        }
 
-    .rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: gold;
-        font-size: 7px;
-        font-weight: bold;
-    }
+        .movie-item {
+            position: relative;
+            width: 180px; /* Smanjena širina za TV ekran */
+            height: 270px; /* Smanjena visina */
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
 
-   /* Mali televizori (720p) */
-@media (min-width: 1280px) and (max-width: 1919px) {
-    .movie-item {
-        width: 126px; /* 180px - 30% */
-        height: 189px; /* 270px - 30% */
-    }
-}
+        .movie-item:hover {
+            transform: scale(1.05);
+        }
 
-/* Veliki televizori (1080p) */
-@media (min-width: 1920px) and (max-width: 3839px) {
-    .movie-item {
-        width: 175px; /* 250px - 30% */
-        height: 262.5px; /* 375px - 30% */
-    }
-}
+        .movie-item img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
 
-/* Ultra veliki televizori (4K i veći) */
-@media (min-width: 3840px) {
-    .movie-item {
-        width: 210px; /* 300px - 30% */
-        height: 315px; /* 450px - 30% */
-    }
-}
+        .movie-item h3 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            font-size: 14px; /* Smanjen font */
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .movie-item .rating {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 12px; /* Smanjen font */
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #fff;
+            font-size: 24px;
+            margin: 20px 0;
+        }
 
         .logo {
-        margin: 0px 0;
-        text-align: center;
-    }
+            margin: 20px 0;
+            text-align: center;
+        }
 
-    .logo img {
-        width: 50px;
-    }
-    
-.button-container {
+        .logo img {
+            width: 150px;
+        }
+        
+.filters-container {
     display: flex;
-    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
-    justify-content: space-around; /* Razmak između dugmadi */
+    justify-content: space-between; /* Da razdvaja leve i desne filtere */
+    gap: 20px; /* Dodatni razmak između filter sekcija */
 }
 
-.button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
-}
-
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-.button:hover {
-    background-color: #555;
-}
-
-.movie-item:focus {
-    outline: 3px solid red;
+.filters {
+    display: grid; /* Dugmad se raspoređuju u grid */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Fleksibilni grid, minimalne širine 100px */
+    gap: 10px; /* Razmak između dugmadi */
 }
 
 
-.movie-item.focused {
-    outline: 3px solid red; /* Crveni okvir */
-    border-radius: 4px;
-}
-
-
-.movie-section:focus {
-  outline: none; /* Uklanja default ivicu fokusa */
-  border: 2px solid blue; /* Boja fokusa */
-  background-color: #f0f0f0; /* Možete promeniti pozadinsku boju */
-}
-
-
-</style>
-
+    </style>
 </head>
-
-
-<div class="button-container">
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-        Netflix
-    </a>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
-        <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-        Marvel
-    </a>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
-        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-        Hulu
-    </a>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
-        <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-        Apple TV+
-    </a>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
-        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-        Prime Video
-    </a>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
-        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-        Disney+
-    </a>
-</div>
-
-
-<div class="movie-item">
-    <img src="..." alt="..." tabindex="0"> <!-- Slika filma -->
-    <div class="movie-title">...Naslov...</div>
-    <div class="rating">...</div>
-</div>
-
-
-
 <body>
 
-<div class="movie-section" tabindex="0">
-    <h1>Najbolje Ocenjeni Filmovi</h1>
-    <div class="movie-list" id="top-rated-list"></div>
-    <div id="top-rated-loading" class="loading" style="display: none;">Učitavanje...</div>
+<div class="logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
 </div>
 
-<div class="movie-section" tabindex="0">
-    <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-    </div>
-    <div class="movie-list" id="netflix-list"></div>
-    <div id="netflix-loading" class="loading" style="display: none;">Učitavanje...</div>
+<div class="filters-container">
+    <div class="filters" id="year-filters"></div> <!-- Leva strana - Godine -->
+    <div class="filters" id="genre-filters"></div> <!-- Desna strana - Žanrovi -->
 </div>
 
-<div class="movie-section" tabindex="0">
-    <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Amazon Prime Video Logo">
-    </div>
-    <div class="movie-list" id="prime-list"></div>
-    <div id="prime-loading" class="loading" style="display: none;">Učitavanje...</div>
-</div>
-
-<div class="movie-section" tabindex="0">
-    <div class="logo">
-        <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Apple TV+ Logo">
-    </div>
-    <div class="movie-list" id="apple-list"></div>
-    <div id="apple-loading" class="loading" style="display: none;">Učitavanje...</div>
-</div>
-
-<div class="movie-section" tabindex="0">
-    <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Hulu_2019.svg/2560px-Hulu_2019.svg.png" alt="Hulu Logo">
-    </div>
-    <div class="movie-list" id="hulu-list"></div>
-    <div id="hulu-loading" class="loading" style="display: none;">Učitavanje...</div>
-</div>
-
-<div class="movie-section" tabindex="0">
-    <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1280px-Disney%2B_logo.svg.png" alt="Disney+ Logo">
-    </div>
-    <div class="movie-list" id="disney-list"></div>
-    <div id="disney-loading" class="loading" style="display: none;">Učitavanje...</div>
-</div>
+<div class="movie-list" id="movie-list"></div>
+<div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
 <script>
     const apiKey = '2701858e9bccab54d4d0e4931420a739';
+    const baseUrl = `https://api.themoviedb.org/3/`;
+    const netflixProviderId = 8; // Netflix ID
+    
+    let currentPage = 1;
+    let currentFilter = { type: 'popular', value: '' };
+    let isLoading = false;
 
-    // Konfiguracija provajdera
-    const providers = [
-        { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
-        { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
-        { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
-        { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
-        { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
-        { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
-    ];
+    const yearFilters = document.getElementById('year-filters');
+    const genreFilters = document.getElementById('genre-filters');
 
-    // Postavljanje za svaki provajder
-    providers.forEach(provider => {
-        if (provider.id === 'top-rated') {
-            initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=sr-SR`, provider.elementId, provider.loadingId);
-        } else {
-            initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
+    // Funkcija za konverziju ćirilice u latinicu
+    function toLatin(text) {
+        const cyrillicToLatinMap = {
+            А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Ђ: 'Đ', Е: 'E', Ж: 'Ž',
+            З: 'Z', И: 'I', Ј: 'J', К: 'K', Л: 'L', Љ: 'Lj', М: 'M', Н: 'N',
+            Њ: 'Nj', О: 'O', П: 'P', Р: 'R', С: 'S', Т: 'T', Ћ: 'Ć', У: 'U',
+            Ф: 'F', Х: 'H', Ц: 'C', Ч: 'Č', Џ: 'Dž', Ш: 'Š', а: 'a', б: 'b',
+            в: 'v', г: 'g', д: 'd', ђ: 'đ', е: 'e', ж: 'ž', з: 'z', и: 'i',
+            ј: 'j', к: 'k', л: 'l', љ: 'lj', м: 'm', н: 'n', њ: 'nj', о: 'o',
+            п: 'p', р: 'r', с: 's', т: 't', ћ: 'ć', у: 'u', ф: 'f', х: 'h',
+            ц: 'c', ч: 'č', џ: 'dž', ш: 'š'
+        };
+        return text.replace(/[А-Яа-яЀ-ӿ]/g, char => cyrillicToLatinMap[char] || char);
+    }
+
+    // Generišemo dugmad za godine
+    for (let year = 2024; year >= 2000; year--) {
+        const button = document.createElement('button');
+        button.classList.add('filter-button');
+        button.textContent = year;
+        button.onclick = () => fetchFilteredMovies('year', year);
+        yearFilters.appendChild(button);
+    }
+
+    // Učitavanje i prikazivanje žanrova
+    fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Greška u preuzimanju žanrova: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.genres.forEach(genre => {
+                const button = document.createElement('button');
+                button.classList.add('filter-button');
+                button.textContent = toLatin(genre.name);
+                button.onclick = () => fetchFilteredMovies('genre', genre.id);
+                genreFilters.appendChild(button);
+            });
+        })
+        .catch(error => console.error('Greška pri učitavanju žanrova:', error));
+
+    // Funkcija za učitavanje filmova
+    function fetchFilteredMovies(type, value) {
+        currentPage = 1;
+        currentFilter = { type, value };
+        document.getElementById('movie-list').innerHTML = '';
+        fetchMovies();
+    }
+
+    // Fetch movies by filter
+    function fetchMovies() {
+        if (isLoading) return;
+
+        isLoading = true;
+        document.getElementById('loading').style.display = 'block';
+
+        let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${netflixProviderId}&watch_region=RS&page=${currentPage}`;
+
+        if (currentFilter.type === 'year') {
+            url += `&primary_release_year=${currentFilter.value}`;
+        } else if (currentFilter.type === 'genre') {
+            url += `&with_genres=${currentFilter.value}`;
         }
-    });
 
-    // Funkcija za beskonačno učitavanje filmova
-    function initializeInfiniteScroll(apiBase, listId, loadingId) {
-        const movieList = document.getElementById(listId);
-        const loading = document.getElementById(loadingId);
-        let currentPage = 1;
-        let isLoading = false;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const movies = data.results;
+                const movieList = document.getElementById('movie-list');
 
-        function loadMovies() {
-            if (isLoading) return;
+                movies.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
 
-            isLoading = true;
-            loading.style.display = 'block';
+                    const movieImage = document.createElement('img');
+                    movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                    movieImage.alt = movie.title;
 
-            fetch(`${apiBase}&page=${currentPage}`)
-                .then(response => response.json())
-                .then(data => {
-                    data.results.forEach(movie => {
-                        displayMovie(movie, movieList);
+                    const movieTitle = document.createElement('h3');
+                    movieTitle.textContent = toLatin(movie.title);
+
+                    const movieRating = document.createElement('div');
+                    movieRating.classList.add('rating');
+                    movieRating.textContent = `TMDB: ${movie.vote_average}`;
+
+                    movieItem.appendChild(movieImage);
+                    movieItem.appendChild(movieTitle);
+                    movieItem.appendChild(movieRating);
+                    movieList.appendChild(movieItem);
+
+                    // Navigate to URL in the same page on image click
+                    movieImage.addEventListener('click', () => {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                     });
 
-                    currentPage++;
-                    isLoading = false;
-                    loading.style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Greška prilikom preuzimanja podataka:', error);
-                    isLoading = false;
-                    loading.style.display = 'none';
+                    // Open URL in a new tab on title click
+                    movieTitle.addEventListener('click', () => {
+                        window.open(`https://vidsrc.vip/embed/movie/${movie.id}`, '_blank');
+                    });
                 });
-        }
 
-        // Praćenje skrola i učitavanje dodatnih filmova
-        movieList.addEventListener('scroll', () => {
-            if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
-                loadMovies();
-            }
-        });
-
-        // Inicijalno učitavanje
-        loadMovies();
+                currentPage++;
+                isLoading = false;
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Greška pri učitavanju filmova:', error);
+                isLoading = false;
+                document.getElementById('loading').style.display = 'none';
+            });
     }
 
-    // Funkcija za prikazivanje filma
-    function displayMovie(movie, movieList) {
-        const movieItem = document.createElement('div');
-        movieItem.classList.add('movie-item');
-
-        const movieImage = document.createElement('img');
-        movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-        movieImage.alt = movie.title;
-
-        const movieTitle = document.createElement('div');
-        movieTitle.classList.add('movie-title');
-        movieTitle.textContent = capitalizeTitle(movie.title);
-
-        const movieRating = document.createElement('div');
-        movieRating.classList.add('rating');
-        movieRating.innerHTML = getStarRating(movie.vote_average);
-
-        movieItem.appendChild(movieImage);
-        movieItem.appendChild(movieTitle);
-        movieItem.appendChild(movieRating);
-        movieList.appendChild(movieItem);
-
-        // Dodavanje eventa za klik na sliku za redirekciju na video stranicu
-        movieItem.querySelector('img').addEventListener('click', () => {
-            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-        });
-    }
-
-    // Funkcija za ocenu zvezdama
-    function getStarRating(rating) {
-        const fullStars = Math.floor(rating / 2);
-        const emptyStars = 5 - fullStars;
-        return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
-    }
-
-    // Funkcija za kapitalizaciju naslova
-    function capitalizeTitle(title) {
-        return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const movieItems = document.querySelectorAll('.movie-item img');
-        let currentFocusedIndex = 0;
-
-        movieItems.forEach((item, index) => {
-            item.setAttribute('tabindex', '0'); // Dodavanje tabindex za lakšu navigaciju tastaturom
-            item.addEventListener('keydown', handleKeydown);
-            item.addEventListener('focus', handleFocus); // Dodajemo fokus event za crveni okvir
-        });
-
-        function handleKeydown(event) {
-            const totalItems = movieItems.length;
-
-            if (event.key === 'ArrowRight') {
-                currentFocusedIndex = (currentFocusedIndex + 1) % totalItems;
-                updateFocus();
-            } else if (event.key === 'ArrowLeft') {
-                currentFocusedIndex = (currentFocusedIndex - 1 + totalItems) % totalItems;
-                updateFocus();
-            } else if (event.key === 'Enter' || event.key === ' ') {
-                movieItems[currentFocusedIndex].click(); // Simulira klik kada se pritisne Enter ili Space
-            }
-        }
-
-        function handleFocus() {
-            currentFocusedIndex = Array.from(movieItems).indexOf(this); // Indeks trenutnog fokusa
-            updateFocus();
-        }
-
-        function updateFocus() {
-            movieItems.forEach(item => item.closest('.movie-item').classList.remove('focused')); // Uklanja fokus iz drugih elemenata
-            movieItems[currentFocusedIndex].closest('.movie-item').classList.add('focused'); // Dodaje crveni okvir na trenutnu selektovanu stavku
+    // Infinite scroll
+    window.addEventListener('scroll', () => {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 100 && !isLoading) {
+            fetchMovies();
         }
     });
 
- document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.button-container .button');
-    let currentIndex = 0;
+    // Početno učitavanje filmova
+    fetchMovies();
+document.addEventListener('keydown', (event) => {
+    const focusableButtons = Array.from(document.querySelectorAll('.filters button')); // Sve dugmadi iz svih filtera
+    let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
 
-    // Fokusiramo prvo dugme
-    buttons[currentIndex].focus();
-
-    // Funckija za navigaciju tastaturom
-    function handleKeyboardNavigation(event) {
-      if (event.key === 'ArrowRight') {
-        currentIndex = (currentIndex + 1) % buttons.length; // Napred
-      } else if (event.key === 'ArrowLeft') {
-        currentIndex = (currentIndex - 1 + buttons.length) % buttons.length; // Nazad
-      } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-        return; // Ne radimo ništa za gore/dole
-      }
-      buttons[currentIndex].focus(); // Postavi fokus na novo dugme
+    switch (event.key) {
+        case 'ArrowRight':
+            focusedIndex = (focusedIndex + 1) % focusableButtons.length; // Desno - ide na sledeći element
+            break;
+        case 'ArrowLeft':
+            focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length; // Levo - ide na prethodni element
+            break;
+        case 'ArrowDown':
+            focusedIndex = (focusedIndex + 3) % focusableButtons.length; // Ako je fokus na poslednjem dugmetu prvog filtera, prelazi na prvi dugme drugog filtera
+            break;
+        case 'ArrowUp':
+            focusedIndex = (focusedIndex - 3 + focusableButtons.length) % focusableButtons.length; // Ako je fokus na prvom dugmetu drugog filtera, prelazi na poslednje dugme prvog filtera
+            break;
+        default:
+            return;
     }
 
-    // Dodajemo event listener za tastaturu
-    document.addEventListener('keydown', handleKeyboardNavigation);
-  });
-  
-   document.addEventListener('DOMContentLoaded', function() {
-    const sections = document.querySelectorAll('.movie-section');
-    let currentIndex = 0;
-
-    // Fokus na prvu sekciju
-    sections[currentIndex].focus();
-
-    // Funckija za navigaciju tastaturom
-    function handleKeyboardNavigation(event) {
-      if (event.key === 'ArrowDown') {
-        currentIndex = (currentIndex + 1) % sections.length; // Napred
-      } else if (event.key === 'ArrowUp') {
-        currentIndex = (currentIndex - 1 + sections.length) % sections.length; // Nazad
-      }
-      sections[currentIndex].focus(); // Postavi fokus na novu sekciju
+    if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
+        focusableButtons[focusedIndex].focus();
     }
-
-    // Dodajemo event listener za tastaturu
-    document.addEventListener('keydown', handleKeyboardNavigation);
-  });
-  
-  document.addEventListener('DOMContentLoaded', function() {
-    const sections = document.querySelectorAll('.movie-section');
-    let currentIndex = 0;
-
-    // Fokus na prvu sekciju
-    sections[currentIndex].focus();
-
-    // Funckija za navigaciju tastaturom
-    function handleKeyboardNavigation(event) {
-      if (event.key === 'ArrowDown') {
-        currentIndex = (currentIndex + 1) % sections.length; // Napred
-      } else if (event.key === 'ArrowUp') {
-        currentIndex = (currentIndex - 1 + sections.length) % sections.length; // Nazad
-      }
-      sections[currentIndex].focus(); // Postavi fokus na novu sekciju
-    }
-
-    // Dodajemo event listener za tastaturu
-    document.addEventListener('keydown', handleKeyboardNavigation);
-  });
-  
- document.addEventListener('DOMContentLoaded', function() {
-    const sections = document.querySelectorAll('.movie-section');
-    let currentIndex = 0;
-
-    // Fokus na prvu sekciju
-    sections[currentIndex].focus();
-
-    // Funckija za navigaciju tastaturom
-    function handleKeyboardNavigation(event) {
-        if (event.key === 'ArrowDown') {
-            currentIndex = (currentIndex + 1) % sections.length; // Napred
-        } else if (event.key === 'ArrowUp') {
-            currentIndex = (currentIndex - 1 + sections.length) % sections.length; // Nazad
-        }
-        sections[currentIndex].focus(); // Postavi fokus na novu sekciju
-    }
-
-    // Dodajemo event listener za tastaturu
-    document.addEventListener('keydown', handleKeyboardNavigation);
-    
-    // Dodajemo funkcionalnost za slike
-    sections.forEach((section, index) => {
-        const logoImg = section.querySelector('.logo img');
-        
-        section.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                // Shift + Tab da prelazi u prethodni element
-                if (e.shiftKey) {
-                    currentIndex = (index - 1 + sections.length) % sections.length;
-                } else {
-                    currentIndex = (index + 1) % sections.length;
-                }
-                sections[currentIndex].focus();
-            }
-            
-            if (e.key === 'Enter' || e.key === ' ') {
-                // Akcija po Enter ili Space pritisku na slike
-                logoImg.click(); // Klik na sliku
-            }
-        });
-    });
 });
+
+
 </script>
 
 </body>
