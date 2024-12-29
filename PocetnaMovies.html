@@ -274,27 +274,6 @@
 
         // Učitavanje početnih filmova
         fetchMovies();
-        
-
-
-document.addEventListener('keydown', (event) => {
-    const focusableButtons = Array.from(document.querySelectorAll('.filter-button, .movie-item:not(.movie-item .rating)'));
-    let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
-
-    if (event.key === 'ArrowRight') {
-        focusedIndex = (focusedIndex + 1) % focusableButtons.length;
-    } else if (event.key === 'ArrowLeft') {
-        focusedIndex = (focusedIndex - 1 + focusableButtons.length) % focusableButtons.length;
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-        // Za strelice gore-dole, ne radimo ništa s skrolovanjem
-        // Samo promena fokusa
-    }
-
-    if (focusedIndex >= 0 && focusableButtons[focusedIndex]) {
-        focusableButtons[focusedIndex].focus();
-    }
-});
-
     </script>
 
 </body>
