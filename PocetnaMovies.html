@@ -6,8 +6,11 @@
     <title>Horizontal Scrolling with Remote Navigation</title>
     <style>
         body {
-        background-color: #181818; /* Tamna pozadina */
-  
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #181818; /* Tamna pozadina */
+            color: #fff; /* Bela boja za tekst */
         }
         .container {
             display: flex;
@@ -48,122 +51,79 @@
         }
         
         .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .button-container button {
-            background-color: #444;
-            border: 2px solid #fff;
-            color: #fff;
-            padding: 10px 20px;
-            margin: 0 5px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: background-color 0.3s ease-in-out;
-        }
-        .button-container button:hover {
-            background-color: #666;
-        }
-        
-            
-.button-container {
     display: flex;
     flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
     justify-content: space-around; /* Razmak između dugmadi */
 }
-
-.navbar {
-    display: flex;
-    justify-content: space-around;
+        
+        .button {
+    display: inline-flex;
     align-items: center;
+    margin: 7px;
+    border-radius: 5px;
     background-color: #333;
-    padding: 1rem;
-}
-
-.navbar-list {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar-item {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-link {
-    text-decoration: none;
     color: white;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    text-decoration: none;
+    justify-content: center;
+    gap: 2px;             /* Razmak između dugmadi */
 }
 
-.navbar-link img {
+.button img {
     width: 30px;
-    height: auto;
+    height: 30px;
+    margin-right: 10px;
 }
+
+
+.image-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.image-button img {
+    width: 100px; /* Podesite širinu slike */
+    height: auto; /* Zadržite proporcije */
+    border-radius: 10px; /* Zaobljeni uglovi, ako želite */
+    transition: transform 0.2s ease; /* Animacija na hover */
+}
+
+.image-button:hover img {
+    transform: scale(1.1); /* Uvećava sliku pri hoveru */
+}
+
+.image-button {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.image-button img {
+    width: 100px; /* Podesite širinu slike */
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+
+.image-button:hover img {
+    transform: scale(1.1);
+}
+
 
     </style>
 </head>
 <body>
 
 
-<nav class="navbar">
-    <ul class="navbar-list">
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="navbar-link">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-                Netflix
-            </a>
-        </li>
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="navbar-link">
-                <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-                Marvel
-            </a>
-        </li>
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="navbar-link">
-                <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-                Hulu
-            </a>
-        </li>
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="navbar-link">
-                <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-                Apple TV+
-            </a>
-        </li>
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="navbar-link">
-                <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-                Prime Video
-            </a>
-        </li>
-        <li class="navbar-item">
-            <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="navbar-link">
-                <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-                Disney+
-            </a>
-        </li>
-    </ul>
-</nav>
 
 
 
 
-
-    <div class="container">
-        <!-- Netflix Section -->
-        <div class="section" id="netflixSection">
-            <h2>Netflix</h2>
-            <div class="image-container" id="netflixImages"></div>
-        </div>
 
         <!-- Hulu Section -->
         <div class="section" id="huluSection">
@@ -176,13 +136,34 @@
             <h2>Popular</h2>
             <div class="image-container" id="popularImages"></div>
         </div>
-
-        <!-- Button Container for Controls -->
-        <div class="button-container">
-            <button id="prevSection">Previous Section</button>
-            <button id="nextSection">Next Section</button>
-        </div>
+        
+        
+        <div class="container">
+    <!-- Netflix Section -->
+    <div class="section" id="netflixSection">
+        <button class="image-button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Button Image">
+        </button>
+        <h2>Netflix</h2>
+        <div class="image-container" id="netflixImages"></div>
     </div>
+</div>
+
+<div class="container">
+    <!-- Netflix Section -->
+    <div class="section" id="netflixSection">
+        <button class="image-button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Button Image">
+        </button>
+        <h2>Netflix</h2>
+        <div class="image-container" id="netflixImages"></div>
+    </div>
+</div>
+
+
+
+
+    
 
     <script>
         async function fetchMovies(apiKey, sectionId, category) {
@@ -212,51 +193,39 @@
             handleKeyboardNavigation(); // Enable keyboard navigation
         }
 
-        function handleKeyboardNavigation() {
-            const sections = document.querySelectorAll('.section');
-            let currentSectionIndex = 0;
-            let currentImageIndex = 0;
+       function handleKeyboardNavigation() {
+    const sections = document.querySelectorAll('.section');
+    let currentSectionIndex = 0;
+    let currentImageIndex = 0;
 
-            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
+    sections[currentSectionIndex].querySelector('a img').focus(); // Focus na prvi image u prvoj sekciji
 
-            document.addEventListener('keydown', (event) => {
-                const currentSection = sections[currentSectionIndex];
-                const imageContainer = currentSection.querySelector('.image-container');
+    document.addEventListener('keydown', (event) => {
+        const currentSection = sections[currentSectionIndex];
+        const imageContainer = currentSection.querySelector('.image-container');
 
-                if (event.key === 'ArrowRight') {
-                    // Navigate right within the current section
-                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowLeft') {
-                    // Navigate left within the current section
-                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowDown') {
-                    // Navigate down to the next section
-                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                } else if (event.key === 'ArrowUp') {
-                    // Navigate up to the previous section
-                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                }
-            });
-
-            // Add navigation buttons functionality
-            document.getElementById('prevSection').addEventListener('click', () => {
-                currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                currentImageIndex = 0;
-                sections[currentSectionIndex].querySelector('img').focus();
-            });
-
-            document.getElementById('nextSection').addEventListener('click', () => {
-                currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                currentImageIndex = 0;
-                sections[currentSectionIndex].querySelector('img').focus();
-            });
+        if (event.key === 'ArrowRight') {
+            // Navigate right within the current section
+            currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
+            imageContainer.children[currentImageIndex].focus();
+        } else if (event.key === 'ArrowLeft') {
+            // Navigate left within the current section
+            currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
+            imageContainer.children[currentImageIndex].focus();
+        } else if (event.key === 'ArrowDown') {
+            // Navigate down to the next section
+            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+            currentImageIndex = 0; // Reset image index
+            sections[currentSectionIndex].querySelector('a img').focus();
+        } else if (event.key === 'ArrowUp') {
+            // Navigate up to the previous section
+            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+            currentImageIndex = 0; // Reset image index
+            sections[currentSectionIndex].querySelector('a img').focus();
         }
+    });
+}
+
 
         // Fetch data for each section
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
