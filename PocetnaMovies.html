@@ -277,7 +277,6 @@
         
 
 
-
 document.addEventListener('keydown', (event) => {
     const focusableButtons = Array.from(document.querySelectorAll('.filter-button, .movie-item:not(.movie-item .rating)'));
     let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
@@ -296,7 +295,6 @@ document.addEventListener('keydown', (event) => {
         focusableButtons[focusedIndex].focus();
     }
 });
-
 
 
     </script>
