@@ -9,8 +9,32 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #181818; /* Tamna pozadina */
-            color: #fff; /* Bela boja za tekst */
+            background-color: #181818;
+            color: #fff;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #242424;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .button-container button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .button-container img:hover {
+            transform: scale(1.1);
         }
         .container {
             display: flex;
@@ -23,12 +47,11 @@
             margin-bottom: 30px;
         }
         .section h2 {
-            width: 100%;
             text-align: center;
             margin: 20px 0;
             font-size: 24px;
             font-weight: 700;
-            color: #fff; /* Bela boja za naslov */
+            color: #fff;
         }
         .image-container {
             display: flex;
@@ -40,8 +63,8 @@
         .image-container img {
             width: calc(16.66% - 10px);
             height: auto;
-            border: 2px solid #fff; /* Bele ivice */
-            border-radius: 8px; /* Blago zaobljeni rubovi */
+            border: 2px solid #fff;
+            border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
@@ -49,80 +72,47 @@
             transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
-        
-        .button-container {
-    display: flex;
-    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
-    justify-content: space-around; /* Razmak između dugmadi */
-}
-        
-        .button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
-}
-
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-
-.image-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-.image-button img {
-    width: 100px; /* Podesite širinu slike */
-    height: auto; /* Zadržite proporcije */
-    border-radius: 10px; /* Zaobljeni uglovi, ako želite */
-    transition: transform 0.2s ease; /* Animacija na hover */
-}
-
-.image-button:hover img {
-    transform: scale(1.1); /* Uvećava sliku pri hoveru */
-}
-
-
-
     </style>
 </head>
 <body>
+    <!-- Button Section -->
+    <div class="button-container" id="buttonContainer">
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 1">
+        </button>
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 2">
+        </button>
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 3">
+        </button>
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 4">
+        </button>
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 5">
+        </button>
+        <button>
+            <img src="https://via.placeholder.com/50" alt="Button 6">
+        </button>
+    </div>
 
+    <!-- Netflix Section -->
+    <div class="section" id="netflixSection">
+        <h2>Netflix</h2>
+        <div class="image-container" id="netflixImages"></div>
+    </div>
 
+    <!-- Hulu Section -->
+    <div class="section" id="huluSection">
+        <h2>Hulu</h2>
+        <div class="image-container" id="huluImages"></div>
+    </div>
 
-<div class="section" id="netflixSection" style="display: flex; align-items: center; gap: 10px;">
-  <a href="https://primer-linka.com">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Opis slike" style="max-width: 100px; height: auto;">
-  </a>
-</div>
-
-
-
-
-
-
-        <!-- Hulu Section -->
-        <div class="section" id="huluSection">
-            <h2>Hulu</h2>
-            <div class="image-container" id="huluImages"></div>
-        </div>
-
-        <!-- Popular Section -->
-        <div class="section" id="popularSection">
-            <h2>Popular</h2>
-            <div class="image-container" id="popularImages"></div>
-        </div>
+    <!-- Popular Section -->
+    <div class="section" id="popularSection">
+        <h2>Popular</h2>
+        <div class="image-container" id="popularImages"></div>
     </div>
 
     <script>
@@ -143,7 +133,7 @@
                 const imgElement = document.createElement('img');
                 imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
                 imgElement.alt = movie.title;
-                imgElement.tabIndex = 0;  // Allow keyboard navigation
+                imgElement.tabIndex = 0; // Allow keyboard navigation
                 imgElement.addEventListener('click', () => {
                     window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                 });
@@ -158,39 +148,65 @@
             let currentSectionIndex = 0;
             let currentImageIndex = 0;
 
-            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
+            const focusImage = () => {
+                const currentSection = sections[currentSectionIndex];
+                const imageContainer = currentSection.querySelector('.image-container');
+                const images = imageContainer.querySelectorAll('img');
+                if (images.length > 0) {
+                    images[currentImageIndex].focus();
+                }
+            };
+
+            focusImage(); // Initial focus
 
             document.addEventListener('keydown', (event) => {
                 const currentSection = sections[currentSectionIndex];
                 const imageContainer = currentSection.querySelector('.image-container');
+                const images = imageContainer.querySelectorAll('img');
 
                 if (event.key === 'ArrowRight') {
-                    // Navigate right within the current section
-                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
+                    currentImageIndex = (currentImageIndex + 1) % images.length;
                 } else if (event.key === 'ArrowLeft') {
-                    // Navigate left within the current section
-                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
+                    currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
                 } else if (event.key === 'ArrowDown') {
-                    // Navigate down to the next section
                     currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
+                    currentImageIndex = 0;
                 } else if (event.key === 'ArrowUp') {
-                    // Navigate up to the previous section
                     currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
+                    currentImageIndex = 0;
                 }
+
+                focusImage();
             });
         }
 
+        function handleButtonKeyboardNavigation() {
+            const buttons = document.querySelectorAll('.button-container button');
+            let currentButtonIndex = 0;
+
+            const focusButton = () => {
+                buttons[currentButtonIndex].focus();
+            };
+
+            focusButton(); // Initial focus
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
+                } else if (event.key === 'ArrowLeft') {
+                    currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
+                }
+
+                focusButton();
+            });
+        }
+
+        handleButtonKeyboardNavigation();
+
         // Fetch data for each section
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated'); // Or any other category
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'popular');
+        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated');
+        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'upcoming');
     </script>
-
 </body>
 </html>
