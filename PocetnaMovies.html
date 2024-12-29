@@ -41,16 +41,16 @@
         .movie-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 10px;
             justify-content: center;
             padding: 20px 0;
-            width: 100%;
+            width: 120%;
         }
 
         .movie-item {
             position: relative;
-            width: 200px;
-            height: 300px;
+            width: 100px;
+            height: auto;
             background-color: #333;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -74,7 +74,7 @@
             bottom: 10px;
             left: 10px;
             color: white;
-            font-size: 16px;
+            font-size: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             padding: 5px;
             border-radius: 5px;
@@ -96,7 +96,7 @@
             top: 10px;
             right: 10px;
             color: white;
-            font-size: 14px;
+            font-size: 7px;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 5px;
             border-radius: 5px;
@@ -139,7 +139,7 @@
             yearFilters.appendChild(button);
         }
 
-        // Učitavanje i prikazivanje žanrova
+        // Generišemo dugmad za žanrove
         fetch(`${baseUrl}genre/movie/list?api_key=${apiKey}&language=sr-SR`)
             .then(response => {
                 if (!response.ok) {
@@ -201,7 +201,7 @@
 
                         const movieGenre = document.createElement('div');
                         movieGenre.classList.add('genre');
-                        movieGenre.textContent = currentFilter.type === 'genre' ? '' : '';
+                        movieGenre.textContent = currentFilter.type === 'genre' ? '' : ''; // Dodaje žanr ako je potrebno
 
                         const movieRating = document.createElement('div');
                         movieRating.classList.add('rating');
