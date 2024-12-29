@@ -8,6 +8,11 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
 
         }
 
@@ -242,13 +247,7 @@ function fetchMovies(listId, serviceId) {
         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
 
 
-        
-
-        // Funkcija za uklanjanje selekcije iz svih sekcija
-        function clearSelection() {
-            const allSelectedItems = document.querySelectorAll('.movie-item.selected');
-            allSelectedItems.forEach(item => item.classList.remove('selected'));
-        }
+ 
 
         // Funkcija za navigaciju
         function navigateMovies(direction) {
