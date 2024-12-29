@@ -93,26 +93,6 @@
     transform: scale(1.1); /* Uvećava sliku pri hoveru */
 }
 
-.image-button {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    text-decoration: none;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.image-button img {
-    width: 100px; /* Podesite širinu slike */
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.2s ease;
-}
-
-.image-button:hover img {
-    transform: scale(1.1);
-}
 
 
     </style>
@@ -121,6 +101,15 @@
 
 
 
+<div class="container">
+    <!-- Netflix Section -->
+    <div class="section" id="netflixSection">
+        <h2>Netflix</h2>
+        <div class="image-container" id="netflixImages">
+            <button class="image-button">
+                <img src="putanja-do-slike.jpg" alt="Netflix Button Image">
+            </button>
+        </div>
 
 
 
@@ -136,34 +125,7 @@
             <h2>Popular</h2>
             <div class="image-container" id="popularImages"></div>
         </div>
-        
-        
-        <div class="container">
-    <!-- Netflix Section -->
-    <div class="section" id="netflixSection">
-        <button class="image-button">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Button Image">
-        </button>
-        <h2>Netflix</h2>
-        <div class="image-container" id="netflixImages"></div>
     </div>
-</div>
-
-<div class="container">
-    <!-- Netflix Section -->
-    <div class="section" id="netflixSection">
-        <button class="image-button">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Button Image">
-        </button>
-        <h2>Netflix</h2>
-        <div class="image-container" id="netflixImages"></div>
-    </div>
-</div>
-
-
-
-
-    
 
     <script>
         async function fetchMovies(apiKey, sectionId, category) {
@@ -193,39 +155,38 @@
             handleKeyboardNavigation(); // Enable keyboard navigation
         }
 
-       function handleKeyboardNavigation() {
-    const sections = document.querySelectorAll('.section');
-    let currentSectionIndex = 0;
-    let currentImageIndex = 0;
+        function handleKeyboardNavigation() {
+            const sections = document.querySelectorAll('.section');
+            let currentSectionIndex = 0;
+            let currentImageIndex = 0;
 
-    sections[currentSectionIndex].querySelector('a img').focus(); // Focus na prvi image u prvoj sekciji
+            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
 
-    document.addEventListener('keydown', (event) => {
-        const currentSection = sections[currentSectionIndex];
-        const imageContainer = currentSection.querySelector('.image-container');
+            document.addEventListener('keydown', (event) => {
+                const currentSection = sections[currentSectionIndex];
+                const imageContainer = currentSection.querySelector('.image-container');
 
-        if (event.key === 'ArrowRight') {
-            // Navigate right within the current section
-            currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
-            imageContainer.children[currentImageIndex].focus();
-        } else if (event.key === 'ArrowLeft') {
-            // Navigate left within the current section
-            currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
-            imageContainer.children[currentImageIndex].focus();
-        } else if (event.key === 'ArrowDown') {
-            // Navigate down to the next section
-            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-            currentImageIndex = 0; // Reset image index
-            sections[currentSectionIndex].querySelector('a img').focus();
-        } else if (event.key === 'ArrowUp') {
-            // Navigate up to the previous section
-            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-            currentImageIndex = 0; // Reset image index
-            sections[currentSectionIndex].querySelector('a img').focus();
+                if (event.key === 'ArrowRight') {
+                    // Navigate right within the current section
+                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
+                } else if (event.key === 'ArrowLeft') {
+                    // Navigate left within the current section
+                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
+                } else if (event.key === 'ArrowDown') {
+                    // Navigate down to the next section
+                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
+                } else if (event.key === 'ArrowUp') {
+                    // Navigate up to the previous section
+                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
+                }
+            });
         }
-    });
-}
-
 
         // Fetch data for each section
         fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
