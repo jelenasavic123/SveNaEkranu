@@ -38,31 +38,27 @@
             background-color: #b20610;
         }
 
-        .movie-list {
+       .movie-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 20px;
             justify-content: center;
             padding: 20px 0;
-            width: 100%; /* Ograničava širinu na 100% ekrana */
+            width: 100%;
         }
 
         .movie-item {
-            flex: 1 1 calc(13.333% - 10px); /* Postavlja širinu na trećinu ekrana i oduzima razmak */
-            max-width: calc(13.333% - 10px); /* Maksimalna širina slike */
             position: relative;
-            width: 100px;
-            height: auto;
+            width: 200px;
+            height: 300px;
             background-color: #333;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
-            outline: none; /* Za navigaciju tastaturom */
-            cursor: pointer;
         }
 
-        .movie-item.selected {
-            border: 2px solid #e50914; /* Istaknut selektovani film */
+        .movie-item:hover {
+            transform: scale(1.05);
         }
 
         .movie-item img {
@@ -77,12 +73,11 @@
             bottom: 10px;
             left: 10px;
             color: white;
-            font-size: 10px;
+            font-size: 16px;
             background-color: rgba(0, 0, 0, 0.5);
             padding: 5px;
             border-radius: 5px;
         }
-
         .movie-item .genre {
             position: absolute;
             top: 10px;
@@ -290,6 +285,13 @@ function navigateMovies(direction) {
                     break;
             }
         });
+        
+        // Event za scroll
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+        fetchMovies();
+    }
+});
 
         // Učitavanje početnih filmova
         fetchMovies();
