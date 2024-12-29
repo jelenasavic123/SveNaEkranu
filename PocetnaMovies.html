@@ -149,81 +149,64 @@
 
             handleKeyboardNavigation(); // Enable keyboard navigation
         }
-
 function handleKeyboardNavigation() {
     const sections = document.querySelectorAll('.section');
-    const buttons = document.querySelectorAll('.button-container button'); // Dugmad koja ćemo navigirati
+    const buttons = document.querySelectorAll('.button-container button');
     let currentSectionIndex = 0;
     let currentImageIndex = 0;
-    let currentButtonIndex = 0; // Indeks aktivnog dugmeta
 
     const focusImage = () => {
         const currentSection = sections[currentSectionIndex];
-        const imageContainer = currentSection.querySelector('.image-container');
-        const images = imageContainer.querySelectorAll('img');
+        const images = currentSection.querySelectorAll('.image-container img');
         if (images.length > 0) {
-            images[currentImageIndex].focus(); // Fokus na sliku
+            images[currentImageIndex].focus();
         }
     };
 
     const focusButton = () => {
         buttons.forEach(button => button.classList.remove('active'));
-        buttons[currentButtonIndex].classList.add('active'); // Dodajemo klasu active na aktivno dugme
-        buttons[currentButtonIndex].focus(); // Fokus na dugme
+        buttons[currentSectionIndex].classList.add('active');
     };
-
-    // Initial focus on Netflix Section
-    if (currentSectionIndex === 1) {
-        focusImage(); // Fokusiranje slika odmah u Netflix sekciji
-        focusButton(); // Fokusiranje dugmeta u Netflix sekciji
-    } else {
-        focusImage(); // Fokusiranje slika u prvoj sekciji
-        focusButton(); // Fokusiranje dugmeta u prvoj sekciji
-    }
 
     document.addEventListener('keydown', (event) => {
         const currentSection = sections[currentSectionIndex];
-        const imageContainer = currentSection.querySelector('.image-container');
-        const images = imageContainer.querySelectorAll('img');
-        
-        if (currentSectionIndex === 1) { // Za Netflix sekciju
-            if (images.length === 0) return; // Ako nema slika, prekidamo navigaciju
-        }
+        const images = currentSection.querySelectorAll('.image-container img');
 
         if (event.key === 'ArrowRight') {
-            // Navigate right within the current section
-            if (currentSectionIndex === 1) return; // Ne menjaj dugme ako je Netflix sekcija
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            images[currentImageIndex].focus();
-            currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
-            focusButton(); // Fokus dugmeta nakon promene slike
+            // Move right within the current section
+            if (images.length > 0) {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                focusImage();
+            }
         } else if (event.key === 'ArrowLeft') {
-            // Navigate left within the current section
-            if (currentSectionIndex === 1) return; // Ne menjaj dugme ako je Netflix sekcija
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-            images[currentImageIndex].focus();
-            currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
-            focusButton(); // Fokus dugmeta nakon promene slike
+            // Move left within the current section
+            if (images.length > 0) {
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                focusImage();
+            }
         } else if (event.key === 'ArrowDown') {
-            // Navigate down to the next section
+            // Move to the next section
             currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-            currentImageIndex = 0; // Reset image index
-            sections[currentSectionIndex].querySelector('img').focus(); // Fokusiranje prve slike u novoj sekciji
-            currentButtonIndex = 0; // Reset button index in the new section
-            focusButton(); // Fokus dugmeta u novoj sekciji
+            currentImageIndex = 0;
+            focusImage();
+            focusButton();
         } else if (event.key === 'ArrowUp') {
-            // Navigate up to the previous section
+            // Move to the previous section
             currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-            currentImageIndex = 0; // Reset image index
-            sections[currentSectionIndex].querySelector('img').focus(); // Fokusiranje prve slike u prethodnoj sekciji
-            currentButtonIndex = 0; // Reset button index in the previous section
-            focusButton(); // Fokus dugmeta u prethodnoj sekciji
+            currentImageIndex = 0;
+            focusImage();
+            focusButton();
         }
     });
+
+    // Initial focus
+    focusImage();
+    focusButton();
 }
 
-// Pozivanje funkcije za navigaciju
+// Initialize keyboard navigation
 handleKeyboardNavigation();
+
 
 
 
