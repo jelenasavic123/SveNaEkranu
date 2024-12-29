@@ -85,7 +85,7 @@
                 const imgElement = document.createElement('img');
                 imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
                 imgElement.alt = movie.title;
-                imgElement.tabIndex = 0;  // Allow for keyboard navigation
+                imgElement.tabIndex = 0;  // Allow keyboard navigation
                 imgElement.addEventListener('click', () => {
                     alert(`Clicked on: ${movie.title}`);
                 });
@@ -93,6 +93,26 @@
             });
 
             handleKeyboardNavigation(sectionId); // Enable keyboard navigation
+        }
+
+        function handleKeyboardNavigation(sectionId) {
+            const container = document.getElementById(sectionId);
+            const images = container.querySelectorAll('img');
+            let currentIndex = 0;
+
+            if (images.length > 0) {
+                images[currentIndex].focus();  // Focus the first image
+            }
+
+            container.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    currentIndex = (currentIndex + 1) % images.length;
+                } else if (event.key === 'ArrowLeft') {
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                }
+                
+                images[currentIndex].focus(); // Focus the current image
+            });
         }
 
         // Fetch data for each section
