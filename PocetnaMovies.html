@@ -240,20 +240,7 @@ function fetchMovies(listId, serviceId) {
                 Array.from(section.children).some(item => item.classList.contains('selected'))
             );
 
-            if (activeSectionIndex === -1) activeSectionIndex = 0;
 
-            const activeSection = sections[activeSectionIndex];
-            const movieItems = activeSection.querySelectorAll('.movie-item');
-
-            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
-
-            if (currentIndex === -1) {
-                clearSelection();
-                currentIndex = 0;
-                movieItems[currentIndex].classList.add('selected');
-                centerSelectedItem(movieItems[currentIndex], activeSection);
-                return;
-            }
 
             let newIndex = -1;
 
