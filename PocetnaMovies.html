@@ -19,7 +19,8 @@
         }
         .section {
             display: flex;
-            overflow-x: auto;
+            flex-direction: column; /* Vertical layout for section */
+            overflow-x: auto; /* Horizontal scrolling */
             width: 80%;
             margin-bottom: 30px;
         }
@@ -31,7 +32,7 @@
         .image-container {
             display: flex;
             gap: 10px;
-            flex-wrap: nowrap;
+            overflow-x: auto; /* Horizontal scrolling */
         }
         .image-container img {
             width: calc(16.66% - 10px); /* 6 images per row */
@@ -92,26 +93,39 @@
                 container.appendChild(imgElement);
             });
 
-            handleKeyboardNavigation(sectionId); // Enable keyboard navigation
+            handleKeyboardNavigation(); // Enable keyboard navigation
         }
 
-        function handleKeyboardNavigation(sectionId) {
-            const container = document.getElementById(sectionId);
-            const images = container.querySelectorAll('img');
-            let currentIndex = 0;
+        function handleKeyboardNavigation() {
+            const sections = document.querySelectorAll('.section');
+            let currentSectionIndex = 0;
+            let currentImageIndex = 0;
 
-            if (images.length > 0) {
-                images[currentIndex].focus();  // Focus the first image
-            }
+            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
 
-            container.addEventListener('keydown', (event) => {
+            document.addEventListener('keydown', (event) => {
+                const currentSection = sections[currentSectionIndex];
+                const imageContainer = currentSection.querySelector('.image-container');
+
                 if (event.key === 'ArrowRight') {
-                    currentIndex = (currentIndex + 1) % images.length;
+                    // Navigate right within the current section
+                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
                 } else if (event.key === 'ArrowLeft') {
-                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    // Navigate left within the current section
+                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
+                } else if (event.key === 'ArrowDown') {
+                    // Navigate down to the next section
+                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
+                } else if (event.key === 'ArrowUp') {
+                    // Navigate up to the previous section
+                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
                 }
-                
-                images[currentIndex].focus(); // Focus the current image
             });
         }
 
