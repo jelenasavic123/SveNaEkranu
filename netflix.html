@@ -150,7 +150,7 @@
     const apiKey = '2701858e9bccab54d4d0e4931420a739';
     const baseUrl = `https://api.themoviedb.org/3/`;
     const netflixProviderId = 8; // Netflix ID
-
+    
     let currentPage = 1;
     let currentFilter = { type: 'popular', value: '' };
     let isLoading = false;
@@ -249,6 +249,16 @@
                     movieItem.appendChild(movieTitle);
                     movieItem.appendChild(movieRating);
                     movieList.appendChild(movieItem);
+
+                    // Navigate to URL in the same page on image click
+                    movieImage.addEventListener('click', () => {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                    });
+
+                    // Open URL in a new tab on title click
+                    movieTitle.addEventListener('click', () => {
+                        window.open(`https://vidsrc.vip/embed/movie/${movie.id}`, '_blank');
+                    });
                 });
 
                 currentPage++;
