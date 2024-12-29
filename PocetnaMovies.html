@@ -182,7 +182,37 @@
 <body>
     <!-- Ostatak HTML koda vašeg dokumenta -->
 
+    <div class="button-container">
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+            Netflix
+        </a>
 
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
+            Marvel
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
+            Hulu
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
+            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
+            Apple TV+
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
+            Prime Video
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
+            Disney+
+        </a>
+    </div>
 
     <div class="movie-section">
         <h1>Najbolje Ocenjeni Filmovi</h1>
@@ -231,202 +261,198 @@
     </div>
 
     <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
-        // Konfiguracija provajdera
-        const providers = [
-            { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
-            { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
-            { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
-            { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
-            { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
-            { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
-        ];
+// Konfiguracija provajdera
+const providers = [
+    { id: 'top-rated', endpoint: 'movie/top_rated', elementId: 'top-rated-list', loadingId: 'top-rated-loading' },
+    { id: 8, elementId: 'netflix-list', loadingId: 'netflix-loading' },
+    { id: 9, elementId: 'prime-list', loadingId: 'prime-loading' },
+    { id: 10, elementId: 'apple-list', loadingId: 'apple-loading' },
+    { id: 15, elementId: 'hulu-list', loadingId: 'hulu-loading' },
+    { id: 337, elementId: 'disney-list', loadingId: 'disney-loading' }
+];
 
-        // Postavljanje za svaki provajder
-        providers.forEach(provider => {
-            if (provider.id === 'top-rated') {
-                initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=hr-HR`, provider.elementId, provider.loadingId);
-            } else {
-                initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
-            }
-        });
+// Postavljanje za svaki provajder
+providers.forEach(provider => {
+    if (provider.id === 'top-rated') {
+        initializeInfiniteScroll(`https://api.themoviedb.org/3/${provider.endpoint}?api_key=${apiKey}&language=hr-HR`, provider.elementId, provider.loadingId);
+    } else {
+        initializeInfiniteScroll(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=sr-SR&with_watch_providers=${provider.id}&watch_region=US`, provider.elementId, provider.loadingId);
+    }
+});
 
-        function initializeInfiniteScroll(apiBase, listId, loadingId) {
-            const movieList = document.getElementById(listId);
-            const loading = document.getElementById(loadingId);
-            let currentPage = 1;
-            let isLoading = false;
+function initializeInfiniteScroll(apiBase, listId, loadingId) {
+    const movieList = document.getElementById(listId);
+    const loading = document.getElementById(loadingId);
+    let currentPage = 1;
+    let isLoading = false;
 
-            function loadMovies() {
-                if (isLoading) return;
+    function loadMovies() {
+        if (isLoading) return;
 
-                isLoading = true;
-                loading.style.display = 'block';
+        isLoading = true;
+        loading.style.display = 'block';
 
-                fetch(`${apiBase}&page=${currentPage}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.results.forEach(movie => {
-                            const movieItem = document.createElement('div');
-                            movieItem.classList.add('movie-item');
+        fetch(`${apiBase}&page=${currentPage}`)
+            .then(response => response.json())
+            .then(data => {
+                data.results.forEach(movie => {
+                    const movieItem = document.createElement('div');
+                    movieItem.classList.add('movie-item');
 
-                            const movieImage = document.createElement('img');
-                            movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                            movieImage.alt = movie.title;
+                    const movieImage = document.createElement('img');
+                    movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                    movieImage.alt = movie.title;
 
-                            const movieTitle = document.createElement('div');
-                            movieTitle.classList.add('movie-title');
-                            movieTitle.textContent = capitalizeTitle(movie.title);
+                    const movieTitle = document.createElement('div');
+                    movieTitle.classList.add('movie-title');
+                    movieTitle.textContent = capitalizeTitle(movie.title);
 
-                            const movieRating = document.createElement('div');
-                            movieRating.classList.add('rating');
-                            movieRating.innerHTML = getStarRating(movie.vote_average);
+                    const movieRating = document.createElement('div');
+                    movieRating.classList.add('rating');
+                    movieRating.innerHTML = getStarRating(movie.vote_average);
 
-                            movieItem.appendChild(movieImage);
-                            movieItem.appendChild(movieTitle);
-                            movieItem.appendChild(movieRating);
-                            movieList.appendChild(movieItem);
+                    movieItem.appendChild(movieImage);
+                    movieItem.appendChild(movieTitle);
+                    movieItem.appendChild(movieRating);
+                    movieList.appendChild(movieItem);
 
-                            movieItem.querySelector('img').addEventListener('click', () => {
-                                window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                            });
-                        });
-
-                        currentPage++;
-                        isLoading = false;
-                        loading.style.display = 'none';
-                    })
-                    .catch(error => {
-                        console.error('Greška prilikom preuzimanja podataka:', error);
-                        isLoading = false;
-                        loading.style.display = 'none';
+                    movieItem.querySelector('img').addEventListener('click', () => {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                     });
-            }
+                });
 
-            // Praćenje skrola i učitavanje dodatnih filmova
-            movieList.addEventListener('scroll', () => {
-                if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
-                    loadMovies();
-                }
+                currentPage++;
+                isLoading = false;
+                loading.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Greška prilikom preuzimanja podataka:', error);
+                isLoading = false;
+                loading.style.display = 'none';
             });
+    }
 
-            // Inicijalno učitavanje
+    // Praćenje skrola i učitavanje dodatnih filmova
+    movieList.addEventListener('scroll', () => {
+        if (movieList.scrollLeft + movieList.clientWidth >= movieList.scrollWidth - 100) {
             loadMovies();
         }
+    });
 
-        function getStarRating(rating) {
-            const fullStars = Math.floor(rating / 2);
-            const emptyStars = 5 - fullStars;
-            return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
-        }
+    // Inicijalno učitavanje
+    loadMovies();
+}
 
-        function capitalizeTitle(title) {
-            return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
-        }
+function getStarRating(rating) {
+    const fullStars = Math.floor(rating / 2);
+    const emptyStars = 5 - fullStars;
+    return `${'★'.repeat(fullStars)}${'☆'.repeat(emptyStars)} <span>${rating.toFixed(1)}</span>`;
+}
 
-        
-    // Funkcija za centriranje selektovanog elementa
-        function centerSelectedItem(selectedItem, container) {
-            const containerRect = container.getBoundingClientRect();
-            const itemRect = selectedItem.getBoundingClientRect();
+function capitalizeTitle(title) {
+    return title.toLowerCase().replace(/(^|\s)\S/g, letter => letter.toUpperCase());
+}
 
-            const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
-            container.scrollLeft += offsetX;
-        }
+// Funkcija za centriranje selektovanog elementa
+function centerSelectedItem(selectedItem, container) {
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = selectedItem.getBoundingClientRect();
 
-        // Funkcija za uklanjanje selekcije iz svih sekcija
-        function clearSelection() {
-            const allSelectedItems = document.querySelectorAll('.movie-item.selected');
-            allSelectedItems.forEach(item => item.classList.remove('selected'));
-        }
+    const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
+    container.scrollLeft += offsetX;
+}
 
-        // Funkcija za navigaciju
-        function navigateMovies(direction) {
-            const sections = document.querySelectorAll('.movie-list');
-            let activeSectionIndex = Array.from(sections).findIndex(section =>
-                Array.from(section.children).some(item => item.classList.contains('selected'))
-            );
+// Funkcija za uklanjanje selekcije iz svih sekcija
+function clearSelection() {
+    const allSelectedItems = document.querySelectorAll('.movie-item.selected');
+    allSelectedItems.forEach(item => item.classList.remove('selected'));
+}
 
-            if (activeSectionIndex === -1) activeSectionIndex = 0;
+// Funkcija za navigaciju
+function navigateMovies(direction) {
+    const sections = document.querySelectorAll('.movie-list');
+    let activeSectionIndex = Array.from(sections).findIndex(section =>
+        Array.from(section.children).some(item => item.classList.contains('selected'))
+    );
 
-            const activeSection = sections[activeSectionIndex];
-            const movieItems = activeSection.querySelectorAll('.movie-item');
+    if (activeSectionIndex === -1) activeSectionIndex = 0;
 
-            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+    const activeSection = sections[activeSectionIndex];
+    const movieItems = activeSection.querySelectorAll('.movie-item');
 
-            if (currentIndex === -1) {
+    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+
+    if (currentIndex === -1) {
+        clearSelection();
+        currentIndex = 0;
+        movieItems[currentIndex].classList.add('selected');
+        centerSelectedItem(movieItems[currentIndex], activeSection);
+        return;
+    }
+
+    let newIndex = -1;
+
+    switch (direction) {
+        case 'left':
+            if (currentIndex > 0) newIndex = currentIndex - 1;
+            break;
+        case 'right':
+            if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
+            break;
+        case 'up':
+            if (activeSectionIndex > 0) {
                 clearSelection();
-                currentIndex = 0;
-                movieItems[currentIndex].classList.add('selected');
-                centerSelectedItem(movieItems[currentIndex], activeSection);
-                return;
+                const prevSection = sections[activeSectionIndex - 1];
+                const prevItems = prevSection.querySelectorAll('.movie-item');
+                if (prevItems.length > 0) {
+                    prevItems[0].classList.add('selected');
+                    prevSection.scrollIntoView({ behavior: 'smooth' });
+                }
             }
-
-            let newIndex = -1;
-
-            switch (direction) {
-                case 'left':
-                    if (currentIndex > 0) newIndex = currentIndex - 1;
-                    break;
-                case 'right':
-                    if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
-                    break;
-                case 'up':
-                    if (activeSectionIndex > 0) {
-                        clearSelection();
-                        const prevSection = sections[activeSectionIndex - 1];
-                        const prevItems = prevSection.querySelectorAll('.movie-item');
-                        if (prevItems.length > 0) {
-                            prevItems[0].classList.add('selected');
-                            prevSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                    return;
-                case 'down':
-                    if (activeSectionIndex < sections.length - 1) {
-                        clearSelection();
-                        const nextSection = sections[activeSectionIndex + 1];
-                        const nextItems = nextSection.querySelectorAll('.movie-item');
-                        if (nextItems.length > 0) {
-                            nextItems[0].classList.add('selected');
-                            nextSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                    return;
-                case 'enter':
-                    if (currentIndex !== -1) {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
-                    }
-                    return;
+            return;
+        case 'down':
+            if (activeSectionIndex < sections.length - 1) {
+                clearSelection();
+                const nextSection = sections[activeSectionIndex + 1];
+                const nextItems = nextSection.querySelectorAll('.movie-item');
+                if (nextItems.length > 0) {
+                    nextItems[0].classList.add('selected');
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
             }
+            return;
+        
+    }
 
-            if (newIndex !== -1) {
-                movieItems[currentIndex].classList.remove('selected');
-                movieItems[newIndex].classList.add('selected');
-                centerSelectedItem(movieItems[newIndex], activeSection);
-            }
-        }
+    if (newIndex !== -1) {
+        movieItems[currentIndex].classList.remove('selected');
+        movieItems[newIndex].classList.add('selected');
+        centerSelectedItem(movieItems[newIndex], activeSection);
+    }
+}
 
-        document.addEventListener('keydown', event => {
-            switch (event.key) {
-                case 'ArrowLeft':
-                    navigateMovies('left');
-                    break;
-                case 'ArrowRight':
-                    navigateMovies('right');
-                    break;
-                case 'ArrowUp':
-                    navigateMovies('up');
-                    break;
-                case 'ArrowDown':
-                    navigateMovies('down');
-                    break;
-                case 'Enter':
-                    navigateMovies('enter');
-                    break;
-            }
-        });
+document.addEventListener('keydown', event => {
+    switch (event.key) {
+        case 'ArrowLeft':
+            navigateMovies('left');
+            break;
+        case 'ArrowRight':
+            navigateMovies('right');
+            break;
+        case 'ArrowUp':
+            navigateMovies('up');
+            break;
+        case 'ArrowDown':
+            navigateMovies('down');
+            break;
+        case 'Enter':
+            navigateMovies('enter');
+            break;
+    }
+});
+
     </script>
 </body>
 </html>
