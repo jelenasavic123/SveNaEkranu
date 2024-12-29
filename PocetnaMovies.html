@@ -101,7 +101,6 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            
             color: white;
             font-size: 12px; /* Smanjen font */
             background-color: rgba(0, 0, 0, 0.7);
@@ -125,19 +124,12 @@
             width: 150px;
         }
         
-.filters-container {
-    display: flex;
-    justify-content: space-between; /* Da razdvaja leve i desne filtere */
-    gap: 20px; /* Dodatni razmak između filter sekcija */
-}
-
-.filters {
-    display: grid; /* Dugmad se raspoređuju u grid */
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Fleksibilni grid, minimalne širine 100px */
-    gap: 10px; /* Razmak između dugmadi */
-}
-
-
+        .filter-button:focus,
+        .movie-item:focus {
+            outline: 2px solid #e50914;
+            outline-offset: 3px;
+            transform: scale(1.1); /* Uvećanje fokusa */
+        }
     </style>
 </head>
 <body>
@@ -290,7 +282,8 @@
 
     // Početno učitavanje filmova
     fetchMovies();
-document.addEventListener('keydown', (event) => {
+    
+   document.addEventListener('keydown', (event) => {
     const focusableButtons = Array.from(document.querySelectorAll('.filters button')); // Sve dugmadi iz svih filtera
     let focusedIndex = focusableButtons.findIndex(button => button === document.activeElement);
 
@@ -315,8 +308,6 @@ document.addEventListener('keydown', (event) => {
         focusableButtons[focusedIndex].focus();
     }
 });
-
-
 </script>
 
 </body>
