@@ -102,34 +102,6 @@
     </button>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        let buttons = document.querySelectorAll('.button-container button');
-        let currentIndex = 0;
-
-        function highlightButton(index) {
-            buttons[currentIndex].classList.remove('active');
-            currentIndex = index;
-            buttons[currentIndex].classList.add('active');
-        }
-
-        function handleKeyDown(event) {
-            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
-                highlightButton((currentIndex + 1) % buttons.length);
-            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
-                highlightButton((currentIndex - 1 + buttons.length) % buttons.length);
-            }
-        }
-
-        buttons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                alert(`Button ${index + 1} clicked!`);
-            });
-        });
-
-        document.addEventListener('keydown', handleKeyDown);
-    });
-</script>
 
 
     <!-- Netflix Section -->
@@ -190,47 +162,72 @@ function handleKeyboardNavigation() {
         const imageContainer = currentSection.querySelector('.image-container');
         const images = imageContainer.querySelectorAll('img');
         if (images.length > 0) {
-            images[currentImageIndex].focus();
+            images[currentImageIndex].focus(); // Fokus na sliku
         }
     };
 
     const focusButton = () => {
         buttons.forEach(button => button.classList.remove('active'));
         buttons[currentButtonIndex].classList.add('active'); // Dodajemo klasu active na aktivno dugme
-        buttons[currentButtonIndex].focus();
+        buttons[currentButtonIndex].focus(); // Fokus na dugme
     };
 
-    // Initial focus
-    focusImage();
-    focusButton();
+    // Initial focus on Netflix Section
+    if (currentSectionIndex === 1) {
+        focusImage(); // Fokusiranje slika odmah u Netflix sekciji
+        focusButton(); // Fokusiranje dugmeta u Netflix sekciji
+    } else {
+        focusImage(); // Fokusiranje slika u prvoj sekciji
+        focusButton(); // Fokusiranje dugmeta u prvoj sekciji
+    }
 
     document.addEventListener('keydown', (event) => {
         const currentSection = sections[currentSectionIndex];
         const imageContainer = currentSection.querySelector('.image-container');
         const images = imageContainer.querySelectorAll('img');
-
-        if (event.key === 'ArrowRight') {
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-        } else if (event.key === 'ArrowLeft') {
-            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-        } else if (event.key === 'ArrowDown') {
-            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-            currentImageIndex = 0;
-        } else if (event.key === 'ArrowUp') {
-            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-            currentImageIndex = 0;
-        } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-            // Navigacija između dugmadi
-            currentButtonIndex = (currentButtonIndex + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+        
+        if (currentSectionIndex === 1) { // Za Netflix sekciju
+            if (images.length === 0) return; // Ako nema slika, prekidamo navigaciju
         }
 
-        focusImage(); // Fokusiranje slike
-        focusButton(); // Fokusiranje dugmeta
+        if (event.key === 'ArrowRight') {
+            // Navigate right within the current section
+            if (currentSectionIndex === 1) return; // Ne menjaj dugme ako je Netflix sekcija
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].focus();
+            currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
+            focusButton(); // Fokus dugmeta nakon promene slike
+        } else if (event.key === 'ArrowLeft') {
+            // Navigate left within the current section
+            if (currentSectionIndex === 1) return; // Ne menjaj dugme ako je Netflix sekcija
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            images[currentImageIndex].focus();
+            currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
+            focusButton(); // Fokus dugmeta nakon promene slike
+        } else if (event.key === 'ArrowDown') {
+            // Navigate down to the next section
+            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+            currentImageIndex = 0; // Reset image index
+            sections[currentSectionIndex].querySelector('img').focus(); // Fokusiranje prve slike u novoj sekciji
+            currentButtonIndex = 0; // Reset button index in the new section
+            focusButton(); // Fokus dugmeta u novoj sekciji
+        } else if (event.key === 'ArrowUp') {
+            // Navigate up to the previous section
+            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+            currentImageIndex = 0; // Reset image index
+            sections[currentSectionIndex].querySelector('img').focus(); // Fokusiranje prve slike u prethodnoj sekciji
+            currentButtonIndex = 0; // Reset button index in the previous section
+            focusButton(); // Fokus dugmeta u prethodnoj sekciji
+        }
     });
 }
 
 // Pozivanje funkcije za navigaciju
 handleKeyboardNavigation();
+
+
+
+
 
         
 
