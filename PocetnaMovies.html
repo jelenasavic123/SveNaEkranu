@@ -3,223 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horizontal Scrolling with Remote Navigation</title>
+    <title>Movie Explorer & TV Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Spectral+SC:wght@400&display=swap" rel="stylesheet">
     <style>
+        /* Global styles */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #181818; /* Tamna pozadina */
-            color: #fff; /* Bela boja za tekst */
-            overflow: hidden; /* Disable page scroll */
+            background-color: #f4f4f4;
+            color: #333;
         }
-   
-        }
-        .image-container {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
+
+        header {
+            background-color: #2c3e50;
             padding: 10px 0;
-            flex-wrap: nowrap; /* Prevent scrolling in this container */
-        }
-        .image-container img {
-            width: calc(16.66% - 10px);
-            height: auto;
-            border: 2px solid #fff; /* Bele ivice */
-            border-radius: 8px; /* Blago zaobljeni rubovi */
-            cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .image-container img:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
 
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            padding: 10px 20px;
+        }
 
-        .image-button {
-            background: none;
+        .navbar a:hover {
+            background-color: #34495e;
+            border-radius: 5px;
+        }
+
+        /* Sections for Movies */
+        main {
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        /* Movie grid layout */
+        .movie-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .movie-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .movie-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-item h3 {
+            font-size: 1.2em;
+            margin: 10px;
+        }
+
+        /* TV Controls */
+        .tv-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tv-controls button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
             border: none;
-            padding: 0;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        .image-button img {
-            width: 100px; /* Podesite širinu slike */
-            height: auto; /* Zadržite proporcije */
-            border-radius: 10px; /* Zaobljeni uglovi, ako želite */
-            transition: transform 0.2s ease; /* Animacija na hover */
-        }
-
-        .image-button:hover img {
-            
-            
-          transform: scale(1.1); /* Uvećava sliku pri hoveru */
+        .tv-controls button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
+    <header>
+        <nav class="navbar">
+            <a href="#home">Home</a>
+            <a href="#top-movies">Top Movies</a>
+            <a href="#recommended">Recommended</a>
+            <a href="#now-playing">Now Playing</a>
+            <a href="#popular">Popular</a>
+            <a href="#upcoming">Upcoming</a>
+        </nav>
+    </header>
 
-    <div class="button-container">
-        <!-- Button 1 -->
-        <button class="button" id="button1" tabindex="0">
-            <img src="putanja-do-slike1.jpg" alt="Button 1">
-            <span>Button 1</span>
-        </button>
-        <!-- Button 2 -->
-        <button class="button" id="button2" tabindex="0">
-            <img src="putanja-do-slike2.jpg" alt="Button 2">
-            <span>Button 2</span>
-        </button>
-        <!-- Button 3 -->
-        <button class="button" id="button3" tabindex="0">
-            <img src="putanja-do-slike3.jpg" alt="Button 3">
-            <span>Button 3</span>
-        </button>
-        <!-- Button 4 -->
-        <button class="button" id="button4" tabindex="0">
-            <img src="putanja-do-slike4.jpg" alt="Button 4">
-            <span>Button 4</span>
-        </button>
-        <!-- Button 5 -->
-        <button class="button" id="button5" tabindex="0">
-            <img src="putanja-do-slike5.jpg" alt="Button 5">
-            <span>Button 5</span>
-        </button>
-        <!-- Button 6 -->
-        <button class="button" id="button6" tabindex="0">
-            <img src="putanja-do-slike6.jpg" alt="Button 6">
-            <span>Button 6</span>
-        </button>
-    <div class="container">
-        <!-- Netflix Section -->
-        <div class="section" id="netflixSection">
-            <h2>Netflix</h2>
-            <div class="image-container" id="netflixImages">
-                <button class="image-button">
-                    <img src="putanja-do-slike.jpg" alt="Netflix Button Image">
-                </button>
+    <main>
+        <!-- Top Movies Section -->
+        <section id="top-movies">
+            <h2>Top Movies</h2>
+            <div class="movie-list" id="top-movies-list"></div>
+        </section>
+
+        <!-- Recommended Movies Section -->
+        <section id="recommended">
+            <h2>Recommended Movies</h2>
+            <div class="movie-list" id="recommended-movies-list"></div>
+        </section>
+
+        <!-- Now Playing Section -->
+        <section id="now-playing">
+            <h2>Now Playing</h2>
+            <div class="movie-list" id="now-playing-movies-list"></div>
+        </section>
+
+        <!-- Popular Movies Section -->
+        <section id="popular">
+            <h2>Popular Movies</h2>
+            <div class="movie-list" id="popular-movies-list"></div>
+        </section>
+
+        <!-- Upcoming Movies Section -->
+        <section id="upcoming">
+            <h2>Upcoming Movies</h2>
+            <div class="movie-list" id="upcoming-movies-list"></div>
+        </section>
+
+        <!-- TV Control Section -->
+        <section id="tv-control">
+            <h2>TV Control</h2>
+            <div class="tv-controls">
+                <button onclick="sendCommandToTV('volumeUp')">Volume Up</button>
+                <button onclick="sendCommandToTV('volumeDown')">Volume Down</button>
+                <button onclick="sendCommandToTV('playPause')">Play/Pause</button>
+                <button onclick="sendCommandToTV('next')">Next</button>
+                <button onclick="sendCommandToTV('previous')">Previous</button>
+                <button onclick="sendCommandToTV('mute')">Mute</button>
             </div>
-        </div>
-
-        <!-- Hulu Section -->
-        <div class="section" id="huluSection">
-            <h2>Hulu</h2>
-            <div class="image-container" id="huluImages"></div>
-        </div>
-
-        <!-- Popular Section -->
-        <div class="section" id="popularSection">
-            <h2>Popular</h2>
-            <div class="image-container" id="popularImages"></div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <script>
-        async function fetchMovies(apiKey, sectionId, category) {
-            const tmdbBaseUrl = "https://api.themoviedb.org/3";
-            const response = await fetch(`${tmdbBaseUrl}/movie/${category}?api_key=${apiKey}&language=en-US&page=1`);
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3';
+
+        // Function to fetch movies
+        async function fetchMovies(endpoint) {
+            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
             const data = await response.json();
-
-            if (data.results && data.results.length > 0) {
-                displayImages(data.results, sectionId);
-            }
+            return data.results;
         }
 
-        function displayImages(movies, sectionId) {
-            const container = document.getElementById(sectionId);
-            container.innerHTML = ""; // Clear existing images
+        // Function to display movies
+        function displayMovies(movies, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
             movies.forEach(movie => {
-                const imgElement = document.createElement('img');
-                imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                imgElement.alt = movie.title;
-                imgElement.tabIndex = 0;  // Allow keyboard navigation
-                imgElement.addEventListener('click', () => {
-                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                });
-                container.appendChild(imgElement);
-            });
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie-item');
 
-            handleKeyboardNavigation(); // Enable keyboard navigation
-        }
+                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const movieTitle = movie.title || movie.name;
 
-        function handleKeyboardNavigation() {
-            const sections = document.querySelectorAll('.section');
-            let currentSectionIndex = 0;
-            let currentImageIndex = 0;
-
-            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
-
-            document.addEventListener('keydown', (event) => {
-                const currentSection = sections[currentSectionIndex];
-                const imageContainer = currentSection.querySelector('.image-container');
-
-                if (event.key === 'ArrowRight') {
-                    // Navigate right within the current section
-                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowLeft') {
-                    // Navigate left within the current section
-                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowDown') {
-                    // Navigate down to the next section
-                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                } else if (event.key === 'ArrowUp') {
-                    // Navigate up to the previous section
-                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                }
+                movieElement.innerHTML = `
+                    <img src="${movieImage}" alt="${movieTitle}">
+                    <div class="movie-info">
+                        <h3>${movieTitle}</h3>
+                    </div>
+                `;
+                container.appendChild(movieElement);
             });
         }
 
-        // Fetch data for each section
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated'); // Or any other category
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'popular');
+        // Function for sending TV control commands
+        function sendCommandToTV(command) {
+            console.log(`Sending command: ${command}`);
+            // Here you'd implement real TV control logic (via API, IR, etc.)
+        }
 
-        // Button Navigation
-        const buttons = document.querySelectorAll('.button');
-        let currentButtonIndex = 0;
-        
-        // Focus the first button on page load
-        buttons[currentButtonIndex].focus();
+        // Fetch and display movies when the page loads
+        window.onload = async () => {
+            const topMovies = await fetchMovies('/movie/top_rated');
+            const recommendedMovies = await fetchMovies('/movie/recommendations');
+            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+            const popularMovies = await fetchMovies('/movie/popular');
+            const upcomingMovies = await fetchMovies('/movie/upcoming');
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') {
-                currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
-                buttons[currentButtonIndex].focus();
-            } else if (event.key === 'ArrowLeft') {
-                currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
-                buttons[currentButtonIndex].focus();
-            }
-        });
-    </script>
-    <script>
-        const buttons = document.querySelectorAll('.button');
-        let currentButtonIndex = 0;
-
-        // Focus the first button on page load
-        buttons[currentButtonIndex].focus();
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') {
-                // Move right, if at the last button, loop back to the first
-                currentButtonIndex = (currentButtonIndex + 1) % buttons.length;
-                buttons[currentButtonIndex].focus();
-            } else if (event.key === 'ArrowLeft') {
-                // Move left, if at the first button, loop back to the last
-                currentButtonIndex = (currentButtonIndex - 1 + buttons.length) % buttons.length;
-                buttons[currentButtonIndex].focus();
-            } else if (event.key === 'Enter') {
-                // Trigger the button click event
-                buttons[currentButtonIndex].click();
-            }
-        });
+            displayMovies(topMovies, 'top-movies-list');
+            displayMovies(recommendedMovies, 'recommended-movies-list');
+            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+            displayMovies(popularMovies, 'popular-movies-list');
+            displayMovies(upcomingMovies, 'upcoming-movies-list');
+        };
     </script>
 </body>
 </html>
