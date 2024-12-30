@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Style Movie App</title>
+    <title>Movie App</title>
     <style>
         /* Osnovni stilovi */
         body {
@@ -12,6 +12,7 @@
             font-family: 'Arial', sans-serif;
             background-color: #141414;
             color: white;
+            overflow: hidden;
         }
 
         .container {
@@ -26,8 +27,32 @@
             text-align: center;
         }
 
+        /* Dugmadi za selektovanje kategorija */
+        .button-row {
+            display: flex;
+            justify-content: space-evenly;
+            margin-bottom: 20px;
+        }
+
+        .category-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-button.selected {
+            background-color: #f4a261;
+            border-color: #f4a261;
+        }
+
         .movie-row {
             margin: 20px 0;
+            position: relative;
+            height: 500px;
         }
 
         .movie-row h2 {
@@ -38,13 +63,16 @@
 
         .movie-list {
             display: flex;
-            overflow-x: scroll;
+            gap: 15px;
             padding-bottom: 20px;
-            gap: 10px;
+            padding-top: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
         }
 
         .movie-card {
-            width: 200px;
+            flex-shrink: 0;
+            width: 250px;
             background-color: #333;
             border-radius: 8px;
             overflow: hidden;
@@ -55,16 +83,13 @@
 
         .movie-card img {
             width: 100%;
-            height: 300px;
+            height: 100%;
             object-fit: cover;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
         }
 
         .movie-card .details {
             padding: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
         .movie-card .details h3 {
@@ -90,6 +115,17 @@
         .movie-list::-webkit-scrollbar-track {
             background-color: #333;
         }
+
+        /* Stil za selektovane filmove */
+        .selected {
+            border: 2px solid yellow;
+            transform: scale(1.05);
+        }
+
+        /* Stil za selektovane kategorije */
+        .category-selected {
+            border: 2px solid yellow;
+        }
     </style>
 </head>
 <body>
@@ -97,19 +133,27 @@
 <div class="container">
     <h1>Movie Library</h1>
 
-    <!-- Popularni filmovi -->
+    <!-- Dugmadi za kategorije -->
+    <div class="button-row">
+        <button class="category-button" id="button-popular">Popular</button>
+        <button class="category-button" id="button-top-rated">Top Rated</button>
+        <button class="category-button" id="button-new-movies">New Movies</button>
+        <button class="category-button" id="button-now-playing">Now Playing</button>
+        <button class="category-button" id="button-upcoming">Upcoming</button>
+        <button class="category-button" id="button-trending">Trending</button>
+    </div>
+
+    <!-- Kategorije filmova -->
     <div class="movie-row" id="popular-movies">
         <h2>Popular Movies</h2>
         <div class="movie-list" id="popular-movie-list"></div>
     </div>
 
-    <!-- Najbolje ocenjeni filmovi -->
     <div class="movie-row" id="top-rated-movies">
         <h2>Top Rated Movies</h2>
         <div class="movie-list" id="top-rated-movie-list"></div>
     </div>
 
-    <!-- Novi filmovi -->
     <div class="movie-row" id="new-movies">
         <h2>New Movies</h2>
         <div class="movie-list" id="new-movie-list"></div>
@@ -135,11 +179,7 @@
         movies.forEach(movie => {
             const movieCard = document.createElement('div');
             movieCard.classList.add('movie-card');
-
-            // Kreiraj link za svaki film koji vodi na detalje o filmu
-            const movieLink = document.createElement('a');
-            movieLink.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-            movieLink.target = "_blank"; // Otvori u novom tabu
+            movieCard.setAttribute('data-id', movie.id);
 
             // Dodavanje slike filma
             const img = document.createElement('img');
@@ -162,9 +202,7 @@
             movieCard.appendChild(img);
             movieCard.appendChild(details);
 
-            // Dodajemo karticu unutar linka
-            movieLink.appendChild(movieCard);
-            movieList.appendChild(movieLink);
+            movieList.appendChild(movieCard);
         });
     }
 
@@ -180,6 +218,94 @@
     }
 
     window.onload = loadMovies;  // Pokreni učitavanje filmova kada stranica bude učitana
+
+    // Tastatura za navigaciju
+    let selectedRow = 0; // Početni red (Popularni filmovi)
+    let selectedIndex = 0; // Početni indeks za filmove unutar reda
+    let selectedCategory = 0; // Početna kategorija (Popular)
+
+    // Pomeri selekciju na trenutnu poziciju
+    function moveSelection() {
+        const rows = document.querySelectorAll('.movie-row');
+        const movieRows = rows[selectedRow].querySelectorAll('.movie-card');
+
+        // Ukloni selektovani film sa prethodnog reda
+        movieRows.forEach((movie, index) => {
+            movie.classList.remove('selected');
+            if (index === selectedIndex) {
+                movie.classList.add('selected');
+            }
+        });
+
+        rows[selectedRow].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        const rows = document.querySelectorAll('.movie-row');
+        const movieRows = rows[selectedRow].querySelectorAll('.movie-card');
+
+        switch (e.key) {
+            case 'ArrowDown':
+                if (selectedRow < rows.length - 1) {
+                    selectedRow++;
+                    selectedIndex = 0;  // Resetuj indeks kada se pređe u sledeći red
+                }
+                break;
+            case 'ArrowUp':
+                if (selectedRow > 0) {
+                    selectedRow--;
+                    selectedIndex = 0;  // Resetuj indeks kada se pređe u prethodni red
+                }
+                break;
+            case 'ArrowLeft':
+                if (selectedIndex > 0) {
+                    selectedIndex--;
+                }
+                break;
+            case 'ArrowRight':
+                if (selectedIndex < movieRows.length - 1) {
+                    selectedIndex++;
+                }
+                break;
+            case 'Enter':
+                // Otvori film
+                const selectedMovieId = movieRows[selectedIndex]?.getAttribute('data-id');
+                if (selectedMovieId) {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovieId}`;
+                }
+                break;
+        }
+        moveSelection();
+    });
+
+    // Navigacija kroz dugmadi
+    const buttons = document.querySelectorAll('.category-button');
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', async () => {
+            buttons.forEach(btn => btn.classList.remove('selected'));  // Ukloni selektovane dugmadi
+            button.classList.add('selected');  // Selektuj kliknuto dugme
+
+            selectedCategory = index;
+
+            // Na osnovu selektovane kategorije, prikazujemo odgovarajući set filmova
+            switch (index) {
+                case 0:
+                    displayMovies(await fetchMovies('/movie/popular'), 'popular-movie-list');
+                    selectedRow = 0;
+                    break;
+                case 1:
+                    displayMovies(await fetchMovies('/movie/top_rated'), 'top-rated-movie-list');
+                    selectedRow = 1;
+                    break;
+                case 2:
+                    displayMovies(await fetchMovies('/movie/upcoming'), 'new-movie-list');
+                    selectedRow = 2;
+                    break;
+                // Dodajte još slučajeva za ostale dugmadi ako želite.
+            }
+        });
+    });
+
 </script>
 
 </body>
