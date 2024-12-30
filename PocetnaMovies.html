@@ -12,13 +12,14 @@
             background-color: #141414;
             color: white;
             overflow-x: hidden;
-            overflow-y: auto; /* Omogućava vertikalni scroll */
+            overflow-y: auto;
         }
         .movie-item {
             display: inline-block;
             width: 200px;
             margin: 10px;
             position: relative;
+            cursor: pointer;
         }
         .movie-item img {
             width: 100%;
@@ -76,8 +77,22 @@
                         <h3>${movieTitle}</h3>
                     </div>
                 `;
+                
+                // Dodaj klik događaj na sliku
+                movieElement.querySelector('img').addEventListener('click', () => {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                });
+
                 container.appendChild(movieElement);
             });
+
+            // Ažuriraj listu movieItems svaki put kada su novi filmovi dodati
+            updateMovieItems();
+        }
+
+        // Funkcija za ažuriranje movieItems
+        function updateMovieItems() {
+            movieItems = document.querySelectorAll('.movie-item');
         }
 
         // Select movie
@@ -89,12 +104,13 @@
 
         // Keyboard navigation (left, right, up, down, enter)
         let currentIndex = -1;
-        const movieItems = [];
+        let movieItems = [];
 
+        // Ažuriraj movieItems kada se pritisne taster
         document.addEventListener('keydown', (e) => {
             const items = document.querySelectorAll('.movie-item');
             if (items.length === 0) return;
-            
+
             switch (e.key) {
                 case 'ArrowRight':
                     currentIndex = (currentIndex + 1) % items.length;
@@ -110,7 +126,11 @@
                     break;
                 case 'Enter':
                     if (currentIndex !== -1) {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
+                        // Dodajemo dijagnostiku za verifikaciju selektovanog filma
+                        const selectedMovieId = movieItems[currentIndex].getAttribute('data-id');
+                        console.log('Selected movie id:', selectedMovieId);
+                        // Otvori odgovarajući film
+                        window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovieId}`;
                     }
                     break;
                 default:
@@ -136,7 +156,8 @@
             displayMovies(popularMovies, 'popular-movies-list');
             displayMovies(upcomingMovies, 'upcoming-movies-list');
 
-            movieItems.push(...document.querySelectorAll('.movie-item'));
+            // Ažuriraj listu movieItems nakon što se svi filmovi učitaju
+            updateMovieItems();
         };
     </script>
 
