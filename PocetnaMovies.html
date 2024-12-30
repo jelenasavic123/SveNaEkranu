@@ -1,139 +1,137 @@
-<!DOCTYPE html>
-<html lang="sr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontrola Kursora Tastaturom</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+                <!DOCTYPE html>
+                <html lang="sr">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Kontrola Kursora Tastaturom</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                        }
 
-        body {
-            height: 100vh;
-            background-color: #f0f0f0;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            position: relative;
-        }
+                        body {
+                            height: 100vh;
+                            background-color: #f0f0f0;
+                            overflow: hidden;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex-direction: column;
+                            position: relative;
+                        }
 
-        .cursor {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 50%;
-            pointer-events: none; /* Da kursor ne može sam da izazove događaje */
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease-in-out;
-            z-index: 9999;
-        }
+                        .cursor {
+                            position: absolute;
+                            width: 20px;
+                            height: 20px;
+                            background-color: rgba(0, 0, 0, 0.7);
+                            border-radius: 50%;
+                            pointer-events: none; /* Da kursor ne može sam da izazove događaje */
+                            transform: translate(-50%, -50%);
+                            transition: transform 0.1s ease-in-out;
+                            z-index: 9999;
+                        }
 
-        html, body {
-            cursor: none; /* Ukidamo podrazumevani kursor miša */
-        }
+                        html, body {
+                            cursor: none; /* Ukidamo podrazumevani kursor miša */
+                        }
 
-        iframe {
-            width: 800px;
-            height: 450px;
-            border: none;
-            z-index: 1;
-        }
+                        iframe {
+                            width: 800px;
+                            height: 450px;
+                            border: none;
+                            z-index: 1;
+                        }
 
-        a {
-            margin-top: 20px;
-            font-size: 20px;
-            color: blue;
-            text-decoration: none;
-        }
+                        a {
+                            margin-top: 20px;
+                            font-size: 20px;
+                            color: blue;
+                            text-decoration: none;
+                        }
 
-        a:focus {
-            outline: none;
-        }
-    </style>
-</head>
-<body>
+                        a:focus {
+                            outline: none;
+                        }
+                    </style>
+                </head>
+                <body>
 
-    <div class="cursor" id="cursor"></div>
+                    <div class="cursor" id="cursor"></div>
 
-    <!-- Test link -->
-    <a href="#" id="test-link" tabindex="0">Klikni me (simulacija Enter tastature)</a>
+                    
+                    <!-- Iframe sa video sadržajem -->
+                    <iframe src="https://vidsrc.xyz/embed/movie/tt5433140" id="video-iframe" tabindex="0"></iframe>
 
-    <!-- Iframe sa video sadržajem -->
-    <iframe src="https://vidsrc.xyz/embed/movie/tt5433140" id="video-iframe" tabindex="0"></iframe>
+                    <script>
+                        const cursor = document.getElementById('cursor');
+                        const testLink = document.getElementById('test-link');
+                        const iframe = document.getElementById('video-iframe');
 
-    <script>
-        const cursor = document.getElementById('cursor');
-        const testLink = document.getElementById('test-link');
-        const iframe = document.getElementById('video-iframe');
+                        let x = window.innerWidth / 2; // Početna horizontalna pozicija
+                        let y = window.innerHeight / 2; // Početna vertikalna pozicija
 
-        let x = window.innerWidth / 2; // Početna horizontalna pozicija
-        let y = window.innerHeight / 2; // Početna vertikalna pozicija
+                        // Postavljanje početne pozicije kursora
+                        cursor.style.left = `${x}px`;
+                        cursor.style.top = `${y}px`;
 
-        // Postavljanje početne pozicije kursora
-        cursor.style.left = `${x}px`;
-        cursor.style.top = `${y}px`;
+                        // Dodavanje event listenera za tastaturu
+                        document.addEventListener('keydown', (e) => {
+                            const step = 10; // Brzina pomeranja kursora
 
-        // Dodavanje event listenera za tastaturu
-        document.addEventListener('keydown', (e) => {
-            const step = 10; // Brzina pomeranja kursora
+                            // Pomeranje kursora u zavisnosti od pritisnutog tastera
+                            switch (e.key) {
+                                case 'ArrowUp':
+                                    y -= step; // Pomeranje gore
+                                    break;
+                                case 'ArrowDown':
+                                    y += step; // Pomeranje dole
+                                    break;
+                                case 'ArrowLeft':
+                                    x -= step; // Pomeranje levo
+                                    break;
+                                case 'ArrowRight':
+                                    x += step; // Pomeranje desno
+                                    break;
+                                case 'Enter':
+                                case ' ':
+                                    // Simulacija klika kada je pritisnut Enter ili Space
+                                    simulateClickOnElement();
+                                    break;
+                            }
 
-            // Pomeranje kursora u zavisnosti od pritisnutog tastera
-            switch (e.key) {
-                case 'ArrowUp':
-                    y -= step; // Pomeranje gore
-                    break;
-                case 'ArrowDown':
-                    y += step; // Pomeranje dole
-                    break;
-                case 'ArrowLeft':
-                    x -= step; // Pomeranje levo
-                    break;
-                case 'ArrowRight':
-                    x += step; // Pomeranje desno
-                    break;
-                case 'Enter':
-                case ' ':
-                    // Simulacija klika kada je pritisnut Enter ili Space
-                    simulateClickOnElement();
-                    break;
-            }
+                            // Ažuriranje pozicije kursora
+                            cursor.style.left = `${x}px`;
+                            cursor.style.top = `${y}px`;
+                        });
 
-            // Ažuriranje pozicije kursora
-            cursor.style.left = `${x}px`;
-            cursor.style.top = `${y}px`;
-        });
+                        // Funkcija za simulaciju klika na element
+                        function simulateClickOnElement() {
+                            // Pravljenje "click" događaja
+                            const clickEvent = new MouseEvent('click', {
+                                clientX: x,
+                                clientY: y,
+                                bubbles: true,
+                                cancelable: true
+                            });
 
-        // Funkcija za simulaciju klika na element
-        function simulateClickOnElement() {
-            // Pravljenje "click" događaja
-            const clickEvent = new MouseEvent('click', {
-                clientX: x,
-                clientY: y,
-                bubbles: true,
-                cancelable: true
-            });
+                            // Pronalaženje elementa na poziciji kursora
+                            const elementAtCursor = document.elementFromPoint(x, y);
 
-            // Pronalaženje elementa na poziciji kursora
-            const elementAtCursor = document.elementFromPoint(x, y);
+                            // Ako postoji element na toj poziciji, simuliraj klik na njega
+                            if (elementAtCursor) {
+                                elementAtCursor.dispatchEvent(clickEvent);
+                            }
+                        }
 
-            // Ako postoji element na toj poziciji, simuliraj klik na njega
-            if (elementAtCursor) {
-                elementAtCursor.dispatchEvent(clickEvent);
-            }
-        }
+                        // Dodavanje listenera za 'click' događaj na test link
+                        testLink.addEventListener('click', (e) => {
+                            e.preventDefault(); // Sprečavamo da se link zaista otvori
+                            alert('Link je kliknut (simulacija Enter klika)!');
+                        });
+                    </script>
 
-        // Dodavanje listenera za 'click' događaj na test link
-        testLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Sprečavamo da se link zaista otvori
-            alert('Link je kliknut (simulacija Enter klika)!');
-        });
-    </script>
-
-</body>
-</html>
+                </body>
+                </html>
