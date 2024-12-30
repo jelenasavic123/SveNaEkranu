@@ -1,99 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cursor Navigation</title>
-  <style>
-    /* CSS Stilovi */
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart TV Daljinski</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
 
-    .cursor {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background-color: red;
-      border-radius: 50%;
-      pointer-events: none;
-      transition: left 0.1s ease, top 0.1s ease; /* Animacija za pomeranje kursora */
-    }
+        .item {
+            display: inline-block;
+            width: 150px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            line-height: 50px;
+            margin: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
 
-    .content {
-      display: flex;
-      justify-content: space-between;
-      width: 300px;
-      position: relative;
-    }
+        .item:focus {
+            background-color: #2ecc71;
+        }
 
-    .item {
-      padding: 20px;
-      background-color: #ccc;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .item:focus {
-      background-color: #00f;
-      color: #fff;
-    }
-  </style>
+        #selected {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Kursor -->
-  <div class="cursor" id="cursor"></div>
-
-
-<iframe src="https://vidsrc.xyz/embed/movie/tt5433140" title="W3Schools Free Online Web Tutorials">
+    <h1>Smart TV Daljinski</h1>
+    
+    <iframe src="https://vidsrc.xyz/embed/movie/tt5433140" title="W3Schools Free Online Web Tutorials">
 </iframe>
 
-  <!-- JavaScript za funkcionalnost -->
-  <script>
-    document.addEventListener('keydown', function(event) {
-      const cursor = document.getElementById('cursor');
-      const items = document.querySelectorAll('.item');
-      let currentIndex = -1;
-      
-      // Find currently focused item
-      items.forEach((item, index) => {
-        if (item === document.activeElement) {
-          currentIndex = index;
+
+    <div id="selected">Nema selektovanog elementa.</div>
+
+    <script>
+        let items = document.querySelectorAll('.item');
+        let currentIndex = 0;
+
+        // Fokusiranje na prvi element po učitavanju stranice
+        items[currentIndex].focus();
+
+        // Funkcija za selektovanje elementa
+        function updateSelected() {
+            document.getElementById('selected').textContent = 'Selektovan: ' + items[currentIndex].textContent;
         }
-      });
 
-      switch(event.keyCode) {
-        case 37: // Arrow Left
-          if (currentIndex > 0) {
-            items[currentIndex - 1].focus();
-          }
-          break;
-        case 39: // Arrow Right
-          if (currentIndex < items.length - 1) {
-            items[currentIndex + 1].focus();
-          }
-          break;
-        case 13: // OK (Enter)
-          alert('Selected: ' + items[currentIndex].textContent);
-          break;
-      }
-
-      // Update cursor position to match focused item
-      if (currentIndex !== -1) {
-        const selectedItem = items[currentIndex];
-        cursor.style.left = `${selectedItem.offsetLeft + selectedItem.offsetWidth / 2 - cursor.offsetWidth / 2}px`;
-        cursor.style.top = `${selectedItem.offsetTop + selectedItem.offsetHeight / 2 - cursor.offsetHeight / 2}px`;
-      }
-    });
-  </script>
-
+        // Slušač za keydown događaje
+        document.addEventListener('keydown', function(event) {
+            switch(event.keyCode) {
+                case 37: // Levo strelica
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        items[currentIndex].focus();
+                    }
+                    break;
+                case 39: // Desno strelica
+                    if (currentIndex < items.length - 1) {
+                        currentIndex++;
+                        items[currentIndex].focus();
+                    }
+                    break;
+                case 38: // Gore strelica (ako želimo dodatnu navigaciju)
+                    if (currentIndex > 0) {
+                        currentIndex--; // Možeš prilagoditi logiku za gore/dole kretanje
+                        items[currentIndex].focus();
+                    }
+                    break;
+                case 40: // Dole strelica (ako želimo dodatnu navigaciju)
+                    if (currentIndex < items.length - 1) {
+                        currentIndex++;
+                        items[currentIndex].focus();
+                    }
+                    break;
+                case 13: // Enter (OK)
+                    updateSelected();
+                    break;
+                case 27: // Escape (Za izlaz, opcionalno)
+                    document.getElementById('selected').textContent = 'Akcija prekinuta.';
+                    break;
+                default:
+                    console.log('Nepodržani taster: ' + event.keyCode);
+                    break;
+            }
+        });
+    </script>
 </body>
 </html>
