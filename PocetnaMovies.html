@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart TV Daljinski</title>
+    <title>Smart TV Daljinski za Video</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,89 +11,100 @@
             background-color: #f4f4f4;
             padding: 20px;
         }
-
-        .item {
-            display: inline-block;
-            width: 150px;
-            height: 50px;
-            background-color: #3498db;
-            color: white;
-            line-height: 50px;
-            margin: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+        iframe {
+            width: 80%;
+            height: 500px;
+            border: none;
+            margin-bottom: 20px;
         }
-
-        .item:focus {
-            background-color: #2ecc71;
-        }
-
-        #selected {
-            margin-top: 20px;
+        .message {
             font-size: 20px;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h1>Smart TV Daljinski</h1>
-    
-    <iframe src="https://vidsrc.xyz/embed/movie/tt5433140" title="W3Schools Free Online Web Tutorials">
-</iframe>
 
+    <h1>Kontrola Video Sadržaja Daljinskim</h1>
+    <div class="message" id="statusMessage">Pritisnite strelice ili Enter za kontrolu videa.</div>
 
-    <div id="selected">Nema selektovanog elementa.</div>
+    <!-- YouTube Video Embed -->
+    <iframe id="videoIframe" src="https://vidsrc.xyz/embed/movie/tt5433140" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
     <script>
-        let items = document.querySelectorAll('.item');
-        let currentIndex = 0;
+        // Video API instanca
+        let player;
 
-        // Fokusiranje na prvi element po učitavanju stranice
-        items[currentIndex].focus();
+        // Inicijalizacija YouTube API-ja
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('videoIframe', {
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
 
-        // Funkcija za selektovanje elementa
-        function updateSelected() {
-            document.getElementById('selected').textContent = 'Selektovan: ' + items[currentIndex].textContent;
+        // Kada je video player spreman
+        function onPlayerReady(event) {
+            document.getElementById('statusMessage').textContent = 'Video je spreman za kontrolu.';
+        }
+
+        // Funkcija koja se poziva kada se stanje videa promeni
+        function onPlayerStateChange(event) {
+            // Ovdje možemo dodati logiku na osnovu različitih stanja videa (npr. video pauziran, završen itd.)
+            if (event.data == YT.PlayerState.PLAYING) {
+                document.getElementById('statusMessage').textContent = 'Video je pokrenut!';
+            } else if (event.data == YT.PlayerState.PAUSED) {
+                document.getElementById('statusMessage').textContent = 'Video je pauziran!';
+            } else if (event.data == YT.PlayerState.ENDED) {
+                document.getElementById('statusMessage').textContent = 'Video je završen!';
+            }
         }
 
         // Slušač za keydown događaje
         document.addEventListener('keydown', function(event) {
             switch(event.keyCode) {
-                case 37: // Levo strelica
-                    if (currentIndex > 0) {
-                        currentIndex--;
-                        items[currentIndex].focus();
+                case 37: // Levo strelica (Rewind/Pauza)
+                    player.seekTo(player.getCurrentTime() - 10, true);  // Pomeri 10 sekundi unazad
+                    break;
+                case 39: // Desno strelica (Fast Forward/Play)
+                    player.seekTo(player.getCurrentTime() + 10, true);  // Pomeri 10 sekundi unapred
+                    break;
+                case 38: // Gore strelica (Volume Up)
+                    let volume = player.getVolume();
+                    if (volume < 100) {
+                        player.setVolume(volume + 10);
                     }
                     break;
-                case 39: // Desno strelica
-                    if (currentIndex < items.length - 1) {
-                        currentIndex++;
-                        items[currentIndex].focus();
+                case 40: // Dole strelica (Volume Down)
+                    let volumeDown = player.getVolume();
+                    if (volumeDown > 0) {
+                        player.setVolume(volumeDown - 10);
                     }
                     break;
-                case 38: // Gore strelica (ako želimo dodatnu navigaciju)
-                    if (currentIndex > 0) {
-                        currentIndex--; // Možeš prilagoditi logiku za gore/dole kretanje
-                        items[currentIndex].focus();
+                case 13: // Enter (Play/Pause)
+                    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+                        player.pauseVideo();  // Pauzira video
+                    } else {
+                        player.playVideo();  // Pokreće video
                     }
                     break;
-                case 40: // Dole strelica (ako želimo dodatnu navigaciju)
-                    if (currentIndex < items.length - 1) {
-                        currentIndex++;
-                        items[currentIndex].focus();
-                    }
-                    break;
-                case 13: // Enter (OK)
-                    updateSelected();
-                    break;
-                case 27: // Escape (Za izlaz, opcionalno)
-                    document.getElementById('selected').textContent = 'Akcija prekinuta.';
+                case 27: // Escape (Stop)
+                    player.stopVideo();  // Zaustavlja video
                     break;
                 default:
                     console.log('Nepodržani taster: ' + event.keyCode);
                     break;
             }
         });
+
+        // Učitavanje YouTube API-ja
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
+
 </body>
 </html>
