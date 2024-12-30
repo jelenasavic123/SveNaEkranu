@@ -35,11 +35,17 @@
             font-weight: 500;
             text-transform: uppercase;
             padding: 10px 20px;
+            transition: background-color 0.3s;
         }
 
         .navbar a:hover {
             background-color: #34495e;
             border-radius: 5px;
+        }
+
+        .navbar a.selected {
+            background-color: red; /* Crvena boja za selektovani element */
+            color: white;
         }
 
         /* Sections for Movies */
@@ -58,6 +64,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
+            margin-bottom: 30px;
         }
 
         .movie-item {
@@ -65,6 +72,13 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .movie-item.selected {
+            border: 3px solid red; /* Crvena ivica za selektovanu sliku */
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); /* Svetli efekat oko selektovane slike */
         }
 
         .movie-item img {
@@ -104,12 +118,12 @@
 <body>
     <header>
         <nav class="navbar">
-            <a href="#home">Home</a>
-            <a href="#top-movies">Top Movies</a>
-            <a href="#recommended">Recommended</a>
-            <a href="#now-playing">Now Playing</a>
-            <a href="#popular">Popular</a>
-            <a href="#upcoming">Upcoming</a>
+            <a href="#home" id="home-link">Home</a>
+            <a href="#top-movies" id="top-movies-link">Top Movies</a>
+            <a href="#recommended" id="recommended-link">Recommended</a>
+            <a href="#now-playing" id="now-playing-link">Now Playing</a>
+            <a href="#popular" id="popular-link">Popular</a>
+            <a href="#upcoming" id="upcoming-link">Upcoming</a>
         </nav>
     </header>
 
@@ -162,14 +176,14 @@
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
         const baseUrl = 'https://api.themoviedb.org/3';
 
-        // Function to fetch movies
+        // Funkcija za fetch filmova
         async function fetchMovies(endpoint) {
             const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
             const data = await response.json();
             return data.results;
         }
 
-        // Function to display movies
+        // Funkcija za prikazivanje filmova
         function displayMovies(movies, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -177,6 +191,7 @@
             movies.forEach(movie => {
                 const movieElement = document.createElement('div');
                 movieElement.classList.add('movie-item');
+                movieElement.setAttribute('data-title', movie.title || movie.name);
 
                 const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
                 const movieTitle = movie.title || movie.name;
@@ -188,16 +203,28 @@
                     </div>
                 `;
                 container.appendChild(movieElement);
+
+                // Dodavanje event listenera za selektovanje slike
+                movieElement.addEventListener('click', () => selectMovie(movieElement));
             });
         }
 
-        // Function for sending TV control commands
-        function sendCommandToTV(command) {
-            console.log(`Sending command: ${command}`);
-            // Here you'd implement real TV control logic (via API, IR, etc.)
+        // Funkcija za selektovanje filma
+        function selectMovie(movieElement) {
+            // Uklanjanje selekcije sa svih filmova
+            const allMovies = document.querySelectorAll('.movie-item');
+            allMovies.forEach(movie => movie.classList.remove('selected'));
+
+            // Dodavanje selekcije na kliknuti film
+            movieElement.classList.add('selected');
         }
 
-        // Fetch and display movies when the page loads
+        // Funkcija za slanje komandi TV-u
+        function sendCommandToTV(command) {
+            console.log(`Sending command: ${command}`);
+        }
+
+        // Fetch i prikazivanje filmova pri učitavanju stranice
         window.onload = async () => {
             const topMovies = await fetchMovies('/movie/top_rated');
             const recommendedMovies = await fetchMovies('/movie/recommendations');
