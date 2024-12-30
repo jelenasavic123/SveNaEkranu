@@ -1,110 +1,282 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart TV Daljinski za Video</title>
+    <title>Movie App</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        iframe {
-            width: 80%;
-            height: 500px;
-            border: none;
-            margin-bottom: 20px;
-        }
-        .message {
-            font-size: 20px;
-            font-weight: bold;
-        }
+       body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #141414;
+    color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.movie-item {
+    display: inline-block;
+    width: 120px; /* Smanjena širina slika */
+    margin: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+.movie-item img {
+    width: 100%;
+    border-radius: 10px; /* Manji radius za zaobljene ivice */
+}
+
+.movie-info {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    padding: 5px 5px; /* Smanjen padding */
+    text-align: center;
+    font-size: 10px; /* Smanjen font za naslov */
+}
+
+.selected {
+    border: 2px solid #ff4500;
+}
+
+.movie-rating {
+    position: absolute;
+    top: 5px; /* Smanjena pozicija ocene */
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 3px 5px; /* Manji padding */
+    font-size: 10px; /* Manji font za ocenu */
+    border-radius: 5px;
+}
+
+.movie-year-genre {
+    position: absolute;
+    top: 5px; /* Smanjena pozicija */
+    left: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 3px 5px; /* Manji padding */
+    font-size: 9px; /* Manji font za godinu i žanr */
+    border-radius: 5px;
+}
+
+.movie-title {
+    position: absolute;
+    bottom: 5px; /* Manji razmak od dna */
+    left: 5px;
+    font-size: 10px; /* Manji font za naslov */
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 3px 5px; /* Manji padding */
+    border-radius: 5px;
+}
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    margin: 7px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    justify-content: center;
+    gap: 2px;
+}
+
+.button img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.button:hover {
+    background-color: #555;
+}
+
     </style>
 </head>
 <body>
 
-    <h1>Kontrola Video Sadržaja Daljinskim</h1>
-    <div class="message" id="statusMessage">Pritisnite strelice ili Enter za kontrolu videa.</div>
+    <div class="button-container">
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+            Netflix
+        </a>
 
-    <!-- YouTube Video Embed -->
-    <iframe id="videoIframe" src="https://vidsrc.xyz/embed/movie/tt5433140" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
+            Marvel
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
+            Hulu
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
+            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
+            Apple TV+
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
+            Prime Video
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
+            Disney+
+        </a>
+    </div>
+
+
+    <div id="now-playing-movies-list" class="movie-list"></div>
+    <div id="popular-movies-list" class="movie-list"></div>
+    <div id="upcoming-movies-list" class="movie-list"></div>
+        <div id="top-movies-list" class="movie-list"></div>
+    <div id="recommended-movies-list" class="movie-list"></div>
 
     <script>
-        // Video API instanca
-        let player;
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3';
 
-        // Inicijalizacija YouTube API-ja
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('videoIframe', {
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
+        // Fetch movies
+        async function fetchMovies(endpoint) {
+            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=sr-SR&page=1`);
+            const data = await response.json();
+            return data.results;
+        }
+
+        // Display movies
+        function displayMovies(movies, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            movies.forEach((movie) => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie-item');
+                movieElement.setAttribute('data-title', movie.title || movie.name);
+                movieElement.setAttribute('data-id', movie.id);
+
+                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const movieTitle = movie.title || movie.name;
+                const movieYear = new Date(movie.release_date).getFullYear();
+                const movieGenre = getGenreName(movie.genre_ids[0]); // Only take the first genre
+                const movieRating = movie.vote_average;
+
+                movieElement.innerHTML = `
+                    <img src="${movieImage}" alt="${movieTitle}">
+                    <div class="movie-rating">${movieRating}</div>
+                    <div class="movie-year-genre">
+                        <span>${movieYear}</span>
+                        <span>${movieGenre}</span>
+                    </div>
+                    <div class="movie-title">${movieTitle}</div>
+                `;
+                
+                // Add click event to the image
+                movieElement.querySelector('img').addEventListener('click', () => {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                });
+
+                container.appendChild(movieElement);
             });
+
+            // Update movie items when new movies are added
+            updateMovieItems();
         }
 
-        // Kada je video player spreman
-        function onPlayerReady(event) {
-            document.getElementById('statusMessage').textContent = 'Video je spreman za kontrolu.';
+        // Helper function for genre names
+        function getGenreName(genreId) {
+            const genres = {
+                28: "Akcija", 12: "Avantura", 16: "Animacija", 35: "Komedija", 80: "Krimi", 99: "Dokumentarac", 18: "Drama", 
+                10751: "Porodični", 14: "Fantazija", 36: "Istorijski", 27: "Horor", 10402: "Muzika", 9648: "Misterija", 
+                10749: "Romantika", 878: "Naučna fantastika", 10770: "TV film", 53: "Triler", 10752: "Rat", 37: "Vestern"
+            };
+            return genres[genreId] || "Nepoznato";
         }
 
-        // Funkcija koja se poziva kada se stanje videa promeni
-        function onPlayerStateChange(event) {
-            // Ovdje možemo dodati logiku na osnovu različitih stanja videa (npr. video pauziran, završen itd.)
-            if (event.data == YT.PlayerState.PLAYING) {
-                document.getElementById('statusMessage').textContent = 'Video je pokrenut!';
-            } else if (event.data == YT.PlayerState.PAUSED) {
-                document.getElementById('statusMessage').textContent = 'Video je pauziran!';
-            } else if (event.data == YT.PlayerState.ENDED) {
-                document.getElementById('statusMessage').textContent = 'Video je završen!';
-            }
+        // Function to update movieItems
+        function updateMovieItems() {
+            movieItems = document.querySelectorAll('.movie-item');
         }
 
-        // Slušač za keydown događaje
-        document.addEventListener('keydown', function(event) {
-            switch(event.keyCode) {
-                case 37: // Levo strelica (Rewind/Pauza)
-                    player.seekTo(player.getCurrentTime() - 10, true);  // Pomeri 10 sekundi unazad
+        // Select movie
+        function selectMovie(movieElement) {
+            const allMovies = document.querySelectorAll('.movie-item');
+            allMovies.forEach(movie => movie.classList.remove('selected'));
+            movieElement.classList.add('selected');
+        }
+
+        // Keyboard navigation (left, right, up, down, enter)
+        let currentIndex = -1;
+        let movieItems = [];
+
+        // Update movieItems when key is pressed
+        document.addEventListener('keydown', (e) => {
+            const items = document.querySelectorAll('.movie-item');
+            if (items.length === 0) return;
+
+            switch (e.key) {
+                case 'ArrowRight':
+                    currentIndex = (currentIndex + 1) % items.length;
                     break;
-                case 39: // Desno strelica (Fast Forward/Play)
-                    player.seekTo(player.getCurrentTime() + 10, true);  // Pomeri 10 sekundi unapred
+                case 'ArrowLeft':
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
                     break;
-                case 38: // Gore strelica (Volume Up)
-                    let volume = player.getVolume();
-                    if (volume < 100) {
-                        player.setVolume(volume + 10);
+                case 'ArrowDown':
+                    currentIndex = (currentIndex + 1) % items.length;
+                    break;
+                case 'ArrowUp':
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    break;
+                case 'Enter':
+                    if (currentIndex !== -1) {
+                        const selectedMovieId = movieItems[currentIndex].getAttribute('data-id');
+                        window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovieId}`;
                     }
-                    break;
-                case 40: // Dole strelica (Volume Down)
-                    let volumeDown = player.getVolume();
-                    if (volumeDown > 0) {
-                        player.setVolume(volumeDown - 10);
-                    }
-                    break;
-                case 13: // Enter (Play/Pause)
-                    if (player.getPlayerState() == YT.PlayerState.PLAYING) {
-                        player.pauseVideo();  // Pauzira video
-                    } else {
-                        player.playVideo();  // Pokreće video
-                    }
-                    break;
-                case 27: // Escape (Stop)
-                    player.stopVideo();  // Zaustavlja video
                     break;
                 default:
-                    console.log('Nepodržani taster: ' + event.keyCode);
-                    break;
+                    return;
+            }
+
+            items.forEach(item => item.classList.remove('selected'));
+            if (currentIndex !== -1) {
+                items[currentIndex].classList.add('selected');
             }
         });
 
-        // Učitavanje YouTube API-ja
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        window.onload = async () => {
+         
+            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+            const topMovies = await fetchMovies('/movie/top_rated');
+            const recommendedMovies = await fetchMovies('/movie/recommendations');
+               const popularMovies = await fetchMovies('/movie/popular');
+            const upcomingMovies = await fetchMovies('/movie/upcoming');
+
+            // Display movies in the new order
+            displayMovies(popularMovies, 'popular-movies-list');
+            displayMovies(upcomingMovies, 'upcoming-movies-list');
+            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+            displayMovies(topMovies, 'top-movies-list');
+            displayMovies(recommendedMovies, 'recommended-movies-list');
+
+            // Update movieItems after all movies are loaded
+            updateMovieItems();
+        };
     </script>
+
+
 
 </body>
 </html>
