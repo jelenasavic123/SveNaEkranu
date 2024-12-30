@@ -181,101 +181,188 @@
         </section>
     </main>
 
-    <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const baseUrl = 'https://api.themoviedb.org/3';
+   <script>
+    // Funkcija za navigaciju
+function navigateMovies(direction) {
+    const sections = document.querySelectorAll('.movie-list');
+    let activeSectionIndex = Array.from(sections).findIndex(section =>
+        Array.from(section.children).some(item => item.classList.contains('selected'))
+    );
 
-        // Fetch movies
-        async function fetchMovies(endpoint) {
-            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
-            const data = await response.json();
-            return data.results;
-        }
+    if (activeSectionIndex === -1) activeSectionIndex = 0;
 
-        // Display movies
-        function displayMovies(movies, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
+    const activeSection = sections[activeSectionIndex];
+    const movieItems = activeSection.querySelectorAll('.movie-item');
 
-            movies.forEach((movie) => {
-                const movieElement = document.createElement('div');
-                movieElement.classList.add('movie-item');
-                movieElement.setAttribute('data-title', movie.title || movie.name);
-                movieElement.setAttribute('data-id', movie.id); // Add movie ID
+    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
 
-                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                const movieTitle = movie.title || movie.name;
+    if (currentIndex === -1) {
+        clearSelection();
+        currentIndex = 0;
+        movieItems[currentIndex].classList.add('selected');
+        centerSelectedItem(movieItems[currentIndex], activeSection);
+        return;
+    }
 
-                movieElement.innerHTML = `
-                    <img src="${movieImage}" alt="${movieTitle}">
-                    <div class="movie-info">
-                        <h3>${movieTitle}</h3>
-                    </div>
-                `;
-                container.appendChild(movieElement);
+    let newIndex = -1;
 
-                // Select movie on click
-                movieElement.addEventListener('click', () => selectMovie(movieElement));
-            });
-        }
-
-        // Select movie
-        function selectMovie(movieElement) {
-            const allMovies = document.querySelectorAll('.movie-item');
-            allMovies.forEach(movie => movie.classList.remove('selected'));
-            movieElement.classList.add('selected');
-        }
-
-        // TV Control (mockup)
-        function sendCommandToTV(command) {
-            console.log(`Sending command: ${command}`);
-        }
-
-        // Keyboard navigation (left, right, up, down, enter)
-        let currentIndex = -1;
-        const movieItems = [];
-
-        document.addEventListener('keydown', (e) => {
-            const items = document.querySelectorAll('.movie-item');
-            if (items.length === 0) return;
-            
-            switch (e.key) {
-                case 'ArrowRight':
-                    currentIndex = (currentIndex + 1) % items.length;
-                    break;
-                case 'ArrowLeft':
-                    currentIndex = (currentIndex - 1 + items.length) % items.length;
-                    break;
-                case 'Enter':
-                    if (currentIndex !== -1) {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
-                    }
-                    break;
-                default:
-                    return;
+    switch (direction) {
+        case 'left':
+            if (currentIndex > 0) newIndex = currentIndex - 1;
+            break;
+        case 'right':
+            if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
+            break;
+        case 'up':
+            if (activeSectionIndex > 0) {
+                clearSelection();
+                const prevSection = sections[activeSectionIndex - 1];
+                const prevItems = prevSection.querySelectorAll('.movie-item');
+                if (prevItems.length > 0) {
+                    prevItems[0].classList.add('selected');
+                    prevSection.scrollIntoView({ behavior: 'smooth' });
+                }
             }
-
-            items.forEach(item => item.classList.remove('selected'));
+            return;
+        case 'down':
+            if (activeSectionIndex < sections.length - 1) {
+                clearSelection();
+                const nextSection = sections[activeSectionIndex + 1];
+                const nextItems = nextSection.querySelectorAll('.movie-item');
+                if (nextItems.length > 0) {
+                    nextItems[0].classList.add('selected');
+                    nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            return;
+        case 'enter':
             if (currentIndex !== -1) {
-                items[currentIndex].classList.add('selected');
+                window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
             }
-        });
+            return;
+    }
 
-        window.onload = async () => {
-            const topMovies = await fetchMovies('/movie/top_rated');
-            const recommendedMovies = await fetchMovies('/movie/recommendations');
-            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
-            const popularMovies = await fetchMovies('/movie/popular');
-            const upcomingMovies = await fetchMovies('/movie/upcoming');
+    if (newIndex !== -1) {
+        movieItems[currentIndex].classList.remove('selected');
+        movieItems[newIndex].classList.add('selected');
+        centerSelectedItem(movieItems[newIndex], activeSection);
+    }
+}
 
-            displayMovies(topMovies, 'top-movies-list');
-            displayMovies(recommendedMovies, 'recommended-movies-list');
-            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
-            displayMovies(popularMovies, 'popular-movies-list');
-            displayMovies(upcomingMovies, 'upcoming-movies-list');
+// Helper functions
 
-            movieItems.push(...document.querySelectorAll('.movie-item'));
-        };
-    </script>
+// Clear current selection
+function clearSelection() {
+    document.querySelectorAll('.movie-item.selected').forEach(item => item.classList.remove('selected'));
+}
+
+// Center selected item in the viewport
+function centerSelectedItem(selectedItem, section) {
+    const rect = selectedItem.getBoundingClientRect();
+    const sectionRect = section.getBoundingClientRect();
+    const offset = rect.left - sectionRect.left - (sectionRect.width / 2) + (rect.width / 2);
+    section.scrollBy({ left: offset, behavior: 'smooth' });
+}
+
+// Fetch movies
+const apiKey = '2701858e9bccab54d4d0e4931420a739';
+const baseUrl = 'https://api.themoviedb.org/3';
+
+async function fetchMovies(endpoint) {
+    const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
+    const data = await response.json();
+    return data.results;
+}
+
+// Display movies
+function displayMovies(movies, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    movies.forEach((movie) => {
+        const movieElement = document.createElement('div');
+        movieElement.classList.add('movie-item');
+        movieElement.setAttribute('data-title', movie.title || movie.name);
+        movieElement.setAttribute('data-id', movie.id); // Add movie ID
+
+        const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        const movieTitle = movie.title || movie.name;
+
+        movieElement.innerHTML = `
+            <a href="https://vidsrc.vip/embed/movie/${movie.id}">
+                <img src="${movieImage}" alt="${movieTitle}">
+                <div class="movie-info">
+                    <h3>${movieTitle}</h3>
+                </div>
+            </a>
+        `;
+        container.appendChild(movieElement);
+
+        // Select movie on click
+        movieElement.addEventListener('click', () => selectMovie(movieElement));
+    });
+}
+
+// Select movie
+function selectMovie(movieElement) {
+    const allMovies = document.querySelectorAll('.movie-item');
+    allMovies.forEach(movie => movie.classList.remove('selected'));
+    movieElement.classList.add('selected');
+}
+
+// TV Control (mockup)
+function sendCommandToTV(command) {
+    console.log(`Sending command: ${command}`);
+}
+
+// Keyboard navigation (left, right, up, down, enter, click)
+let currentIndex = -1;
+const movieItems = [];
+const sections = document.querySelectorAll('.movie-section');
+let activeSectionIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    const items = document.querySelectorAll('.movie-item');
+    if (items.length === 0) return;
+
+    switch (e.key) {
+        case 'ArrowRight':
+            navigateMovies('right');
+            break;
+        case 'ArrowLeft':
+            navigateMovies('left');
+            break;
+        case 'ArrowDown':
+            navigateMovies('down');
+            break;
+        case 'ArrowUp':
+            navigateMovies('up');
+            break;
+        case 'Enter':
+            navigateMovies('enter');
+            break;
+        default:
+            return;
+    }
+});
+
+window.onload = async () => {
+    const topMovies = await fetchMovies('/movie/top_rated');
+    const recommendedMovies = await fetchMovies('/movie/recommendations');
+    const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+    const popularMovies = await fetchMovies('/movie/popular');
+    const upcomingMovies = await fetchMovies('/movie/upcoming');
+
+    displayMovies(topMovies, 'top-movies-list');
+    displayMovies(recommendedMovies, 'recommended-movies-list');
+    displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+    displayMovies(popularMovies, 'popular-movies-list');
+    displayMovies(upcomingMovies, 'upcoming-movies-list');
+
+    movieItems.push(...document.querySelectorAll('.movie-item'));
+};
+
+</script>
+
 </body>
 </html>
