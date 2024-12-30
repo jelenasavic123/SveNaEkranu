@@ -188,10 +188,11 @@
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
-            movies.forEach(movie => {
+            movies.forEach((movie, index) => {
                 const movieElement = document.createElement('div');
                 movieElement.classList.add('movie-item');
                 movieElement.setAttribute('data-title', movie.title || movie.name);
+                movieElement.setAttribute('data-id', movie.id); // Dodajemo ID filma
 
                 const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
                 const movieTitle = movie.title || movie.name;
@@ -224,6 +225,46 @@
             console.log(`Sending command: ${command}`);
         }
 
+        // Funkcija za navigaciju pomoću tastature
+        let selectedMovieIndex = 0;
+        function navigateMovies(direction) {
+            const allMovies = document.querySelectorAll('.movie-item');
+            const totalMovies = allMovies.length;
+
+            // Uklanjanje selekcije sa trenutnog filma
+            allMovies[selectedMovieIndex].classList.remove('selected');
+
+            // Izračunavanje novog indeksa na osnovu smerova
+            if (direction === 'ArrowRight') {
+                selectedMovieIndex = (selectedMovieIndex + 1) % totalMovies;
+            } else if (direction === 'ArrowLeft') {
+                selectedMovieIndex = (selectedMovieIndex - 1 + totalMovies) % totalMovies;
+            } else if (direction === 'ArrowDown') {
+                selectedMovieIndex = Math.min(selectedMovieIndex + 3, totalMovies - 1); // Navigacija dole (ako je više redova)
+            } else if (direction === 'ArrowUp') {
+                selectedMovieIndex = Math.max(selectedMovieIndex - 3, 0); // Navigacija gore
+            }
+
+            // Dodavanje selekcije na novi film
+            allMovies[selectedMovieIndex].classList.add('selected');
+        }
+
+        // Praćenje tastature
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                navigateMovies(e.key);
+            }
+            if (e.key === 'Enter' || e.key === ' ') {
+                // Kada je Enter pritisnut, otvoriti link za selektovani film
+                const movieItems = document.querySelectorAll('.movie-item');
+                const currentIndex = selectedMovieIndex;
+                if (currentIndex !== -1) {
+                    const movieId = movieItems[currentIndex].getAttribute('data-id');
+                    window.location.href = `https://vidsrc.vip/embed/movie/${movieId}`;
+                }
+            }
+        });
+
         // Fetch i prikazivanje filmova pri učitavanju stranice
         window.onload = async () => {
             const topMovies = await fetchMovies('/movie/top_rated');
@@ -237,6 +278,9 @@
             displayMovies(nowPlayingMovies, 'now-playing-movies-list');
             displayMovies(popularMovies, 'popular-movies-list');
             displayMovies(upcomingMovies, 'upcoming-movies-list');
+
+            // Automatsko selektovanje prvog filma
+            document.querySelector('.movie-item').classList.add('selected');
         };
     </script>
 </body>
