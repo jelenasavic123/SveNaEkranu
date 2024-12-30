@@ -46,12 +46,6 @@
             border-radius: 5px;
         }
 
-        .navbar a.selected {
-            background-color: #e50914; /* Crvena boja kao Netflix */
-            color: white;
-            border-radius: 5px;
-        }
-
         /* Section titles */
         h2 {
             font-size: 2em;
@@ -80,9 +74,10 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
+        /* Removed red highlight, only scale effect on selection */
         .movie-item.selected {
             transform: scale(1.05); /* Povećaj sliku kad je selektovana */
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); /* Default box-shadow */
         }
 
         .movie-item img {
