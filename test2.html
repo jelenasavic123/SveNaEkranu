@@ -12,20 +12,22 @@
 
         }
 
-        .movie-item {
-            display: inline-block;
-            width: 120px;
-            margin: 5px;
-            position: relative;
-            cursor: pointer;
-        }
+.movie-item {
+    display: inline-block;
+    width: 120px;
+    margin: 5px;
+    position: relative;
+    cursor: pointer;
+    pointer-events: none; /* Onemogućava sve vrste ulaznih događaja, uključujući tastaturu */
+    user-select: none;    /* Onemogućava selekciju sadržaja */
+    touch-action: none;    /* Onemogućava tap-ove na dodirnim ekranima */
+}
+
 
 .movie-item img {
     width: 100%;
     border-radius: 10px;
 
-    /* dodatno onemogućava levo-desno kretanje sa Enter */
-    touch-action: manipulation; /* Ovo dodatno onemogućava horizontalno skrolovanje na dodirnim uređajima */
 }
 
 
@@ -80,7 +82,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between; /* Distribuira dugmadi sa jednakim razmakom između */
-    gap: -15px; /* Razmak između dugmadi */
+    gap: 5px; /* Razmak između dugmadi */
 }
 
 .button {
