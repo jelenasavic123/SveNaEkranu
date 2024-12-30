@@ -6,103 +6,102 @@
     <title>Movie App</title>
     <style>
        body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #141414;
-    color: white;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
-.movie-item {
-    display: inline-block;
-    width: 120px; /* Smanjena širina slika */
-    margin: 5px;
-    position: relative;
-    cursor: pointer;
-}
+        .movie-item {
+            display: inline-block;
+            width: 120px;
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+        }
 
-.movie-item img {
-    width: 100%;
-    border-radius: 10px; /* Manji radius za zaobljene ivice */
-}
+        .movie-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
 
-.movie-info {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    width: 100%;
-    padding: 5px 5px; /* Smanjen padding */
-    text-align: center;
-    font-size: 10px; /* Smanjen font za naslov */
-}
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 5px 5px;
+            text-align: center;
+            font-size: 10px;
+        }
 
-.selected {
-    border: 2px solid #ff4500;
-}
+        .selected {
+            border: 2px solid #ff4500;
+        }
 
-.movie-rating {
-    position: absolute;
-    top: 5px; /* Smanjena pozicija ocene */
-    right: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 3px 5px; /* Manji padding */
-    font-size: 10px; /* Manji font za ocenu */
-    border-radius: 5px;
-}
+        .movie-rating {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 10px;
+            border-radius: 5px;
+        }
 
-.movie-year-genre {
-    position: absolute;
-    top: 5px; /* Smanjena pozicija */
-    left: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 3px 5px; /* Manji padding */
-    font-size: 9px; /* Manji font za godinu i žanr */
-    border-radius: 5px;
-}
+        .movie-year-genre {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 9px;
+            border-radius: 5px;
+        }
 
-.movie-title {
-    position: absolute;
-    bottom: 5px; /* Manji razmak od dna */
-    left: 5px;
-    font-size: 10px; /* Manji font za naslov */
-    color: white;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 3px 5px; /* Manji padding */
-    border-radius: 5px;
-}
+        .movie-title {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            font-size: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
 
-.button-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
 
-.button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;
-}
+        .button {
+            display: inline-flex;
+            align-items: center;
+            margin: 7px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            justify-content: center;
+            gap: 2px;
+        }
 
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
+        .button img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
 
-.button:hover {
-    background-color: #555;
-}
-
+        .button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -139,11 +138,10 @@
         </a>
     </div>
 
-
     <div id="now-playing-movies-list" class="movie-list"></div>
     <div id="popular-movies-list" class="movie-list"></div>
     <div id="upcoming-movies-list" class="movie-list"></div>
-        <div id="top-movies-list" class="movie-list"></div>
+    <div id="top-movies-list" class="movie-list"></div>
     <div id="recommended-movies-list" class="movie-list"></div>
 
     <script>
@@ -187,7 +185,6 @@
                 // Add click event to the image
                 movieElement.querySelector('img').addEventListener('click', () => {
                     window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
-
                 });
 
                 container.appendChild(movieElement);
@@ -210,13 +207,6 @@
         // Function to update movieItems
         function updateMovieItems() {
             movieItems = document.querySelectorAll('.movie-item');
-        }
-
-        // Select movie
-        function selectMovie(movieElement) {
-            const allMovies = document.querySelectorAll('.movie-item');
-            allMovies.forEach(movie => movie.classList.remove('selected'));
-            movieElement.classList.add('selected');
         }
 
         // Keyboard navigation (left, right, up, down, enter)
@@ -258,11 +248,10 @@
         });
 
         window.onload = async () => {
-         
             const nowPlayingMovies = await fetchMovies('/movie/now_playing');
             const topMovies = await fetchMovies('/movie/top_rated');
             const recommendedMovies = await fetchMovies('/movie/recommendations');
-               const popularMovies = await fetchMovies('/movie/popular');
+            const popularMovies = await fetchMovies('/movie/popular');
             const upcomingMovies = await fetchMovies('/movie/upcoming');
 
             // Display movies in the new order
@@ -276,8 +265,6 @@
             updateMovieItems();
         };
     </script>
-
-
 
 </body>
 </html>
