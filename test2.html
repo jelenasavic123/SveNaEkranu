@@ -186,7 +186,7 @@
                 
                 // Add click event to the image
                 movieElement.querySelector('img').addEventListener('click', () => {
-                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                    window.location.href = `https://player.autoembed.cc/embed/movie/${movie.id}`;
                 });
 
                 container.appendChild(movieElement);
@@ -243,7 +243,7 @@
                 case 'Enter':
                     if (currentIndex !== -1) {
                         const selectedMovieId = movieItems[currentIndex].getAttribute('data-id');
-                        window.location.href = `https://player.autoembed.cc/embed/movie/{tmdb_id}`;
+                        window.location.href = `https://player.autoembed.cc/embed/movie/${selectedMovieId}`;
                     }
                     break;
                 default:
