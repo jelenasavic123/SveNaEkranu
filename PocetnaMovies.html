@@ -1,137 +1,99 @@
-                <!DOCTYPE html>
-                <html lang="sr">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Kontrola Kursora Tastaturom</title>
-                    <style>
-                        * {
-                            margin: 0;
-                            padding: 0;
-                            box-sizing: border-box;
-                        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursor Navigation</title>
+  <style>
+    /* CSS Stilovi */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
 
-                        body {
-                            height: 100vh;
-                            background-color: #f0f0f0;
-                            overflow: hidden;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            flex-direction: column;
-                            position: relative;
-                        }
+    .cursor {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: red;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: left 0.1s ease, top 0.1s ease; /* Animacija za pomeranje kursora */
+    }
 
-                        .cursor {
-                            position: absolute;
-                            width: 20px;
-                            height: 20px;
-                            background-color: rgba(0, 0, 0, 0.7);
-                            border-radius: 50%;
-                            pointer-events: none; /* Da kursor ne može sam da izazove događaje */
-                            transform: translate(-50%, -50%);
-                            transition: transform 0.1s ease-in-out;
-                            z-index: 9999;
-                        }
+    .content {
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+      position: relative;
+    }
 
-                        html, body {
-                            cursor: none; /* Ukidamo podrazumevani kursor miša */
-                        }
+    .item {
+      padding: 20px;
+      background-color: #ccc;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      outline: none;
+    }
 
-                        iframe {
-                            width: 800px;
-                            height: 450px;
-                            border: none;
-                            z-index: 1;
-                        }
+    .item:focus {
+      background-color: #00f;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
 
-                        a {
-                            margin-top: 20px;
-                            font-size: 20px;
-                            color: blue;
-                            text-decoration: none;
-                        }
+  <!-- Kursor -->
+  <div class="cursor" id="cursor"></div>
 
-                        a:focus {
-                            outline: none;
-                        }
-                    </style>
-                </head>
-                <body>
 
-                    <div class="cursor" id="cursor"></div>
+<iframe src="https://vidsrc.xyz/embed/movie/tt5433140" title="W3Schools Free Online Web Tutorials">
+</iframe>
 
-                    
-                    <!-- Iframe sa video sadržajem -->
-                    <iframe src="https://vidsrc.xyz/embed/movie/tt5433140" id="video-iframe" tabindex="0"></iframe>
+  <!-- JavaScript za funkcionalnost -->
+  <script>
+    document.addEventListener('keydown', function(event) {
+      const cursor = document.getElementById('cursor');
+      const items = document.querySelectorAll('.item');
+      let currentIndex = -1;
+      
+      // Find currently focused item
+      items.forEach((item, index) => {
+        if (item === document.activeElement) {
+          currentIndex = index;
+        }
+      });
 
-                    <script>
-                        const cursor = document.getElementById('cursor');
-                        const testLink = document.getElementById('test-link');
-                        const iframe = document.getElementById('video-iframe');
+      switch(event.keyCode) {
+        case 37: // Arrow Left
+          if (currentIndex > 0) {
+            items[currentIndex - 1].focus();
+          }
+          break;
+        case 39: // Arrow Right
+          if (currentIndex < items.length - 1) {
+            items[currentIndex + 1].focus();
+          }
+          break;
+        case 13: // OK (Enter)
+          alert('Selected: ' + items[currentIndex].textContent);
+          break;
+      }
 
-                        let x = window.innerWidth / 2; // Početna horizontalna pozicija
-                        let y = window.innerHeight / 2; // Početna vertikalna pozicija
+      // Update cursor position to match focused item
+      if (currentIndex !== -1) {
+        const selectedItem = items[currentIndex];
+        cursor.style.left = `${selectedItem.offsetLeft + selectedItem.offsetWidth / 2 - cursor.offsetWidth / 2}px`;
+        cursor.style.top = `${selectedItem.offsetTop + selectedItem.offsetHeight / 2 - cursor.offsetHeight / 2}px`;
+      }
+    });
+  </script>
 
-                        // Postavljanje početne pozicije kursora
-                        cursor.style.left = `${x}px`;
-                        cursor.style.top = `${y}px`;
-
-                        // Dodavanje event listenera za tastaturu
-                        document.addEventListener('keydown', (e) => {
-                            const step = 10; // Brzina pomeranja kursora
-
-                            // Pomeranje kursora u zavisnosti od pritisnutog tastera
-                            switch (e.key) {
-                                case 'ArrowUp':
-                                    y -= step; // Pomeranje gore
-                                    break;
-                                case 'ArrowDown':
-                                    y += step; // Pomeranje dole
-                                    break;
-                                case 'ArrowLeft':
-                                    x -= step; // Pomeranje levo
-                                    break;
-                                case 'ArrowRight':
-                                    x += step; // Pomeranje desno
-                                    break;
-                                case 'Enter':
-                                case ' ':
-                                    // Simulacija klika kada je pritisnut Enter ili Space
-                                    simulateClickOnElement();
-                                    break;
-                            }
-
-                            // Ažuriranje pozicije kursora
-                            cursor.style.left = `${x}px`;
-                            cursor.style.top = `${y}px`;
-                        });
-
-                        // Funkcija za simulaciju klika na element
-                        function simulateClickOnElement() {
-                            // Pravljenje "click" događaja
-                            const clickEvent = new MouseEvent('click', {
-                                clientX: x,
-                                clientY: y,
-                                bubbles: true,
-                                cancelable: true
-                            });
-
-                            // Pronalaženje elementa na poziciji kursora
-                            const elementAtCursor = document.elementFromPoint(x, y);
-
-                            // Ako postoji element na toj poziciji, simuliraj klik na njega
-                            if (elementAtCursor) {
-                                elementAtCursor.dispatchEvent(clickEvent);
-                            }
-                        }
-
-                        // Dodavanje listenera za 'click' događaj na test link
-                        testLink.addEventListener('click', (e) => {
-                            e.preventDefault(); // Sprečavamo da se link zaista otvori
-                            alert('Link je kliknut (simulacija Enter klika)!');
-                        });
-                    </script>
-
-                </body>
-                </html>
+</body>
+</html>
