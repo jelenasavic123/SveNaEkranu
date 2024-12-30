@@ -18,7 +18,6 @@
             display: inline-block;
             width: 200px;
             margin: 10px;
-            cursor: pointer;
             position: relative;
         }
         .movie-item img {
@@ -78,9 +77,6 @@
                     </div>
                 `;
                 container.appendChild(movieElement);
-
-                // Select movie on click
-                movieElement.addEventListener('click', () => selectMovie(movieElement));
             });
         }
 
@@ -89,11 +85,6 @@
             const allMovies = document.querySelectorAll('.movie-item');
             allMovies.forEach(movie => movie.classList.remove('selected'));
             movieElement.classList.add('selected');
-        }
-
-        // TV Control (mockup)
-        function sendCommandToTV(command) {
-            console.log(`Sending command: ${command}`);
         }
 
         // Keyboard navigation (left, right, up, down, enter)
