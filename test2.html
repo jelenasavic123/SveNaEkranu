@@ -213,39 +213,7 @@
         let currentIndex = -1;
         let movieItems = [];
 
-        // Update movieItems when key is pressed
-        document.addEventListener('keydown', (e) => {
-            const items = document.querySelectorAll('.movie-item');
-            if (items.length === 0) return;
-
-            switch (e.key) {
-                case 'ArrowRight':
-                    currentIndex = (currentIndex + 1) % items.length;
-                    break;
-                case 'ArrowLeft':
-                    currentIndex = (currentIndex - 1 + items.length) % items.length;
-                    break;
-                case 'ArrowDown':
-                    currentIndex = (currentIndex + 1) % items.length;
-                    break;
-                case 'ArrowUp':
-                    currentIndex = (currentIndex - 1 + items.length) % items.length;
-                    break;
-                case 'Enter':
-                    if (currentIndex !== -1) {
-                        const selectedMovieId = movieItems[currentIndex].getAttribute('data-id');
-                        window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovieId}`;
-                    }
-                    break;
-                default:
-                    return;
-            }
-
-            items.forEach(item => item.classList.remove('selected'));
-            if (currentIndex !== -1) {
-                items[currentIndex].classList.add('selected');
-            }
-        });
+       
 
         window.onload = async () => {
             const nowPlayingMovies = await fetchMovies('/movie/now_playing');
