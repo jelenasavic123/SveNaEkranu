@@ -32,10 +32,41 @@
             border-radius: 8px;
             transition: transform 0.3s;
             cursor: pointer;
+            outline: none; /* Uklanja default fokus iz inputa */
         }
         .movie-list img:hover, .movie-list img:focus {
             transform: scale(1.1);
             outline: 2px solid #fff;
+        }
+        
+        .button {
+            display: flex;
+            align-items: center;
+            margin: 1px;           /* Dodaje razmak između dugmadi */
+            border-radius: 15px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            justify-content: center;
+            gap: 1px;             /* Razmak između slike i teksta */
+            width: calc(33% - 1px); /* Postavlja širinu dugmadi, 33% od ukupne širine minus razmak */
+            box-sizing: border-box;
+            outline: none;         /* Uklanja bilo kakve implicitne outline za dugme */
+        }
+
+        .button img {
+            width: 100px;         /* Postavlja fiksnu širinu svih slika na 100px */
+            height: auto;         /* Visina se automatski prilagođava proporcionalno */
+            margin-right: 1px;    /* Razmak između slike i teksta unutar dugmeta */
+        }
+
+        .button:hover {
+            background-color: #555; /* Promenjuje boju na hover */
+        }
+
+        /* Fokusirani dugmadi - naglašavanje */
+        .button:focus, .movie-list img:focus {
+            outline: 3px solid #aaa; /* Naglašava fokus sa belom ivicom */
         }
     </style>
 </head>
@@ -48,6 +79,8 @@
         </div>
         <div class="movie-list" id="netflix-list"></div>
     </div>
+
+    <a href="https://www.example.com" class="button">Go to Example</a>
 
     <!-- Disney+ Section -->
     <div class="section" id="disneySection">
@@ -82,99 +115,99 @@
     </div>
 
     <script>
-   const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
-// Funkcija za preuzimanje filmova
-function fetchMovies(listId, serviceId) {
-    const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=US`;
+        // Funkcija za preuzimanje filmova
+        function fetchMovies(listId, serviceId) {
+            const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=US`;
 
-    fetch(apiBase)
-        .then(response => response.json())
-        .then(data => {
-            displayImages(data.results, listId);
-        })
-        .catch(error => console.error('Error fetching movies:', error));
-}
-
-// Funkcija za prikazivanje slika
-function displayImages(movies, sectionId) {
-    const container = document.getElementById(sectionId);
-    container.innerHTML = ""; // Čisti postojeće slike
-
-    movies.forEach(movie => {
-        const imgElement = document.createElement('img');
-        imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Slika iz TMDB
-        imgElement.alt = movie.title; // Naziv filma
-        imgElement.tabIndex = 0; // Omogućava navigaciju tastaturom
-        imgElement.setAttribute('data-id', movie.id); // Postavljanje ID-a za preusmeravanje
-
-        container.appendChild(imgElement);
-    });
-
-    handleKeyboardNavigation(); // Aktivira navigaciju tastaturom
-}
-
-// Funkcija za navigaciju tastaturom
-function handleKeyboardNavigation() {
-    const sections = document.querySelectorAll('.section');
-    let currentSectionIndex = 0;
-    let currentImageIndex = 0;
-
-    document.addEventListener('keydown', (event) => {
-        const currentSection = sections[currentSectionIndex];
-        const movieItems = currentSection.querySelectorAll('.movie-list img');
-
-        if (movieItems.length === 0) return; // Preskoči ako nema filmova u sekciji
-
-        switch (event.key) {
-            case 'ArrowRight':
-                // Pomeri fokus desno
-                currentImageIndex = (currentImageIndex + 1) % movieItems.length;
-                movieItems[currentImageIndex].focus();
-                return;
-
-            case 'ArrowLeft':
-                // Pomeri fokus levo
-                currentImageIndex = (currentImageIndex - 1 + movieItems.length) % movieItems.length;
-                movieItems[currentImageIndex].focus();
-                return;
-
-            case 'ArrowDown':
-                // Idi na sledeću sekciju
-                currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                currentImageIndex = 0; // Resetuj fokus unutar sekcije
-                const nextSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
-                if (nextSectionMovies.length > 0) nextSectionMovies[0].focus();
-                return;
-
-            case 'ArrowUp':
-                // Idi na prethodnu sekciju
-                currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                currentImageIndex = 0; // Resetuj fokus unutar sekcije
-                const prevSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
-                if (prevSectionMovies.length > 0) prevSectionMovies[0].focus();
-                return;
-
-            case 'Enter':
-                // Preusmeri na stranicu filma
-                if (currentImageIndex !== -1) {
-                    window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentImageIndex].getAttribute('data-id')}`;
-                }
-                return;
-
-            default:
-                return;
+            fetch(apiBase)
+                .then(response => response.json())
+                .then(data => {
+                    displayImages(data.results, listId);
+                })
+                .catch(error => console.error('Error fetching movies:', error));
         }
-    });
-}
 
-    // Poziv funkcija za svaki streaming servis
-    fetchMovies('netflix-list', 8);      // Netflix ID 8
-    fetchMovies('disney-list', 337);     // Disney+ ID 337
-    fetchMovies('apple-tv-list', 10);    // Apple TV+ ID 10
-    fetchMovies('hulu-list', 15);        // Hulu ID 15
-    fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
-</script>
+        // Funkcija za prikazivanje slika
+        function displayImages(movies, sectionId) {
+            const container = document.getElementById(sectionId);
+            container.innerHTML = ""; // Čisti postojeće slike
+
+            movies.forEach(movie => {
+                const imgElement = document.createElement('img');
+                imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Slika iz TMDB
+                imgElement.alt = movie.title; // Naziv filma
+                imgElement.tabIndex = 0; // Omogućava navigaciju tastaturom
+                imgElement.setAttribute('data-id', movie.id); // Postavljanje ID-a za preusmeravanje
+
+                container.appendChild(imgElement);
+            });
+
+            handleKeyboardNavigation(); // Aktivira navigaciju tastaturom
+        }
+
+        // Funkcija za navigaciju tastaturom
+        function handleKeyboardNavigation() {
+            const sections = document.querySelectorAll('.section');
+            let currentSectionIndex = 0;
+            let currentImageIndex = 0;
+
+            document.addEventListener('keydown', (event) => {
+                const currentSection = sections[currentSectionIndex];
+                const movieItems = currentSection.querySelectorAll('.movie-list img');
+
+                if (movieItems.length === 0) return; // Preskoči ako nema filmova u sekciji
+
+                switch (event.key) {
+                    case 'ArrowRight':
+                        // Pomeri fokus desno
+                        currentImageIndex = (currentImageIndex + 1) % movieItems.length;
+                        movieItems[currentImageIndex].focus();
+                        return;
+
+                    case 'ArrowLeft':
+                        // Pomeri fokus levo
+                        currentImageIndex = (currentImageIndex - 1 + movieItems.length) % movieItems.length;
+                        movieItems[currentImageIndex].focus();
+                        return;
+
+                    case 'ArrowDown':
+                        // Idi na sledeću sekciju
+                        currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                        currentImageIndex = 0; // Resetuj fokus unutar sekcije
+                        const nextSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
+                        if (nextSectionMovies.length > 0) nextSectionMovies[0].focus();
+                        return;
+
+                    case 'ArrowUp':
+                        // Idi na prethodnu sekciju
+                        currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                        currentImageIndex = 0; // Resetuj fokus unutar sekcije
+                        const prevSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
+                        if (prevSectionMovies.length > 0) prevSectionMovies[0].focus();
+                        return;
+
+                    case 'Enter':
+                        // Preusmeri na stranicu filma
+                        if (currentImageIndex !== -1) {
+                            window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentImageIndex].getAttribute('data-id')}`;
+                        }
+                        return;
+
+                    default:
+                        return;
+                }
+            });
+        }
+
+        // Poziv funkcija za svaki streaming servis
+        fetchMovies('netflix-list', 8);      // Netflix ID 8
+        fetchMovies('disney-list', 337);     // Disney+ ID 337
+        fetchMovies('apple-tv-list', 10);    // Apple TV+ ID 10
+        fetchMovies('hulu-list', 15);        // Hulu ID 15
+        fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
+    </script>
 
 </body>
 </html>
