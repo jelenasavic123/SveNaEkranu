@@ -3,106 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the latest movies, trailers, and ratings with our Movie App. Get the top-rated, upcoming, popular, and recommended movies.">
+    <meta name="keywords" content="movies, movie app, top-rated movies, recommended movies, film trailers, movie ratings">
+    <meta name="author" content="Jelena Savic">
+    <meta property="og:title" content="Movie App">
+    <meta property="og:description" content="Find your next favorite movie with our Movie App. Get access to the top-rated, upcoming, and popular movies, trailers, and more!">
+    <meta property="og:image" content="URL_TO_A_RELEVANT_IMAGE">
+    <meta property="og:url" content="https://yourwebsite.com">
+    <meta name="twitter:title" content="Movie App">
+    <meta name="twitter:description" content="Explore movies, trailers, ratings, and more on our Movie App.">
+    <meta name="twitter:image" content="URL_TO_A_RELEVANT_IMAGE">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Movie App</title>
     <style>
        body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #141414;
-    color: white;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141414;
+            color: white;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
-.movie-item {
-    display: inline-block;
-    width: 120px; /* Smanjena širina slika */
-    margin: 5px;
-    position: relative;
-    cursor: pointer;
-}
+        .movie-item {
+            display: inline-block;
+            width: 120px; /* Smanjena širina slika */
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+        }
 
-.movie-item img {
-    width: 100%;
-    border-radius: 10px; /* Manji radius za zaobljene ivice */
-}
+        .movie-item img {
+            width: 100%;
+            border-radius: 10px; /* Manji radius za zaobljene ivice */
+        }
 
-.movie-info {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    width: 100%;
-    padding: 5px 5px; /* Smanjen padding */
-    text-align: center;
-    font-size: 10px; /* Smanjen font za naslov */
-}
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 5px 5px; /* Smanjen padding */
+            text-align: center;
+            font-size: 10px; /* Smanjen font za naslov */
+        }
 
-.selected {
-    border: 2px solid #ff4500;
-}
+        .selected {
+            border: 2px solid #ff4500;
+        }
 
-.movie-rating {
-    position: absolute;
-    top: 5px; /* Smanjena pozicija ocene */
-    right: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 3px 5px; /* Manji padding */
-    font-size: 10px; /* Manji font za ocenu */
-    border-radius: 5px;
-}
+        .movie-rating {
+            position: absolute;
+            top: 5px; /* Smanjena pozicija ocene */
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px; /* Manji padding */
+            font-size: 10px; /* Manji font za ocenu */
+            border-radius: 5px;
+        }
 
-.movie-year-genre {
-    position: absolute;
-    top: 5px; /* Smanjena pozicija */
-    left: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 3px 5px; /* Manji padding */
-    font-size: 9px; /* Manji font za godinu i žanr */
-    border-radius: 5px;
-}
+        .movie-year-genre {
+            position: absolute;
+            top: 5px; /* Smanjena pozicija */
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px; /* Manji padding */
+            font-size: 9px; /* Manji font za godinu i žanr */
+            border-radius: 5px;
+        }
 
-.movie-title {
-    position: absolute;
-    bottom: 5px; /* Manji razmak od dna */
-    left: 5px;
-    font-size: 10px; /* Manji font za naslov */
-    color: white;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 3px 5px; /* Manji padding */
-    border-radius: 5px;
-}
+        .movie-title {
+            position: absolute;
+            bottom: 5px; /* Manji razmak od dna */
+            left: 5px;
+            font-size: 10px; /* Manji font za naslov */
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 5px; /* Manji padding */
+            border-radius: 5px;
+        }
 
-.button-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
 
-.button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;
-}
+        .button {
+            display: inline-flex;
+            align-items: center;
+            margin: 7px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            justify-content: center;
+            gap: 2px;
+        }
 
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
+        .button img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
 
-.button:hover {
-    background-color: #555;
-}
-
+        .button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -139,11 +149,10 @@
         </a>
     </div>
 
-
     <div id="now-playing-movies-list" class="movie-list"></div>
     <div id="popular-movies-list" class="movie-list"></div>
     <div id="upcoming-movies-list" class="movie-list"></div>
-        <div id="top-movies-list" class="movie-list"></div>
+    <div id="top-movies-list" class="movie-list"></div>
     <div id="recommended-movies-list" class="movie-list"></div>
 
     <script>
@@ -257,11 +266,10 @@
         });
 
         window.onload = async () => {
-         
             const nowPlayingMovies = await fetchMovies('/movie/now_playing');
             const topMovies = await fetchMovies('/movie/top_rated');
             const recommendedMovies = await fetchMovies('/movie/recommendations');
-               const popularMovies = await fetchMovies('/movie/popular');
+            const popularMovies = await fetchMovies('/movie/popular');
             const upcomingMovies = await fetchMovies('/movie/upcoming');
 
             // Display movies in the new order
@@ -275,8 +283,6 @@
             updateMovieItems();
         };
     </script>
-
-
 
 </body>
 </html>
