@@ -3,235 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie App</title>
+    <title>Horizontal Scrolling with Remote Navigation</title>
     <style>
-       body {
+        body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #141414;
-            color: white;
-            overflow-x: hidden;
-            overflow-y: auto;
+            background-color: #181818; /* Tamna pozadina */
+            color: #fff; /* Bela boja za tekst */
         }
-
-        .movie-item {
-            display: inline-block;
-            width: 120px;
-            margin: 5px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .movie-item img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        .movie-info {
-            position: absolute;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            width: 100%;
-            padding: 5px 5px;
-            text-align: center;
-            font-size: 10px;
-        }
-
-        .selected {
-            border: 2px solid #ff4500;
-        }
-
-        .movie-rating {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 3px 5px;
-            font-size: 10px;
-            border-radius: 5px;
-        }
-
-        .movie-year-genre {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 3px 5px;
-            font-size: 9px;
-            border-radius: 5px;
-        }
-
-        .movie-title {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            font-size: 10px;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 3px 5px;
-            border-radius: 5px;
-        }
-
-        .button-container {
+        .container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-
-        .button {
-            display: inline-flex;
+            flex-direction: column;
             align-items: center;
-            margin: 7px;
-            border-radius: 5px;
-            background-color: #333;
-            color: white;
-            text-decoration: none;
-            justify-content: center;
-            gap: 2px;
+            margin-top: 20px;
         }
+        .section {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            width: 100%;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff; /* Bela boja za naslov */
+        }
+        .image-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px 0;
+        }
+        .image-container img {
+            width: calc(16.66% - 10px);
+            height: auto;
+            border: 2px solid #fff; /* Bele ivice */
+            border-radius: 8px; /* Blago zaobljeni rubovi */
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .image-container img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button-container {
+    display: flex;
+    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
+    justify-content: space-around; /* Razmak između dugmadi */
+}
+        
+        .button {
+    display: inline-flex;
+    align-items: center;
+    margin: 7px;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    justify-content: center;
+    gap: 2px;             /* Razmak između dugmadi */
+}
 
-        .button img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-        }
+.button img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
 
-        .button:hover {
-            background-color: #555;
-        }
+
+.image-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.image-button img {
+    width: 100px; /* Podesite širinu slike */
+    height: auto; /* Zadržite proporcije */
+    border-radius: 10px; /* Zaobljeni uglovi, ako želite */
+    transition: transform 0.2s ease; /* Animacija na hover */
+}
+
+.image-button:hover img {
+    transform: scale(1.1); /* Uvećava sliku pri hoveru */
+}
+
+
+
     </style>
 </head>
 <body>
 
-    <div class="button-container">
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-            Netflix
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-            Marvel
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-            Hulu
-        </a>
+<div class="container">
+    <!-- Netflix Section -->
+    <div class="section" id="netflixSection">
+        <h2>Netflix</h2>
+        <div class="image-container" id="netflixImages">
+            <button class="image-button">
+                <img src="putanja-do-slike.jpg" alt="Netflix Button Image">
+            </button>
+        </div>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
-            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-            Apple TV+
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-            Prime Video
-        </a>
 
-        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
-            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-            Disney+
-        </a>
+
+        <!-- Hulu Section -->
+        <div class="section" id="huluSection">
+            <h2>Hulu</h2>
+            <div class="image-container" id="huluImages"></div>
+        </div>
+
+        <!-- Popular Section -->
+        <div class="section" id="popularSection">
+            <h2>Popular</h2>
+            <div class="image-container" id="popularImages"></div>
+        </div>
     </div>
 
-    <div id="now-playing-movies-list" class="movie-list"></div>
-    <div id="popular-movies-list" class="movie-list"></div>
-    <div id="upcoming-movies-list" class="movie-list"></div>
-    <div id="top-movies-list" class="movie-list"></div>
-    <div id="recommended-movies-list" class="movie-list"></div>
-
     <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const baseUrl = 'https://api.themoviedb.org/3';
-
-        // Fetch movies
-        async function fetchMovies(endpoint) {
-            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=sr-SR&page=1`);
+        async function fetchMovies(apiKey, sectionId, category) {
+            const tmdbBaseUrl = "https://api.themoviedb.org/3";
+            const response = await fetch(`${tmdbBaseUrl}/movie/${category}?api_key=${apiKey}&language=en-US&page=1`);
             const data = await response.json();
-            return data.results;
+
+            if (data.results && data.results.length > 0) {
+                displayImages(data.results, sectionId);
+            }
         }
 
-        // Display movies
-        function displayMovies(movies, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-
-            movies.forEach((movie) => {
-                const movieElement = document.createElement('div');
-                movieElement.classList.add('movie-item');
-                movieElement.setAttribute('data-title', movie.title || movie.name);
-                movieElement.setAttribute('data-id', movie.id);
-
-                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                const movieTitle = movie.title || movie.name;
-                const movieYear = new Date(movie.release_date).getFullYear();
-                const movieGenre = getGenreName(movie.genre_ids[0]); // Only take the first genre
-                const movieRating = movie.vote_average;
-
-                movieElement.innerHTML = `
-                    <img src="${movieImage}" alt="${movieTitle}">
-                    <div class="movie-rating">${movieRating}</div>
-                    <div class="movie-year-genre">
-                        <span>${movieYear}</span>
-                        <span>${movieGenre}</span>
-                    </div>
-                    <div class="movie-title">${movieTitle}</div>
-                `;
-                
-                // Add click event to the image
-                movieElement.querySelector('img').addEventListener('click', () => {
-                    window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
+        function displayImages(movies, sectionId) {
+            const container = document.getElementById(sectionId);
+            container.innerHTML = ""; // Clear existing images
+            movies.forEach(movie => {
+                const imgElement = document.createElement('img');
+                imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                imgElement.alt = movie.title;
+                imgElement.tabIndex = 0;  // Allow keyboard navigation
+                imgElement.addEventListener('click', () => {
+                     window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
                 });
-
-                container.appendChild(movieElement);
+                container.appendChild(imgElement);
             });
 
-            // Update movie items when new movies are added
-            updateMovieItems();
+            handleKeyboardNavigation(); // Enable keyboard navigation
         }
 
-        // Helper function for genre names
-        function getGenreName(genreId) {
-            const genres = {
-                28: "Akcija", 12: "Avantura", 16: "Animacija", 35: "Komedija", 80: "Krimi", 99: "Dokumentarac", 18: "Drama", 
-                10751: "Porodični", 14: "Fantazija", 36: "Istorijski", 27: "Horor", 10402: "Muzika", 9648: "Misterija", 
-                10749: "Romantika", 878: "Naučna fantastika", 10770: "TV film", 53: "Triler", 10752: "Rat", 37: "Vestern"
-            };
-            return genres[genreId] || "Nepoznato";
+        function handleKeyboardNavigation() {
+            const sections = document.querySelectorAll('.section');
+            let currentSectionIndex = 0;
+            let currentImageIndex = 0;
+
+            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
+
+            document.addEventListener('keydown', (event) => {
+                const currentSection = sections[currentSectionIndex];
+                const imageContainer = currentSection.querySelector('.image-container');
+
+                if (event.key === 'ArrowRight') {
+                    // Navigate right within the current section
+                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
+                } else if (event.key === 'ArrowLeft') {
+                    // Navigate left within the current section
+                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
+                    imageContainer.children[currentImageIndex].focus();
+                } else if (event.key === 'ArrowDown') {
+                    // Navigate down to the next section
+                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
+                } else if (event.key === 'ArrowUp') {
+                    // Navigate up to the previous section
+                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                    currentImageIndex = 0; // Reset image index
+                    sections[currentSectionIndex].querySelector('img').focus();
+                }
+            });
         }
 
-        // Function to update movieItems
-        function updateMovieItems() {
-            movieItems = document.querySelectorAll('.movie-item');
-        }
-
-        // Keyboard navigation (left, right, up, down, enter)
-        let currentIndex = -1;
-        let movieItems = [];
-
-       
-
-        window.onload = async () => {
-            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
-            const topMovies = await fetchMovies('/movie/top_rated');
-            const recommendedMovies = await fetchMovies('/movie/recommendations');
-            const popularMovies = await fetchMovies('/movie/popular');
-            const upcomingMovies = await fetchMovies('/movie/upcoming');
-
-            // Display movies in the new order
-            displayMovies(popularMovies, 'popular-movies-list');
-            displayMovies(upcomingMovies, 'upcoming-movies-list');
-            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
-            displayMovies(topMovies, 'top-movies-list');
-            displayMovies(recommendedMovies, 'recommended-movies-list');
-
-            // Update movieItems after all movies are loaded
-            updateMovieItems();
-        };
+        // Fetch data for each section
+        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
+        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated'); // Or any other category
+        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'popular');
     </script>
 
 </body>
