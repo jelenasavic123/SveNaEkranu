@@ -3,223 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horizontal Scrolling with Remote Navigation</title>
+    <title>Streaming Services Movies</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
             background-color: #181818;
             color: #fff;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-            background-color: #242424;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        .button-container button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-        }
-        .button-container img {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            transition: transform 0.3s ease-in-out;
-        }
-        .button-container img:hover {
-            transform: scale(1.1);
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
+            margin: 0;
+            padding: 0;
         }
         .section {
-            width: 100%;
-            margin-bottom: 30px;
-        }
-        .section h2 {
-            text-align: center;
             margin: 20px 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: #fff;
+            text-align: center;
         }
-        .image-container {
+        .logo img {
+            max-width: 200px;
+            margin-bottom: 10px;
+        }
+        .movie-list {
             display: flex;
             gap: 10px;
             overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px 0;
+            padding: 10px;
         }
-        .image-container img {
-            width: calc(16.66% - 10px);
+        .movie-list img {
+            width: 150px;
             height: auto;
-            border: 2px solid #fff;
             border-radius: 8px;
+            transition: transform 0.3s;
             cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
-        .image-container img:hover {
+        .movie-list img:hover, .movie-list img:focus {
             transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            outline: 2px solid #fff;
         }
-        
-        .button-container button.active {
-    border: 2px solid blue; /* ili neki drugi stil po želji */
-}
-
     </style>
 </head>
 <body>
-<!-- Button Section -->
-<div class="button-container">
-    <button onclick="alert('Button 1 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 1">
-    </button>
-    <button onclick="alert('Button 2 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 2">
-    </button>
-    <button onclick="alert('Button 3 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 3">
-    </button>
-    <button onclick="alert('Button 4 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 4">
-    </button>
-    <button onclick="alert('Button 5 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 5">
-    </button>
-    <button onclick="alert('Button 6 clicked!')">
-        <img src="https://via.placeholder.com/50" alt="Button 6">
-    </button>
-</div>
-
-
 
     <!-- Netflix Section -->
     <div class="section" id="netflixSection">
-        <h2>Netflix</h2>
-        <div class="image-container" id="netflixImages"></div>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+        </div>
+        <div class="movie-list" id="netflix-list"></div>
+    </div>
+
+    <!-- Disney+ Section -->
+    <div class="section" id="disneySection">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1280px-Disney%2B_logo.svg.png" alt="Disney+ Logo">
+        </div>
+        <div class="movie-list" id="disney-list"></div>
+    </div>
+
+    <!-- Apple TV+ Section -->
+    <div class="section" id="appleSection">
+        <div class="logo">
+            <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Apple TV+ Logo">
+        </div>
+        <div class="movie-list" id="apple-tv-list"></div>
     </div>
 
     <!-- Hulu Section -->
     <div class="section" id="huluSection">
-        <h2>Hulu</h2>
-        <div class="image-container" id="huluImages"></div>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Hulu_2019.svg/2560px-Hulu_2019.svg.png" alt="Hulu Logo">
+        </div>
+        <div class="movie-list" id="hulu-list"></div>
     </div>
 
-    <!-- Popular Section -->
-    <div class="section" id="popularSection">
-        <h2>Popular</h2>
-        <div class="image-container" id="popularImages"></div>
+    <!-- Amazon Prime Video Section -->
+    <div class="section" id="primeSection">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Amazon Prime Video Logo">
+        </div>
+        <div class="movie-list" id="prime-list"></div>
     </div>
 
     <script>
-        async function fetchMovies(apiKey, sectionId, category) {
-            const tmdbBaseUrl = "https://api.themoviedb.org/3";
-            const response = await fetch(`${tmdbBaseUrl}/movie/${category}?api_key=${apiKey}&language=en-US&page=1`);
-            const data = await response.json();
+   const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
-            if (data.results && data.results.length > 0) {
-                displayImages(data.results, sectionId);
-            }
-        }
+// Funkcija za preuzimanje filmova
+function fetchMovies(listId, serviceId) {
+    const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=US`;
 
-        function displayImages(movies, sectionId) {
-            const container = document.getElementById(sectionId);
-            container.innerHTML = ""; // Clear existing images
-            movies.forEach(movie => {
-                const imgElement = document.createElement('img');
-                imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                imgElement.alt = movie.title;
-                imgElement.tabIndex = 0; // Allow keyboard navigation
-                imgElement.addEventListener('click', () => {
-                    window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                });
-                container.appendChild(imgElement);
-            });
+    fetch(apiBase)
+        .then(response => response.json())
+        .then(data => {
+            displayImages(data.results, listId);
+        })
+        .catch(error => console.error('Error fetching movies:', error));
+}
 
-            handleKeyboardNavigation(); // Enable keyboard navigation
-        }
+// Funkcija za prikazivanje slika
+function displayImages(movies, sectionId) {
+    const container = document.getElementById(sectionId);
+    container.innerHTML = ""; // Čisti postojeće slike
+
+    movies.forEach(movie => {
+        const imgElement = document.createElement('img');
+        imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Slika iz TMDB
+        imgElement.alt = movie.title; // Naziv filma
+        imgElement.tabIndex = 0; // Omogućava navigaciju tastaturom
+        imgElement.setAttribute('data-id', movie.id); // Postavljanje ID-a za preusmeravanje
+
+        container.appendChild(imgElement);
+    });
+
+    handleKeyboardNavigation(); // Aktivira navigaciju tastaturom
+}
+
+// Funkcija za navigaciju tastaturom
 function handleKeyboardNavigation() {
     const sections = document.querySelectorAll('.section');
-    const buttons = document.querySelectorAll('.button-container button');
     let currentSectionIndex = 0;
     let currentImageIndex = 0;
 
-    const focusImage = () => {
-        const currentSection = sections[currentSectionIndex];
-        const images = currentSection.querySelectorAll('.image-container img');
-        if (images.length > 0) {
-            images[currentImageIndex].focus();
-        }
-    };
-
-    const focusButton = () => {
-        buttons.forEach(button => button.classList.remove('active'));
-        buttons[currentSectionIndex].classList.add('active');
-    };
-
     document.addEventListener('keydown', (event) => {
         const currentSection = sections[currentSectionIndex];
-        const images = currentSection.querySelectorAll('.image-container img');
+        const movieItems = currentSection.querySelectorAll('.movie-list img');
 
-        if (event.key === 'ArrowRight') {
-            // Move right within the current section
-            if (images.length > 0) {
-                currentImageIndex = (currentImageIndex + 1) % images.length;
-                focusImage();
-            }
-        } else if (event.key === 'ArrowLeft') {
-            // Move left within the current section
-            if (images.length > 0) {
-                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-                focusImage();
-            }
-        } else if (event.key === 'ArrowDown') {
-            // Move to the next section
-            currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-            currentImageIndex = 0;
-            focusImage();
-            focusButton();
-        } else if (event.key === 'ArrowUp') {
-            // Move to the previous section
-            currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-            currentImageIndex = 0;
-            focusImage();
-            focusButton();
+        if (movieItems.length === 0) return; // Preskoči ako nema filmova u sekciji
+
+        switch (event.key) {
+            case 'ArrowRight':
+                // Pomeri fokus desno
+                currentImageIndex = (currentImageIndex + 1) % movieItems.length;
+                movieItems[currentImageIndex].focus();
+                return;
+
+            case 'ArrowLeft':
+                // Pomeri fokus levo
+                currentImageIndex = (currentImageIndex - 1 + movieItems.length) % movieItems.length;
+                movieItems[currentImageIndex].focus();
+                return;
+
+            case 'ArrowDown':
+                // Idi na sledeću sekciju
+                currentSectionIndex = (currentSectionIndex + 1) % sections.length;
+                currentImageIndex = 0; // Resetuj fokus unutar sekcije
+                const nextSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
+                if (nextSectionMovies.length > 0) nextSectionMovies[0].focus();
+                return;
+
+            case 'ArrowUp':
+                // Idi na prethodnu sekciju
+                currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
+                currentImageIndex = 0; // Resetuj fokus unutar sekcije
+                const prevSectionMovies = sections[currentSectionIndex].querySelectorAll('.movie-list img');
+                if (prevSectionMovies.length > 0) prevSectionMovies[0].focus();
+                return;
+
+            case 'Enter':
+                // Preusmeri na stranicu filma
+                if (currentImageIndex !== -1) {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentImageIndex].getAttribute('data-id')}`;
+                }
+                return;
+
+            default:
+                return;
         }
     });
-
-    // Initial focus
-    focusImage();
-    focusButton();
 }
 
-// Initialize keyboard navigation
-handleKeyboardNavigation();
+    // Poziv funkcija za svaki streaming servis
+    fetchMovies('netflix-list', 8);      // Netflix ID 8
+    fetchMovies('disney-list', 337);     // Disney+ ID 337
+    fetchMovies('apple-tv-list', 10);    // Apple TV+ ID 10
+    fetchMovies('hulu-list', 15);        // Hulu ID 15
+    fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
+</script>
 
-
-
-
-
-
-        
-
-        // Fetch data for each section
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated');
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'upcoming');
-        
-        
-    </script>
 </body>
 </html>
