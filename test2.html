@@ -7,12 +7,9 @@
     <style>
        body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #141414;
             color: white;
-            overflow-x: hidden;
-            overflow-y: auto;
+
         }
 
         .movie-item {
@@ -23,10 +20,11 @@
             cursor: pointer;
         }
 
-        .movie-item img {
-            width: 100%;
-            border-radius: 10px;
-        }
+.movie-item img {
+    width: 100%;
+    border-radius: 10px;
+    pointer-events: none; /* Ovo će sprečiti da elementi reaguju na tastaturu */
+}
 
         .movie-info {
             position: absolute;
@@ -39,7 +37,7 @@
         }
 
         .selected {
-            border: 2px solid #ff4500;
+            border: 200px solid #ff4500;
         }
 
         .movie-rating {
