@@ -1,97 +1,87 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Popularni Filmovi</title>
+    <title>Movie App</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
+       body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #141414;
             color: white;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-        }
 
-        h1 {
-            font-size:6px;
-            margin-bottom: 2px;
-        }
-
-        .section {
-            margin-bottom: 40px;
-            width: 100%;
-        }
-
-        .section-title {
-            font-size: 20px;
-            margin: 20px 0;
-            text-align: left;
-            width: 100%;
-        }
-
-        .movie-list {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px;
-            padding: 10px 0;
-            scroll-snap-type: x mandatory;
-            width: 100%;
-            position: relative;
         }
 
         .movie-item {
-            position: relative;
+            display: inline-block;
             width: 120px;
-            height: auto;
-            background-color: #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-            scroll-snap-align: center;
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
         }
 
-        .movie-item img {
-            width: 100%;
-            border-radius: 10px;
-        }
+.movie-item img {
+    width: 100%;
+    border-radius: 10px;
+    pointer-events: none; /* Sprečava klikove i interakcije */
+    pointer-events: none; 
+    /* dodatno onemogućava levo-desno kretanje sa Enter */
+    touch-action: manipulation; /* Ovo dodatno onemogućava horizontalno skrolovanje na dodirnim uređajima */
+}
 
-        .movie-item h3 {
+
+        .movie-info {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            color: white;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 5px 5px;
+            text-align: center;
             font-size: 10px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px;
+        }
+
+        .selected {
+            border: 200px solid #ff4500;
+        }
+
+        .movie-rating {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 10px;
             border-radius: 5px;
         }
 
-        .movie-item.selected {
-            outline: 3px solid red; /* Crveni okvir */
-            border-radius: 10px;
+        .movie-year-genre {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 9px;
+            border-radius: 5px;
         }
-        
-                .logo {
-        margin: 0px 0;
-        text-align: center;
-    }
 
-    .logo img {
-        width: 50px;
-    }
-    
-   
-    
+        .movie-title {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            font-size: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
+
 .button-container {
     display: flex;
-    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
-    justify-content: space-around; /* Razmak između dugmadi */
+    flex-wrap: wrap;
+    justify-content: space-around; /* Distribuira dugmadi ravnomerno */
+    gap: 5px; /* Razmak između dugmadi */
 }
 
 .button {
@@ -102,231 +92,152 @@
     background-color: #333;
     color: white;
     text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
+    justify-content: center; /* Centriranje slike i teksta */
+    gap: 5px; /* Manji razmak između slika i teksta */
 }
 
 .button img {
     width: 30px;
     height: 30px;
-    margin-right: 10px;
+    object-fit: contain; /* Slike unutar dugmadi bez iskrivljavanja */
 }
 
 .button:hover {
     background-color: #555;
 }
+
+
     </style>
 </head>
 <body>
 
- <div class="button-container">
+    <div class="button-container">
         <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-            Netflix
+          
         </a>
 
         <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
             <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
-            Marvel
+         
         </a>
 
         <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
             <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
-            Hulu
+          
         </a>
 
         <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
             <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
-            Apple TV+
+
         </a>
 
         <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
             <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
-            Prime Video
+            
         </a>
 
         <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
             <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
-            Disney+
+          
         </a>
     </div>
 
-
- <div class="section">
-    <div class="section-title">Top Rated</div>
-    <div class="movie-list" id="top-rated-list"></div>
-</div>
-    <div class="section">
- <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-        </div>
-        <div class="movie-list" id="netflix-list"></div>
-    </div>
-    <div class="section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1280px-Disney%2B_logo.svg.png" alt="Disney+ Logo">
-        </div>
-        <div class="movie-list" id="disney-list"></div>
-    </div>
-    <div class="section">
-        <div class="logo">
-            <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Apple TV+ Logo">
-        </div>
-        <div class="movie-list" id="apple-tv-list"></div>
-    </div>
-    <div class="section">
-        <div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Hulu_2019.svg/2560px-Hulu_2019.svg.png" alt="Hulu Logo">
-        </div>
-        <div class="movie-list" id="hulu-list"></div>
-    </div>
-    <div class="section">
-<div class="logo">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Amazon_Prime_logo_%282022%29.svg/768px-Amazon_Prime_logo_%282022%29.svg.png" alt="Amazon Prime Video Logo">
-        </div>
-        <div class="movie-list" id="prime-list"></div>
-    </div>
-
+    <div id="now-playing-movies-list" class="movie-list"></div>
+    <div id="popular-movies-list" class="movie-list"></div>
+    <div id="upcoming-movies-list" class="movie-list"></div>
+    <div id="top-movies-list" class="movie-list"></div>
+    <div id="recommended-movies-list" class="movie-list"></div>
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3';
 
-        // Funkcija za preuzimanje filmova
-function fetchMovies(listId, serviceId) {
-    const apiBase = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_watch_providers=${serviceId}&watch_region=US`;
+        // Fetch movies
+        async function fetchMovies(endpoint) {
+            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=sr-SR&page=1`);
+            const data = await response.json();
+            return data.results;
+        }
 
-    fetch(apiBase)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('API greška: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const movies = data.results;
-            const movieList = document.getElementById(listId);
+        // Display movies
+        function displayMovies(movies, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
 
-            // Provera da li je lista validna
-            if (!movieList) {
-                console.error(`Element s ID ${listId} nije pronađen.`);
-                return;
-            }
+            movies.forEach((movie) => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie-item');
+                movieElement.setAttribute('data-title', movie.title || movie.name);
+                movieElement.setAttribute('data-id', movie.id);
 
-            movies.forEach(movie => {
-                const movieItem = document.createElement('div');
-                movieItem.classList.add('movie-item');
-                movieItem.setAttribute('data-id', movie.id);
+                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const movieTitle = movie.title || movie.name;
+                const movieYear = new Date(movie.release_date).getFullYear();
+                const movieGenre = getGenreName(movie.genre_ids[0]); // Only take the first genre
+                const movieRating = movie.vote_average;
 
-                const movieImage = document.createElement('img');
-                movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                movieImage.alt = movie.title;
+                movieElement.innerHTML = `
+                    <img src="${movieImage}" alt="${movieTitle}">
+                    <div class="movie-rating">${movieRating}</div>
+                    <div class="movie-year-genre">
+                        <span>${movieYear}</span>
+                        <span>${movieGenre}</span>
+                    </div>
+                    <div class="movie-title">${movieTitle}</div>
+                `;
+                
+                // Add click event to the image
+                movieElement.querySelector('img').addEventListener('click', () => {
+                    window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
+                });
 
-                const movieTitle = document.createElement('h3');
-                movieTitle.textContent = movie.title;
-
-                movieItem.appendChild(movieImage);
-                movieItem.appendChild(movieTitle);
-                movieList.appendChild(movieItem);
+                container.appendChild(movieElement);
             });
-        })
-        .catch(error => {
-            console.error('Greška prilikom preuzimanja filmova:', error);
-        });
-}
 
-
-        // Poziv funkcija za svaki streaming servis
-         fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
-        fetchMovies('netflix-list', 8);      // Netflix ID 8
-        fetchMovies('disney-list', 337);     // Disney+ ID 337
-        fetchMovies('top-rated', );
-        fetchMovies('apple-tv-list', 10);   // Apple TV+ ID 213
-        fetchMovies('hulu-list', 15);        // Hulu ID 15
-        fetchMovies('prime-list', 9);        // Amazon Prime Video ID 9
-        fetchMovies('top-rated-list', '');  // Ili putanje do servisa ako su potrebni
-
-
-        // Funkcija za centriranje selektovanog elementa
-        function centerSelectedItem(selectedItem, container) {
-            const containerRect = container.getBoundingClientRect();
-            const itemRect = selectedItem.getBoundingClientRect();
-
-            const offsetX = itemRect.left - containerRect.left - (containerRect.width / 2) + (itemRect.width / 2);
-            container.scrollLeft += offsetX;
+            // Update movie items when new movies are added
+            updateMovieItems();
         }
 
-        // Funkcija za uklanjanje selekcije iz svih sekcija
-        function clearSelection() {
-            const allSelectedItems = document.querySelectorAll('.movie-item.selected');
-            allSelectedItems.forEach(item => item.classList.remove('selected'));
+        // Helper function for genre names
+        function getGenreName(genreId) {
+            const genres = {
+                28: "Akcija", 12: "Avantura", 16: "Animacija", 35: "Komedija", 80: "Krimi", 99: "Dokumentarac", 18: "Drama", 
+                10751: "Porodični", 14: "Fantazija", 36: "Istorijski", 27: "Horor", 10402: "Muzika", 9648: "Misterija", 
+                10749: "Romantika", 878: "Naučna fantastika", 10770: "TV film", 53: "Triler", 10752: "Rat", 37: "Vestern"
+            };
+            return genres[genreId] || "Nepoznato";
         }
 
-        // Funkcija za navigaciju
-        function navigateMovies(direction) {
-            const sections = document.querySelectorAll('.movie-list');
-            let activeSectionIndex = Array.from(sections).findIndex(section =>
-                Array.from(section.children).some(item => item.classList.contains('selected'))
-            );
-
-            if (activeSectionIndex === -1) activeSectionIndex = 0;
-
-            const activeSection = sections[activeSectionIndex];
-            const movieItems = activeSection.querySelectorAll('.movie-item');
-
-            let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
-
-            if (currentIndex === -1) {
-                clearSelection();
-                currentIndex = 0;
-                movieItems[currentIndex].classList.add('selected');
-                centerSelectedItem(movieItems[currentIndex], activeSection);
-                return;
-            }
-
-            let newIndex = -1;
-
-            switch (direction) {
-                case 'left':
-                    if (currentIndex > 0) newIndex = currentIndex - 1;
-                    break;
-                case 'right':
-                    if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
-                    break;
-                case 'up':
-                    if (activeSectionIndex > 0) {
-                        clearSelection();
-                        const prevSection = sections[activeSectionIndex - 1];
-                        const prevItems = prevSection.querySelectorAll('.movie-item');
-                        if (prevItems.length > 0) {
-                            prevItems[0].classList.add('selected');
-                            prevSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                    return;
-                case 'down':
-                    if (activeSectionIndex < sections.length - 1) {
-                        clearSelection();
-                        const nextSection = sections[activeSectionIndex + 1];
-                        const nextItems = nextSection.querySelectorAll('.movie-item');
-                        if (nextItems.length > 0) {
-                            nextItems[0].classList.add('selected');
-                            nextSection.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                    return;
-                case 'enter':
-                    if (currentIndex !== -1) {
-                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
-                    }
-                    return;
-            }
-
-            if (newIndex !== -1) {
-                movieItems[currentIndex].classList.remove('selected');
-                movieItems[newIndex].classList.add('selected');
-                centerSelectedItem(movieItems[newIndex], activeSection);
-            }
+        // Function to update movieItems
+        function updateMovieItems() {
+            movieItems = document.querySelectorAll('.movie-item');
         }
+
+        // Keyboard navigation (left, right, up, down, enter)
+        let currentIndex = -1;
+        let movieItems = [];
+
+       
+
+        window.onload = async () => {
+            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+            const topMovies = await fetchMovies('/movie/top_rated');
+            const recommendedMovies = await fetchMovies('/movie/recommendations');
+            const popularMovies = await fetchMovies('/movie/popular');
+            const upcomingMovies = await fetchMovies('/movie/upcoming');
+
+            // Display movies in the new order
+            displayMovies(popularMovies, 'popular-movies-list');
+            displayMovies(upcomingMovies, 'upcoming-movies-list');
+            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+            displayMovies(topMovies, 'top-movies-list');
+            displayMovies(recommendedMovies, 'recommended-movies-list');
+
+            // Update movieItems after all movies are loaded
+            updateMovieItems();
+        };
     </script>
+
 </body>
 </html>
