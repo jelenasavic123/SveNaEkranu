@@ -18,16 +18,16 @@
     margin: 5px;
     position: relative;
     cursor: pointer;
-    pointer-events: none; /* Onemogućava sve vrste ulaznih događaja, uključujući tastaturu */
+
     user-select: none;    /* Onemogućava selekciju sadržaja */
     touch-action: none;    /* Onemogućava tap-ove na dodirnim ekranima */
 }
 
-
 .movie-item img {
     width: 100%;
     border-radius: 10px;
-
+    user-select: none;     /* Onemogućava selekciju slike */
+    touch-action: none;    /* Onemogućava tap-ove na slici */
 }
 
 
