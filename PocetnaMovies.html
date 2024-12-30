@@ -3,366 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Explorer & TV Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Spectral+SC:wght@400&display=swap" rel="stylesheet">
+    <title>Movie App</title>
     <style>
-        /* Global styles */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #141414; /* Tamna pozadina kao na Netflixu */
+            background-color: #141414;
             color: white;
+            overflow-x: hidden;
+            overflow-y: auto; /* Omogućava vertikalni scroll */
         }
-
-        header {
-            background-color: transparent;
-            padding: 10px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar {
-            display: flex;
-            gap: 20px;
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            text-transform: uppercase;
-            padding: 10px 15px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        .navbar a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-
-        /* Section titles */
-        h2 {
-            font-size: 2em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            color: #e50914; /* Crvena boja kao Netflix */
-        }
-
-        /* Movie grid layout */
-        .movie-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
-
         .movie-item {
-            position: relative;
-            background-color: #222;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            display: inline-block;
+            width: 200px;
+            margin: 10px;
             cursor: pointer;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
-
-        /* Removed red highlight, only scale effect on selection */
-        .movie-item.selected {
-            transform: scale(1.05); /* Povećaj sliku kad je selektovana */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); /* Default box-shadow */
-        }
-
         .movie-item img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .movie-item:hover img {
-            transform: scale(1.1); /* Zoom efekat pri prelasku mišem */
-        }
-
-        .movie-item h3 {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-size: 18px;
-            font-weight: 500;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-        }
-
-        /* TV Controls */
-        .tv-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .tv-controls button {
-            background-color: #e50914;
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border: none;
             border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-
-        .tv-controls button:hover {
-            background-color: #b4060b; /* Tamnija crvena */
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+        .selected {
+            border: 2px solid #ff4500;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="navbar">
-            <a href="#home" id="home-link">Home</a>
-            <a href="#top-movies" id="top-movies-link">Top Movies</a>
-            <a href="#recommended" id="recommended-link">Recommended</a>
-            <a href="#now-playing" id="now-playing-link">Now Playing</a>
-            <a href="#popular" id="popular-link">Popular</a>
-            <a href="#upcoming" id="upcoming-link">Upcoming</a>
-        </div>
-    </header>
 
-    <main>
-        <!-- Top Movies Section -->
-        <section id="top-movies">
-            <h2>Top Movies</h2>
-            <div class="movie-list" id="top-movies-list"></div>
-        </section>
+    <div id="top-movies-list" class="movie-list"></div>
+    <div id="recommended-movies-list" class="movie-list"></div>
+    <div id="now-playing-movies-list" class="movie-list"></div>
+    <div id="popular-movies-list" class="movie-list"></div>
+    <div id="upcoming-movies-list" class="movie-list"></div>
 
-        <!-- Recommended Movies Section -->
-        <section id="recommended">
-            <h2>Recommended Movies</h2>
-            <div class="movie-list" id="recommended-movies-list"></div>
-        </section>
+    <script>
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3';
 
-        <!-- Now Playing Section -->
-        <section id="now-playing">
-            <h2>Now Playing</h2>
-            <div class="movie-list" id="now-playing-movies-list"></div>
-        </section>
+        // Fetch movies
+        async function fetchMovies(endpoint) {
+            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
+            const data = await response.json();
+            return data.results;
+        }
 
-        <!-- Popular Movies Section -->
-        <section id="popular">
-            <h2>Popular Movies</h2>
-            <div class="movie-list" id="popular-movies-list"></div>
-        </section>
+        // Display movies
+        function displayMovies(movies, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
 
-        <!-- Upcoming Movies Section -->
-        <section id="upcoming">
-            <h2>Upcoming Movies</h2>
-            <div class="movie-list" id="upcoming-movies-list"></div>
-        </section>
+            movies.forEach((movie) => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie-item');
+                movieElement.setAttribute('data-title', movie.title || movie.name);
+                movieElement.setAttribute('data-id', movie.id);
 
-        <!-- TV Control Section -->
-        <section id="tv-control">
-            <h2>TV Control</h2>
-            <div class="tv-controls">
-                <button onclick="sendCommandToTV('volumeUp')">Volume Up</button>
-                <button onclick="sendCommandToTV('volumeDown')">Volume Down</button>
-                <button onclick="sendCommandToTV('playPause')">Play/Pause</button>
-                <button onclick="sendCommandToTV('next')">Next</button>
-                <button onclick="sendCommandToTV('previous')">Previous</button>
-                <button onclick="sendCommandToTV('mute')">Mute</button>
-            </div>
-        </section>
-    </main>
+                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const movieTitle = movie.title || movie.name;
 
-   <script>
-    // Funkcija za navigaciju
-function navigateMovies(direction) {
-    const sections = document.querySelectorAll('.movie-list');
-    let activeSectionIndex = Array.from(sections).findIndex(section =>
-        Array.from(section.children).some(item => item.classList.contains('selected'))
-    );
+                movieElement.innerHTML = `
+                    <img src="${movieImage}" alt="${movieTitle}">
+                    <div class="movie-info">
+                        <h3>${movieTitle}</h3>
+                    </div>
+                `;
+                container.appendChild(movieElement);
 
-    if (activeSectionIndex === -1) activeSectionIndex = 0;
+                // Select movie on click
+                movieElement.addEventListener('click', () => selectMovie(movieElement));
+            });
+        }
 
-    const activeSection = sections[activeSectionIndex];
-    const movieItems = activeSection.querySelectorAll('.movie-item');
+        // Select movie
+        function selectMovie(movieElement) {
+            const allMovies = document.querySelectorAll('.movie-item');
+            allMovies.forEach(movie => movie.classList.remove('selected'));
+            movieElement.classList.add('selected');
+        }
 
-    let currentIndex = Array.from(movieItems).findIndex(item => item.classList.contains('selected'));
+        // TV Control (mockup)
+        function sendCommandToTV(command) {
+            console.log(`Sending command: ${command}`);
+        }
 
-    if (currentIndex === -1) {
-        clearSelection();
-        currentIndex = 0;
-        movieItems[currentIndex].classList.add('selected');
-        centerSelectedItem(movieItems[currentIndex], activeSection);
-        return;
-    }
+        // Keyboard navigation (left, right, up, down, enter)
+        let currentIndex = -1;
+        const movieItems = [];
 
-    let newIndex = -1;
-
-    switch (direction) {
-        case 'left':
-            if (currentIndex > 0) newIndex = currentIndex - 1;
-            break;
-        case 'right':
-            if (currentIndex < movieItems.length - 1) newIndex = currentIndex + 1;
-            break;
-        case 'up':
-            if (activeSectionIndex > 0) {
-                clearSelection();
-                const prevSection = sections[activeSectionIndex - 1];
-                const prevItems = prevSection.querySelectorAll('.movie-item');
-                if (prevItems.length > 0) {
-                    prevItems[0].classList.add('selected');
-                    prevSection.scrollIntoView({ behavior: 'smooth' });
-                }
+        document.addEventListener('keydown', (e) => {
+            const items = document.querySelectorAll('.movie-item');
+            if (items.length === 0) return;
+            
+            switch (e.key) {
+                case 'ArrowRight':
+                    currentIndex = (currentIndex + 1) % items.length;
+                    break;
+                case 'ArrowLeft':
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    break;
+                case 'ArrowDown':
+                    currentIndex = (currentIndex + 1) % items.length;
+                    break;
+                case 'ArrowUp':
+                    currentIndex = (currentIndex - 1 + items.length) % items.length;
+                    break;
+                case 'Enter':
+                    if (currentIndex !== -1) {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
+                    }
+                    break;
+                default:
+                    return;
             }
-            return;
-        case 'down':
-            if (activeSectionIndex < sections.length - 1) {
-                clearSelection();
-                const nextSection = sections[activeSectionIndex + 1];
-                const nextItems = nextSection.querySelectorAll('.movie-item');
-                if (nextItems.length > 0) {
-                    nextItems[0].classList.add('selected');
-                    nextSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-            return;
-        case 'enter':
+
+            items.forEach(item => item.classList.remove('selected'));
             if (currentIndex !== -1) {
-                window.location.href = `https://vidsrc.vip/embed/movie/${movieItems[currentIndex].getAttribute('data-id')}`;
+                items[currentIndex].classList.add('selected');
             }
-            return;
-    }
+        });
 
-    if (newIndex !== -1) {
-        movieItems[currentIndex].classList.remove('selected');
-        movieItems[newIndex].classList.add('selected');
-        centerSelectedItem(movieItems[newIndex], activeSection);
-    }
-}
+        window.onload = async () => {
+            const topMovies = await fetchMovies('/movie/top_rated');
+            const recommendedMovies = await fetchMovies('/movie/recommendations');
+            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+            const popularMovies = await fetchMovies('/movie/popular');
+            const upcomingMovies = await fetchMovies('/movie/upcoming');
 
-// Helper functions
+            displayMovies(topMovies, 'top-movies-list');
+            displayMovies(recommendedMovies, 'recommended-movies-list');
+            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+            displayMovies(popularMovies, 'popular-movies-list');
+            displayMovies(upcomingMovies, 'upcoming-movies-list');
 
-// Clear current selection
-function clearSelection() {
-    document.querySelectorAll('.movie-item.selected').forEach(item => item.classList.remove('selected'));
-}
-
-// Center selected item in the viewport
-function centerSelectedItem(selectedItem, section) {
-    const rect = selectedItem.getBoundingClientRect();
-    const sectionRect = section.getBoundingClientRect();
-    const offset = rect.left - sectionRect.left - (sectionRect.width / 2) + (rect.width / 2);
-    section.scrollBy({ left: offset, behavior: 'smooth' });
-}
-
-// Fetch movies
-const apiKey = '2701858e9bccab54d4d0e4931420a739';
-const baseUrl = 'https://api.themoviedb.org/3';
-
-async function fetchMovies(endpoint) {
-    const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=en-US&page=1`);
-    const data = await response.json();
-    return data.results;
-}
-
-// Display movies
-function displayMovies(movies, containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-
-    movies.forEach((movie) => {
-        const movieElement = document.createElement('div');
-        movieElement.classList.add('movie-item');
-        movieElement.setAttribute('data-title', movie.title || movie.name);
-        movieElement.setAttribute('data-id', movie.id); // Add movie ID
-
-        const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-        const movieTitle = movie.title || movie.name;
-
-        movieElement.innerHTML = `
-            <a href="https://vidsrc.vip/embed/movie/${movie.id}">
-                <img src="${movieImage}" alt="${movieTitle}">
-                <div class="movie-info">
-                    <h3>${movieTitle}</h3>
-                </div>
-            </a>
-        `;
-        container.appendChild(movieElement);
-
-        // Select movie on click
-        movieElement.addEventListener('click', () => selectMovie(movieElement));
-    });
-}
-
-// Select movie
-function selectMovie(movieElement) {
-    const allMovies = document.querySelectorAll('.movie-item');
-    allMovies.forEach(movie => movie.classList.remove('selected'));
-    movieElement.classList.add('selected');
-}
-
-// TV Control (mockup)
-function sendCommandToTV(command) {
-    console.log(`Sending command: ${command}`);
-}
-
-// Keyboard navigation (left, right, up, down, enter, click)
-let currentIndex = -1;
-const movieItems = [];
-const sections = document.querySelectorAll('.movie-section');
-let activeSectionIndex = 0;
-
-document.addEventListener('keydown', (e) => {
-    const items = document.querySelectorAll('.movie-item');
-    if (items.length === 0) return;
-
-    switch (e.key) {
-        case 'ArrowRight':
-            navigateMovies('right');
-            break;
-        case 'ArrowLeft':
-            navigateMovies('left');
-            break;
-        case 'ArrowDown':
-            navigateMovies('down');
-            break;
-        case 'ArrowUp':
-            navigateMovies('up');
-            break;
-        case 'Enter':
-            navigateMovies('enter');
-            break;
-        default:
-            return;
-    }
-});
-
-window.onload = async () => {
-    const topMovies = await fetchMovies('/movie/top_rated');
-    const recommendedMovies = await fetchMovies('/movie/recommendations');
-    const nowPlayingMovies = await fetchMovies('/movie/now_playing');
-    const popularMovies = await fetchMovies('/movie/popular');
-    const upcomingMovies = await fetchMovies('/movie/upcoming');
-
-    displayMovies(topMovies, 'top-movies-list');
-    displayMovies(recommendedMovies, 'recommended-movies-list');
-    displayMovies(nowPlayingMovies, 'now-playing-movies-list');
-    displayMovies(popularMovies, 'popular-movies-list');
-    displayMovies(upcomingMovies, 'upcoming-movies-list');
-
-    movieItems.push(...document.querySelectorAll('.movie-item'));
-};
-
-</script>
+            movieItems.push(...document.querySelectorAll('.movie-item'));
+        };
+    </script>
 
 </body>
 </html>
