@@ -3,406 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pretraga Filmova - Netflix Style</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Movie App</title>
     <style>
-        * {
+       body {
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
             background-color: #141414;
             color: white;
-            text-align: center;
-            padding: 50px 20px;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            position: relative;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        .open-popup-btn {
-            padding: 15px 30px;
-            background-color: #e50914;
-            color: white;
-            font-size: 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .open-popup-btn:hover {
-            background-color: #f40612;
-        }
-
-        /* Popup stilovi */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .popup-content {
-            background-color: #222;
-            padding: 30px;
-            width: 70%;
-            max-width: 800px;
-            border-radius: 10px;
-            position: relative;
+            overflow-x: hidden;
             overflow-y: auto;
-            max-height: 80vh;
         }
 
-        .popup-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-
-        .close-popup {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            font-size: 2rem;
+        .movie-item {
+            display: inline-block;
+            width: 120px;
+            margin: 5px;
+            position: relative;
             cursor: pointer;
         }
 
-        /* Pretraga */
-        .search-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            background-color: #141414;
-            padding: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+        .movie-item img {
+            width: 100%;
+            border-radius: 10px;
         }
 
-        input[type="text"] {
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            width: 60%;
-            max-width: 600px;
+        .movie-info {
+            position: absolute;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 5px 5px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .selected {
+            border: 2px solid #ff4500;
+        }
+
+        .movie-rating {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 10px;
             border-radius: 5px;
-            border: none;
+        }
+
+        .movie-year-genre {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 5px;
+            font-size: 9px;
+            border-radius: 5px;
+        }
+
+        .movie-title {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            font-size: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 5px;
+            border-radius: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            margin: 7px;
+            border-radius: 5px;
             background-color: #333;
             color: white;
-            outline: none;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
+            justify-content: center;
+            gap: 2px;
         }
 
-        input[type="text"]:focus {
-            background-color: #444;
+        .button img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
         }
 
-        .microphone-icon {
-            position: absolute;
-            right: 10px;
-            color: #e50914;
-            cursor: pointer;
-            font-size: 1.8rem;
-            transition: color 0.3s ease;
-        }
-
-        .microphone-icon:hover {
-            color: #f40612;
-        }
-
-        /* Stilovi za prikazivanje filmova ispod */
-        .section-container {
-            margin-top: 100px;
-            width: 100%;
-            max-width: 1200px;
-            padding: 10px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .results-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            grid-gap: 15px;
-            width: 100%;
-            padding: 10px;
-            overflow-y: auto;
-            max-height: 500px; /* Maksimalna visina sekcije za filmove */
-        }
-
-        .movie {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .movie img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .movie:hover img {
-            transform: scale(1.1);
-        }
-
-        .movie:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
-        }
-
-        .movie::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-
-        .movie:hover::after {
-            opacity: 1;
-        }
-
-        .movie:active {
-            transform: scale(0.98);
-        }
-
-        .load-more-btn {
-            background-color: #e50914;
-            color: white;
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .load-more-btn:hover {
-            background-color: #f40612;
-        }
-
-        /* Stil za selektovani film */
-        .movie.selected {
-            border: 2px solid #e50914;
+        .button:hover {
+            background-color: #555;
         }
     </style>
 </head>
 <body>
 
-    <h1>Pretraga Filmova</h1>
-    <button class="open-popup-btn" onclick="openPopup()">Pokreni Pretragu</button>
+    <div class="button-container">
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" class="button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+            Netflix
+        </a>
 
-    <!-- Sekcija za popularne filmove -->
-    <div class="section-container">
-        <h2 class="section-title">Popularni Filmovi</h2>
-        <div id="popularMovies" class="results-container"></div>
-        <button class="load-more-btn" id="loadMorePopular" onclick="loadMoreMovies('popular', popularPage + 1)">Prikaži više</button>
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel Logo">
+            Marvel
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
+            Hulu
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" class="button">
+            <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Apple Logo">
+            Apple TV+
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Amazon Prime Logo">
+            Prime Video
+        </a>
+
+        <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" class="button">
+            <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+ Logo">
+            Disney+
+        </a>
     </div>
 
-    <!-- Popup Prozor -->
-    <div id="popup" class="popup-overlay">
-        <div class="popup-content">
-            <span class="close-popup" onclick="closePopup()">&times;</span>
-            <h2>Pretraga Filmova</h2>
-            <div class="search-container">
-                <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
-                <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()"></i>
-            </div>
-            <div id="results" class="results-container"></div>
-        </div>
-    </div>
+    <div id="now-playing-movies-list" class="movie-list"></div>
+    <div id="popular-movies-list" class="movie-list"></div>
+    <div id="upcoming-movies-list" class="movie-list"></div>
+    <div id="top-movies-list" class="movie-list"></div>
+    <div id="recommended-movies-list" class="movie-list"></div>
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
         const baseUrl = 'https://api.themoviedb.org/3';
 
-        let popularPage = 1;
-        let currentSelectedMovieIndex = 0;  // Indeks selektovanog filma
-
-        async function loadPopularMovies(page = 1) {
-            const url = `${baseUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayMovies('popularMovies', data.results);
-            } catch (error) {
-                console.error('Greška pri učitavanju popularnih filmova:', error);
-            }
+        // Fetch movies
+        async function fetchMovies(endpoint) {
+            const response = await fetch(`${baseUrl}${endpoint}?api_key=${apiKey}&language=sr-SR&page=1`);
+            const data = await response.json();
+            return data.results;
         }
 
-        function displayMovies(containerId, movies) {
+        // Display movies
+        function displayMovies(movies, containerId) {
             const container = document.getElementById(containerId);
-            container.innerHTML = '';  // Očisti pređašnji sadržaj
-            if (movies && movies.length > 0) {
-                movies.forEach((movie, index) => {
-                    if (movie.poster_path) {
-                        const movieDiv = document.createElement('div');
-                        movieDiv.classList.add('movie');
-                        movieDiv.setAttribute('data-id', movie.id);
-                        movieDiv.setAttribute('tabindex', 0);  // Omogućava tastaturnu navigaciju
-                        movieDiv.innerHTML = `
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
-                        `;
-                        container.appendChild(movieDiv);
+            container.innerHTML = '';
 
-                        // Dodajemo selektovanje na klik
-                        movieDiv.addEventListener('click', function() {
-                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                        });
+            movies.forEach((movie) => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie-item');
+                movieElement.setAttribute('data-title', movie.title || movie.name);
+                movieElement.setAttribute('data-id', movie.id);
 
-                        // Selektovanje filma pomoću tastature
-                        movieDiv.addEventListener('focus', function() {
-                            setSelectedMovie(index);
-                        });
-                    }
+                const movieImage = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const movieTitle = movie.title || movie.name;
+                const movieYear = new Date(movie.release_date).getFullYear();
+                const movieGenre = getGenreName(movie.genre_ids[0]); // Only take the first genre
+                const movieRating = movie.vote_average;
+
+                movieElement.innerHTML = `
+                    <img src="${movieImage}" alt="${movieTitle}">
+                    <div class="movie-rating">${movieRating}</div>
+                    <div class="movie-year-genre">
+                        <span>${movieYear}</span>
+                        <span>${movieGenre}</span>
+                    </div>
+                    <div class="movie-title">${movieTitle}</div>
+                `;
+                
+                // Add click event to the image
+                movieElement.querySelector('img').addEventListener('click', () => {
+                    window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
                 });
-            } else {
-                container.innerHTML = '<p>Nema postera za ovu sekciju.</p>';
-            }
+
+                container.appendChild(movieElement);
+            });
+
+            // Update movie items when new movies are added
+            updateMovieItems();
         }
 
-        function setSelectedMovie(index) {
-            const movies = document.querySelectorAll('.movie');
-            if (movies[index]) {
-                movies.forEach((movie, i) => {
-                    if (i === index) {
-                        movie.classList.add('selected');
-                    } else {
-                        movie.classList.remove('selected');
-                    }
-                });
-            }
-            currentSelectedMovieIndex = index;
-        }
-
-        // Funkcija za pomeranje između filmova putem tastature
-        function handleKeydown(event) {
-            const movies = document.querySelectorAll('.movie');
-            if (movies.length === 0) return;
-
-            if (event.key === 'ArrowRight') {
-                // Desni taster - idemo na sledeći film
-                if (currentSelectedMovieIndex < movies.length - 1) {
-                    currentSelectedMovieIndex++;
-                    setSelectedMovie(currentSelectedMovieIndex);
-                }
-            } else if (event.key === 'ArrowLeft') {
-                // Levi taster - idemo na prethodni film
-                if (currentSelectedMovieIndex > 0) {
-                    currentSelectedMovieIndex--;
-                    setSelectedMovie(currentSelectedMovieIndex);
-                }
-            } else if (event.key === 'Enter') {
-                // Taster Enter - selektujemo film
-                const selectedMovie = movies[currentSelectedMovieIndex];
-                if (selectedMovie) {
-                    window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovie.getAttribute('data-id')}`;
-                }
-            }
-        }
-
-        // Povezivanje tastaturnih događaja
-        document.addEventListener('keydown', handleKeydown);
-
-        window.onload = function() {
-            loadPopularMovies();
-        };
-        
-        // Otvori popup
-        function openPopup() {
-            document.getElementById('popup').classList.add('show');
-        }
-
-        // Zatvori popup
-        function closePopup() {
-            document.getElementById('popup').classList.remove('show');
-        }
-
-        // Početak pretrage filma
-        function searchMoviesFromInput() {
-            const query = document.getElementById('searchQuery').value;
-            if (query.length > 2) {
-                searchMovies(query);
-            }
-        }
-
-        async function searchMovies(query) {
-            const url = `${baseUrl}/search/movie?api_key=${apiKey}&language=en-US&query=${query}&page=1`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const resultsContainer = document.getElementById('results');
-                resultsContainer.innerHTML = '';  // Očisti prethodne rezultate
-                if (data.results.length > 0) {
-                    displayMovies('results', data.results);
-                } else {
-                    resultsContainer.innerHTML = '<p>Filmovi nisu pronađeni.</p>';
-                }
-            } catch (error) {
-                console.error('Greška pri pretrazi:', error);
-            }
-        }
-
-        // Prepoznavanje glasa
-        function startSpeechRecognition() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.start();
-            recognition.onresult = function(event) {
-                const query = event.results[0][0].transcript;
-                document.getElementById('searchQuery').value = query;
-                searchMovies(query);
+        // Helper function for genre names
+        function getGenreName(genreId) {
+            const genres = {
+                28: "Akcija", 12: "Avantura", 16: "Animacija", 35: "Komedija", 80: "Krimi", 99: "Dokumentarac", 18: "Drama", 
+                10751: "Porodični", 14: "Fantazija", 36: "Istorijski", 27: "Horor", 10402: "Muzika", 9648: "Misterija", 
+                10749: "Romantika", 878: "Naučna fantastika", 10770: "TV film", 53: "Triler", 10752: "Rat", 37: "Vestern"
             };
+            return genres[genreId] || "Nepoznato";
         }
 
-        // Load more movies
-        function loadMoreMovies(section, page) {
-            if (section === 'popular') {
-                loadPopularMovies(page);
-                popularPage = page;
-            }
+        // Function to update movieItems
+        function updateMovieItems() {
+            movieItems = document.querySelectorAll('.movie-item');
         }
+
+        // Keyboard navigation (left, right, up, down, enter)
+        let currentIndex = -1;
+        let movieItems = [];
+
+       
+
+        window.onload = async () => {
+            const nowPlayingMovies = await fetchMovies('/movie/now_playing');
+            const topMovies = await fetchMovies('/movie/top_rated');
+            const recommendedMovies = await fetchMovies('/movie/recommendations');
+            const popularMovies = await fetchMovies('/movie/popular');
+            const upcomingMovies = await fetchMovies('/movie/upcoming');
+
+            // Display movies in the new order
+            displayMovies(popularMovies, 'popular-movies-list');
+            displayMovies(upcomingMovies, 'upcoming-movies-list');
+            displayMovies(nowPlayingMovies, 'now-playing-movies-list');
+            displayMovies(topMovies, 'top-movies-list');
+            displayMovies(recommendedMovies, 'recommended-movies-list');
+
+            // Update movieItems after all movies are loaded
+            updateMovieItems();
+        };
     </script>
 
 </body>
