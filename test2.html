@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pretraga Filmova - Netflix Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-      <link rel="stylesheet" href="style.css">
     <style>
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Arial', sans-serif;
@@ -158,35 +161,21 @@
             max-height: 500px; /* Maksimalna visina sekcije za filmove */
         }
 
-.movie {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .movie {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.movie img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
-}
-
-
-.movie-image {
-    width: 100px;
-    height: 150px;
-    transition: transform 0.3s ease;
-}
-
-.movie-image.active {
-    transform: scale(1.2);
-    border: 2px solid #f00; /* Dodaj boju ivice za aktivnu sliku */
-}
-
-
+        .movie img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
 
         .movie:hover img {
             transform: scale(1.1);
@@ -233,6 +222,10 @@
             background-color: #f40612;
         }
 
+        /* Stil za selektovani film */
+        .movie.selected {
+            border: 2px solid #e50914;
+        }
     </style>
 </head>
 <body>
@@ -245,20 +238,6 @@
         <h2 class="section-title">Popularni Filmovi</h2>
         <div id="popularMovies" class="results-container"></div>
         <button class="load-more-btn" id="loadMorePopular" onclick="loadMoreMovies('popular', popularPage + 1)">Prikaži više</button>
-    </div>
-
-    <!-- Sekcija za preporučene filmove -->
-    <div class="section-container">
-        <h2 class="section-title">Preporučujemo</h2>
-        <div id="recommendedMovies" class="results-container"></div>
-        <button class="load-more-btn" id="loadMoreRecommended" onclick="loadMoreMovies('recommended', recommendedPage + 1)">Prikaži više</button>
-    </div>
-
-    <!-- Sekcija za najbolje ocenjene filmove 2024 -->
-    <div class="section-container">
-        <h2 class="section-title">Najbolje Ocenjeni Filmovi 2024.</h2>
-        <div id="topRatedMovies2024" class="results-container"></div>
-        <button class="load-more-btn" id="loadMoreTopRated" onclick="loadMoreMovies('topRated', topRatedPage + 1)">Prikaži više</button>
     </div>
 
     <!-- Popup Prozor -->
@@ -279,42 +258,7 @@
         const baseUrl = 'https://api.themoviedb.org/3';
 
         let popularPage = 1;
-        let recommendedPage = 1;
-        let topRatedPage = 1;
-
-        async function searchMovies(query) {
-            const url = `${baseUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayResults(data.results);
-            } catch (error) {
-                console.error('Greška pri pretrazi:', error);
-            }
-        }
-
-        function displayResults(movies) {
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-            if (movies && movies.length > 0) {
-                movies.forEach(movie => {
-                    if (movie.poster_path) {
-                        const movieDiv = document.createElement('div');
-                        movieDiv.classList.add('movie');
-                        movieDiv.setAttribute('data-id', movie.id);
-                        movieDiv.innerHTML = `
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
-                        `;
-                        resultsContainer.appendChild(movieDiv);
-                        movieDiv.addEventListener('click', function() {
-                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                        });
-                    }
-                });
-            } else {
-                resultsContainer.innerHTML = '<p>Nema postera za pretragu.</p>';
-            }
-        }
+        let currentSelectedMovieIndex = 0;  // Indeks selektovanog filma
 
         async function loadPopularMovies(page = 1) {
             const url = `${baseUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`;
@@ -327,42 +271,29 @@
             }
         }
 
-        async function loadRecommendedMovies(page = 1) {
-            const url = `${baseUrl}/movie/top_rated?api_key=${apiKey}&language=en-US&page=${page}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayMovies('recommendedMovies', data.results);
-            } catch (error) {
-                console.error('Greška pri učitavanju preporučenih filmova:', error);
-            }
-        }
-
-        async function loadTopRatedMovies2024(page = 1) {
-            const url = `${baseUrl}/discover/movie?api_key=${apiKey}&year=2024&sort_by=vote_average.desc&language=en-US&page=${page}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayMovies('topRatedMovies2024', data.results);
-            } catch (error) {
-                console.error('Greška pri učitavanju najboljih filmova 2024:', error);
-            }
-        }
-
         function displayMovies(containerId, movies) {
             const container = document.getElementById(containerId);
+            container.innerHTML = '';  // Očisti pređašnji sadržaj
             if (movies && movies.length > 0) {
-                movies.forEach(movie => {
+                movies.forEach((movie, index) => {
                     if (movie.poster_path) {
                         const movieDiv = document.createElement('div');
                         movieDiv.classList.add('movie');
                         movieDiv.setAttribute('data-id', movie.id);
+                        movieDiv.setAttribute('tabindex', 0);  // Omogućava tastaturnu navigaciju
                         movieDiv.innerHTML = `
                             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
                         `;
                         container.appendChild(movieDiv);
+
+                        // Dodajemo selektovanje na klik
                         movieDiv.addEventListener('click', function() {
                             window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                        });
+
+                        // Selektovanje filma pomoću tastature
+                        movieDiv.addEventListener('focus', function() {
+                            setSelectedMovie(index);
                         });
                     }
                 });
@@ -370,93 +301,109 @@
                 container.innerHTML = '<p>Nema postera za ovu sekciju.</p>';
             }
         }
-        
 
+        function setSelectedMovie(index) {
+            const movies = document.querySelectorAll('.movie');
+            if (movies[index]) {
+                movies.forEach((movie, i) => {
+                    if (i === index) {
+                        movie.classList.add('selected');
+                    } else {
+                        movie.classList.remove('selected');
+                    }
+                });
+            }
+            currentSelectedMovieIndex = index;
+        }
 
-        function loadMoreMovies(section, page) {
-            if (section === 'popular') {
-                popularPage = page;
-                loadPopularMovies(popularPage);
-            } else if (section === 'recommended') {
-                recommendedPage = page;
-                loadRecommendedMovies(recommendedPage);
-            } else if (section === 'topRated') {
-                topRatedPage = page;
-                loadTopRatedMovies2024(topRatedPage);
+        // Funkcija za pomeranje između filmova putem tastature
+        function handleKeydown(event) {
+            const movies = document.querySelectorAll('.movie');
+            if (movies.length === 0) return;
+
+            if (event.key === 'ArrowRight') {
+                // Desni taster - idemo na sledeći film
+                if (currentSelectedMovieIndex < movies.length - 1) {
+                    currentSelectedMovieIndex++;
+                    setSelectedMovie(currentSelectedMovieIndex);
+                }
+            } else if (event.key === 'ArrowLeft') {
+                // Levi taster - idemo na prethodni film
+                if (currentSelectedMovieIndex > 0) {
+                    currentSelectedMovieIndex--;
+                    setSelectedMovie(currentSelectedMovieIndex);
+                }
+            } else if (event.key === 'Enter') {
+                // Taster Enter - selektujemo film
+                const selectedMovie = movies[currentSelectedMovieIndex];
+                if (selectedMovie) {
+                    window.location.href = `https://vidsrc.vip/embed/movie/${selectedMovie.getAttribute('data-id')}`;
+                }
             }
         }
-        
-        
+
+        // Povezivanje tastaturnih događaja
+        document.addEventListener('keydown', handleKeydown);
 
         window.onload = function() {
             loadPopularMovies();
-            loadRecommendedMovies();
-            loadTopRatedMovies2024();
         };
-
-        function searchMoviesFromInput() {
-            const query = document.getElementById('searchQuery').value.trim();
-            if (query) {
-                searchMovies(query);
-            } else {
-                document.getElementById('results').innerHTML = '';
-            }
-        }
-
+        
+        // Otvori popup
         function openPopup() {
             document.getElementById('popup').classList.add('show');
         }
 
+        // Zatvori popup
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
         }
-        
-        
-        document.addEventListener('keydown', function(event) {
-    let activeSection = null;
-    let images = [];
-    let currentImageIndex = 0;
 
-    // Pronaći aktivnu sekciju (na primer, popularni filmovi)
-    if (document.activeElement.closest('#popularMovies')) {
-        activeSection = 'popularMovies';
-        images = document.querySelectorAll('#popularMovies .movie-image');
-    } else if (document.activeElement.closest('#recommendedMovies')) {
-        activeSection = 'recommendedMovies';
-        images = document.querySelectorAll('#recommendedMovies .movie-image');
-    } else if (document.activeElement.closest('#topRatedMovies2024')) {
-        activeSection = 'topRatedMovies2024';
-        images = document.querySelectorAll('#topRatedMovies2024 .movie-image');
-    }
-
-    if (images.length > 0) {
-        // Pronaći trenutno aktivnu sliku
-        images.forEach((image, index) => {
-            if (image.classList.contains('active')) {
-                currentImageIndex = index;
+        // Početak pretrage filma
+        function searchMoviesFromInput() {
+            const query = document.getElementById('searchQuery').value;
+            if (query.length > 2) {
+                searchMovies(query);
             }
-        });
-
-        // Strelica levo
-        if (event.key === 'ArrowLeft') {
-            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : images.length - 1;
-            updateActiveImage(images, currentImageIndex);
         }
 
-        // Strelica desno
-        if (event.key === 'ArrowRight') {
-            currentImageIndex = (currentImageIndex < images.length - 1) ? currentImageIndex + 1 : 0;
-            updateActiveImage(images, currentImageIndex);
+        async function searchMovies(query) {
+            const url = `${baseUrl}/search/movie?api_key=${apiKey}&language=en-US&query=${query}&page=1`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const resultsContainer = document.getElementById('results');
+                resultsContainer.innerHTML = '';  // Očisti prethodne rezultate
+                if (data.results.length > 0) {
+                    displayMovies('results', data.results);
+                } else {
+                    resultsContainer.innerHTML = '<p>Filmovi nisu pronađeni.</p>';
+                }
+            } catch (error) {
+                console.error('Greška pri pretrazi:', error);
+            }
         }
-    }
-});
 
-function updateActiveImage(images, index) {
-    // Ukloni aktivnu klasu sa svih slika
-    images.forEach(image => image.classList.remove('active'));
-    // Dodaj aktivnu klasu na trenutnu sliku
-    images[index].classList.add('active');
-}
+        // Prepoznavanje glasa
+        function startSpeechRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+            recognition.onresult = function(event) {
+                const query = event.results[0][0].transcript;
+                document.getElementById('searchQuery').value = query;
+                searchMovies(query);
+            };
+        }
+
+        // Load more movies
+        function loadMoreMovies(section, page) {
+            if (section === 'popular') {
+                loadPopularMovies(page);
+                popularPage = page;
+            }
+        }
     </script>
+
 </body>
 </html>
