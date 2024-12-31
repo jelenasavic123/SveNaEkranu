@@ -206,22 +206,6 @@
             transform: scale(0.98);
         }
 
-        .load-more-btn {
-            background-color: #e50914;
-            color: white;
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .load-more-btn:hover {
-            background-color: #f40612;
-        }
-
     </style>
 </head>
 <body>
@@ -229,14 +213,6 @@
     <h1>Pretraga Filmova</h1>
     <button class="open-popup-btn" onclick="openPopup()">Pokreni Pretragu</button>
 
-    <!-- Sekcija za popularne filmove -->
-    <div class="section-container">
-        <h2 class="section-title">Popularni Filmovi</h2>
-        <div id="popularMovies" class="results-container"></div>
-        <button class="load-more-btn" id="loadMorePopular" onclick="loadMoreMovies('popular', popularPage + 1)">Prikaži više</button>
-    </div>
-
-   
 
     <!-- Popup Prozor -->
     <div id="popup" class="popup-overlay">
@@ -250,48 +226,18 @@
             <div id="results" class="results-container"></div>
         </div>
     </div>
+    
+    <!-- Sekcija za popularne filmove -->
+    <div class="section-container">
+        <h2 class="section-title">Popularni Filmovi</h2>
+        <div id="popularMovies" class="results-container"></div>
+    </div>
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
         const baseUrl = 'https://api.themoviedb.org/3';
 
         let popularPage = 1;
-        let recommendedPage = 1;
-        let topRatedPage = 1;
-
-        async function searchMovies(query) {
-            const url = `${baseUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                displayResults(data.results);
-            } catch (error) {
-                console.error('Greška pri pretrazi:', error);
-            }
-        }
-
-        function displayResults(movies) {
-            const resultsContainer = document.getElementById('results');
-            resultsContainer.innerHTML = '';
-            if (movies && movies.length > 0) {
-                movies.forEach(movie => {
-                    if (movie.poster_path) {
-                        const movieDiv = document.createElement('div');
-                        movieDiv.classList.add('movie');
-                        movieDiv.setAttribute('data-id', movie.id);
-                        movieDiv.innerHTML = `
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
-                        `;
-                        resultsContainer.appendChild(movieDiv);
-                        movieDiv.addEventListener('click', function() {
-                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
-                        });
-                    }
-                });
-            } else {
-                resultsContainer.innerHTML = '<p>Nema postera za pretragu.</p>';
-            }
-        }
 
         async function loadPopularMovies(page = 1) {
             const url = `${baseUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`;
@@ -304,8 +250,6 @@
             }
         }
 
-       
-
         function displayMovies(containerId, movies) {
             const container = document.getElementById(containerId);
             if (movies && movies.length > 0) {
@@ -314,11 +258,11 @@
                         const movieDiv = document.createElement('div');
                         movieDiv.classList.add('movie');
                         movieDiv.setAttribute('data-id', movie.id);
-                        movieDiv.innerHTML = `
+                        movieDiv.innerHTML = ` 
                             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
                         `;
                         container.appendChild(movieDiv);
-                        movieDiv.addEventListener('click', function() {
+                        movieDiv.addEventListener('click', function () {
                             window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                         });
                     }
@@ -326,26 +270,25 @@
             } else {
                 container.innerHTML = '<p>Nema postera za ovu sekciju.</p>';
             }
+
+            // Dodajemo observer za poslednji film
+            observeLastMovie();
         }
 
-        function loadMoreMovies(section, page) {
-            if (section === 'popular') {
-                popularPage = page;
-                loadPopularMovies(popularPage);
-            } else if (section === 'recommended') {
-                recommendedPage = page;
-                loadRecommendedMovies(recommendedPage);
-            } else if (section === 'topRated') {
-                topRatedPage = page;
-                loadTopRatedMovies2024(topRatedPage);
+        function observeLastMovie() {
+            const lastMovie = document.querySelector('.results-container .movie:last-child');
+            if (lastMovie) {
+                const observer = new IntersectionObserver((entries, observer) => {
+                    if (entries[0].isIntersecting) {
+                        popularPage++;
+                        loadPopularMovies(popularPage);
+                    }
+                }, {
+                    rootMargin: '100px', // Učitavanje kada je 100px udaljeno od dna
+                });
+                observer.observe(lastMovie);
             }
         }
-
-        window.onload = function() {
-            loadPopularMovies();
-            loadRecommendedMovies();
-            loadTopRatedMovies2024();
-        };
 
         function searchMoviesFromInput() {
             const query = document.getElementById('searchQuery').value.trim();
@@ -363,6 +306,12 @@
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
         }
+
+        // Inicijalno učitavanje filmova
+        window.onload = function () {
+            loadPopularMovies();
+        };
     </script>
+
 </body>
 </html>
