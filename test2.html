@@ -3,195 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horizontal Scrolling with Remote Navigation</title>
+    <title>Pretraga Filmova - Netflix Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #181818; /* Tamna pozadina */
-            color: #fff; /* Bela boja za tekst */
+            box-sizing: border-box;
         }
-        .container {
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #141414;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            margin-top: 20px;
+            position: relative;
         }
-        .section {
-            width: 100%;
+
+        h1 {
+            font-size: 3rem;
             margin-bottom: 30px;
-        }
-        .section h2 {
-            width: 100%;
-            text-align: center;
-            margin: 20px 0;
-            font-size: 24px;
             font-weight: 700;
-            color: #fff; /* Bela boja za naslov */
         }
-        .image-container {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 10px 0;
-        }
-        .image-container img {
-            width: calc(16.66% - 10px);
-            height: auto;
-            border: 2px solid #fff; /* Bele ivice */
-            border-radius: 8px; /* Blago zaobljeni rubovi */
+
+        .open-popup-btn {
+            padding: 15px 30px;
+            background-color: #e50914;
+            color: white;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: background-color 0.3s ease;
         }
-        .image-container img:hover {
+
+        .open-popup-btn:hover {
+            background-color: #f40612;
+        }
+
+        /* Popup stilovi */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-content {
+            background-color: #222;
+            padding: 30px;
+            width: 70%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Fiksirana pretraga na vrhu */
+        .search-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background-color: #141414;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        input[type="text"] {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            width: 60%;
+            max-width: 600px;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            background-color: #444;
+        }
+
+        .microphone-icon {
+            position: absolute;
+            right: 10px;
+            color: #e50914;
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .microphone-icon:hover {
+            color: #f40612;
+        }
+
+        /* Stilovi za prikazivanje filmova ispod */
+        .results-container {
+            margin-top: 100px; /* Da pretraga ne prekriva rezultate */
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .movie {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .movie img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .movie:hover img {
             transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
-        
-        .button-container {
-    display: flex;
-    flex-wrap: wrap;      /* Omogućava prelazak na sledeći red ako ne stane u trenutni */
-    justify-content: space-around; /* Razmak između dugmadi */
-}
-        
-        .button {
-    display: inline-flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 5px;
-    background-color: #333;
-    color: white;
-    text-decoration: none;
-    justify-content: center;
-    gap: 2px;             /* Razmak između dugmadi */
-}
 
-.button img {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
+        .movie:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
+        }
 
+        .movie::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
 
-.image-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
+        .movie:hover::after {
+            opacity: 1;
+        }
 
-.image-button img {
-    width: 100px; /* Podesite širinu slike */
-    height: auto; /* Zadržite proporcije */
-    border-radius: 10px; /* Zaobljeni uglovi, ako želite */
-    transition: transform 0.2s ease; /* Animacija na hover */
-}
-
-.image-button:hover img {
-    transform: scale(1.1); /* Uvećava sliku pri hoveru */
-}
-
-
-
+        .movie:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
 
+    <h1>Pretraga Filmova</h1>
+    <button class="open-popup-btn" onclick="openPopup()">Pokreni Pretragu</button>
 
+    <!-- Popup Prozor -->
+    <div id="popup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup()">&times;</span>
+            <h2>Pretraga Filmova</h2>
 
-<div class="container">
-    <!-- Netflix Section -->
-    <div class="section" id="netflixSection">
-        <h2>Netflix</h2>
-        <div class="image-container" id="netflixImages">
-            <button class="image-button">
-                <img src="putanja-do-slike.jpg" alt="Netflix Button Image">
-            </button>
-        </div>
+            <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
+            <div class="search-container">
+                <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
+                <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()"></i>
+            </div>
 
-
-
-
-        <!-- Hulu Section -->
-        <div class="section" id="huluSection">
-            <h2>Hulu</h2>
-            <div class="image-container" id="huluImages"></div>
-        </div>
-
-        <!-- Popular Section -->
-        <div class="section" id="popularSection">
-            <h2>Popular</h2>
-            <div class="image-container" id="popularImages"></div>
+            <div id="results" class="results-container"></div>
         </div>
     </div>
 
     <script>
-        async function fetchMovies(apiKey, sectionId, category) {
-            const tmdbBaseUrl = "https://api.themoviedb.org/3";
-            const response = await fetch(`${tmdbBaseUrl}/movie/${category}?api_key=${apiKey}&language=en-US&page=1`);
-            const data = await response.json();
+        // TMDb API ključ (Vaš API ključ)
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3/search/movie';
 
-            if (data.results && data.results.length > 0) {
-                displayImages(data.results, sectionId);
+        // Funkcija za pretragu filmova putem TMDb API
+        async function searchMovies(query) {
+            const url = `${baseUrl}?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResults(data.results);
+            } catch (error) {
+                console.error('Greška pri pretrazi:', error);
             }
         }
 
-        function displayImages(movies, sectionId) {
-            const container = document.getElementById(sectionId);
-            container.innerHTML = ""; // Clear existing images
-            movies.forEach(movie => {
-                const imgElement = document.createElement('img');
-                imgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                imgElement.alt = movie.title;
-                imgElement.tabIndex = 0;  // Allow keyboard navigation
-                imgElement.addEventListener('click', () => {
-                     window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
+        // Funkcija za prikazivanje rezultata sa samo slikama postera
+        function displayResults(movies) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Očisti prethodne rezultate
+            if (movies && movies.length > 0) {
+                movies.forEach(movie => {
+                    if (movie.poster_path) {
+                        const movieDiv = document.createElement('div');
+                        movieDiv.classList.add('movie');
+                        movieDiv.setAttribute('data-id', movie.id); // Dodajemo ID filma kao data atribut
+                        movieDiv.innerHTML = `
+                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
+                        `;
+                        resultsContainer.appendChild(movieDiv);
+
+                        // Dodavanje event listenera za klik na poster
+                        movieDiv.addEventListener('click', function() {
+                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                        });
+                    }
                 });
-                container.appendChild(imgElement);
-            });
-
-            handleKeyboardNavigation(); // Enable keyboard navigation
+            } else {
+                resultsContainer.innerHTML = '<p style="color: #fff;">Nema postera za pretragu.</p>';
+            }
         }
 
-        function handleKeyboardNavigation() {
-            const sections = document.querySelectorAll('.section');
-            let currentSectionIndex = 0;
-            let currentImageIndex = 0;
-
-            sections[currentSectionIndex].querySelector('img').focus(); // Focus prvi image u prvoj sekciji
-
-            document.addEventListener('keydown', (event) => {
-                const currentSection = sections[currentSectionIndex];
-                const imageContainer = currentSection.querySelector('.image-container');
-
-                if (event.key === 'ArrowRight') {
-                    // Navigate right within the current section
-                    currentImageIndex = (currentImageIndex + 1) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowLeft') {
-                    // Navigate left within the current section
-                    currentImageIndex = (currentImageIndex - 1 + imageContainer.children.length) % imageContainer.children.length;
-                    imageContainer.children[currentImageIndex].focus();
-                } else if (event.key === 'ArrowDown') {
-                    // Navigate down to the next section
-                    currentSectionIndex = (currentSectionIndex + 1) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                } else if (event.key === 'ArrowUp') {
-                    // Navigate up to the previous section
-                    currentSectionIndex = (currentSectionIndex - 1 + sections.length) % sections.length;
-                    currentImageIndex = 0; // Reset image index
-                    sections[currentSectionIndex].querySelector('img').focus();
-                }
-            });
+        // Funkcija za automatsku pretragu filma dok korisnik unosi tekst
+        function searchMoviesFromInput() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (query) {
+                searchMovies(query);
+            } else {
+                document.getElementById('results').innerHTML = ''; // Očisti rezultate ako je polje prazno
+            }
         }
 
-        // Fetch data for each section
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'netflixImages', 'popular');
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'huluImages', 'top_rated'); // Or any other category
-        fetchMovies('2701858e9bccab54d4d0e4931420a739', 'popularImages', 'popular');
+        // Funkcija za pokretanje govorne pretrage
+        function startSpeechRecognition() {
+            // Proveravamo da li pretraživač podržava SpeechRecognition API
+            if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+                alert('Web Speech API nije podržan u ovom pretraživaču. Pokušajte u Chrome-u.');
+                return;
+            }
+
+            // Kreiramo instancu za prepoznavanje govora
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US'; // Postavljamo jezik na engleski (možete promeniti u "hr" za hrvatski)
+
+            recognition.onstart = function() {
+                console.log('Prepoznavanje govora je počelo...');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('searchQuery').value = transcript;
+                searchMovies(transcript);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Greška pri prepoznavanju:', event.error);
+            };
+
+            recognition.start();
+        }
+
+        // Funkcija za otvaranje popup-a
+        function openPopup() {
+            document.getElementById('popup').classList.add('show');
+        }
+
+        // Funkcija za zatvaranje popup-a
+        function closePopup() {
+            document.getElementById('popup').classList.remove('show');
+        }
     </script>
 
 </body>
