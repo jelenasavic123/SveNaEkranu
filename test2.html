@@ -407,6 +407,15 @@
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
         }
+        
+             // Function to update movieItems
+        function updateMovieItems() {
+            movieItems = document.querySelectorAll('.movie-item');
+        }
+
+        // Keyboard navigation (left, right, up, down, enter)
+        let currentIndex = -1;
+        let movieItems = [];
     </script>
 </body>
 </html>
