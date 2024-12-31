@@ -32,25 +32,34 @@
             font-weight: 700;
         }
 
-        .open-popup-btn {
-            padding: 15px 30px;
-            background-color: #e50914;
-            color: white;
-            font-size: 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
         }
 
-        .open-popup-btn:hover {
-            background-color: #f40612;
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin: 0 15px;
+        }
+
+        .navbar a:hover {
+            color: #e50914;
         }
 
         /* Pretraga na vrhu */
         .search-container {
             position: fixed;
-            top: 20px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
@@ -173,6 +182,14 @@
 </head>
 <body>
 
+    <nav class="navbar">
+        <a href="#">Home</a>
+        <a href="#">Popular</a>
+        <a href="#">Genres</a>
+        <a href="#">Top Rated</a>
+        <a href="#">Search</a>
+    </nav>
+
     <h1>Pretraga Filmova</h1>
 
     <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
@@ -220,7 +237,7 @@
 
                         // Dodavanje event listenera za klik na poster
                         movieDiv.addEventListener('click', function() {
-                            window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
+                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                         });
                     }
                 });
@@ -270,49 +287,43 @@
 
         // Funkcija za učitavanje više filmova kada kliknete dugme
         function loadMoreMovies() {
-            loadPopularMovies();
+            loadPopularMovies(); // Ponovno učitavanje popularnih filmova
         }
 
-        // Funkcija za automatsku pretragu filma dok korisnik unosi tekst
+        // Funkcija za pretragu sa tastaturom
         function searchMoviesFromInput() {
             const query = document.getElementById('searchQuery').value.trim();
-            if (query) {
+            if (query.length > 0) {
                 searchMovies(query);
             } else {
-                document.getElementById('results').innerHTML = ''; // Očisti rezultate ako je polje prazno
+                document.getElementById('results').innerHTML = '';
+                loadPopularMovies();
             }
         }
 
-        // Funkcija za pokretanje govorne pretrage
+        // Funkcija za govornu pretragu
         function startSpeechRecognition() {
-            if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-                alert('Web Speech API nije podržan u ovom pretraživaču. Pokušajte u Chrome-u.');
-                return;
-            }
+            const recognition = new window.webkitSpeechRecognition();
+            recognition.lang = 'en-US'; // Jezik prepoznavanja
+            recognition.continuous = false; // Da prepoznaje samo jednu rečenicu
+            recognition.interimResults = false; // Ne prikazuje privremene rezultate
 
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-
-            recognition.onstart = function() {
-                console.log('Prepoznavanje govora je počelo...');
-            };
+            recognition.start();
 
             recognition.onresult = function(event) {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById('searchQuery').value = transcript;
-                searchMovies(transcript);
+                const speechResult = event.results[0][0].transcript.trim();
+                document.getElementById('searchQuery').value = speechResult;
+                searchMoviesFromInput(); // Pretraga po govornom unosu
             };
 
             recognition.onerror = function(event) {
-                console.error('Greška pri prepoznavanju:', event.error);
+                console.error('Greška pri prepoznavanju glasa:', event.error);
             };
-
-            recognition.start();
         }
 
-        // Učitaj popularne filmove kada stranica bude učitana
+        // Početno učitavanje popularnih filmova
         loadPopularMovies();
-    </script>
 
+    </script>
 </body>
 </html>
