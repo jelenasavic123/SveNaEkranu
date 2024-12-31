@@ -8,20 +8,21 @@
       <link rel="stylesheet" href="style.css">
     <style>
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #141414;
-    color: white;
-    text-align: center;
-    padding: 50px 20px;
-    height: 100vh; /* Ova visina treba da se promeni */
-    overflow: auto; /* Dodato za skrolovanje */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    position: relative;
-}
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #141414;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+        }
 
         h1 {
             font-size: 3rem;
@@ -173,18 +174,18 @@ body {
     transition: transform 0.3s ease;
 }
 
-.movie input {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    width: calc(100% - 20px);
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 16px;
-    outline: none;
+
+.movie-image {
+    width: 100px;
+    height: 150px;
+    transition: transform 0.3s ease;
 }
+
+.movie-image.active {
+    transform: scale(1.2);
+    border: 2px solid #f00; /* Dodaj boju ivice za aktivnu sliku */
+}
+
 
 
         .movie:hover img {
@@ -369,6 +370,8 @@ body {
                 container.innerHTML = '<p>Nema postera za ovu sekciju.</p>';
             }
         }
+        
+
 
         function loadMoreMovies(section, page) {
             if (section === 'popular') {
@@ -382,6 +385,8 @@ body {
                 loadTopRatedMovies2024(topRatedPage);
             }
         }
+        
+        
 
         window.onload = function() {
             loadPopularMovies();
@@ -405,6 +410,53 @@ body {
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
         }
+        
+        
+        document.addEventListener('keydown', function(event) {
+    let activeSection = null;
+    let images = [];
+    let currentImageIndex = 0;
+
+    // Pronaći aktivnu sekciju (na primer, popularni filmovi)
+    if (document.activeElement.closest('#popularMovies')) {
+        activeSection = 'popularMovies';
+        images = document.querySelectorAll('#popularMovies .movie-image');
+    } else if (document.activeElement.closest('#recommendedMovies')) {
+        activeSection = 'recommendedMovies';
+        images = document.querySelectorAll('#recommendedMovies .movie-image');
+    } else if (document.activeElement.closest('#topRatedMovies2024')) {
+        activeSection = 'topRatedMovies2024';
+        images = document.querySelectorAll('#topRatedMovies2024 .movie-image');
+    }
+
+    if (images.length > 0) {
+        // Pronaći trenutno aktivnu sliku
+        images.forEach((image, index) => {
+            if (image.classList.contains('active')) {
+                currentImageIndex = index;
+            }
+        });
+
+        // Strelica levo
+        if (event.key === 'ArrowLeft') {
+            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : images.length - 1;
+            updateActiveImage(images, currentImageIndex);
+        }
+
+        // Strelica desno
+        if (event.key === 'ArrowRight') {
+            currentImageIndex = (currentImageIndex < images.length - 1) ? currentImageIndex + 1 : 0;
+            updateActiveImage(images, currentImageIndex);
+        }
+    }
+});
+
+function updateActiveImage(images, index) {
+    // Ukloni aktivnu klasu sa svih slika
+    images.forEach(image => image.classList.remove('active'));
+    // Dodaj aktivnu klasu na trenutnu sliku
+    images[index].classList.add('active');
+}
     </script>
 </body>
 </html>
