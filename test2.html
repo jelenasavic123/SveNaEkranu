@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pretraga Filmova - Netflix Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+      <link rel="stylesheet" href="style.css">
     <style>
         * {
             margin: 0;
@@ -160,34 +161,36 @@
             overflow-y: auto;
             max-height: 500px; /* Maksimalna visina sekcije za filmove */
         }
-        
-                .movie-item {
-            display: inline-block;
-            width: 120px;
-            margin: 5px;
-            position: relative;
-            cursor: pointer;
-        }
 
-        .movie {
-            position: relative;
-            
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.movie {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .movie img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-        
-                .selected {
-            border: 2px solid #ff4500;
-        }
+.movie img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.movie input {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    outline: none;
+}
+
 
         .movie:hover img {
             transform: scale(1.1);
@@ -407,15 +410,6 @@
         function closePopup() {
             document.getElementById('popup').classList.remove('show');
         }
-        
-             // Function to update movieItems
-        function updateMovieItems() {
-            movieItems = document.querySelectorAll('.movie-item');
-        }
-
-        // Keyboard navigation (left, right, up, down, enter)
-        let currentIndex = -1;
-        let movieItems = [];
     </script>
 </body>
 </html>
