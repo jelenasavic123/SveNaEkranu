@@ -18,25 +18,98 @@
             color: white;
             text-align: center;
             padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            min-height: 100vh;
         }
 
         h1 {
             font-size: 3rem;
             margin-bottom: 30px;
+            font-weight: 700;
         }
 
-        .section-container {
-            margin-bottom: 50px;
+        .open-popup-btn {
+            padding: 15px 30px;
+            background-color: #e50914;
+            color: white;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
+        .open-popup-btn:hover {
+            background-color: #f40612;
+        }
+
+        /* Pretraga na vrhu */
+        .search-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background-color: #141414;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        input[type="text"] {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            width: 60%;
+            max-width: 600px;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            background-color: #444;
+        }
+
+        .microphone-icon {
+            position: absolute;
+            right: 10px;
+            color: #e50914;
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .microphone-icon:hover {
+            color: #f40612;
+        }
+
+        /* Stilovi za filmove */
         .results-container {
+            margin-top: 120px; /* Da pretraga ne prekriva rezultate */
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
+            grid-gap: 15px;
+            width: 100%;
+            max-width: 1200px;
             padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 30px;
         }
 
         .movie {
+            position: relative;
             overflow: hidden;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
@@ -54,58 +127,191 @@
         .movie:hover img {
             transform: scale(1.1);
         }
+
+        .movie:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .movie::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie:hover::after {
+            opacity: 1;
+        }
+
+        .movie:active {
+            transform: scale(0.98);
+        }
+
+        /* Load More dugme */
+        .load-more-btn {
+            padding: 10px 20px;
+            background-color: #e50914;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background-color: #f40612;
+        }
     </style>
 </head>
 <body>
 
     <h1>Pretraga Filmova</h1>
 
-    <!-- Sekcija za popularne filmove -->
-    <div class="section-container">
-        <h2>Popularni Filmovi</h2>
-        <div id="popularMovies" class="results-container"></div>
+    <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
+    <div class="search-container">
+        <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
+        <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()"></i>
     </div>
 
-    <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const baseUrl = 'https://api.themoviedb.org/3';
-        let popularPage = 1;
+    <div id="results" class="results-container"></div>
+    <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreMovies()" style="display:none;">Load More</button>
 
-        async function loadPopularMovies(page = 1) {
-            const url = `${baseUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=${page}`;
+    <script>
+        // TMDb API ključ (Vaš API ključ)
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3/search/movie';
+        const popularUrl = 'https://api.themoviedb.org/3/movie/popular'; // API za popularne filmove
+        let currentPage = 1; // Za praćenje trenutne stranice za popularne filmove
+
+        // Funkcija za pretragu filmova putem TMDb API
+        async function searchMovies(query) {
+            const url = `${baseUrl}?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                displayMovies(data.results);
+                displayResults(data.results);
             } catch (error) {
-                console.error('Greška pri učitavanju popularnih filmova:', error);
+                console.error('Greška pri pretrazi:', error);
             }
         }
 
-        function displayMovies(movies) {
-            const container = document.getElementById('popularMovies');
+        // Funkcija za prikazivanje rezultata sa samo slikama postera
+        function displayResults(movies) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Očisti prethodne rezultate
             if (movies && movies.length > 0) {
                 movies.forEach(movie => {
                     if (movie.poster_path) {
                         const movieDiv = document.createElement('div');
                         movieDiv.classList.add('movie');
+                        movieDiv.setAttribute('data-id', movie.id); // Dodajemo ID filma kao data atribut
                         movieDiv.innerHTML = `
                             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
                         `;
-                        container.appendChild(movieDiv);
-                        movieDiv.addEventListener('click', () => {
+                        resultsContainer.appendChild(movieDiv);
+
+                        // Dodavanje event listenera za klik na poster
+                        movieDiv.addEventListener('click', function() {
                             window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
                         });
                     }
                 });
             } else {
-                container.innerHTML = '<p>Nema dostupnih filmova.</p>';
+                resultsContainer.innerHTML = '<p style="color: #fff;">Nema postera za pretragu.</p>';
             }
         }
 
-        window.onload = function () {
+        // Funkcija za učitavanje popularnih filmova
+        async function loadPopularMovies() {
+            const url = `${popularUrl}?api_key=${apiKey}&language=en-US&page=${currentPage}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayPopularMovies(data.results);
+                currentPage++; // Povećavamo broj stranice za sledeće učitavanje
+                if (data.page < data.total_pages) {
+                    document.getElementById('loadMoreBtn').style.display = 'block'; // Prikazujemo dugme ako ima više filmova
+                } else {
+                    document.getElementById('loadMoreBtn').style.display = 'none'; // Sakrivamo dugme ako više nema filmova
+                }
+            } catch (error) {
+                console.error('Greška pri učitavanju popularnih filmova:', error);
+            }
+        }
+
+        // Funkcija za prikazivanje popularnih filmova
+        function displayPopularMovies(movies) {
+            const resultsContainer = document.getElementById('results');
+            movies.forEach(movie => {
+                if (movie.poster_path) {
+                    const movieDiv = document.createElement('div');
+                    movieDiv.classList.add('movie');
+                    movieDiv.setAttribute('data-id', movie.id); // Dodajemo ID filma kao data atribut
+                    movieDiv.innerHTML = `
+                        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
+                    `;
+                    resultsContainer.appendChild(movieDiv);
+
+                    // Dodavanje event listenera za klik na poster
+                    movieDiv.addEventListener('click', function() {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}`;
+                    });
+                }
+            });
+        }
+
+        // Funkcija za učitavanje više filmova kada kliknete dugme
+        function loadMoreMovies() {
             loadPopularMovies();
-        };
+        }
+
+        // Funkcija za automatsku pretragu filma dok korisnik unosi tekst
+        function searchMoviesFromInput() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (query) {
+                searchMovies(query);
+            } else {
+                document.getElementById('results').innerHTML = ''; // Očisti rezultate ako je polje prazno
+            }
+        }
+
+        // Funkcija za pokretanje govorne pretrage
+        function startSpeechRecognition() {
+            if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+                alert('Web Speech API nije podržan u ovom pretraživaču. Pokušajte u Chrome-u.');
+                return;
+            }
+
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                console.log('Prepoznavanje govora je počelo...');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('searchQuery').value = transcript;
+                searchMovies(transcript);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Greška pri prepoznavanju:', event.error);
+            };
+
+            recognition.start();
+        }
+
+        // Učitaj popularne filmove kada stranica bude učitana
+        loadPopularMovies();
     </script>
 
 </body>
