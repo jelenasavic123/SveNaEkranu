@@ -160,10 +160,18 @@
             overflow-y: auto;
             max-height: 500px; /* Maksimalna visina sekcije za filmove */
         }
+        
+                .movie-item {
+            display: inline-block;
+            width: 120px;
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+        }
 
         .movie {
             position: relative;
-            overflow: hidden;
+            
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
             cursor: pointer;
@@ -175,6 +183,10 @@
             height: auto;
             border-radius: 10px;
             transition: transform 0.3s ease;
+        }
+        
+                .selected {
+            border: 2px solid #ff4500;
         }
 
         .movie:hover img {
