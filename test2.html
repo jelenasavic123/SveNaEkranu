@@ -304,39 +304,47 @@
 <body>
 
 <nav class="navbar">
-<button id="showFavoritesBtn" class="load-more-btn" onclick="showFavorites()">
-  <img src="https://img.myloview.de/fototapeten/favorit-sternsymbol-roter-quadratischer-knopf-400-98194647.jpg" alt="Ikona prikaza favorita" class="nav-icon">
-</button>
-
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html"><img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Home Icon" class="nav-icon"> </a>
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html"><img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Popular Icon" class="nav-icon"> </a>
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html"><img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Genres Icon" class="nav-icon"> </a>
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html"><img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Top Rated Icon" class="nav-icon"></a>
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html"><img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Search Icon" class="nav-icon"></a>
-    <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html"><img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Search Icon" class="nav-icon"></a>
+  <button id="showFavoritesBtn" class="load-more-btn" onclick="showFavorites()" tabindex="0">
+    <img src="https://img.myloview.de/fototapeten/favorit-sternsymbol-roter-quadratischer-knopf-400-98194647.jpg" alt="Ikona prikaza favorita" class="nav-icon">
+  </button>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html" tabindex="0">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Home Icon" class="nav-icon">
+  </a>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html" tabindex="0">
+    <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Popular Icon" class="nav-icon">
+  </a>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html" tabindex="0">
+    <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Genres Icon" class="nav-icon">
+  </a>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html" tabindex="0">
+    <img src="https://bgr.com/wp-content/uploads/2021/06/Apple-introduces-apple-tv-plus-03252019.jpg?quality=82&strip=all&resize=1400,1400" alt="Top Rated Icon" class="nav-icon">
+  </a>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html" tabindex="0">
+    <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Search Icon" class="nav-icon">
+  </a>
+  <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html" tabindex="0">
+    <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Search Icon" class="nav-icon">
+  </a>
 </nav>
-<button class="favorite-btn" aria-label="Add to Favorites">❤️</button>
 
-
-<h1>Pretraga Filmova</h1>
+<h1 tabindex="0">Pretraga Filmova</h1>
 
 <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
 <div class="search-container">
-    <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
-    <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()"></i>
+  <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
+  <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()" tabindex="0"></i>
 </div>
 
 <div id="results" class="results-container"></div>
-<button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreMovies()" style="display:none;">Load More</button>
-
+<button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreMovies()" style="display:none;" tabindex="0">Load More</button>
 
 <!-- Popup za favorite -->
-<div id="favoritesPopup" class="popup">
-    <div class="popup-content">
-        <span class="close-btn" onclick="closePopup()">&times;</span>
-        <h2>Vaši Favoriti</h2>
-        <div id="favoritesContainer" class="results-container"></div>
-    </div>
+<div id="favoritesPopup" class="popup" tabindex="0">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()" tabindex="0">&times;</span>
+    <h2 tabindex="0">Vaši Favoriti</h2>
+    <div id="favoritesContainer" class="results-container"></div>
+  </div>
 </div>
 
 <script>
