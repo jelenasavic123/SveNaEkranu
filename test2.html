@@ -259,7 +259,7 @@
 
         // Funkcija za učitavanje popularnih filmova
         async function loadPopularMovies() {
-            const url = `${popularUrl}?api_key=${apiKey}&language=en-US&page=${curraentPage}`;
+            const url = `${popularUrl}?api_key=${apiKey}&language=en-US&page=${currentPage}`;
             try {
                 const response = await fetch(url);
                 const data = await response.json();
