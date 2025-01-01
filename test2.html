@@ -211,7 +211,6 @@
 
     <div id="results" class="results-container"></div>
     <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreMovies()" style="display:none;">Load More</button>
-
     <script>
         // TMDb API ključ (Vaš API ključ)
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -248,7 +247,7 @@
 
                         // Dodavanje event listenera za klik na poster
                         movieDiv.addEventListener('click', function() {
-                            window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id&ds_lang=hr}`;
+                            window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr,bh,hr`;
                         });
                     }
                 });
@@ -290,7 +289,7 @@
 
                     // Dodavanje event listenera za klik na poster
                     movieDiv.addEventListener('click', function() {
-                        window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id&ds_lang=hr}`;
+                       window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movie.id}&ds_lang=sr&ds_lang=bh&ds_lang=hr`;
                     });
                 }
             });
