@@ -362,8 +362,9 @@ button:focus {
     <div id="results" class="results-container"></div>
   
          
-    <div id="results"></div>
+<div id="results"></div>
 <button id="loadMoreBtn" onclick="loadPopularMovies()">Učitaj više filmova</button>
+
 
     
     
@@ -556,6 +557,13 @@ button:focus {
                 }
             });
         }
+        
+        document.getElementById('loadMoreBtn').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {  // Proveravamo da li je Enter pritisnut
+        this.style.backgroundColor = 'yellow';  // Menja boju na žuto
+    }
+});
+
         
 
         // Funkcija za pretragu sa tastaturom
