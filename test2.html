@@ -232,7 +232,7 @@
 
 .movie-poster {
     width: 100px;  /* Postavite fiksnu širinu na 100px */
-    height: 100px; /* Postavite fiksnu visinu na 100px */
+    height: auto; /* Postavite fiksnu visinu na 100px */
     object-fit: cover; /* Ovaj property osigurava da slika popuni prostor bez deformacija */
     border-radius: 8px;
 }
@@ -244,7 +244,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 20px;
+    font-size: 10px;
     margin: 0;
     color: #fff;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
@@ -252,8 +252,8 @@
 
 /* Telo popupa */
 .popup-body {
-    padding: 20px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 10px;
     line-height: 1.6;
 }
 
@@ -262,7 +262,7 @@
 }
 
 .popup-footer {
-    padding: 20px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -274,7 +274,7 @@
     background-color: #e50914;
     color: white;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -289,7 +289,7 @@
     background-color: #444;
     color: white;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 7px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -298,23 +298,6 @@
 
 .close-button:hover {
     background-color: #666;
-}
-
-/* Responsive design za male ekrane */
-@media (max-width: 600px) {
-    .popup-content {
-        width: 90%;
-        padding: 10px;
-    }
-
-    .popup-header h2 {
-        font-size: 18px;
-    }
-
-    .action-button, .close-button {
-        width: 100%;
-        margin: 5px 0;
-    }
 }
 
 
