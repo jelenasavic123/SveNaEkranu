@@ -318,22 +318,10 @@ button:focus {
 }
 
 
-  /* Load More dugme */
-        .load-more-btn {
-            padding: 10px 20px;
-            background-color: #e50914;
-            color: white;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
 
-        .load-more-btn:hover {
-            background-color: #f40612;
-        }
+#loadMoreBtn:focus {
+    outline: 2px solid yellow;  /* Boji okvir dugmeta u žuto */
+}
 
 
     </style>
@@ -362,9 +350,8 @@ button:focus {
     <div id="results" class="results-container"></div>
   
          
-<div id="results"></div>
+    <div id="results"></div>
 <button id="loadMoreBtn" onclick="loadPopularMovies()">Učitaj više filmova</button>
-
 
     
     
@@ -558,12 +545,7 @@ button:focus {
             });
         }
         
-        document.getElementById('loadMoreBtn').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {  // Proveravamo da li je Enter pritisnut
-        this.style.backgroundColor = 'yellow';  // Menja boju na žuto
-    }
-});
-
+        
         
 
         // Funkcija za pretragu sa tastaturom
