@@ -55,8 +55,8 @@
 }
 
 .navbar a img {
-    width: 44px; /* Velicina slike */
-    height: 44px;
+    width: 34px; /* Velicina slike */
+    height: 34px;
     margin-right: 10px; /* Razmak između ikone i teksta */
 }
 
@@ -68,7 +68,7 @@
         /* Pretraga na vrhu */
         .search-container {
             position: fixed;
-            top: 10px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 30%;
@@ -85,12 +85,12 @@
 
         input[type="text"] {
             padding: 10px 20px;
-            font-size: 0.7rem;
-            width: 30%;
+            font-size: 1.0rem;
+            width: 50%;
             max-width: 600px;
-            border-radius: 15px;
+            border-radius: 5px;
             border: none;
-            background-color: #555;
+            background-color: #333;
             color: white;
             outline: none;
             transition: background-color 0.3s ease;
@@ -100,6 +100,18 @@
             background-color: #444;
         }
 
+        .microphone-icon {
+            position: absolute;
+            right: 10px;
+            color: #e50914;
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .microphone-icon:hover {
+            color: #f40612;
+        }
 
         /* Stilovi za filmove */
         .results-container {
@@ -175,150 +187,6 @@
         .load-more-btn:hover {
             background-color: #f40612;
         }
-        
-    .movie-info {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 7px;
-            font-weight: bold;
-            width: calc(100% - 20px);
-            text-align: center;
-        }
-        .rating {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 7px;
-        }
-        .movie-info-top {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 7px;
-        }
-        
-        
-        
-        
-.modal {
-    display: none; /* Skriveno dok se ne aktivira */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7); /* Tamnija pozadina za bolji kontrast */
-}
-
-.modal-content {
-    background-color: #222; /* Tamno sivo za sofisticiran i moderan izgled */
-    margin: 1% auto;
-    padding: 20px;
-    border: 1px solid #555; /* Disretni okvir sa blago tamnijim bojama */
-    width: 40%; /* Manji prozor modalnog sadržaja za elegantniji izgled */
-    text-align: center;
-    border-radius: 8px;
-}
-
-.close {
-    color: #ccc; /* Svetlija boja za blagi kontrast sa tamnijim modalom */
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover, .close:focus {
-    color: white; /* Povećanje kontrasta na hover za jasnu interakciju */
-    text-decoration: none;
-    cursor: pointer;
-}
-
-#movie-details {
-    text-align: left;
-    margin-bottom: 20px;
-    color: #ddd; /* Manje svetlije boje za moderan izgled teksta */
-}
-
-#movie-details h2 {
-    margin: 0 0 10px;
-    font-size: 20px;
-    color: #fff; /* Svetla boja naslova za dobar kontrast */
-}
-
-#movie-details p {
-    margin: 5px 0;
-    line-height: 1.5;
-    color: #bbb; /* Siva nijansa za bolji vizuelni kontrast i sofisticiran izgled */
-    font-size: 12px; /* Postavljanje veličine teksta na 16px */
-}
-
-
-.modal-links {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.modal-links a {
-    color: #00aaff; /* Plava boja linkova za moderan i prepoznatljiv izgled */
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.modal-links a:hover {
-    color: #0077cc; /* Tamnija plava na hover */
-}
-
- button {
-    background-color: #e50914; /* Netflix crvena boja */
-    color: #fff; /* Bela boja za tekst na dugmetu */
-    border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-}
-
-button:hover {
-    background-color: #b20710; /* Tamnija crvena na hover */
-    transform: scale(1.05); /* Blagi efekat proširenja na hover */
-}
-
-button:focus {
-    outline: none; /* Bez kontura za fokusiranje */
-}
-
-.modal-poster {
-    width: 100px; /* Smanjuje sliku na modernu veličinu */
-    height: auto;
-    border-radius: 8px; /* za glatkiji izgled */
-    margin-right: 20px;
-}
-
-.modal-button:focus {
-    outline: 2px solid blue; /* ili neka druga boja koja se ističe */
-    background-color: #f0f0f0; /* Promenite boju background-a ako želite */
-}
-
-
     </style>
 </head>
 <body>
@@ -333,220 +201,309 @@ button:focus {
 </nav>
 
 
-
     <h1>Pretraga Filmova</h1>
 
     <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
     <div class="search-container">
         <input type="text" id="searchQuery" placeholder="Unesite naziv filma..." oninput="searchMoviesFromInput()" />
+        <i class="fas fa-microphone microphone-icon" onclick="startSpeechRecognition()"></i>
     </div>
 
     <div id="results" class="results-container"></div>
     <button id="loadMoreBtn" class="load-more-btn" onclick="loadMoreMovies()" style="display:none;">Load More</button>
-    
-    
-       <input type="text" id="searchQuery" placeholder="Pretraži filmove..." oninput="searchMoviesFromInput()">
-    <div id="results"></div>
-    <button id="loadMoreBtn" onclick="loadMoreMovies()">Učitaj više filmova</button>
-    
-    
-<div id="link-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="modal-header">
-            <img id="movie-poster" src="" alt="Poster" class="modal-poster">
-            <div id="movie-details">
-                <!-- Dinamički detalji filma -->
-            </div>
-        </div>
-        <div class="modal-links">
-            <button id="btn-link1" class="modal-button" tabindex="0">Gledaj na Hrvatskom</button>
-            <button id="btn-link2" class="modal-button" tabindex="0">Gledaj na Srpskom</button>
-        </div>
-    </div>
-</div>
 
+    <script>
+        // TMDb API ključ (Vaš API ključ)
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const baseUrl = 'https://api.themoviedb.org/3/search/movie';
+        const popularUrl = 'https://api.themoviedb.org/3/movie/popular'; // API za popularne filmove
+        let currentPage = 1; // Za praćenje trenutne stranice za popularne filmove
 
-
-
-
-<script>
-    const apiKey = '2701858e9bccab54d4d0e4931420a739';
-    const baseUrl = 'https://api.themoviedb.org/3/search/movie';
-    const popularUrl = 'https://api.themoviedb.org/3/movie/popular';
-    let currentPage = 1;
-    let isLoading = false; // Da se spreči višestruko učitavanje
-
-    async function searchMovies(query) {
-        const url = `${baseUrl}?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=hr`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            displayResults(data.results);
-        } catch (error) {
-            console.error('Greška pri pretrazi:', error);
+        // Funkcija za pretragu filmova putem TMDb API
+        async function searchMovies(query) {
+            const url = `${baseUrl}?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResults(data.results);
+            } catch (error) {
+                console.error('Greška pri pretrazi:', error);
+            }
         }
-    }
 
-    async function displayResults(movies) {
-        const resultsContainer = document.getElementById('results');
-        const modal = document.getElementById('link-modal');
-        const closeModal = document.querySelector('.close');
-        const btnLink1 = document.getElementById('btn-link1');
-        const btnLink2 = document.getElementById('btn-link2');
-        const movieDetailsDiv = document.getElementById('movie-details');
-        const moviePoster = document.getElementById('movie-poster');
+        // Funkcija za prikazivanje rezultata sa samo slikama postera
+        function displayResults(movies) {
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Očisti prethodne rezultate
+            if (movies && movies.length > 0) {
+                movies.forEach(movie => {
+                    if (movie.poster_path) {
+                        const movieDiv = document.createElement('div');
+                        movieDiv.classList.add('movie');
+                        movieDiv.setAttribute('data-id', movie.id); // Dodajemo ID filma kao data atribut
+                        movieDiv.innerHTML = `
+                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
+                        `;
+                        resultsContainer.appendChild(movieDiv);
 
-        if (movies && movies.length > 0) {
-            for (const movie of movies) {
+                        // Dodavanje event listenera za klik na poster
+                        movieDiv.addEventListener('click', function() {
+                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}&lang=sr`;
+                        });
+                    }
+                });
+            } else {
+                resultsContainer.innerHTML = '<p style="color: #fff;">Nema postera za pretragu.</p>';
+            }
+        }
+
+        // Funkcija za učitavanje popularnih filmova
+        async function loadPopularMovies() {
+            const url = `${popularUrl}?api_key=${apiKey}&language=en-US&page=${currentPage}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayPopularMovies(data.results);
+                currentPage++; // Povećavamo broj stranice za sledeće učitavanje
+                if (data.page < data.total_pages) {
+                    document.getElementById('loadMoreBtn').style.display = 'block'; // Prikazujemo dugme ako ima više filmova
+                } else {
+                    document.getElementById('loadMoreBtn').style.display = 'none'; // Sakrivamo dugme ako više nema filmova
+                }
+            } catch (error) {
+                console.error('Greška pri učitavanju popularnih filmova:', error);
+            }
+        }
+
+        // Funkcija za prikazivanje popularnih filmova
+        function displayPopularMovies(movies) {
+            const resultsContainer = document.getElementById('results');
+            movies.forEach(movie => {
                 if (movie.poster_path) {
                     const movieDiv = document.createElement('div');
                     movieDiv.classList.add('movie');
-
-                    const rating = await getMovieRating(movie.id);
-                    const movieDetails = await getMovieDetails(movie.id);
-
+                    movieDiv.setAttribute('data-id', movie.id); // Dodajemo ID filma kao data atribut
                     movieDiv.innerHTML = `
-                        <div class="movie-info-top">
-                            Žanr: ${movieDetails.genres ? movieDetails.genres[0].name : 'N/A'}<br>
-                            God: ${movieDetails.release_date ? movieDetails.release_date.split('-')[0] : 'N/A'}
-                        </div>
                         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="Poster">
-                        <div class="rating">Ocjena: ${rating}</div>
-                        <div class="movie-info">
-                            <p>${movie.title}</p>
-                        </div>
                     `;
-
                     resultsContainer.appendChild(movieDiv);
 
-                    movieDiv.addEventListener('click', function () {
-                        modal.style.display = 'block';
-
-                        // Prikaz detalja u modalu
-                        movieDetailsDiv.innerHTML = `
-                            <h2>${movie.title}</h2>
-                            <p><strong>Žanr:</strong> ${movieDetails.genres.map(genre => genre.name).join(', ') || 'N/A'}</p>
-                            <p><strong>Godina:</strong> ${movieDetails.release_date || 'N/A'}</p>
-                            <p><strong>Trajanje:</strong> ${movieDetails.runtime ? movieDetails.runtime + ' min' : 'N/A'}</p>
-                            <p><strong>Opis:</strong> ${movieDetails.overview || 'Nema opisa dostupnog.'}</p>
-                        `;
-
-                        // Postavljanje postera u modalu
-                        moviePoster.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                        moviePoster.alt = movie.title;
-
-                        // Postavljanje linkova
-                        btnLink1.onclick = function () {
-                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}&lang=hr`;
-                        };
-
-                        btnLink2.onclick = function () {
-                            window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}&lang=sr`;
-                        };
+                    // Dodavanje event listenera za klik na poster
+                    movieDiv.addEventListener('click', function() {
+                        window.location.href = `https://vidsrc.vip/embed/movie/${movie.id}&lang=sr`;
                     });
                 }
-            }
-
-            closeModal.addEventListener('click', function () {
-                modal.style.display = 'none';
             });
-
-            window.addEventListener('click', function (event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        } else if (currentPage === 1) {
-            resultsContainer.innerHTML = '<p>Nema rezultata za pretragu.</p>';
         }
-    }
 
-    async function getMovieRating(movieId) {
-        const ratingUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=hr`;
-        try {
-            const response = await fetch(ratingUrl);
-            const data = await response.json();
-            return data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
-        } catch (error) {
-            console.error('Greška pri povlačenju ocene:', error);
-            return 'N/A';
+        // Funkcija za učitavanje više filmova kada kliknete dugme
+        function loadMoreMovies() {
+            loadPopularMovies(); // Ponovno učitavanje popularnih filmova
         }
-    }
 
-    async function getMovieDetails(movieId) {
-        const detailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=hr`;
-        try {
-            const response = await fetch(detailsUrl);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Greška pri povlačenju detalja filma:', error);
-            return {};
-        }
-    }
-
-    async function loadPopularMovies() {
-        if (isLoading) return;
-        isLoading = true;
-
-        const url = `${popularUrl}?api_key=${apiKey}&language=hr&page=${currentPage}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            displayResults(data.results);
-            currentPage++;
-
-            if (currentPage > data.total_pages) {
-                window.removeEventListener('scroll', handleScroll); // Ukloni događaj kada nema više stranica
+        // Funkcija za pretragu sa tastaturom
+        function searchMoviesFromInput() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (query.length > 0) {
+                searchMovies(query);
+            } else {
+                document.getElementById('results').innerHTML = '';
+                loadPopularMovies();
             }
-        } catch (error) {
-            console.error('Greška pri učitavanju popularnih filmova:', error);
-        } finally {
-            isLoading = false;
         }
-    }
 
-    function handleScroll() {
-        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 100) {
-            loadPopularMovies();
+        // Funkcija za govornu pretragu
+        function startSpeechRecognition() {
+            const recognition = new window.webkitSpeechRecognition();
+            recognition.lang = 'en-US'; // Jezik prepoznavanja
+            recognition.continuous = false; // Da prepoznaje samo jednu rečenicu
+            recognition.interimResults = false; // Ne prikazuje privremene rezultate
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript.trim();
+                document.getElementById('searchQuery').value = speechResult;
+                searchMoviesFromInput(); // Pretraga po govornom unosu
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Greška pri prepoznavanju glasa:', event.error);
+            };
         }
-    }
-    
-    
-document.addEventListener('DOMContentLoaded', function() {
-    const btnLink1 = document.getElementById('btn-link1');
-    const btnLink2 = document.getElementById('btn-link2');
-    let currentFocus = 0; // Početni fokus na prvom dugmetu
 
-    function setFocus() {
-        if (currentFocus === 0) {
-            btnLink1.focus();
-        } else {
-            btnLink2.focus();
-        }
-    }
-
-    function handleKeyboardNavigation(e) {
-        if (e.key === 'ArrowRight') {
-            currentFocus = 1; // Postavi fokus na drugo dugme
-            setFocus();
-        } else if (e.key === 'ArrowLeft') {
-            currentFocus = 0; // Postavi fokus na prvo dugme
-            setFocus();
-        }
-    }
-
-    document.addEventListener('keydown', handleKeyboardNavigation);
-});
-
-
-    document.addEventListener('DOMContentLoaded', () => {
+        // Početno učitavanje popularnih filmova
         loadPopularMovies();
-        window.addEventListener('scroll', handleScroll);
-    });
-</script>
+
+    </script>
+
+
+    <script>
+      /* ------------------- */
+      /* ACCESS DENIED ERROR */
+      /* ------------------- */
+      function display_access_denied_error() {
+        document.body.innerHTML = '<div id="access-denied-error" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: url(\'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG\') no-repeat center center; background-size: cover;">' +
+          '<div style="text-align: center; background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">' +
+          '<h1 style="font-size: 32px; margin-bottom: 20px;">Latest Updates on Turkish Series</h1>' // Naslov iznad dugmeta
+          +
+          '<button onclick="window.location.href=\'https://svenadlanuzemlje.blogspot.com\'" style="padding: 20px 40px; font-size: 24px; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;">' +
+          'Poseti Sajt' +
+          '</button>' +
+          '<p style="margin-top: 20px; font-size: 18px; color: #333;">Follow the latest news, reviews, and trends in the world of series. Stay up-to-date with premieres.</p>' // Tekst ispod dugmeta
+          +
+          '</div>' +
+          '</div>'
+      }
+      /* ------------------------- */
+      /* BLOCK BLACKLIST COUNTRIES */
+      /* ------------------------- */
+      function block_blacklist_countries() {
+        // Blacklist countries
+        const blacklist_countries = [
+          "AN", // Ankara
+          "AD", // Adana
+          "IS", // Istanbul
+          "IZ", // Izmir
+          "US", // United States
+          "VN", // Vietnam
+          "UM", // United States Minor Outlying Islands
+          "SG", // Singapore
+          "NZ", // New Zealand
+          "MX", // Mexico
+          "LR", // Liberia
+          "IL", // Israel
+          "IE", // Ireland
+          "FI", // Finland
+          "EG", // Egypt
+          "KY", // Cayman Islands
+          "CA", // Canada
+          "BD", // Bangladesh
+          "AR", // Argentina
+          "AQ", // Antarctica
+          "AX", // Aland Islands
+          "AS", // American Samoa
+          "BR", // Brazil
+          "CN", // China 
+          "HK", // Hong Kong
+          "CX", // Christmas Island
+          "CC", // Cocos
+          "CK", // Cook Islands
+          "GF", // French Guiana
+          "IN", // India
+          "KP", // Korea
+          "KR", // KR
+          "MY", // Malaysia
+          "MC", // Monaco
+          "PL", // Poland
+          "SA", // Saudi Arabia
+          "UM", // Ukrajina
+          "AE", // Ujedinjeni Arapski Emirati
+          "JP", // Japan
+          "NG", //  Nigeria
+          "PH", //  Philippines 
+          "KE", //  Philippines 
+          "GB", //  United Kingdom 
+ 
+        ]
+        // Detecting the users country
+        function get_country_code(api_url) {
+          fetch(api_url, {
+              method: 'GET'
+            })
+            .then(response => response.json()) // Getting ip info as json
+            .then(result => {
+              if (blacklist_countries.includes(result.country)) { // If my ip country code is in blacklist
+                display_access_denied_error() // Access denied error
+              }
+            })
+            .catch(error => console.log('error', error))
+        }
+        // Getting country code from third party api
+        get_country_code("https://get.geojs.io/v1/ip/country.json")
+      }
+      /* ------------------------- */
+      /* ALLOW WHITELIST COUNTRIES */
+      /* ------------------------- */
+      function allow_whitelist_countries() {
+        // Whitelist countries
+        const whitelist_countries = [
+               "TR", // Turkey
+          "AD", // Adana
+          "IS", // Istanbul
+          "IZ", // Izmir
+          "US", // United States
+          "VN", // Vietnam
+          "UM", // United States Minor Outlying Islands
+          "SG", // Singapore
+          "NZ", // New Zealand
+          "MX", // Mexico
+          "LR", // Liberia
+          "IL", // Israel
+          "IE", // Ireland
+          "FI", // Finland
+          "EG", // Egypt
+          "KY", // Cayman Islands
+          "CA", // Canada
+          "BD", // Bangladesh
+          "AR", // Argentina
+          "AQ", // Antarctica
+          "AX", // Aland Islands
+          "AS", // American Samoa
+          "BR", // Brazil
+          "CN", // China 
+          "HK", // Hong Kong
+          "CX", // Christmas Island
+          "CC", // Cocos
+          "CK", // Cook Islands
+          "GF", // French Guiana
+          "IN", // India
+          "KP", // Korea
+          "KR", // KR
+          "MY", // Malaysia
+          "MC", // Monaco
+          "PL", // Poland
+          "SA", // Saudi Arabia
+          "UM", // Ukrajina
+          "AE", // Ujedinjeni Arapski Emirati
+          "JP", // Japan
+          "NG", //  Nigeria
+          "PH", //  Philippines 
+          "KE", //  Philippines 
+          "GB", //  United Kingdom 
+        ]
+        // Detecting the users country
+        function get_country_code(api_url) {
+          fetch(api_url, {
+              method: 'GET'
+            })
+            .then(response => response.json()) // Getting ip info as json
+            .then(result => {
+              if (!whitelist_countries.includes(result.country)) { // If my ip country code is not in whitelist
+                display_access_denied_error() // Access denied error
+              }
+            })
+            .catch(error => console.log('error', error))
+        }
+        // Getting country code from third party api
+        get_country_code("https://get.geojs.io/v1/ip/country.json")
+      }
+      /* -------------- */
+      /* CALL FUNCTIONS */
+      /* -------------- */
+      block_blacklist_countries() // Block blacklist countries
+      // allow_whitelist_countries() // Allow whitelist countries
+      function performSearch(event) {
+        event.preventDefault();
+        var query = document.getElementById('search-input').value;
+        var searchUrl = 'https://www.svenadlanuplus.club/search?q=' + encodeURIComponent(query);
+        // Preusmeravanje na URL za pretragu
+        window.location.href = searchUrl;
+      }
+    </script>
+
+<div class="widget">
+  
 </div>
 </body>
 </html>
