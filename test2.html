@@ -72,6 +72,15 @@
 <body>
 
     <audio id="background-audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3" autoplay loop></audio>
+    
+    <script>
+        // Automatically stop the audio after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('background-audio').pause();
+            }, 3000); // 3000 milliseconds = 3 seconds
+        });
+    </script>
 
     <header>
         <h1>Izaberite sadržaj</h1>
