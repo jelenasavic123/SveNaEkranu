@@ -1,116 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista odobrenja</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .approval-list {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
-            width: 300px;
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            padding: 5px 0;
-        }
-    </style>
+    <title>Login</title>
 </head>
 <body>
+    <h1>Dobrodošli! Molimo vas da se prijavite</h1>
+    <form id="loginForm">
+        <label for="username">Ime:</label>
+        <input type="text" id="username" name="username" required><br><br>
 
-    <div class="approval-list">
-        <h2>Lista odobrenih korisnika</h2>
-        <ul id="user-list">
-            <!-- Lista će se popunjavati dinamički -->
-        </ul>
-        <h3>Dodajte korisničko ime:</h3>
-        <input type="text" id="new-username" placeholder="Unesite ime">
-        <button onclick="addUsername()">Dodaj</button>
-    </div>
+        <label for="accessDuration">Broj dana pristupa:</label>
+        <input type="number" id="accessDuration" name="accessDuration" value="30" required><br><br>
+
+        <button type="submit">Prijavi se</button>
+    </form>
+
+    <h2>Registrirani korisnici:</h2>
+    <ul id="userList"></ul>
 
     <script>
-        const allowedUsersKey = 'allowedUsers'; // Ključ za localStorage
+        // Funkcija za ažuriranje liste korisnika
+        function updateUserList() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = ''; // Očisti prethodnu listu
 
-        function getAllowedUsers() {
-            const storedUsers = localStorage.getItem(allowedUsersKey);
-            return storedUsers ? JSON.parse(storedUsers) : [];
-        }
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.forEach((user, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${user.username} - Pristup traje do: ${new Date(user.accessExpire).toLocaleString()}`;
+                
+                // Dodaj dugme za uklanjanje korisnika
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Ukloni';
+                removeButton.onclick = () => removeUser(index);
+                li.appendChild(removeButton);
 
-        function saveAllowedUsers(users) {
-            localStorage.setItem(allowedUsersKey, JSON.stringify(users));
-        }
-
-        function populateUserList() {
-            const userList = document.getElementById('user-list');
-            userList.innerHTML = ''; // Očisti listu pre dodavanja
-            const allowedUsers = getAllowedUsers();
-            allowedUsers.forEach(user => {
-                const listItem = document.createElement('li');
-                listItem.textContent = user;
-                userList.appendChild(listItem);
+                userList.appendChild(li);
             });
         }
 
-        function addUsername() {
-            const newUsername = document.getElementById('new-username').value.trim();
-            if (newUsername && !getAllowedUsers().includes(newUsername)) {
-                const allowedUsers = getAllowedUsers();
-                allowedUsers.push(newUsername);
-                saveAllowedUsers(allowedUsers); // Sačuvaj u localStorage
-                populateUserList(); // Osveži listu
-                document.getElementById('new-username').value = ''; // Očisti polje za unos
-            }
+        // Funkcija za uklanjanje korisnika
+        function removeUser(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.splice(index, 1); // Ukloni korisnika sa indeksom 'index'
+            localStorage.setItem('users', JSON.stringify(users)); // Spremi ažuriranu listu
+            updateUserList(); // Ažuriraj listu prikaza
         }
 
-        populateUserList(); // Popuni listu prilikom učitavanja stranice
-    </script>
+        // Obrada forme za prijavu
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
+            // Uzimanje podataka sa forme
+            const username = document.getElementById('username').value;
+            const accessDuration = parseInt(document.getElementById('accessDuration').value);
+
+            // Računanje datuma kada pristup ističe
+            const currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() + accessDuration); // Dodaj broj dana pristupa
+
+            // Učitavanje postojećih korisnika iz localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Dodaj novog korisnika
+            users.push({
+                username: username,
+                accessExpire: currentDate.toISOString()
+            });
+
+            // Spremi novu listu korisnika
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Preusmeri na drugu stranicu
+            window.location.href = 'druga_stranica.html';
+        });
+
+        // Ažuriraj listu korisnika prilikom učitavanja stranice
+        window.onload = updateUserList;
+    </script>
 </body>
 </html>
