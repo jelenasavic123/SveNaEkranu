@@ -9,83 +9,25 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
     /* Style for the popup */
- /* Popup Background */
-  #popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    color: white;
-    z-index: 1000;
-  }
+    #popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
 
-  /* Popup Content */
-  #popup-content {
-    background: rgba(18, 18, 18, 0.9);
-    padding: 30px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Title */
-  #popup-content h2 {
-    font-size: 24px;
-    color: #e50914;
-    margin-bottom: 20px;
-  }
-
-  /* Instructions */
-  #popup-content .instructions {
-    font-size: 16px;
-    margin-bottom: 15px;
-    color: white;
-  }
-
-  /* Input field */
-  #popup-content input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-
-  /* Button */
-  #popup-content button {
-    padding: 10px 20px;
-    background-color: #e50914;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-  }
-
-  /* Button hover */
-  #popup-content button:hover {
-    background-color: #b81d2d;
-  }
-
-  /* Footer */
-  #popup-content footer {
-    margin-top: 20px;
-    font-size: 14px;
-    color: white;
-    text-align: center;
-  }
+    #popup-content {
+      background: #121212;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
 
     /* Style for the second page after login */
     body {
@@ -150,16 +92,6 @@
       position: absolute;
       bottom: 0;
     }
-    
-    .additional-text {
-    font-family: 'Netflix Sans', sans-serif; /* Netflixov font */
-    color: #e50914; /* Crvena boja kao na Netflixu */
-    font-size: 16px; /* Veličina fonta */
-    line-height: 1.5; /* Prored između linija */
-    margin-top: 10px; /* Dodavanje razmaka prema gore */
-    text-align: center; /* Poravnanje teksta u centru */
-}
-
   </style>
 </head>
 <body>
@@ -191,20 +123,15 @@
     </footer>
   </div>
 
-<!-- Popup for nickname -->
-<div id="popup">
-  <div id="popup-content">
-    <h2>Unesite Ime</h2>
-    <input type="text" id="nickname" placeholder="Unesite svoje ime ovde">
-    <button onclick="signIn()">Prijavi se</button>
-    <p id="status"></p>
-
-    <!-- Dodatni tekst unutar div-a #popup-content -->
-    <p class="additional-text">Ako nemate nalog, molimo vas da nas kontaktirate kako bismo vam omogućili pristup aplikaciji.</p>
+  <!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
   </div>
-</div>
-
-
 
   <script>
     // Firebase konfiguracija
@@ -247,12 +174,12 @@
                 // Otvoriti sadržaj stranice nakon prijave
                 document.getElementById('content').style.display = 'block';
               } else {
-                statusDiv.textContent = 'Vaše ime nije pronađeno ili Vam je preplata istekla. Javite se operateru kako biste obnovili pristup.';
+                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
               }
             })
             .catch((error) => {
-              console.error('Greška prilikom pretrage imena: ', error);
-              statusDiv.textContent = 'Greška prilikom pretrage imena.';
+              console.error('Greška prilikom pretrage nadimka: ', error);
+              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
             });
         })
         .catch((error) => {
@@ -270,7 +197,7 @@
           .then((doc) => {
             if (doc.exists && doc.data().available) {
               // Ako je nadimak validan, otvori sadržaj
-              console.log("Korisnik je već prijavljen sa tim imenom: " + nickname);
+              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
               document.getElementById('content').style.display = 'block';
             } else {
               // Ako nije validan, izbriši ga iz localStorage i prikazi popup
@@ -287,169 +214,5 @@
       }
     };
   </script>
-  
-  <script>
-      /* ------------------- */
-      /* ACCESS DENIED ERROR */
-      /* ------------------- */
-      function display_access_denied_error() {
-        document.body.innerHTML = '<div id="access-denied-error" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: url(\'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG\') no-repeat center center; background-size: cover;">' +
-          '<div style="text-align: center; background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">' +
-          '<h1 style="font-size: 32px; margin-bottom: 20px;">Latest Updates on Turkish Series</h1>' // Naslov iznad dugmeta
-          +
-          '<button onclick="window.location.href=\'https://svenadlanuzemlje.blogspot.com\'" style="padding: 20px 40px; font-size: 24px; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;">' +
-          'Poseti Sajt' +
-          '</button>' +
-          '<p style="margin-top: 20px; font-size: 18px; color: #333;">Follow the latest news, reviews, and trends in the world of series. Stay up-to-date with premieres.</p>' // Tekst ispod dugmeta
-          +
-          '</div>' +
-          '</div>'
-      }
-      /* ------------------------- */
-      /* BLOCK BLACKLIST COUNTRIES */
-      /* ------------------------- */
-      function block_blacklist_countries() {
-        // Blacklist countries
-        const blacklist_countries = [
-          "TR", // Ankara
-          "AD", // Adana
-          "IS", // Istanbul
-          "IZ", // Izmir
-          "US", // United States
-          "VN", // Vietnam
-          "UM", // United States Minor Outlying Islands
-          "SG", // Singapore
-          "NZ", // New Zealand
-          "MX", // Mexico
-          "LR", // Liberia
-          "IL", // Israel
-          "IE", // Ireland
-          "FI", // Finland
-          "EG", // Egypt
-          "KY", // Cayman Islands
-          "CA", // Canada
-          "BD", // Bangladesh
-          "AR", // Argentina
-          "AQ", // Antarctica
-          "AX", // Aland Islands
-          "AS", // American Samoa
-          "BR", // Brazil
-          "CN", // China 
-          "HK", // Hong Kong
-          "CX", // Christmas Island
-          "CC", // Cocos
-          "CK", // Cook Islands
-          "GF", // French Guiana
-          "IN", // India
-          "KP", // Korea
-          "KR", // KR
-          "MY", // Malaysia
-          "MC", // Monaco
-          "PL", // Poland
-          "SA", // Saudi Arabia
-          "UM", // Ukrajina
-          "AE", // Ujedinjeni Arapski Emirati
-          "JP", // Japan
-          "NG", //  Nigeria
-          "PH", //  Philippines 
-          "KE", //  Philippines 
-          "GB", //  United Kingdom 
- 
-        ]
-        // Detecting the users country
-        function get_country_code(api_url) {
-          fetch(api_url, {
-              method: 'GET'
-            })
-            .then(response => response.json()) // Getting ip info as json
-            .then(result => {
-              if (blacklist_countries.includes(result.country)) { // If my ip country code is in blacklist
-                display_access_denied_error() // Access denied error
-              }
-            })
-            .catch(error => console.log('error', error))
-        }
-        // Getting country code from third party api
-        get_country_code("https://get.geojs.io/v1/ip/country.json")
-      }
-      /* ------------------------- */
-      /* ALLOW WHITELIST COUNTRIES */
-      /* ------------------------- */
-      function allow_whitelist_countries() {
-        // Whitelist countries
-        const whitelist_countries = [
-               "TR", // Turkey
-          "AD", // Adana
-          "IS", // Istanbul
-          "IZ", // Izmir
-          "US", // United States
-          "VN", // Vietnam
-          "UM", // United States Minor Outlying Islands
-          "SG", // Singapore
-          "NZ", // New Zealand
-          "MX", // Mexico
-          "LR", // Liberia
-          "IL", // Israel
-          "IE", // Ireland
-          "FI", // Finland
-          "EG", // Egypt
-          "KY", // Cayman Islands
-          "CA", // Canada
-          "BD", // Bangladesh
-          "AR", // Argentina
-          "AQ", // Antarctica
-          "AX", // Aland Islands
-          "AS", // American Samoa
-          "BR", // Brazil
-          "CN", // China 
-          "HK", // Hong Kong
-          "CX", // Christmas Island
-          "CC", // Cocos
-          "CK", // Cook Islands
-          "GF", // French Guiana
-          "IN", // India
-          "KP", // Korea
-          "KR", // KR
-          "MY", // Malaysia
-          "MC", // Monaco
-          "PL", // Poland
-          "SA", // Saudi Arabia
-          "UM", // Ukrajina
-          "AE", // Ujedinjeni Arapski Emirati
-          "JP", // Japan
-          "NG", //  Nigeria
-          "PH", //  Philippines 
-          "KE", //  Philippines 
-          "GB", //  United Kingdom 
-        ]
-        // Detecting the users country
-        function get_country_code(api_url) {
-          fetch(api_url, {
-              method: 'GET'
-            })
-            .then(response => response.json()) // Getting ip info as json
-            .then(result => {
-              if (!whitelist_countries.includes(result.country)) { // If my ip country code is not in whitelist
-                display_access_denied_error() // Access denied error
-              }
-            })
-            .catch(error => console.log('error', error))
-        }
-        // Getting country code from third party api
-        get_country_code("https://get.geojs.io/v1/ip/country.json")
-      }
-      /* -------------- */
-      /* CALL FUNCTIONS */
-      /* -------------- */
-      block_blacklist_countries() // Block blacklist countries
-      // allow_whitelist_countries() // Allow whitelist countries
-      function performSearch(event) {
-        event.preventDefault();
-        var query = document.getElementById('search-input').value;
-        var searchUrl = 'https://www.svenadlanuplus.club/search?q=' + encodeURIComponent(query);
-        // Preusmeravanje na URL za pretragu
-        window.location.href = searchUrl;
-      }
-    </script>
 </body>
 </html>
