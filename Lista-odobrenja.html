@@ -1,97 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prijava kao anonimni korisnik</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Nadimci - Admin Panel</title>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+  <style>
+    /* Stajling za izgled stranice */
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .status {
+      margin-top: 10px;
+      color: red;
+    }
+  </style>
 </head>
 <body>
-    <h2>Dobrodošli na naš sajt!</h2>
-    <button id="loginButton">Prijavi se kao anonimni korisnik</button>
+  <h1>Firebase Nadimci - Prijava, Dodavanje i Brisanje</h1>
 
-    <div id="nameForm" style="display: none;">
-        <h3>Unesite svoje ime</h3>
-        <input type="text" id="username" placeholder="Unesite ime" required>
-        <button onclick="setUsername()">Spremi ime</button>
-    </div>
+  <!-- Prijava sa nadimkom -->
+  <div id="sign-in-section">
+    <h2>Prijava sa nadimkom</h2>
+    <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+    <button onclick="signIn()">Prijavi se</button>
+    <p id="status"></p>
+  </div>
 
-    <div id="welcomeMessage" style="display: none;">
-        <h3>Dobrodošli, <span id="userName"></span>!</h3>
-        <p>Pristupate specijalnim sadržajima.</p>
-    </div>
+  <hr>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <!-- Admin panel za dodavanje i brisanje nadimaka -->
+  <div id="admin-section">
+    <h2>Admin Panel</h2>
+    <h3>Dodajte novi nadimak</h3>
+    <input type="text" id="new-nickname" placeholder="Unesite nadimak za dodavanje">
+    <button onclick="addNickname()">Dodaj nadimak</button>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-            authDomain: "svenaekranu-64477.firebaseapp.com",
-            projectId: "svenaekranu-64477",
-            storageBucket: "svenaekranu-64477.firebasestorage.app",
-            messagingSenderId: "15230160013",
-            appId: "1:15230160013:web:89144bb5079637e787e6c4",
-            measurementId: "G-PED21PPQQJ"
-        };
+    <h3>Obrišite nadimak</h3>
+    <input type="text" id="delete-nickname" placeholder="Unesite nadimak za brisanje">
+    <button onclick="deleteNickname()">Obriši nadimak</button>
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    <p id="admin-status" class="status"></p>
+  </div>
 
-        // Funkcija za anonimnu prijavu
-        document.getElementById("loginButton").onclick = function() {
-            auth.signInAnonymously()
-                .then(() => {
-                    alert("Uspešno ste se prijavili kao anonimni korisnik.");
-                    document.getElementById("loginButton").style.display = "none";
-                    document.getElementById("nameForm").style.display = "block";
-                })
-                .catch((error) => {
-                    console.error("Greška prilikom anonimne prijave: ", error);
-                    alert("Došlo je do greške pri prijavi.");
-                });
-        };
+  <script>
+    // Firebase konfiguracija
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+      authDomain: "svenaekranu-64477.firebaseapp.com",
+      projectId: "svenaekranu-64477",
+      storageBucket: "svenaekranu-64477.firebasestorage.app",
+      messagingSenderId: "15230160013",
+      appId: "1:15230160013:web:89144bb5079637e787e6c4",
+      measurementId: "G-PED21PPQQJ"
+    };
 
-        // Funkcija za dodelu imena korisniku
-        function setUsername() {
-            const user = auth.currentUser;
-            const username = document.getElementById("username").value;
+    // Inicijalizacija Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-            if (username) {
-                // Spremamo ime u Firestore
-                db.collection("users").doc(user.uid).set({
-                    name: username
-                }).then(() => {
-                    document.getElementById("userName").textContent = username;
-                    document.getElementById("nameForm").style.display = "none";
-                    document.getElementById("welcomeMessage").style.display = "block";
-                }).catch((error) => {
-                    console.error("Greška pri dodeli imena: ", error);
-                    alert("Došlo je do greške pri dodeli imena.");
-                });
-            } else {
-                alert("Molimo vas da unesete ime.");
-            }
-        }
+    // Funkcija za prijavu sa nadimkom
+    function signIn() {
+      const nickname = document.getElementById('nickname').value;
+      const statusDiv = document.getElementById('status');
 
-        // Proveravamo da li je korisnik već prijavljen
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // Ako je korisnik prijavljen, prikazujemo dobrodošlicu
-                db.collection("users").doc(user.uid).get()
-                    .then((doc) => {
-                        if (doc.exists) {
-                            const userName = doc.data().name;
-                            document.getElementById("userName").textContent = userName;
-                            document.getElementById("welcomeMessage").style.display = "block";
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Greška pri učitavanju podataka korisnika: ", error);
-                    });
-            }
+      if (!nickname) {
+        statusDiv.textContent = 'Molimo vas unesite nadimak!';
+        return;
+      }
+
+      // Prijava kao anonimni korisnik
+      firebase.auth().signInAnonymously()
+        .then((userCredential) => {
+          // Provera da li nadimak postoji u bazi
+          db.collection('nicknames').doc(nickname).get()
+            .then((doc) => {
+              if (doc.exists && doc.data().available) {
+                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
+                // Preusmeravanje na "test-stranicu" ili neku drugu stranicu
+                alert("Dobrodošli " + nickname);
+              } else {
+                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
+              }
+            })
+            .catch((error) => {
+              console.error('Greška prilikom pretrage nadimka: ', error);
+              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
+            });
+        })
+        .catch((error) => {
+          console.error('Greška pri prijavi: ', error);
+          statusDiv.textContent = 'Greška prilikom prijave.';
         });
-    </script>
+    }
+
+    // Funkcija za dodavanje nadimka
+    function addNickname() {
+      const newNickname = document.getElementById('new-nickname').value;
+      const adminStatusDiv = document.getElementById('admin-status');
+
+      if (!newNickname) {
+        adminStatusDiv.textContent = 'Molimo unesite nadimak!';
+        return;
+      }
+
+      // Dodajemo nadimak u Firestorea
+      db.collection('nicknames').doc(newNickname).set({
+        available: true // Oznaka da je nadimak aktivan
+      })
+      .then(() => {
+        adminStatusDiv.textContent = 'Nadimak "' + newNickname + '" je uspešno dodat!';
+      })
+      .catch((error) => {
+        console.error('Greška prilikom dodavanja nadimka: ', error);
+        adminStatusDiv.textContent = 'Greška prilikom dodavanja nadimka.';
+      });
+    }
+
+    // Funkcija za brisanje nadimka
+    function deleteNickname() {
+      const deleteNicknameInput = document.getElementById('delete-nickname').value;
+      const adminStatusDiv = document.getElementById('admin-status');
+
+      if (!deleteNicknameInput) {
+        adminStatusDiv.textContent = 'Molimo unesite nadimak koji želite da obrišete.';
+        return;
+      }
+
+      // Brisanje nadimka iz Firestore
+      db.collection('nicknames').doc(deleteNicknameInput).delete()
+        .then(() => {
+          adminStatusDiv.textContent = 'Nadimak "' + deleteNicknameInput + '" je uspešno obrisan.';
+        })
+        .catch((error) => {
+          console.error('Greška prilikom brisanja nadimka: ', error);
+          adminStatusDiv.textContent = 'Greška prilikom brisanja nadimka.';
+        });
+    }
+  </script>
 </body>
 </html>
