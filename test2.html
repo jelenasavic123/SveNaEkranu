@@ -8,26 +8,27 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Style for the popup */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-
-    #popup-content {
-      background: #121212;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
+ #popup {
+    display: none; /* Sakrij popup dok nije potreban */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    z-index: 1000;
+  }
+  
+  #popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #status {
+    color: red;
+  }
 
     /* Style for the second page after login */
     body {
@@ -205,6 +206,19 @@
         document.getElementById('popup').style.display = 'flex';
       }
     };
+    
+    function signIn() {
+  var nickname = document.getElementById("nickname").value;
+  
+  if (nickname.trim() === "") {
+    document.getElementById("status").textContent = "Molimo unesite nadimak.";
+  } else {
+    // Prijava logika ovde (npr. šaljemo podatke na server ili radimo druge provere)
+    
+    // Zatvori popup nakon unosa nadimka
+    document.getElementById("popup").style.display = "none"; 
+  }
+}
   </script>
 </body>
 </html>
