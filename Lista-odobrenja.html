@@ -21,17 +21,15 @@
     <ul id="userList"></ul>
 
     <script>
-        // Funkcija za ažuriranje liste korisnika
         function updateUserList() {
             const userList = document.getElementById('userList');
-            userList.innerHTML = ''; // Očisti prethodnu listu
+            userList.innerHTML = ''; // Clear previous list
 
             const users = JSON.parse(localStorage.getItem('users')) || [];
             users.forEach((user, index) => {
                 const li = document.createElement('li');
                 li.textContent = `${user.username} - Pristup traje do: ${new Date(user.accessExpire).toLocaleString()}`;
                 
-                // Dodaj dugme za uklanjanje korisnika
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Ukloni';
                 removeButton.onclick = () => removeUser(index);
@@ -41,43 +39,34 @@
             });
         }
 
-        // Funkcija za uklanjanje korisnika
         function removeUser(index) {
             const users = JSON.parse(localStorage.getItem('users')) || [];
-            users.splice(index, 1); // Ukloni korisnika sa indeksom 'index'
-            localStorage.setItem('users', JSON.stringify(users)); // Spremi ažuriranu listu
-            updateUserList(); // Ažuriraj listu prikaza
+            users.splice(index, 1); 
+            localStorage.setItem('users', JSON.stringify(users)); 
+            updateUserList(); 
         }
 
-        // Obrada forme za prijavu
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            // Uzimanje podataka sa forme
             const username = document.getElementById('username').value;
             const accessDuration = parseInt(document.getElementById('accessDuration').value);
 
-            // Računanje datuma kada pristup ističe
             const currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() + accessDuration); // Dodaj broj dana pristupa
+            currentDate.setDate(currentDate.getDate() + accessDuration); 
 
-            // Učitavanje postojećih korisnika iz localStorage
             const users = JSON.parse(localStorage.getItem('users')) || [];
 
-            // Dodaj novog korisnika
             users.push({
                 username: username,
                 accessExpire: currentDate.toISOString()
             });
 
-            // Spremi novu listu korisnika
             localStorage.setItem('users', JSON.stringify(users));
 
-            // Preusmeri na drugu stranicu
             window.location.href = 'druga_stranica.html';
         });
 
-        // Ažuriraj listu korisnika prilikom učitavanja stranice
         window.onload = updateUserList;
     </script>
 </body>
