@@ -8,29 +8,28 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
- #popup {
-    display: none; /* Sakrij popup dok nije potreban */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    z-index: 1000;
-  }
-  
-  #popup-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  #status {
-    color: red;
-  }
+    #popup {
+      display: none; /* Sakrij popup dok nije potreban */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      z-index: 1000;
+    }
+    
+    #popup-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    #status {
+      color: red;
+    }
 
-    /* Style for the second page after login */
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       margin: 0;
@@ -83,12 +82,9 @@
       font-size: 10px; 
       color: #fff;
     }
-
-
   </style>
 </head>
 <body>
-
 
   <!-- Popup for nickname -->
   <div id="popup">
@@ -100,13 +96,7 @@
     </div>
   </div>
 
-
-
-
-
-     
-
-    <main>
+  <main>
     <div id="content" style="display: none;">
       <div class="buttons-section">
         <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
@@ -122,9 +112,8 @@
           <h3>Domaci Sadrzaj</h3>
         </div>
       </div>
-    </main>
-
-
+    </div>
+  </main>
 
   <script>
     // Firebase konfiguracija
@@ -132,7 +121,7 @@
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
       projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
+      storageBucket: "svenaekranu-64477.appspot.com",
       messagingSenderId: "15230160013",
       appId: "1:15230160013:web:89144bb5079637e787e6c4",
       measurementId: "G-PED21PPQQJ"
@@ -144,40 +133,36 @@
 
     // Funkcija za prijavu sa nadimkom
     function signIn() {
-      const nickname = document.getElementById('nickname').value;
-      const statusDiv = document.getElementById('status');
-      const popup = document.getElementById('popup');
+      var nickname = document.getElementById("nickname").value.trim();
+      var statusDiv = document.getElementById("status");
 
-      if (!nickname) {
-        statusDiv.textContent = 'Molimo vas unesite nadimak!';
+      if (nickname === "") {
+        statusDiv.textContent = "Molimo unesite nadimak.";
         return;
       }
 
-      // Prijava kao anonimni korisnik
       auth.signInAnonymously()
         .then((userCredential) => {
-          // Provera da li nadimak postoji u bazi
+          // Provera nadimka u Firestore
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
-                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
-                // Sačuvaj nadimak u localStorage
-                localStorage.setItem('nickname', nickname);
-                // Otvoriti sadržaj stranice nakon prijave
-                document.getElementById('content').style.display = 'block';
+                statusDiv.textContent = "Prijavljeni ste kao: " + nickname;
+                document.getElementById('popup').style.display = "none"; // Zatvori popup
+                localStorage.setItem('nickname', nickname); // Sačuvaj nadimak
+                document.getElementById('content').style.display = 'block'; // Pokaži sadržaj
               } else {
-                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
+                statusDiv.textContent = "Nadimak nije validan ili nije dostupan.";
               }
             })
             .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
-              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
+              console.error("Greška pri pretrazi nadimka: ", error);
+              statusDiv.textContent = "Greška pri pretrazi nadimka.";
             });
         })
         .catch((error) => {
-          console.error('Greška pri prijavi: ', error);
-          statusDiv.textContent = 'Greška prilikom prijave.';
+          console.error("Greška pri prijavi: ", error);
+          statusDiv.textContent = "Greška pri prijavi.";
         });
     }
 
@@ -190,7 +175,6 @@
           .then((doc) => {
             if (doc.exists && doc.data().available) {
               // Ako je nadimak validan, otvori sadržaj
-              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
               document.getElementById('content').style.display = 'block';
             } else {
               // Ako nije validan, izbriši ga iz localStorage i prikazi popup
@@ -206,19 +190,6 @@
         document.getElementById('popup').style.display = 'flex';
       }
     };
-    
-    function signIn() {
-  var nickname = document.getElementById("nickname").value;
-  
-  if (nickname.trim() === "") {
-    document.getElementById("status").textContent = "Molimo unesite nadimak.";
-  } else {
-    // Prijava logika ovde (npr. šaljemo podatke na server ili radimo druge provere)
-    
-    // Zatvori popup nakon unosa nadimka
-    document.getElementById("popup").style.display = "none"; 
-  }
-}
   </script>
 </body>
 </html>
