@@ -3,85 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SveNaEkranu - Prijava</title>
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js"></script>
-  
+  <title>Svenaekranu - Logovanje</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #141414;
-      color: white;
-      font-family: 'Helvetica', sans-serif;
       margin: 0;
     }
-
-    form {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      width: 300px;
-      text-align: center;
+    #loginContainer, #mainContent {
+      display: none;
     }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 4px;
+    #loginContainer.active, #mainContent.active {
+      display: block;
     }
-
-    button {
-      background-color: #e50914;
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 4px;
-      width: 100%;
-    }
-
-    button:hover {
-      background-color: #f40612;
-    }
-
     #errorMsg {
       color: red;
       display: none;
     }
-
-    #mainContent {
-      display: none;
-      text-align: center;
+    #statusMessage {
+      margin-top: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div id="loginContainer">
+  <!-- Login Container -->
+  <div id="loginContainer" class="active">
     <h2>Prijava</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Lozinka" required>
-      <button type="submit" id="loginButton">Prijava</button>
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+      <label for="password">Lozinka:</label>
+      <input type="password" id="password" required>
+      <button type="submit">Prijavi se</button>
     </form>
-    <p id="errorMsg">Pogrešan email ili lozinka.</p>
+    <div id="errorMsg">Pogrešna lozinka ili email.</div>
+    <div id="statusMessage"></div>
   </div>
 
+  <!-- Main Content -->
   <div id="mainContent">
-    <h1>Dobrodošli na SveNaEkranu</h1>
-    <p>Test stranica</p>
+    <h2>Dobrodošli na test stranicu</h2>
     <button id="logoutButton">Odjavi se</button>
   </div>
 
-  <script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
@@ -92,20 +68,18 @@
       measurementId: "G-PED21PPQQJ"
     };
 
-    import { initializeApp } from "firebase/app";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
 
     const loginForm = document.getElementById('loginForm');
     const loginContainer = document.getElementById('loginContainer');
     const mainContent = document.getElementById('mainContent');
     const errorMsg = document.getElementById('errorMsg');
+    const statusMessage = document.getElementById('statusMessage');
     const logoutButton = document.getElementById('logoutButton');
 
-    // Check authentication state
     onAuthStateChanged(auth, (user) => {
       if (user) {
         showMainContent();
@@ -123,10 +97,14 @@
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         localStorage.setItem('user', JSON.stringify(userCredential.user));
+        statusMessage.textContent = "Uspešno ste se ulogovali!";
+        statusMessage.style.color = "green";
         showMainContent();
       } catch (error) {
-        errorMsg.textContent = error.message;
+        errorMsg.textContent = "Pogrešna lozinka ili email.";
         errorMsg.style.display = 'block';
+        statusMessage.textContent = "Pokušajte ponovo.";
+        statusMessage.style.color = "red";
       }
     });
 
@@ -134,6 +112,8 @@
       await signOut(auth);
       localStorage.removeItem('user');
       showLoginContainer();
+      statusMessage.textContent = "Odjavili ste se.";
+      statusMessage.style.color = "blue";
     });
 
     function showMainContent() {
