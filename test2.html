@@ -8,31 +8,19 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-   /* Style for the second page after login */
-    body {
-
-    
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      
-   
-    }
-  
     /* Style for the popup */
     #popup {
-      display: none;
+      display: flex; /* Koristimo flex za centriranje sadržaja */
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.7); /* Poluprovidno crno pozadinsko svetlo */
       justify-content: center;
       align-items: center;
       color: white;
+      z-index: 1000; /* Da popup bude iznad svih ostalih elemenata */
     }
 
     #popup-content {
@@ -40,9 +28,24 @@
       padding: 20px;
       border-radius: 10px;
       text-align: center;
+      max-width: 400px; /* Ograničavamo širinu za lepši izgled */
     }
 
- 
+    /* Style for the second page after login */
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+      overflow: hidden;
+    }
 
     .buttons-section {
       display: flex;
@@ -82,32 +85,25 @@
       color: #fff;
     }
 
-
+    footer {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: absolute;
+      bottom: 0;
+    }
   </style>
 </head>
 <body>
-
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
-
-
-
-
   <div id="content" style="display: none;">
     <header>
       <h1>Izaberite sadržaj</h1>
       <p>i započnite svoju filmsku avanturu.</p>
     </header>
-    
-    
 
+    <main>
       <div class="buttons-section">
         <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
           <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
@@ -121,10 +117,23 @@
           <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
           <h3>Domaci Sadrzaj</h3>
         </div>
+      </div>
+    </main>
 
+    <footer>
+      <!-- Footer content -->
+    </footer>
+  </div>
 
-
-
+  <!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
+  </div>
 
   <script>
     // Firebase konfiguracija
@@ -132,7 +141,7 @@
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
       projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
+      storageBucket: "svenaekranu-64477.appspot.com",
       messagingSenderId: "15230160013",
       appId: "1:15230160013:web:89144bb5079637e787e6c4",
       measurementId: "G-PED21PPQQJ"
@@ -209,168 +218,3 @@
   </script>
 </body>
 </html>
-
-
-<script>
-      /* ------------------- */
-      /* ACCESS DENIED ERROR */
-      /* ------------------- */
-      function display_access_denied_error() {
-        document.body.innerHTML = '<div id="access-denied-error" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: url(\'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG\') no-repeat center center; background-size: cover;">' +
-          '<div style="text-align: center; background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">' +
-          '<h1 style="font-size: 32px; margin-bottom: 20px;">Latest Updates on Turkish Series</h1>' // Naslov iznad dugmeta
-          +
-          '<button onclick="window.location.href=\'https://svenadlanuzemlje.blogspot.com\'" style="padding: 20px 40px; font-size: 24px; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;">' +
-          'Poseti Sajt' +
-          '</button>' +
-          '<p style="margin-top: 20px; font-size: 18px; color: #333;">Follow the latest news, reviews, and trends in the world of series. Stay up-to-date with premieres.</p>' // Tekst ispod dugmeta
-          +
-          '</div>' +
-          '</div>'
-      }
-      /* ------------------------- */
-      /* BLOCK BLACKLIST COUNTRIES */
-      /* ------------------------- */
-      function block_blacklist_countries() {
-        // Blacklist countries
-        const blacklist_countries = [
-          "AN", // Ankara
-          "AD", // Adana
-          "IS", // Istanbul
-          "IZ", // Izmir
-          "US", // United States
-          "VN", // Vietnam
-          "UM", // United States Minor Outlying Islands
-          "SG", // Singapore
-          "NZ", // New Zealand
-          "MX", // Mexico
-          "LR", // Liberia
-          "IL", // Israel
-          "IE", // Ireland
-          "FI", // Finland
-          "EG", // Egypt
-          "KY", // Cayman Islands
-          "CA", // Canada
-          "BD", // Bangladesh
-          "AR", // Argentina
-          "AQ", // Antarctica
-          "AX", // Aland Islands
-          "AS", // American Samoa
-          "BR", // Brazil
-          "CN", // China 
-          "HK", // Hong Kong
-          "CX", // Christmas Island
-          "CC", // Cocos
-          "CK", // Cook Islands
-          "GF", // French Guiana
-          "IN", // India
-          "KP", // Korea
-          "KR", // KR
-          "MY", // Malaysia
-          "MC", // Monaco
-          "PL", // Poland
-          "SA", // Saudi Arabia
-          "UM", // Ukrajina
-          "AE", // Ujedinjeni Arapski Emirati
-          "JP", // Japan
-          "NG", //  Nigeria
-          "PH", //  Philippines 
-          "KE", //  Philippines 
-          "GB", //  United Kingdom 
- 
-        ]
-        // Detecting the users country
-        function get_country_code(api_url) {
-          fetch(api_url, {
-              method: 'GET'
-            })
-            .then(response => response.json()) // Getting ip info as json
-            .then(result => {
-              if (blacklist_countries.includes(result.country)) { // If my ip country code is in blacklist
-                display_access_denied_error() // Access denied error
-              }
-            })
-            .catch(error => console.log('error', error))
-        }
-        // Getting country code from third party api
-        get_country_code("https://get.geojs.io/v1/ip/country.json")
-      }
-      /* ------------------------- */
-      /* ALLOW WHITELIST COUNTRIES */
-      /* ------------------------- */
-      function allow_whitelist_countries() {
-        // Whitelist countries
-        const whitelist_countries = [
-               "TR", // Turkey
-          "AD", // Adana
-          "IS", // Istanbul
-          "IZ", // Izmir
-          "US", // United States
-          "VN", // Vietnam
-          "UM", // United States Minor Outlying Islands
-          "SG", // Singapore
-          "NZ", // New Zealand
-          "MX", // Mexico
-          "LR", // Liberia
-          "IL", // Israel
-          "IE", // Ireland
-          "FI", // Finland
-          "EG", // Egypt
-          "KY", // Cayman Islands
-          "CA", // Canada
-          "BD", // Bangladesh
-          "AR", // Argentina
-          "AQ", // Antarctica
-          "AX", // Aland Islands
-          "AS", // American Samoa
-          "BR", // Brazil
-          "CN", // China 
-          "HK", // Hong Kong
-          "CX", // Christmas Island
-          "CC", // Cocos
-          "CK", // Cook Islands
-          "GF", // French Guiana
-          "IN", // India
-          "KP", // Korea
-          "KR", // KR
-          "MY", // Malaysia
-          "MC", // Monaco
-          "PL", // Poland
-          "SA", // Saudi Arabia
-          "UM", // Ukrajina
-          "AE", // Ujedinjeni Arapski Emirati
-          "JP", // Japan
-          "NG", //  Nigeria
-          "PH", //  Philippines 
-          "KE", //  Philippines 
-          "GB", //  United Kingdom 
-        ]
-        // Detecting the users country
-        function get_country_code(api_url) {
-          fetch(api_url, {
-              method: 'GET'
-            })
-            .then(response => response.json()) // Getting ip info as json
-            .then(result => {
-              if (!whitelist_countries.includes(result.country)) { // If my ip country code is not in whitelist
-                display_access_denied_error() // Access denied error
-              }
-            })
-            .catch(error => console.log('error', error))
-        }
-        // Getting country code from third party api
-        get_country_code("https://get.geojs.io/v1/ip/country.json")
-      }
-      /* -------------- */
-      /* CALL FUNCTIONS */
-      /* -------------- */
-      block_blacklist_countries() // Block blacklist countries
-      // allow_whitelist_countries() // Allow whitelist countries
-      function performSearch(event) {
-        event.preventDefault();
-        var query = document.getElementById('search-input').value;
-        var searchUrl = 'https://www.svenadlanuplus.club/search?q=' + encodeURIComponent(query);
-        // Preusmeravanje na URL za pretragu
-        window.location.href = searchUrl;
-      }
-    </script>
