@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista odobrenih korisnika</title>
+    <title>Lista odobrenja</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -16,13 +16,17 @@
             margin: 0;
         }
 
-        .form-section {
+        .approval-list {
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
             width: 300px;
             text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
         }
 
         input {
@@ -55,49 +59,57 @@
         }
 
         li {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
+            padding: 5px 0;
         }
     </style>
 </head>
 <body>
 
-    <div class="form-section">
-        <h2>Dodajte korisničko ime</h2>
-        <input type="text" id="username" placeholder="Korisničko ime">
+    <div class="approval-list">
+        <h2>Lista odobrenih korisnika</h2>
+        <ul id="user-list">
+            <!-- Lista će se popunjavati dinamički -->
+        </ul>
+        <h3>Dodajte korisničko ime:</h3>
+        <input type="text" id="new-username" placeholder="Unesite ime">
         <button onclick="addUsername()">Dodaj</button>
-
-        <h3>Lista odobrenih korisnika</h3>
-        <ul id="userList"></ul>
     </div>
 
     <script>
-        function addUsername() {
-            const username = document.getElementById('username').value;
-            if (username) {
-                const userList = document.getElementById('userList');
+        const allowedUsersKey = 'allowedUsers'; // Ključ za localStorage
+
+        function getAllowedUsers() {
+            const storedUsers = localStorage.getItem(allowedUsersKey);
+            return storedUsers ? JSON.parse(storedUsers) : [];
+        }
+
+        function saveAllowedUsers(users) {
+            localStorage.setItem(allowedUsersKey, JSON.stringify(users));
+        }
+
+        function populateUserList() {
+            const userList = document.getElementById('user-list');
+            userList.innerHTML = ''; // Očisti listu pre dodavanja
+            const allowedUsers = getAllowedUsers();
+            allowedUsers.forEach(user => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `${username} <button onclick="removeUser('${username}')">Ukloni</button>`;
+                listItem.textContent = user;
                 userList.appendChild(listItem);
-                document.getElementById('username').value = ''; // Resetiramo polje
-            } else {
-                alert('Molimo unesite korisničko ime.');
+            });
+        }
+
+        function addUsername() {
+            const newUsername = document.getElementById('new-username').value.trim();
+            if (newUsername && !getAllowedUsers().includes(newUsername)) {
+                const allowedUsers = getAllowedUsers();
+                allowedUsers.push(newUsername);
+                saveAllowedUsers(allowedUsers); // Sačuvaj u localStorage
+                populateUserList(); // Osveži listu
+                document.getElementById('new-username').value = ''; // Očisti polje za unos
             }
         }
 
-        function removeUser(username) {
-            const userList = document.getElementById('userList');
-            for (let i = 0; i < userList.children.length; i++) {
-                if (userList.children[i].innerText.includes(username)) {
-                    userList.removeChild(userList.children[i]);
-                    break;
-                }
-            }
-        }
+        populateUserList(); // Popuni listu prilikom učitavanja stranice
     </script>
 
 </body>
