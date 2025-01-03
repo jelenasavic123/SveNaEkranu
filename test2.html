@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Izaberite sadržaj i započnite svoju filmsku avanturu danas.</title>
+    <title>Druga stranica</title>
     <style>
+        /* Global Styles */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
@@ -18,44 +19,145 @@
             height: 100vh;
             background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
             overflow: hidden;
+            transition: background 0.3s ease-in-out;
+        }
+
+        /* Modern styled Remaining Time */
+        #remainingTime {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #ffcc00;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: fadeIn 0.5s forwards, slideIn 1s forwards;
+        }
+
+        /* Keyframe Animation for smooth appearance */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Login Section */
+        #loginSection {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        #loginSection h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #loginSection input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+        }
+
+        #loginSection button {
+            padding: 12px 20px;
+            background-color: #00bcd4;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #loginSection button:hover {
+            background-color: #0097a7;
+        }
+
+        /* Content Section (after login) */
+        #content {
+            display: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        #content header {
+            margin-bottom: 10px;
+        }
+
+        #content h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        #content p {
+            font-size: 18px;
+            margin-bottom: 30px;
         }
 
         .buttons-section {
             display: flex;
             justify-content: center;
             gap: 20px;
-            width: 60%;
-            padding: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.5); 
-            border-radius: 15px; 
-            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-            background-color: rgba(0, 0, 0, 0.3); 
-            transition: box-shadow 0.3s, border-color 0.3s;
+            flex-wrap: wrap;
+            width: 80%;
         }
 
         .button-item {
             background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.2); 
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-            cursor: pointer;
+            border-radius: 12px;
+            width: 30%;
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            width: 20%;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
         }
 
         .button-item img {
             width: 100%;
             height: auto;
-            filter: brightness(0.8);
+            border-radius: 12px;
         }
 
         .button-item h3 {
             padding: 10px;
-            margin: 0;
-            font-size: 10px; 
-            color: #fff;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            font-size: 10px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .button-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
         }
 
         footer {
@@ -67,36 +169,164 @@
             position: absolute;
             bottom: 0;
         }
+
+        /* Keyframe Animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .button-item {
+                width: 45%;
+            }
+
+            #content h1 {
+                font-size: 28px;
+            }
+
+            #loginSection {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button-item {
+                width: 100%;
+            }
+
+            #content h1 {
+                font-size: 24\0px;
+            }
+
+            #loginSection h2 {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Preostalo vreme (status isteka pristupa) -->
+    <div id="remainingTime"></div>
 
-    <header>
-        <h1>Izaberite sadržaj</h1>
-        <p>i započnite svoju filmsku avanturu.</p>
-    </header>
+    <!-- Content after successful login -->
+    <div id="content">
+        <header>
+            <h1>Izaberite sadržaj</h1>
+            <p>i započnite svoju filmsku avanturu.</p>
+        </header>
 
-    <main>
-        <div class="buttons-section">
-            <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-                <h3>Strani Sadrzaj</h3>
+        <main>
+            <div class="buttons-section">
+                <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
+                    <h3>Strani Sadržaj</h3>
+                </div>
+                <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
+                    <h3>Turski Sadržaj</h3>
+                </div>
+                <div class="button-item" onclick="location.href='#domace-serije'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
+                    <h3>Domaći Sadržaj</h3>
+                </div>
             </div>
-            <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-                <h3>Turski Sadrzaj</h3>
-            </div>
-            <div class="button-item" onclick="location.href='#domace-serije'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-                <h3>Domaci Sadrzaj</h3>
-            </div>
-        </div>
-    </main>
+        </main>
 
-    <footer>
-        <!-- Footer content -->
-    </footer>
-<script>
+        <footer>
+            <!-- Footer content -->
+        </footer>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection">
+        <h2>Prijavite se</h2>
+        <label for="usernameInput">Unesite svoje ime:</label>
+        <input type="text" id="usernameInput" name="usernameInput" required>
+        <button id="loginButton">Prijavite se</button>
+    </div>
+
+    <script>
+        function checkLoginStatus() {
+            const username = localStorage.getItem('currentUser');
+            if (username) {
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.username === username);
+
+                if (user) {
+                    const currentDate = new Date();
+                    const expireDate = new Date(user.accessExpire);
+
+                    if (currentDate > expireDate) {
+                        alert("Vaš pristup je istekao.");
+                        localStorage.removeItem('currentUser');
+                        return;
+                    }
+
+                    // Show the second page after login
+                    document.getElementById('content').style.display = 'block'; // Show the content
+                    document.getElementById('loginSection').style.display = 'none'; // Hide login form
+                    
+                    // Update remaining time
+                    const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24)); // Calculate remaining days
+                    const remainingTimeElement = document.getElementById('remainingTime');
+                    if (remainingDays > 0) {
+                        remainingTimeElement.textContent = `Preostalo vreme preplate: ${remainingDays} dana`;
+                    } else {
+                        remainingTimeElement.textContent = "Pristup je istekao!";
+                    }
+                }
+            }
+        }
+
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const usernameInput = document.getElementById('usernameInput').value;
+            if (usernameInput.trim() === "") {
+                alert("Molimo unesite ime!");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.username === usernameInput);
+
+            if (user) {
+                const currentDate = new Date();
+                const expireDate = new Date(user.accessExpire);
+
+                if (currentDate > expireDate) {
+                    alert("Vaš pristup je istekao.");
+                    return;
+                }
+
+                // Save login information
+                localStorage.setItem('currentUser', user.username);
+
+                // Show the second page content
+                document.getElementById('content').style.display = 'block'; 
+                document.getElementById('loginSection').style.display = 'none';
+
+                // Update remaining time
+                const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24)); // Calculate remaining days
+                const remainingTimeElement = document.getElementById('remainingTime');
+                if (remainingDays > 0) {
+                    remainingTimeElement.textContent = `Preostalo vreme preplate: ${remainingDays} dana`;
+                } else {
+                    remainingTimeElement.textContent = "Pristup je istekao!";
+                }
+            } else {
+                alert("Korisnik nije pronađen.");
+            }
+        });
+
+        checkLoginStatus();
+    </script>
+    
+    <script>
       /* ------------------- */
       /* ACCESS DENIED ERROR */
       /* ------------------- */
@@ -259,6 +489,7 @@
         window.location.href = searchUrl;
       }
     </script>
-
+    
+    
 </body>
 </html>
