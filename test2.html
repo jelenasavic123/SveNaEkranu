@@ -8,7 +8,23 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Style for the popup */
+    /* General Styles */
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+      overflow: hidden;
+    }
+
+    /* Popup Styles */
     #popup {
       display: none;
       position: fixed;
@@ -29,27 +45,12 @@
       text-align: center;
     }
 
-    /* Style for the second page after login */
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-      overflow: hidden;
-    }
-
+    /* Section with buttons */
     .buttons-section {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       gap: 20px;
-      width: 60%;
+      width: 80%;
       padding: 20px;
       border: 3px solid rgba(255, 255, 255, 0.5); 
       border-radius: 15px; 
@@ -67,7 +68,7 @@
       cursor: pointer;
       text-align: center;
       transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
+      width: 30%;
     }
 
     .button-item img {
@@ -79,7 +80,7 @@
     .button-item h3 {
       padding: 10px;
       margin: 0;
-      font-size: 10px; 
+      font-size: 18px; /* Increased font size */
       color: #fff;
     }
 
@@ -91,6 +92,33 @@
       padding: 20px;
       position: absolute;
       bottom: 0;
+    }
+
+    /* Media Query for large screens (e.g., TVs) */
+    @media (min-width: 1024px) {
+      .buttons-section {
+        width: 70%; /* Increase width for larger screens */
+        gap: 30px;
+      }
+
+      .button-item {
+        width: 30%; /* Use a wider button section */
+      }
+
+      .button-item h3 {
+        font-size: 24px; /* Increase font size */
+      }
+    }
+
+    /* Media Query for very large screens */
+    @media (min-width: 1600px) {
+      .buttons-section {
+        width: 60%; /* Even larger width */
+      }
+
+      .button-item {
+        width: 28%; /* Adjust button width for very large screens */
+      }
     }
   </style>
 </head>
@@ -171,7 +199,7 @@
                 popup.style.display = 'none';
                 // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
-                // Otvoriti sadržaj stranice nakon prijave
+                // Otvori sadržaj stranice nakon prijave
                 document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
