@@ -10,17 +10,16 @@
   <style>
     /* Style for the popup */
     #popup {
-      display: flex; /* Koristimo flex za centriranje sadržaja */
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7); /* Poluprovidno crno pozadinsko svetlo */
+      background-color: rgba(0, 0, 0, 0.7);
       justify-content: center;
       align-items: center;
       color: white;
-      z-index: 1000; /* Da popup bude iznad svih ostalih elemenata */
     }
 
     #popup-content {
@@ -28,7 +27,6 @@
       padding: 20px;
       border-radius: 10px;
       text-align: center;
-      max-width: 400px; /* Ograničavamo širinu za lepši izgled */
     }
 
     /* Style for the second page after login */
@@ -51,7 +49,9 @@
       display: flex;
       justify-content: center;
       gap: 20px;
-      width: 60%;
+      flex-wrap: wrap;
+      width: 80%;
+      max-width: 1200px;
       padding: 20px;
       border: 3px solid rgba(255, 255, 255, 0.5); 
       border-radius: 15px; 
@@ -69,7 +69,9 @@
       cursor: pointer;
       text-align: center;
       transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
+      width: 100%;
+      max-width: 250px;
+      margin: 10px;
     }
 
     .button-item img {
@@ -81,7 +83,7 @@
     .button-item h3 {
       padding: 10px;
       margin: 0;
-      font-size: 10px; 
+      font-size: 16px; 
       color: #fff;
     }
 
@@ -93,6 +95,25 @@
       padding: 20px;
       position: absolute;
       bottom: 0;
+    }
+
+    /* Media Queries for responsiveness */
+    @media (min-width: 768px) {
+      .button-item {
+        width: 45%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .button-item {
+        width: 30%;
+      }
+    }
+
+    @media (min-width: 1600px) {
+      .button-item {
+        width: 22%;
+      }
     }
   </style>
 </head>
@@ -136,12 +157,12 @@
   </div>
 
   <script>
-    // Firebase konfiguracija
+    // Firebase configuration (remains unchanged)
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
       projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.appspot.com",
+      storageBucket: "svenaekranu-64477.firebasestorage.app",
       messagingSenderId: "15230160013",
       appId: "1:15230160013:web:89144bb5079637e787e6c4",
       measurementId: "G-PED21PPQQJ"
@@ -151,7 +172,6 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Funkcija za prijavu sa nadimkom
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
@@ -162,18 +182,14 @@
         return;
       }
 
-      // Prijava kao anonimni korisnik
       auth.signInAnonymously()
         .then((userCredential) => {
-          // Provera da li nadimak postoji u bazi
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
                 statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
                 popup.style.display = 'none';
-                // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
-                // Otvoriti sadržaj stranice nakon prijave
                 document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
@@ -190,19 +206,15 @@
         });
     }
 
-    // Provera prijave prilikom učitavanja stranice
     window.onload = function() {
       const nickname = localStorage.getItem('nickname');
       if (nickname) {
-        // Ako postoji sačuvani nadimak u localStorage, proveri da li je validan u Firebase-u
         db.collection('nicknames').doc(nickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
-              // Ako je nadimak validan, otvori sadržaj
               console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
               document.getElementById('content').style.display = 'block';
             } else {
-              // Ako nije validan, izbriši ga iz localStorage i prikazi popup
               localStorage.removeItem('nickname');
               document.getElementById('popup').style.display = 'flex';
             }
