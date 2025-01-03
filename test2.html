@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Izaberite sadržaj i započnite svoju filmsku avanturu danas.</title>
+    <title>Unesite svoje ime</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #121212;
             color: white;
             display: flex;
@@ -16,202 +14,61 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-            overflow: hidden;
         }
 
-        .buttons-section {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            width: 60%;
-            padding: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.5); 
-            border-radius: 15px; 
-            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-            background-color: rgba(0, 0, 0, 0.3); 
-            transition: box-shadow 0.3s, border-color 0.3s;
-        }
-
-        .button-item {
+        form {
             background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.2); 
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-            cursor: pointer;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            width: 20%;
-        }
-
-        .button-item img {
-            width: 100%;
-            height: auto;
-            filter: brightness(0.8);
-        }
-
-        .button-item h3 {
-            padding: 10px;
-            margin: 0;
-            font-size: 10px; 
-            color: #fff;
-        }
-
-        footer {
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            text-align: center;
             padding: 20px;
-            position: absolute;
-            bottom: 0;
-        }
-
-        #access-denied-error {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG') no-repeat center center;
-            background-size: cover;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 9999; /* Ensure it appears on top of other content */
-        }
-
-        #access-denied-error div {
-            text-align: center;
-            background-color: white;
-            padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
 
-        #access-denied-error h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
+        input {
+            width: 200px;
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
         }
 
-        #access-denied-error button {
-            padding: 20px 40px;
-            font-size: 24px;
+        button {
+            padding: 10px 20px;
             background-color: #f44336;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
         }
+
+        button:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Izaberite sadržaj</h1>
-        <p>i započnite svoju filmsku avanturu.</p>
-    </header>
-
-    <main>
-        <div class="buttons-section">
-            <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies" loading="lazy">
-                <h3>Strani Sadrzaj</h3>
-            </div>
-            <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series" loading="lazy">
-                <h3>Turski Sadrzaj</h3>
-            </div>
-            <div class="button-item" onclick="location.href='#domace-serije'">
-                <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije" loading="lazy">
-                <h3>Domaci Sadrzaj</h3>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <!-- Footer content -->
-    </footer>
-
-    <div id="access-denied-error">
-        <div>
-            <h1>Access Denied</h1>
-            <p>You are not allowed to access this site from your current location.</p>
-            <button onclick="window.location.href='https://svenadlanuzemlje.blogspot.com'">Visit Website</button>
-        </div>
-    </div>
+    <h1>Unesite svoje ime</h1>
+    <form id="nameForm">
+        <input type="text" id="nameInput" placeholder="Vaše ime" required>
+        <button type="submit">Pošalji</button>
+    </form>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker Registered'))
-                .catch(err => console.error('Service Worker Registration Failed:', err));
-        }
-        
-        function block_blacklist_countries() {
-            const blacklist_countries = [
-          "TR", // Turkey
-          "AD", // Adana
-          "IS", // Istanbul
-          "IZ", // Izmir
-          "US", // United States
-          "VN", // Vietnam
-          "UM", // United States Minor Outlying Islands
-          "SG", // Singapore
-          "NZ", // New Zealand
-          "MX", // Mexico
-          "LR", // Liberia
-          "IL", // Israel
-          "IE", // Ireland
-          "FI", // Finland
-          "EG", // Egypt
-          "KY", // Cayman Islands
-          "CA", // Canada
-          "BD", // Bangladesh
-          "AR", // Argentina
-          "AQ", // Antarctica
-          "AX", // Aland Islands
-          "AS", // American Samoa
-          "BR", // Brazil
-          "CN", // China 
-          "HK", // Hong Kong
-          "CX", // Christmas Island
-          "CC", // Cocos
-          "CK", // Cook Islands
-          "GF", // French Guiana
-          "IN", // India
-          "KP", // Korea
-          "KR", // KR
-          "MY", // Malaysia
-          "MC", // Monaco
-          "PL", // Poland
-          "SA", // Saudi Arabia
-          "UM", // Ukrajina
-          "AE", // Ujedinjeni Arapski Emirati
-          "JP", // Japan
-          "NG", //  Nigeria
-          "PH", //  Philippines 
-          "KE", //  Philippines 
-          "GB", //  United Kingdom 
+        document.getElementById('nameForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent form from submitting normally
+            checkNameApproval();
+        });
 
-            ];
-
-            function get_country_code(api_url) {
-                fetch(api_url, { method: 'GET' })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (blacklist_countries.includes(result.country)) {
-                            document.getElementById('access-denied-error').style.display = 'flex';
-                        }
-                    })
-                    .catch(error => console.log('Error fetching country code:', error));
+        function checkNameApproval() {
+            const approvedNames = ['YourName1', 'YourName2', 'YourName3']; // Replace with real approved names
+            const userInput = document.getElementById('nameInput').value;
+            
+            if (approvedNames.includes(userInput)) {
+                window.location.href = 'page2.html'; // Redirect to page2
+            } else {
+                alert('Ime nije odobreno. Molimo pokušajte ponovo.');
             }
-
-            get_country_code("https://get.geojs.io/v1/ip/country.json");
         }
-
-        block_blacklist_countries();
     </script>
 
 </body>
