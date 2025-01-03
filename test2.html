@@ -3,22 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prijava za pristup</title>
-    <script>
-        function checkUserAccess() {
-            const approvedUsers = ['korisnik1', 'korisnik2', 'korisnik3']; // Lista ovlašćenih korisnika
-            const userInput = document.getElementById('nameInput').value.trim().toLowerCase();
-
-            if (approvedUsers.includes(userInput)) {
-                window.location.href = 'https://jelenasavic123.github.io/SveNaEkranu/test2.html'; // Redirect to page2 if user is approved
-            } else {
-                alert('Korisničko ime nije odobreno. Molimo pokušajte ponovo.');
-            }
-        }
-    </script>
+    <title>Izaberite sadržaj i započnite svoju filmsku avanturu danas.</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: #121212;
             color: white;
             display: flex;
@@ -26,40 +16,86 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+            overflow: hidden;
         }
 
-        input {
-            margin-bottom: 10px;
-            padding: 8px;
-            width: 200px;
-            border: none;
-            border-radius: 5px;
+        .buttons-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 60%;
+            padding: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 15px; 
+            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
+            background-color: rgba(0, 0, 0, 0.3); 
+            transition: box-shadow 0.3s, border-color 0.3s;
         }
 
-        button {
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
+        .button-item {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
             cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            width: 20%;
+        }
+
+        .button-item img {
+            width: 100%;
+            height: auto;
+            filter: brightness(0.8);
+        }
+
+        .button-item h3 {
+            padding: 10px;
+            margin: 0;
+            font-size: 10px; 
+            color: #fff;
+        }
+
+        footer {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
 
-    <h1>Prijava za pristup</h1>
-    <input type="text" id="nameInput" placeholder="Unesite korisničko ime" required>
-    <button onclick="checkUserAccess()">Prijavi se</button>
+    <header>
+        <h1>Izaberite sadržaj</h1>
+        <p>i započnite svoju filmsku avanturu.</p>
+    </header>
 
-</body>
-</html>
+    <main>
+        <div class="buttons-section">
+            <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
+                <h3>Strani Sadrzaj</h3>
+            </div>
+            <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
+                <h3>Turski Sadrzaj</h3>
+            </div>
+            <div class="button-item" onclick="location.href='#domace-serije'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
+                <h3>Domaci Sadrzaj</h3>
+            </div>
+        </div>
+    </main>
 
-
-
-
-
-
+    <footer>
+        <!-- Footer content -->
+    </footer>
 <script>
       /* ------------------- */
       /* ACCESS DENIED ERROR */
@@ -223,3 +259,6 @@
         window.location.href = searchUrl;
       }
     </script>
+
+</body>
+</html>
