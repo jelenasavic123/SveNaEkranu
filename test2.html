@@ -22,7 +22,7 @@
             transition: background 0.3s ease-in-out;
         }
 
-        /* Modern styled Remaining Time */
+        /* Preostalo vreme */
         #remainingTime {
             position: absolute;
             top: 15px;
@@ -39,7 +39,7 @@
             animation: fadeIn 0.5s forwards, slideIn 1s forwards;
         }
 
-        /* Keyframe Animation for smooth appearance */
+        /* Keyframe Animation */
         @keyframes fadeIn {
             0% {
                 opacity: 0;
@@ -102,7 +102,7 @@
             background-color: #0097a7;
         }
 
-        /* Content Section (after login) */
+        /* Content Section */
         #content {
             display: none;
             text-align: center;
@@ -123,43 +123,6 @@
             margin-bottom: 30px;
         }
 
-        .buttons-section {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            width: 80%;
-        }
-
-        .button-item {
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 12px;
-            width: 30%;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 20px;
-        }
-
-        .button-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-        }
-
-        .button-item h3 {
-            padding: 10px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            font-size: 10px;
-            border-radius: 0 0 12px 12px;
-        }
-
-        .button-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
-        }
-
         footer {
             width: 100%;
             background-color: rgba(0, 0, 0, 0.9);
@@ -169,81 +132,22 @@
             position: absolute;
             bottom: 0;
         }
-
-        /* Keyframe Animation */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .button-item {
-                width: 45%;
-            }
-
-            #content h1 {
-                font-size: 28px;
-            }
-
-            #loginSection {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .button-item {
-                width: 100%;
-            }
-
-            #content h1 {
-                font-size: 24\0px;
-            }
-
-            #loginSection h2 {
-                font-size: 20px;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Preostalo vreme (status isteka pristupa) -->
     <div id="remainingTime"></div>
 
-    <!-- Content after successful login -->
     <div id="content">
         <header>
             <h1>Izaberite sadržaj</h1>
             <p>i započnite svoju filmsku avanturu.</p>
         </header>
 
-        <main>
-            <div class="buttons-section">
-                <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-                    <h3>Strani Sadržaj</h3>
-                </div>
-                <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-                    <h3>Turski Sadržaj</h3>
-                </div>
-                <div class="button-item" onclick="location.href='#domace-serije'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-                    <h3>Domaći Sadržaj</h3>
-                </div>
-            </div>
-        </main>
-
         <footer>
             <!-- Footer content -->
         </footer>
     </div>
 
-    <!-- Login Section -->
     <div id="loginSection">
         <h2>Prijavite se</h2>
         <label for="usernameInput">Unesite svoje ime:</label>
@@ -268,12 +172,10 @@
                         return;
                     }
 
-                    // Show the second page after login
-                    document.getElementById('content').style.display = 'block'; // Show the content
-                    document.getElementById('loginSection').style.display = 'none'; // Hide login form
-                    
-                    // Update remaining time
-                    const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24)); // Calculate remaining days
+                    document.getElementById('content').style.display = 'block';
+                    document.getElementById('loginSection').style.display = 'none';
+
+                    const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24));
                     const remainingTimeElement = document.getElementById('remainingTime');
                     if (remainingDays > 0) {
                         remainingTimeElement.textContent = `Preostalo vreme preplate: ${remainingDays} dana`;
@@ -303,15 +205,11 @@
                     return;
                 }
 
-                // Save login information
                 localStorage.setItem('currentUser', user.username);
-
-                // Show the second page content
-                document.getElementById('content').style.display = 'block'; 
+                document.getElementById('content').style.display = 'block';
                 document.getElementById('loginSection').style.display = 'none';
 
-                // Update remaining time
-                const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24)); // Calculate remaining days
+                const remainingDays = Math.ceil((expireDate - currentDate) / (1000 * 3600 * 24));
                 const remainingTimeElement = document.getElementById('remainingTime');
                 if (remainingDays > 0) {
                     remainingTimeElement.textContent = `Preostalo vreme preplate: ${remainingDays} dana`;
@@ -325,6 +223,9 @@
 
         checkLoginStatus();
     </script>
+</body>
+</html>
+
     
     <script>
       /* ------------------- */
