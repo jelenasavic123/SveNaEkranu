@@ -54,11 +54,12 @@
     <h2>Admin Panel</h2>
     <h3>Dodajte novi nadimak</h3>
     <input type="text" id="new-nickname" placeholder="Unesite nadimak za dodavanje">
-    <button onclick="addNickname()">Dodaj nadimak</button>
+    <input type="number" id="duration" placeholder="Trajanje (dani)" min="1" value="30">
+    <button onclick="addNickname()">Dodaj Korisnika</button>
 
     <h3>Obrišite nadimak</h3>
     <input type="text" id="delete-nickname" placeholder="Unesite nadimak za brisanje">
-    <button onclick="deleteNickname()">Obriši nadimak</button>
+    <button onclick="deleteNickname()">Obriši Korisnika</button>
 
     <p id="admin-status" class="status"></p>
   </div>
@@ -96,15 +97,21 @@
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
-                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                // Preusmeravanje na "test-stranicu" ili neku drugu stranicu
-                alert("Dobrodošli " + nickname);
+                const expirationDate = doc.data().expirationDate.toDate();
+                const currentDate = new Date();
+
+                if (currentDate > expirationDate) {
+                  statusDiv.textContent = 'Korisnika je istekao.';
+                } else {
+                  statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
+                  alert("Dobrodošli " + nickname);
+                }
               } else {
-                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
+                statusDiv.textContent = 'Korisnika nije pronađen ili nije aktivan.';
               }
             })
             .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
+              console.error('Greška prilikom pretrage Korisnika: ', error);
               statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
             });
         })
@@ -117,6 +124,7 @@
     // Funkcija za dodavanje nadimka
     function addNickname() {
       const newNickname = document.getElementById('new-nickname').value;
+      const duration = parseInt(document.getElementById('duration').value);
       const adminStatusDiv = document.getElementById('admin-status');
 
       if (!newNickname) {
@@ -124,12 +132,21 @@
         return;
       }
 
-      // Dodajemo nadimak u Firestorea
+      if (!duration || duration <= 0) {
+        adminStatusDiv.textContent = 'Molimo unesite validno trajanje u danima!';
+        return;
+      }
+
+      // Dodajemo nadimak u Firestore sa datumom isteka
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + duration); // Dodajemo trajanje u dane
+
       db.collection('nicknames').doc(newNickname).set({
-        available: true // Oznaka da je nadimak aktivan
+        available: true,  // Oznaka da je nadimak aktivan
+        expirationDate: expirationDate // Dodajemo datum isteka
       })
       .then(() => {
-        adminStatusDiv.textContent = 'Nadimak "' + newNickname + '" je uspešno dodat!';
+        adminStatusDiv.textContent = 'Nadimak "' + newNickname + '" je uspešno dodat! Trajaće do: ' + expirationDate.toLocaleDateString();
       })
       .catch((error) => {
         console.error('Greška prilikom dodavanja nadimka: ', error);
