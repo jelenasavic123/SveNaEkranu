@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unesite svoje ime</title>
+    <title>Prijava za pristup</title>
+    <script>
+        function checkUserAccess() {
+            const approvedUsers = ['korisnik1', 'korisnik2', 'korisnik3']; // Lista ovlašćenih korisnika
+            const userInput = document.getElementById('nameInput').value.trim().toLowerCase();
+
+            if (approvedUsers.includes(userInput)) {
+                window.location.href = 'https://jelenasavic123.github.io/SveNaEkranu/test2.html'; // Redirect to page2 if user is approved
+            } else {
+                alert('Korisničko ime nije odobreno. Molimo pokušajte ponovo.');
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #121212;
             color: white;
             display: flex;
@@ -16,60 +28,29 @@
             height: 100vh;
         }
 
-        form {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-        }
-
         input {
+            margin-bottom: 10px;
+            padding: 8px;
             width: 200px;
-            padding: 10px;
-            margin: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #f44336;
+            padding: 8px 16px;
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
 
-    <h1>Unesite svoje ime</h1>
-    <form id="nameForm">
-        <input type="text" id="nameInput" placeholder="Vaše ime" required>
-        <button type="submit">Pošalji</button>
-    </form>
-
-    <script>
-        document.getElementById('nameForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent form from submitting normally
-            checkNameApproval();
-        });
-
-        function checkNameApproval() {
-            const approvedNames = ['YourName1', 'YourName2', 'YourName3']; // Replace with real approved names
-            const userInput = document.getElementById('nameInput').value;
-            
-            if (approvedNames.includes(userInput)) {
-                window.location.href = 'page2.html'; // Redirect to page2
-            } else {
-                alert('Ime nije odobreno. Molimo pokušajte ponovo.');
-            }
-        }
-    </script>
+    <h1>Prijava za pristup</h1>
+    <input type="text" id="nameInput" placeholder="Unesite korisničko ime" required>
+    <button onclick="checkUserAccess()">Prijavi se</button>
 
 </body>
 </html>
