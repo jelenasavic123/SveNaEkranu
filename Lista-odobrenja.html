@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista odobrenja</title>
+    <script>
+        window.onload = function() {
+            // Provera da li je korisnik logovan
+            var loggedInUser = sessionStorage.getItem("loggedInUser");
+            var authorizedUsers = ["korisnik1", "korisnik2", "korisnik3"]; // Lista odobrenih korisnika
 
+            // Ako korisnik nije logovan ili nije na listi, preusmeri ga na stranicu za logovanje
+            if (!loggedInUser || !authorizedUsers.includes(loggedInUser)) {
+                sessionStorage.removeItem("loggedInUser");
+                window.location.href = "test2.html";  // Preusmeri na Page 1 (test2.html)
+            }
+
+            // Prikazivanje imena korisnika koji je logovan
+            document.getElementById("usernameDisplay").textContent = loggedInUser;
+        };
+
+        // Funkcija koja uklanja korisnika sa liste i iz logovanih korisnika
+        function removeUser() {
+            var username = document.getElementById("removeUsername").value;
+            var userList = document.getElementById("userList");
+            var users = userList.getElementsByTagName("li");
+
+            // Prolazimo kroz listu korisnika i uklanjamo korisnika ako postoji
+            var found = false;
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].textContent === username) {
+                    userList.removeChild(users[i]);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                alert("Korisnik " + username + " je uklonjen.");
+                // Ako je uklonjeni korisnik bio logovan, automatski ga izloguj
+                if (sessionStorage.getItem("loggedInUser") === username) {
+                    sessionStorage.removeItem("loggedInUser");
+                    window.location.href = "test2.html";  // Preusmeri na stranicu 1
+                }
+            } else {
+                alert("Korisnik nije pronađen.");
+            }
+            document.getElementById("removeUsername").value = "";  // Očisti input polje
+        }
+    </script>
+</head>
+<body>
+    <h1>Page 2 - Lista odobrenja</h1>
+
+    <p>Dobrodošli, <span id="usernameDisplay"></span>!</p>
+
+    <h2>Lista odobrenih korisnika</h2>
+    <ul id="userList">
+        <li>ivana</li>
+        <li>korisnik2</li>
+        <li>korisnik3</li>
+    </ul>
+
+    <h3>Ukloni korisnika</h3>
+    <input type="text" id="removeUsername" placeholder="Unesite ime korisnika za uklanjanje">
+    <button onclick="removeUser()">Ukloni korisnika</button>
+</body>
+</html>
