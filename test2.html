@@ -122,41 +122,41 @@
             width: 100px;
         }
         
-        .button-item {
+.button-item {
     background-color: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid rgba(255, 255, 255, 0.2); /* Dodan ram */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); /* Senka */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); /* Smanjena senka */
     cursor: pointer;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    width: 20%;
+    width: 14%; /* Smanjeno za 30% od originalnih 20% */
 }
 
 .button-item:hover {
     transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 255, 255, 0.5); /* Pojačano senčenje */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 255, 255, 0.5); /* Pojačano senčenje */
     border-color: rgba(255, 255, 255, 0.8); /* Svetliji ram pri hover efektu */
 }
 
 .buttons-section {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    width: 60%;
-    padding: 20px; /* Prostor unutar okvira */
+    gap: 7px; /* Smanjen razmak između dugmadi */
+    width: 42%; /* Smanjeno za 30% od originalnih 60% */
+    padding: 14px; /* Smanjen unutrašnji razmak */
     border: 3px solid rgba(255, 255, 255, 0.5); /* Providan okvir */
-    border-radius: 15px; /* Zaobljeni uglovi okvira */
-    box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); /* Senka celog okvira */
+    border-radius: 12px; /* Lagano smanjen radijus */
+    box-shadow: 0 6px 9px rgba(0, 0, 0, 0.7); /* Smanjena senka */
     background-color: rgba(0, 0, 0, 0.3); /* Suptilna pozadina okvira */
     transition: box-shadow 0.3s, border-color 0.3s;
 
-    margin-left: 50px; /* Pomeranje sekcije udesno */
+    margin-left: 35px; /* Smanjeno pomeranje udesno */
 }
 
 .buttons-section:hover {
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.6); /* Pojačano senčenje pri hover efektu */
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 255, 255, 0.6); /* Pojačano senčenje pri hover efektu */
     border-color: rgba(255, 255, 255, 0.8); /* Svetliji okvir pri hover efektu */
 }
 
