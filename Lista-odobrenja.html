@@ -1,17 +1,101 @@
-<script>
-    function showAccessDeniedError() {
-        document.getElementById('access-denied-error').style.display = 'flex';
-    }
-    
-    // Example function for name approval check
-    function checkNameApproval() {
-        const approvedNames = ['jelena', 'YourName2', 'YourName3']; // Replace with real approved names
-        const userInput = document.getElementById('nameInput').value;
-        
-        if (approvedNames.includes(userInput)) {
-            window.location.href = 'https://jelenasavic123.github.io/SveNaEkranu/test2.html'; // Redirect to page2
-        } else {
-            alert('Ime nije odobreno. Molimo pokušajte ponovo.');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 2 - Kontrola korisnika</title>
+    <script>
+        function loadApprovedUsers() {
+            let approvedUsers = JSON.parse(localStorage.getItem('approvedUsers')) || [];
+            return approvedUsers;
         }
-    }
-</script>
+
+        function saveApprovedUsers(users) {
+            localStorage.setItem('approvedUsers', JSON.stringify(users));
+        }
+
+        function addUser() {
+            const userInput = document.getElementById('nameInput').value.trim().toLowerCase();
+            if (userInput === '') {
+                alert('Molimo unesite korisničko ime.');
+                return;
+            }
+
+            let approvedUsers = loadApprovedUsers();
+
+            if (approvedUsers.includes(userInput)) {
+                alert('Korisničko ime već postoji.');
+            } else {
+                approvedUsers.push(userInput);
+                saveApprovedUsers(approvedUsers);
+                alert('Korisničko ime uspešno dodato.');
+                document.getElementById('nameInput').value = ''; // Clear the input
+                displayApprovedUsers(); // Refresh the list
+            }
+        }
+
+        function displayApprovedUsers() {
+            const approvedUsers = loadApprovedUsers();
+            const listElement = document.getElementById('approvedUsersList');
+            listElement.innerHTML = ''; // Clear existing list
+
+            if (approvedUsers.length === 0) {
+                listElement.innerHTML = '<li>Nema odobrenih korisnika.</li>';
+            } else {
+                approvedUsers.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = user;
+                    listElement.appendChild(listItem);
+                });
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 200px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        ul {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dodaj korisničko ime za pristup</h1>
+    <input type="text" id="nameInput" placeholder="Unesite korisničko ime" required>
+    <button onclick="addUser()">Dodaj korisnika</button>
+
+    <h2>Odobreni korisnici:</h2>
+    <ul id="approvedUsersList"></ul>
+
+    <script>
+        displayApprovedUsers(); // Load and display the list of approved users on page load
+    </script>
+
+</body>
+</html>
