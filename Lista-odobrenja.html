@@ -1,1 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista odobrenih korisnika</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
+        .form-section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
+            width: 300px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-section">
+        <h2>Dodajte korisničko ime</h2>
+        <input type="text" id="username" placeholder="Korisničko ime">
+        <button onclick="addUsername()">Dodaj</button>
+
+        <h3>Lista odobrenih korisnika</h3>
+        <ul id="userList"></ul>
+    </div>
+
+    <script>
+        function addUsername() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                const userList = document.getElementById('userList');
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${username} <button onclick="removeUser('${username}')">Ukloni</button>`;
+                userList.appendChild(listItem);
+                document.getElementById('username').value = ''; // Resetiramo polje
+            } else {
+                alert('Molimo unesite korisničko ime.');
+            }
+        }
+
+        function removeUser(username) {
+            const userList = document.getElementById('userList');
+            for (let i = 0; i < userList.children.length; i++) {
+                if (userList.children[i].innerText.includes(username)) {
+                    userList.removeChild(userList.children[i]);
+                    break;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
