@@ -1,78 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Nadimci - Admin Panel</title>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+  <title>Prijava na stranici</title>
   <style>
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-      overflow: hidden;
-    }
-
-    .buttons-section {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      width: 60%;
-      padding: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.5); 
-      border-radius: 15px; 
-      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-      background-color: rgba(0, 0, 0, 0.3); 
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
-
-    .button-item {
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2); 
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
-    }
-
-    .button-item img {
-      width: 100%;
-      height: auto;
-      filter: brightness(0.8);
-    }
-
-    .button-item h3 {
-      padding: 10px;
-      margin: 0;
-      font-size: 10px; 
-      color: #fff;
-    }
-
-    footer {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      position: absolute;
-      bottom: 0;
-    }
-    
-    
-     /* Popup style */
+    /* CSS za popup */
     #popup {
       display: none;
       position: fixed;
@@ -80,10 +13,12 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.7); /* Tamna pozadina za overlay */
+      display: flex;
       justify-content: center;
       align-items: center;
       color: white;
+      z-index: 1000; /* Overlay za popup */
     }
 
     #popup-content {
@@ -91,6 +26,33 @@
       padding: 20px;
       border-radius: 10px;
       text-align: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+    }
+
+    #nickname {
+      width: 80%; 
+      padding: 10px; 
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #content {
+      display: none;
     }
   </style>
 </head>
@@ -104,10 +66,10 @@
       <button onclick="signIn()">Prijavi se</button>
       <p id="status"></p>
     </div>
-    
   </div>
+
   <!-- Content section (hidden until login is successful) -->
-  <div id="content" style="display: none;">
+  <div id="content">
     <header>
       <h1>Izaberite sadržaj</h1>
       <p>i započnite svoju filmsku avanturu.</p>
@@ -129,102 +91,65 @@
         </div>
       </div>
     </main>
-
-
+  </div>
 
   <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-      authDomain: "svenaekranu-64477.firebaseapp.com",
-      projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
-      messagingSenderId: "15230160013",
-      appId: "1:15230160013:web:89144bb5079637e787e6c4",
-      measurementId: "G-PED21PPQQJ"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    // Function for signing in with a nickname
-    function signIn() {
-      const nickname = document.getElementById('nickname').value;
-      const statusDiv = document.getElementById('status');
+    // JavaScript za proveru korisničkog nadimka
+    window.onload = function() {
+      const nicknameInput = document.getElementById('nickname');
       const popup = document.getElementById('popup');
+      const content = document.getElementById('content');
+      const status = document.getElementById('status');
 
-      if (!nickname) {
-        statusDiv.textContent = 'Molimo vas unesite nadimak!';
-        return;
-      }
+      function signIn() {
+        const nickname = nicknameInput.value.trim();
 
-      // Sign in as an anonymous user
-      auth.signInAnonymously()
-        .then((userCredential) => {
-          // Check if nickname exists in Firestore
+        if (nickname) {
+          localStorage.setItem('nickname', nickname);
+
+          // Provera korisničkog nadimka u bazi ili nekoj funkciji
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
-                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
-                // Save nickname to localStorage
-                localStorage.setItem('nickname', nickname);
-                // Show content after successful login
-                document.getElementById('content').style.display = 'block';
+                content.style.display = 'block';  // Prikaži sadržaj
+                popup.style.display = 'none';     // Sakrij popup
               } else {
-                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
+                localStorage.removeItem('nickname');  // Ako nadimak nije validan
+                status.textContent = 'Nadimak nije validan ili je već zauzet.';
               }
             })
             .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
-              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
+              console.error('Greška prilikom provere nadimka: ', error);
+              status.textContent = 'Došlo je do greške. Pokušajte ponovo.';
             });
-        })
-        .catch((error) => {
-          console.error('Greška pri prijavi: ', error);
-          statusDiv.textContent = 'Greška prilikom prijave.';
-        });
-    }
+        } else {
+          status.textContent = 'Molimo unesite nadimak.';
+        }
+      }
 
-    // Check if the user is already logged in when the page loads
-    window.onload = function() {
-      const nickname = localStorage.getItem('nickname');
-      const popup = document.getElementById('popup');
-      const content = document.getElementById('content');
-      
-      if (nickname) {
-        // If nickname exists in localStorage, check if it's valid in Firestore
-        db.collection('nicknames').doc(nickname).get()
+      const savedNickname = localStorage.getItem('nickname');
+      if (savedNickname) {
+        db.collection('nicknames').doc(savedNickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
-              // If nickname is valid, show the content
-              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
-              content.style.display = 'block';  // Show content
-              popup.style.display = 'none';  // Hide popup
+              content.style.display = 'block';  // Prikaži sadržaj
+              popup.style.display = 'none';     // Sakrij popup
             } else {
-              // If nickname is not valid, remove it from localStorage and show popup
-              localStorage.removeItem('nickname');
-              popup.style.display = 'flex';  // Show popup
+              popup.style.display = 'flex';     // Ako nije validan nadimak, ponovo prikazi popup
             }
           })
           .catch((error) => {
-            console.error('Greška pri proveri nadimka: ', error);
-            popup.style.display = 'flex';  // Show popup
+            console.error('Greška prilikom provere nadimka: ', error);
+            popup.style.display = 'flex';     // Ako dođe do greške, ponovo prikazi popup
           });
       } else {
-        popup.style.display = 'flex';  // If no nickname, show popup
+        popup.style.display = 'flex';  // Ako nema nadimka u lokalnom storageu, prikazujemo popup
       }
     };
   </script>
 
-
-    
 </body>
 </html>
-
-
 
 
 
