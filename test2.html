@@ -95,6 +95,17 @@
   </style>
 </head>
 <body>
+
+  <!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
+    
+  </div>
   <!-- Content section (hidden until login is successful) -->
   <div id="content" style="display: none;">
     <header>
@@ -119,20 +130,7 @@
       </div>
     </main>
 
-    <footer>
-      <!-- Footer content -->
-    </footer>
-  </div>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
 
   <script>
     // Firebase configuration
