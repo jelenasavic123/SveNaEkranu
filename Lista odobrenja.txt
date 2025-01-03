@@ -1,0 +1,17 @@
+<script>
+    function showAccessDeniedError() {
+        document.getElementById('access-denied-error').style.display = 'flex';
+    }
+    
+    // Example function for name approval check
+    function checkNameApproval() {
+        const approvedNames = ['YourName1', 'YourName2', 'YourName3']; // Replace with real approved names
+        const userInput = document.getElementById('nameInput').value;
+        
+        if (approvedNames.includes(userInput)) {
+            window.location.href = 'page2.html'; // Redirect to page2
+        } else {
+            alert('Ime nije odobreno. Molimo pokušajte ponovo.');
+        }
+    }
+</script>
