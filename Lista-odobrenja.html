@@ -3,35 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page 2 - Dodavanje korisnika</title>
+    <title>Page 2 - Kontrola korisnika</title>
     <script>
         function loadApprovedUsers() {
             let approvedUsers = JSON.parse(localStorage.getItem('approvedUsers')) || [];
             return approvedUsers;
-        }
-
-        function saveApprovedUsers(users) {
-            localStorage.setItem('approvedUsers', JSON.stringify(users));
-        }
-
-        function addUser() {
-            const userInput = document.getElementById('nameInput').value.trim().toLowerCase();
-            if (userInput === '') {
-                alert('Molimo unesite korisničko ime.');
-                return;
-            }
-
-            let approvedUsers = loadApprovedUsers();
-
-            if (approvedUsers.includes(userInput)) {
-                alert('Korisničko ime već postoji.');
-            } else {
-                approvedUsers.push(userInput);
-                saveApprovedUsers(approvedUsers);
-                alert('Korisničko ime uspešno dodato.');
-                document.getElementById('nameInput').value = ''; // Clear the input
-                displayApprovedUsers(); // Refresh the list
-            }
         }
 
         function displayApprovedUsers() {
@@ -48,6 +24,13 @@
                     listElement.appendChild(listItem);
                 });
             }
+        }
+
+        function removeUser(user) {
+            let approvedUsers = loadApprovedUsers();
+            approvedUsers = approvedUsers.filter(u => u !== user);
+            localStorage.setItem('approvedUsers', JSON.stringify(approvedUsers));
+            displayApprovedUsers();
         }
     </script>
     <style>
@@ -80,21 +63,22 @@
         }
 
         ul {
-            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
         }
     </style>
 </head>
 <body>
 
-    <h1>Dodaj korisničko ime za pristup</h1>
-    <input type="text" id="nameInput" placeholder="Unesite korisničko ime" required>
-    <button onclick="addUser()">Dodaj korisnika</button>
-
-    <h2>Odobreni korisnici:</h2>
+    <h1>Lista odobrenih korisnika</h1>
     <ul id="approvedUsersList"></ul>
 
+    <h2>Uklonite korisnike</h2>
+    <input type="text" id="removeUserInput" placeholder="Unesite korisničko ime za uklanjanje" required>
+    <button onclick="removeUser(document.getElementById('removeUserInput').value.trim().toLowerCase())">Ukloni korisnika</button>
+
     <script>
-        displayApprovedUsers(); // Load and display the list of approved users on page load
+        displayApprovedUsers();
     </script>
 
 </body>
