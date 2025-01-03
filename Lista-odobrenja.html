@@ -1,131 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Svenaekranu - Logovanje</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    #loginContainer, #mainContent {
-      display: none;
-    }
-    #loginContainer.active, #mainContent.active {
-      display: block;
-    }
-    #errorMsg {
-      color: red;
-      display: none;
-    }
-    #statusMessage {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava kao anonimni korisnik</title>
 </head>
 <body>
+    <h2>Dobrodošli na naš sajt!</h2>
+    <button id="loginButton">Prijavi se kao anonimni korisnik</button>
 
-  <!-- Login Container -->
-  <div id="loginContainer" class="active">
-    <h2>Prijava</h2>
-    <form id="loginForm">
-      <label for="email">Email:</label>
-      <input type="email" id="email" required>
-      <label for="password">Lozinka:</label>
-      <input type="password" id="password" required>
-      <button type="submit">Prijavi se</button>
-    </form>
-    <div id="errorMsg">Pogrešna lozinka ili email.</div>
-    <div id="statusMessage"></div>
-  </div>
+    <div id="nameForm" style="display: none;">
+        <h3>Unesite svoje ime</h3>
+        <input type="text" id="username" placeholder="Unesite ime" required>
+        <button onclick="setUsername()">Spremi ime</button>
+    </div>
 
-  <!-- Main Content -->
-  <div id="mainContent">
-    <h2>Dobrodošli na test stranicu</h2>
-    <button id="logoutButton">Odjavi se</button>
-  </div>
+    <div id="welcomeMessage" style="display: none;">
+        <h3>Dobrodošli, <span id="userName"></span>!</h3>
+        <p>Pristupate specijalnim sadržajima.</p>
+    </div>
 
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-      authDomain: "svenaekranu-64477.firebaseapp.com",
-      projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.appspot.com",
-      messagingSenderId: "15230160013",
-      appId: "1:15230160013:web:89144bb5079637e787e6c4",
-      measurementId: "G-PED21PPQQJ"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+            authDomain: "svenaekranu-64477.firebaseapp.com",
+            projectId: "svenaekranu-64477",
+            storageBucket: "svenaekranu-64477.firebasestorage.app",
+            messagingSenderId: "15230160013",
+            appId: "1:15230160013:web:89144bb5079637e787e6c4",
+            measurementId: "G-PED21PPQQJ"
+        };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-    const loginForm = document.getElementById('loginForm');
-    const loginContainer = document.getElementById('loginContainer');
-    const mainContent = document.getElementById('mainContent');
-    const errorMsg = document.getElementById('errorMsg');
-    const statusMessage = document.getElementById('statusMessage');
-    const logoutButton = document.getElementById('logoutButton');
+        // Funkcija za anonimnu prijavu
+        document.getElementById("loginButton").onclick = function() {
+            auth.signInAnonymously()
+                .then(() => {
+                    alert("Uspešno ste se prijavili kao anonimni korisnik.");
+                    document.getElementById("loginButton").style.display = "none";
+                    document.getElementById("nameForm").style.display = "block";
+                })
+                .catch((error) => {
+                    console.error("Greška prilikom anonimne prijave: ", error);
+                    alert("Došlo je do greške pri prijavi.");
+                });
+        };
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        showMainContent();
-      } else {
-        showLoginContainer();
-      }
-    });
+        // Funkcija za dodelu imena korisniku
+        function setUsername() {
+            const user = auth.currentUser;
+            const username = document.getElementById("username").value;
 
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+            if (username) {
+                // Spremamo ime u Firestore
+                db.collection("users").doc(user.uid).set({
+                    name: username
+                }).then(() => {
+                    document.getElementById("userName").textContent = username;
+                    document.getElementById("nameForm").style.display = "none";
+                    document.getElementById("welcomeMessage").style.display = "block";
+                }).catch((error) => {
+                    console.error("Greška pri dodeli imena: ", error);
+                    alert("Došlo je do greške pri dodeli imena.");
+                });
+            } else {
+                alert("Molimo vas da unesete ime.");
+            }
+        }
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        localStorage.setItem('user', JSON.stringify(userCredential.user));
-        statusMessage.textContent = "Uspešno ste se ulogovali!";
-        statusMessage.style.color = "green";
-        showMainContent();
-      } catch (error) {
-        errorMsg.textContent = "Pogrešna lozinka ili email.";
-        errorMsg.style.display = 'block';
-        statusMessage.textContent = "Pokušajte ponovo.";
-        statusMessage.style.color = "red";
-      }
-    });
-
-    logoutButton.addEventListener('click', async () => {
-      await signOut(auth);
-      localStorage.removeItem('user');
-      showLoginContainer();
-      statusMessage.textContent = "Odjavili ste se.";
-      statusMessage.style.color = "blue";
-    });
-
-    function showMainContent() {
-      loginContainer.style.display = 'none';
-      mainContent.style.display = 'block';
-    }
-
-    function showLoginContainer() {
-      mainContent.style.display = 'none';
-      loginContainer.style.display = 'block';
-    }
-  </script>
-
+        // Proveravamo da li je korisnik već prijavljen
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Ako je korisnik prijavljen, prikazujemo dobrodošlicu
+                db.collection("users").doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const userName = doc.data().name;
+                            document.getElementById("userName").textContent = userName;
+                            document.getElementById("welcomeMessage").style.display = "block";
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Greška pri učitavanju podataka korisnika: ", error);
+                    });
+            }
+        });
+    </script>
 </body>
 </html>
