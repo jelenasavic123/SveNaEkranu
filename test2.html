@@ -8,55 +8,41 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-
-
-
-
+    /* Stil za formu za unos nadimka */
+    #nickname-form {
+      text-align: center;
+      margin-top: 100px;
+    }
+    #nickname-form input {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #nickname-form button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #nickname-form button:hover {
+      background-color: #45a049;
+    }
+    #status {
+      color: red;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
-  
-  
-    <main>
-      <div class="buttons-section">
-        <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-          <h3>Strani Sadrzaj</h3>
-        </div>
-        <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-          <h3>Turski Sadrzaj</h3>
-        </div>
-        <div class="button-item" onclick="location.href='#domace-serije'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-          <h3>Domaci Sadrzaj</h3>
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
-  </div>
-
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
+  <!-- Forma za unos nadimka -->
+  <div id="nickname-form">
+    <h2>Unesite nadimak</h2>
+    <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+    <button onclick="signIn()">Prijavi se</button>
+    <p id="status"></p>
   </div>
 
   <script>
@@ -79,7 +65,6 @@
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
-      const popup = document.getElementById('popup');
 
       if (!nickname) {
         statusDiv.textContent = 'Molimo vas unesite nadimak!';
@@ -94,11 +79,10 @@
             .then((doc) => {
               if (doc.exists && doc.data().available) {
                 statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
                 // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
-                // Otvoriti sadržaj stranice nakon prijave
-                document.getElementById('content').style.display = 'block';
+                // Preusmeriti na drugu stranicu nakon uspešne prijave
+                window.location.href = 'https://www.svenadlanu.xyz'; // Zamenite sa željenom URL adresom
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
               }
@@ -122,24 +106,20 @@
         db.collection('nicknames').doc(nickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
-              // Ako je nadimak validan, otvori sadržaj
-              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
-              document.getElementById('content').style.display = 'block';
+              // Ako je nadimak validan, preusmeriti na drugu stranicu
+              window.location.href = 'nova-stranica.html'; // Zamenite sa željenom URL adresom
             } else {
-              // Ako nije validan, izbriši ga iz localStorage i prikazi popup
+              // Ako nije validan, izbriši ga iz localStorage
               localStorage.removeItem('nickname');
-              document.getElementById('popup').style.display = 'flex';
             }
           })
           .catch((error) => {
             console.error('Greška pri proveri nadimka: ', error);
-            document.getElementById('popup').style.display = 'flex';
           });
-      } else {
-        document.getElementById('popup').style.display = 'flex';
       }
     };
   </script>
+
 </body>
 </html>
 
