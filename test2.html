@@ -3,85 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Nadimci - Admin Panel</title>
+  <title>Firebase Nadimci - Prijava</title>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Style for the popup */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      color: white;
-      z-index: 1000;
-    }
-
-    #popup-content {
-      background: #121212;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
-
     /* Style for the main page */
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-      overflow: hidden;
+
+    }
+    #login-form {
+      text-align: center;
+    }
+    #content {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="content" style="display: none;">
-    <h1>Dobrodošli</h1>
-    <p>Izaberite sadržaj za nastavak.</p>
-  </div>
 
-  <!-- Popup -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
+<div id="login-form">
+  <h1>Unesite nadimak</h1>
+  <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+  <button onclick="signIn()">Prijavi se</button>
+  <p id="status"></p>
+</div>
 
-  <script>
+<div id="content">
+  <h1>Test uspešan</h1>
+</div>
+
+<script>
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
       projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
+      storageBucket: "svenaekranu-64477.appspot.com",
       messagingSenderId: "15230160013",
       appId: "1:15230160013:web:89144bb5079637e787e6c4",
       measurementId: "G-PED21PPQQJ"
     };
 
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
-      const popup = document.getElementById('popup');
 
       if (!nickname) {
         statusDiv.textContent = 'Molimo vas unesite nadimak!';
@@ -93,9 +64,8 @@
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
-                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
                 localStorage.setItem('nickname', nickname);
-                popup.style.display = 'none';
+                document.getElementById('login-form').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
@@ -112,28 +82,26 @@
 
     window.onload = function() {
       const nickname = localStorage.getItem('nickname');
-      const popup = document.getElementById('popup');
-
       if (nickname) {
         db.collection('nicknames').doc(nickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
+              document.getElementById('login-form').style.display = 'none';
               document.getElementById('content').style.display = 'block';
-            } else {
-              localStorage.removeItem('nickname');
-              popup.style.display = 'flex';
             }
           })
           .catch(() => {
-            popup.style.display = 'flex';
+            document.getElementById('login-form').style.display = 'block';
           });
       } else {
-        popup.style.display = 'flex';
+        document.getElementById('login-form').style.display = 'block';
       }
     };
-  </script>
+</script>
+
 </body>
 </html>
+
 
 
 
