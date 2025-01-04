@@ -20,6 +20,7 @@
       justify-content: center;
       align-items: center;
       color: white;
+      z-index: 1000;
     }
 
     #popup-content {
@@ -29,7 +30,7 @@
       text-align: center;
     }
 
-    /* Style for the second page after login */
+    /* Style for the main page */
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       margin: 0;
@@ -44,86 +45,15 @@
       background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
       overflow: hidden;
     }
-
-    .buttons-section {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      width: 60%;
-      padding: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.5); 
-      border-radius: 15px; 
-      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-      background-color: rgba(0, 0, 0, 0.3); 
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
-
-    .button-item {
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2); 
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
-    }
-
-    .button-item img {
-      width: 100%;
-      height: auto;
-      filter: brightness(0.8);
-    }
-
-    .button-item h3 {
-      padding: 10px;
-      margin: 0;
-      font-size: 10px; 
-      color: #fff;
-    }
-
-    footer {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      position: absolute;
-      bottom: 0;
-    }
   </style>
 </head>
 <body>
   <div id="content" style="display: none;">
-    <header>
-      <h1>Izaberite sadržaj</h1>
-      <p>i započnite svoju filmsku avanturu.</p>
-    </header>
-
-    <main>
-      <div class="buttons-section">
-        <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-          <h3>Strani Sadrzaj</h3>
-        </div>
-        <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-          <h3>Turski Sadrzaj</h3>
-        </div>
-        <div class="button-item" onclick="location.href='#domace-serije'">
-          <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-          <h3>Domaci Sadrzaj</h3>
-        </div>
-      </div>
-    </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
+    <h1>Dobrodošli</h1>
+    <p>Izaberite sadržaj za nastavak.</p>
   </div>
 
-  <!-- Popup for nickname -->
+  <!-- Popup -->
   <div id="popup">
     <div id="popup-content">
       <h2>Unesite nadimak</h2>
@@ -134,7 +64,6 @@
   </div>
 
   <script>
-    // Firebase konfiguracija
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
@@ -149,7 +78,6 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Funkcija za prijavu sa nadimkom
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
@@ -160,62 +88,53 @@
         return;
       }
 
-      // Prijava kao anonimni korisnik
       auth.signInAnonymously()
-        .then((userCredential) => {
-          // Provera da li nadimak postoji u bazi
+        .then(() => {
           db.collection('nicknames').doc(nickname).get()
             .then((doc) => {
               if (doc.exists && doc.data().available) {
                 statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
-                // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
-                // Otvoriti sadržaj stranice nakon prijave
+                popup.style.display = 'none';
                 document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
               }
             })
-            .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
+            .catch(() => {
               statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
             });
         })
-        .catch((error) => {
-          console.error('Greška pri prijavi: ', error);
+        .catch(() => {
           statusDiv.textContent = 'Greška prilikom prijave.';
         });
     }
 
-    // Provera prijave prilikom učitavanja stranice
     window.onload = function() {
       const nickname = localStorage.getItem('nickname');
+      const popup = document.getElementById('popup');
+
       if (nickname) {
-        // Ako postoji sačuvani nadimak u localStorage, proveri da li je validan u Firebase-u
         db.collection('nicknames').doc(nickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
-              // Ako je nadimak validan, otvori sadržaj
-              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
               document.getElementById('content').style.display = 'block';
             } else {
-              // Ako nije validan, izbriši ga iz localStorage i prikazi popup
               localStorage.removeItem('nickname');
-              document.getElementById('popup').style.display = 'flex';
+              popup.style.display = 'flex';
             }
           })
-          .catch((error) => {
-            console.error('Greška pri proveri nadimka: ', error);
-            document.getElementById('popup').style.display = 'flex';
+          .catch(() => {
+            popup.style.display = 'flex';
           });
       } else {
-        document.getElementById('popup').style.display = 'flex';
+        popup.style.display = 'flex';
       }
     };
   </script>
 </body>
 </html>
+
 
 
 <script>
