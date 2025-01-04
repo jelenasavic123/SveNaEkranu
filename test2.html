@@ -5,26 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firebase Login with Nickname</title>
     
-    <!-- Modularna Firebase verzija -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <!-- Detekcija okruženja: Ako je WebView ili specifičan browser, učitaj kompatibilnu verziju -->
+    <script>
+        // Detekcija WebView-a ili starijeg browser-a
+        var isWebView = (navigator.userAgent.includes("WebView"));
+        var firebaseVersion = (isWebView || /Android|iPhone/.test(navigator.userAgent)) ? 'compat' : 'modular';
+        console.log("Firebase SDK Version: ", firebaseVersion);
+    </script>
+    
+    <!-- Modularni Firebase SDK (Nova verzija) - koristi se ako browser podržava -->
+    <script id="firebase-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" style="display:none;"></script>
+    <script id="firebase-auth-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" style="display:none;"></script>
+    <script id="firebase-firestore-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" style="display:none;"></script>
 
-    <!-- Compat verzija Firebase SDK (za starije API-e) -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-
-    <!-- Firebase SDK starija verzija (9.0.0) -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-
-    <!-- Firebase SDK za WebView aplikacije -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+    <!-- Kompatibilna verzija Firebase SDK-a (Fallback za starije browser-e ili WebView) -->
+    <script id="firebase-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js" style="display:none;"></script>
+    <script id="firebase-auth-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js" style="display:none;"></script>
+    <script id="firebase-firestore-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js" style="display:none;"></script>
+    
     <!-- Your Firebase Config -->
     <script>
         const firebaseConfig = {
@@ -37,10 +35,20 @@
             measurementId: "G-PED21PPQQJ"
         };
 
-        // Inicijalizacija Firebase-a (verzija koja se koristi može zavisiti od okruženja)
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // Funkcija za inicijalizaciju Firebase-a, bazirano na detektovanoj verziji
+        function initializeFirebase() {
+            if (firebaseVersion === 'modular') {
+                // Modularni Firebase (za nove browser-e)
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+            } else {
+                // Kompatibilni Firebase (za WebView ili starije browser-e)
+                const app = firebase.initializeApp(firebaseConfig);
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+            }
+        }
     </script>
 </head>
 <body>
@@ -65,6 +73,11 @@
     </div>
 
     <script>
+        // Pokrećemo Firebase inicijalizaciju nakon učitavanja skripti
+        window.onload = function() {
+            initializeFirebase();
+        };
+
         // Handler za login sa nadimkom
         document.getElementById("loginForm").addEventListener("submit", function(e) {
             e.preventDefault();
@@ -115,9 +128,6 @@
     </script>
 </body>
 </html>
-
-
-
 
 
 
