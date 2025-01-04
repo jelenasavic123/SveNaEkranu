@@ -1,98 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Login</title>
-  
-  <!-- Firebase SDK 9.x.x (Modularni pristup) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pošaljite zahtev za pristup</title>
+    <!-- Firebase v10 Kompatibilni Skripti -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <style>
+         /* Style for the popup */
 
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-      authDomain: "svenaekranu-64477.firebaseapp.com",
-      projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
-      messagingSenderId: "15230160013",
-      appId: "1:15230160013:web:89144bb5079637e787e6c4",
-      measurementId: "G-PED21PPQQJ"
-    };
+    /* Style for the second page after login */
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+      overflow: hidden;
+    }
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    .buttons-section {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      width: 60%;
+      padding: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.5); 
+      border-radius: 15px; 
+      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
+      background-color: rgba(0, 0, 0, 0.3); 
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
 
-    // Get form and input elements
-    const loginForm = document.getElementById("loginForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const testPage = document.getElementById("testPage");
-    const errorMessageElement = document.getElementById("errorMessage"); // Element for showing error message
+    .button-item {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.2); 
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      width: 20%;
+    }
 
-    // Login functionality
-    loginForm.addEventListener("submit", (event) => {
-      event.preventDefault(); // Prevent form from submitting normally
+    .button-item img {
+      width: 100%;
+      height: auto;
+      filter: brightness(0.8);
+    }
 
-      const email = emailInput.value;
-      const password = passwordInput.value;
+    .button-item h3 {
+      padding: 10px;
+      margin: 0;
+      font-size: 10px; 
+      color: #fff;
+    }
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Successful login
-          const user = userCredential.user;
-          console.log("User logged in:", user);
-
-          // Hide the login form
-          loginForm.style.display = 'none';
-
-          // Show the test page content
-          testPage.style.display = 'block';
-
-          // Clear any previous error message
-          errorMessageElement.textContent = '';
-        })
-        .catch((error) => {
-          // Handle login errors
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error("Login error:", errorCode, errorMessage);
-
-          // Display error message on the page
-          errorMessageElement.textContent = `Error: ${errorMessage}`;
-          errorMessageElement.style.color = 'red'; // Optional: Change color for visibility
-        });
-    });
-  </script>
+    footer {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: absolute;
+      bottom: 0;
+    }
+    </style>
 </head>
 <body>
-  <h2>Login Page</h2>
-  
-  <!-- Login Form -->
-  <form id="loginForm">
-    <label for="email">Email: </label>
-    <input type="email" id="email" required><br><br>
-    <label for="password">Password: </label>
-    <input type="password" id="password" required><br><br>
-    <button type="submit">Login</button>
-  </form>
 
-  <!-- Container for test page content (will be shown after successful login) -->
-  <div id="testPage" style="display: none;">
-    <h2>Test Page</h2>
-    <p>Welcome to the test page! You are successfully logged in.</p>
-  </div>
+    <!-- Popup prozor za unos emaila -->
+    <div id="popup" style="display: none;">
 
-  <!-- Container for error message -->
-  <div id="errorMessage" style="margin-top: 10px; font-size: 14px;"></div>
+        <h2>Molimo Vas da unesete Vaš email</h2>
+        <form id="accessRequestForm">
+            <label for="email">Vaš email:</label>
+            <input type="email" id="email" required>
+            <button type="submit">Pošaljite zahtev</button>
+        </form>
+        <div id="notification"></div>
+    </div>
+
+    <!-- Sadržaj koji se prikazuje korisnicima koji imaju pristup -->
+    <div id="content" style="display: none;">
+        <header>
+            <h1>Izaberite sadržaj</h1>
+            <p>i započnite svoju filmsku avanturu.</p>
+        </header>
+
+        <main>
+            <div class="buttons-section">
+                <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
+                    <h3>Strani Sadrzaj</h3>
+                </div>
+                <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
+                    <h3>Turski Sadrzaj</h3>
+                </div>
+                <div class="button-item" onclick="location.href='#domace-serije'">
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
+                    <h3>Domaci Sadrzaj</h3>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Firebase konfiguracija
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+            authDomain: "svenaekranu-64477.firebaseapp.com",
+            projectId: "svenaekranu-64477",
+            storageBucket: "svenaekranu-64477.firebasestorage.app",
+            messagingSenderId: "15230160013",
+            appId: "1:15230160013:web:89144bb5079637e787e6c4",
+            measurementId: "G-PED21PPQQJ"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Funkcija za zatvaranje popup prozora
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Funkcija za proveru da li korisnik ima pristup
+        function checkAccess(email) {
+            db.collection("accessRequests").where("email", "==", email).get().then(snapshot => {
+                if (snapshot.empty) {
+                    // Ako nema u bazi, omogućiti mu da pošalje zahtev
+                    document.getElementById('popup').style.display = "block";
+                    document.getElementById('content').style.display = "none";
+                    localStorage.removeItem('userEmail'); // Uklanjamo email iz localStorage
+                } else {
+                    snapshot.forEach(doc => {
+                        const status = doc.data().status;
+                        if (status === "approved") {
+                            // Ako je pristup odobren, omogućiti sadržaj
+                            document.getElementById('content').style.display = "block"; // Omogućavanje pristupa sadržaju
+                            document.getElementById('popup').style.display = "none"; // Sakrijemo popup
+                            localStorage.setItem('userEmail', email); // Spremamo email u localStorage
+                        } else if (status === "pending") {
+                            // Ako je zahtev još uvek na čekanju
+                            document.getElementById('notification').innerHTML = "<p style='color: orange;'>Vaš zahtev je još uvek u fazi čekanja. Molimo sačekajte.</p>";
+                            document.getElementById('content').style.display = "none"; // Ne prikazujemo sadržaj dok zahtev nije odobren
+                        }
+                    });
+                }
+            });
+        }
+
+        // Provera da li je korisnik već odobren prilikom učitavanja stranice
+        const currentEmail = localStorage.getItem('userEmail');
+        if (currentEmail) {
+            // Ako email postoji u localStorage, proveravamo status
+            checkAccess(currentEmail);
+        } else {
+            // Ako nije u localStorage, prikazuje popup za unos email-a
+            document.getElementById('popup').style.display = "block";
+        }
+
+        // Funkcija za slanje zahteva za pristup
+        document.getElementById('accessRequestForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const notificationDiv = document.getElementById('notification');
+
+            if (email) {
+                db.collection("accessRequests").add({
+                    email: email,
+                    status: "pending"
+                })
+                .then(() => {
+                    notificationDiv.innerHTML = "<p style='color: green;'>Zahtev je uspešno poslat! Čekajte na odobrenje.</p>";
+                    document.getElementById('email').value = "";
+                    closePopup();
+                    
+                    // Proveriti da li je email odobren
+                    checkAccess(email);
+                })
+                .catch((error) => {
+                    console.error("Greška prilikom slanja zahteva: ", error);
+                    notificationDiv.innerHTML = "<p style='color: red;'>Došlo je do greške, pokušajte ponovo.</p>";
+                });
+            } else {
+                notificationDiv.innerHTML = "<p style='color: red;'>Molimo vas unesite email.</p>";
+            }
+        });
+
+        // Funkcija za brisanje korisničkog pristupa
+        function deleteUserAccess(email) {
+            db.collection("accessRequests").where("email", "==", email).get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    doc.ref.delete(); // Brišemo email iz baze
+                    localStorage.removeItem('userEmail'); // Brišemo iz localStorage
+                    location.reload(); // Reload stranice
+                });
+            });
+        }
+    </script>
 </body>
 </html>
-
-
-
-
 
 
   
