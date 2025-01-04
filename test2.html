@@ -29,78 +29,21 @@
       text-align: center;
     }
 
-    /* Style for the second page after login */
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-      overflow: hidden;
-    }
-
-    .buttons-section {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      width: 60%;
-      padding: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.5); 
-      border-radius: 15px; 
-      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-      background-color: rgba(0, 0, 0, 0.3); 
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
-
-    .button-item {
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2); 
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
-    }
-
-    .button-item img {
-      width: 100%;
-      height: auto;
-      filter: brightness(0.8);
-    }
-
-    .button-item h3 {
-      padding: 10px;
-      margin: 0;
-      font-size: 10px; 
-      color: #fff;
-    }
-
-    footer {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      position: absolute;
-      bottom: 0;
-    }
   </style>
 </head>
 <body>
-  <div id="content" style="display: none;">
-    <header>
-      <h1>Izaberite sadržaj</h1>
-      <p>i započnite svoju filmsku avanturu.</p>
-    </header>
 
+  <!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
+  </div>
+  
+  
     <main>
       <div class="buttons-section">
         <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
@@ -171,12 +114,8 @@
                 popup.style.display = 'none';
                 // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
-
-                // Redirect to the second page or load content dynamically
-                window.location.href = "https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html"; // Replace with desired URL
-
-                // OR to load content dynamically within the same page, use:
-                // document.getElementById('content').style.display = 'block';
+                // Otvoriti sadržaj stranice nakon prijave
+                document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
               }
