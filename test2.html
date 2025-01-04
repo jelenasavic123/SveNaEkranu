@@ -71,31 +71,36 @@
                                     displayName: nickname
                                 }).then(() => {
                                     console.log("Logged in successfully as " + nickname);
-                                    alert("Logged in successfully as " + nickname);
                                     
                                     // Sakrij formu i prikaži sadržaj
                                     document.getElementById("loginForm").style.display = "none";
                                     document.getElementById("content").style.display = "block";
+
+                                    // Prikazivanje poruke o uspešnoj prijavi
+                                    document.getElementById("errorMessage").style.color = "green";
+                                    document.getElementById("errorMessage").textContent = "Successfully logged in as " + nickname;
                                 });
                             })
                             .catch((error) => {
                                 console.error("Error logging in:", error.message);
+                                document.getElementById("errorMessage").style.color = "red";
                                 document.getElementById("errorMessage").textContent = "Error logging in: " + error.message;
                             });
                     } else {
                         console.log("Nickname not found:", nickname);
+                        document.getElementById("errorMessage").style.color = "red";
                         document.getElementById("errorMessage").textContent = "Nickname not found!";
                     }
                 })
                 .catch((error) => {
                     console.error("Error checking nickname:", error);
+                    document.getElementById("errorMessage").style.color = "red";
                     document.getElementById("errorMessage").textContent = "Error checking nickname: " + error.message;
                 });
         });
     </script>
 </body>
 </html>
-
 
 
 
