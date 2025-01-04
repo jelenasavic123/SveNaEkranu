@@ -72,19 +72,51 @@
       color: #ff4757;
       font-size: 14px;
     }
+    
+    .button-item {
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    text-align: center;
+    width: 30%;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    margin: 20px;
+}
+
+.button-item:focus {
+    outline: 2px solid #FFD700; /* Fokus efekt za bolju vidljivost pri navigaciji */
+}
+
+input[type="text"]:focus {
+    outline: 2px solid #FFD700; /* Fokus efekt za polje za unos */
+}
+
+@media (min-width: 1200px) {
+    .button-item {
+        width: 25%;
+    }
+}
+
   </style>
 </head>
 <body>
-
 <!-- Popup for nickname -->
   <div id="popup">
     <div id="popup-content">
       <h2>Unesite nadimak</h2>
       <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button id="signInButton">Prijavi se</button>
+      <button onclick="signIn()">Prijavi se</button>
       <p id="status"></p>
     </div>
   </div>
+
+
+
+
+
 
   <div id="content" style="display: none;">
     <header>
@@ -114,13 +146,14 @@
     </footer>
   </div>
 
+  
   <script>
     // Firebase konfiguracija
     const firebaseConfig = {
-      apiKey: "API_KEY_HERE",
+      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
       authDomain: "svenaekranu-64477.firebaseapp.com",
       projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.appspot.com",
+      storageBucket: "svenaekranu-64477.firebasestorage.app",
       messagingSenderId: "15230160013",
       appId: "1:15230160013:web:89144bb5079637e787e6c4",
       measurementId: "G-PED21PPQQJ"
@@ -194,15 +227,6 @@
         document.getElementById('popup').style.display = 'flex';
       }
     };
-
-    // Event listener za Enter klik na input
-    document.getElementById('nickname').addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        signIn();
-      }
-    });
-
-    document.getElementById('signInButton').addEventListener('click', signIn);
   </script>
 </body>
 </html>
