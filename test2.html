@@ -4,45 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firebase Nadimci - Admin Panel</title>
+
+  <!-- Polyfill za fetch, promise i localStorage -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.5/core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+
+  <!-- Firebase SDK (compatibilna verzija) -->
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+
   <style>
-    /* Stil za formu za unos nadimka */
-    #nickname-form {
-      text-align: center;
-      margin-top: 100px;
-    }
-    #nickname-form input {
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    #nickname-form button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
+    /* Style for the popup */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
       color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
     }
-    #nickname-form button:hover {
-      background-color: #45a049;
+
+    #popup-content {
+      background: #121212;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
     }
-    #status {
-      color: red;
-    }
+
   </style>
 </head>
 <body>
 
-  <!-- Forma za unos nadimka -->
-  <div id="nickname-form">
-    <h2>Unesite nadimak</h2>
-    <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-    <button onclick="signIn()">Prijavi se</button>
-    <p id="status"></p>
+  <!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
   </div>
 
   <script>
@@ -61,10 +66,40 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    // Funkcija za proveru podrške za localStorage
+    function checkLocalStorageSupport() {
+      try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Fallback za localStorage u starijim pregledačima
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
+    }
+
+    function getCookie(name) {
+      const nameEq = name + "=";
+      const ca = document.cookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEq) == 0) return c.substring(nameEq.length, c.length);
+      }
+      return null;
+    }
+
     // Funkcija za prijavu sa nadimkom
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
+      const popup = document.getElementById('popup');
 
       if (!nickname) {
         statusDiv.textContent = 'Molimo vas unesite nadimak!';
@@ -79,10 +114,17 @@
             .then((doc) => {
               if (doc.exists && doc.data().available) {
                 statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                // Sačuvaj nadimak u localStorage
-                localStorage.setItem('nickname', nickname);
-                // Preusmeriti na drugu stranicu nakon uspešne prijave
-                window.location.href = 'https://www.svenadlanu.xyz'; // Zamenite sa željenom URL adresom
+                popup.style.display = 'none';
+
+                // Sačuvaj nadimak u localStorage ili cookies
+                if (checkLocalStorageSupport()) {
+                  localStorage.setItem('nickname', nickname);
+                } else {
+                  setCookie('nickname', nickname, 7); // Sačuvaj kao cookie ako nije podržano localStorage
+                }
+
+                // Otvoriti sadržaj stranice nakon prijave
+                document.getElementById('content').style.display = 'block';
               } else {
                 statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
               }
@@ -100,29 +142,43 @@
 
     // Provera prijave prilikom učitavanja stranice
     window.onload = function() {
-      const nickname = localStorage.getItem('nickname');
+      let nickname = null;
+      if (checkLocalStorageSupport()) {
+        nickname = localStorage.getItem('nickname');
+      } else {
+        nickname = getCookie('nickname');
+      }
+
       if (nickname) {
-        // Ako postoji sačuvani nadimak u localStorage, proveri da li je validan u Firebase-u
+        // Ako postoji sačuvani nadimak u localStorage ili cookies, proveri da li je validan u Firebase-u
         db.collection('nicknames').doc(nickname).get()
           .then((doc) => {
             if (doc.exists && doc.data().available) {
-              // Ako je nadimak validan, preusmeriti na drugu stranicu
-              window.location.href = 'nova-stranica.html'; // Zamenite sa željenom URL adresom
+              // Ako je nadimak validan, otvori sadržaj
+              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
+              document.getElementById('content').style.display = 'block';
             } else {
-              // Ako nije validan, izbriši ga iz localStorage
-              localStorage.removeItem('nickname');
+              // Ako nije validan, izbriši ga iz localStorage/cookies i prikazi popup
+              if (checkLocalStorageSupport()) {
+                localStorage.removeItem('nickname');
+              } else {
+                setCookie('nickname', '', -1); // Obriši cookie
+              }
+              document.getElementById('popup').style.display = 'flex';
             }
           })
           .catch((error) => {
             console.error('Greška pri proveri nadimka: ', error);
+            document.getElementById('popup').style.display = 'flex';
           });
+      } else {
+        document.getElementById('popup').style.display = 'flex';
       }
     };
   </script>
 
 </body>
 </html>
-
 
 
 
