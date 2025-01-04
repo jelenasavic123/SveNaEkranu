@@ -4,29 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Firebase Login</title>
-  <!-- Include Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-</head>
-<body>
-  <h2>Login Page</h2>
   
-  <!-- Login Form -->
-  <form id="loginForm">
-    <label for="email">Email: </label>
-    <input type="email" id="email" required><br><br>
-    <label for="password">Password: </label>
-    <input type="password" id="password" required><br><br>
-    <button type="submit">Login</button>
-  </form>
+  <!-- Firebase SDK 9.x.x (Modularni pristup) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
-  <!-- Container for test page content (will be shown after successful login) -->
-  <div id="testPage" style="display: none;">
-    <h2>Test Page</h2>
-    <p>Welcome to the test page! You are successfully logged in.</p>
-  </div>
-
-  <script>
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
@@ -39,14 +22,13 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
     // Get form and input elements
     const loginForm = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-
-    // Get the test page container
     const testPage = document.getElementById("testPage");
 
     // Login functionality
@@ -56,7 +38,7 @@
       const email = emailInput.value;
       const password = passwordInput.value;
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Successful login
           const user = userCredential.user;
@@ -77,8 +59,27 @@
         });
     });
   </script>
+</head>
+<body>
+  <h2>Login Page</h2>
+  
+  <!-- Login Form -->
+  <form id="loginForm">
+    <label for="email">Email: </label>
+    <input type="email" id="email" required><br><br>
+    <label for="password">Password: </label>
+    <input type="password" id="password" required><br><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Container for test page content (will be shown after successful login) -->
+  <div id="testPage" style="display: none;">
+    <h2>Test Page</h2>
+    <p>Welcome to the test page! You are successfully logged in.</p>
+  </div>
 </body>
 </html>
+
 
 
 
