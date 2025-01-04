@@ -75,6 +75,21 @@
   </style>
 </head>
 <body>
+<!-- Popup for nickname -->
+  <div id="popup">
+    <div id="popup-content">
+      <h2>Unesite nadimak</h2>
+      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+      <button onclick="signIn()">Prijavi se</button>
+      <p id="status"></p>
+    </div>
+  </div>
+
+
+
+
+
+
   <div id="content" style="display: none;">
     <header>
       <h1>Izaberite sadržaj</h1>
@@ -103,16 +118,7 @@
     </footer>
   </div>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
-
+  
   <script>
     // Firebase konfiguracija
     const firebaseConfig = {
@@ -196,7 +202,6 @@
   </script>
 </body>
 </html>
-
 
 
 
