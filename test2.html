@@ -4,27 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firebase Login with Nickname</title>
-    
-    <!-- Detekcija okruženja: Ako je WebView ili specifičan browser, učitaj kompatibilnu verziju -->
-    <script>
-        // Detekcija WebView-a ili starijeg browser-a
-        var isWebView = (navigator.userAgent.includes("WebView"));
-        var firebaseVersion = (isWebView || /Android|iPhone/.test(navigator.userAgent)) ? 'compat' : 'modular';
-        console.log("Firebase SDK Version: ", firebaseVersion);
-    </script>
-    
-    <!-- Modularni Firebase SDK (Nova verzija) - koristi se ako browser podržava -->
-    <script id="firebase-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" style="display:none;"></script>
-    <script id="firebase-auth-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" style="display:none;"></script>
-    <script id="firebase-firestore-modular" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" style="display:none;"></script>
 
-    <!-- Kompatibilna verzija Firebase SDK-a (Fallback za starije browser-e ili WebView) -->
-    <script id="firebase-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js" style="display:none;"></script>
-    <script id="firebase-auth-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js" style="display:none;"></script>
-    <script id="firebase-firestore-compat" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js" style="display:none;"></script>
-    
-    <!-- Your Firebase Config -->
+    <!-- Firebase SDKs (modularni i kompatibilni za sve uređaje) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+
     <script>
+        // Firebase konfiguracija
         const firebaseConfig = {
             apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
             authDomain: "svenaekranu-64477.firebaseapp.com",
@@ -35,21 +22,53 @@
             measurementId: "G-PED21PPQQJ"
         };
 
-        // Funkcija za inicijalizaciju Firebase-a, bazirano na detektovanoj verziji
-        function initializeFirebase() {
-            if (firebaseVersion === 'modular') {
-                // Modularni Firebase (za nove browser-e)
-                const app = firebase.initializeApp(firebaseConfig);
-                const auth = firebase.auth();
-                const db = firebase.firestore();
-            } else {
-                // Kompatibilni Firebase (za WebView ili starije browser-e)
-                const app = firebase.initializeApp(firebaseConfig);
-                const auth = firebase.auth();
-                const db = firebase.firestore();
+        // Inicijalizacija Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+
+    <!-- Osnovni stilovi za responsivni dizajn -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 50px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        #errorMessage {
+            color: red;
+            font-size: 18px;
+        }
+
+        #content {
+            display: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            input, button {
+                width: 90%;
             }
         }
-    </script>
+    </style>
 </head>
 <body>
 
@@ -62,6 +81,78 @@
         
         <button type="submit">Login</button>
     </form>
+
+    <!-- Poruka o grešci -->
+    <p id="errorMessage"></p>
+
+    <!-- Sadržaj stranice koji se prikazuje nakon uspešnog logovanja -->
+    <div id="content">
+        <h3>Welcome to the page</h3>
+        <p id="pageText">teststranica</p>
+    </div>
+
+    <script>
+        // Funkcija za detekciju mobilnih uređaja
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isTV = /SmartTV|TV/i.test(navigator.userAgent);  // Ovo možete dodatno prilagoditi prema specifičnim TV uređajima.
+
+        console.log("Is mobile:", isMobile);
+        console.log("Is TV device:", isTV);
+
+        // Podešavanje Firebase sesije za sve uređaje
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(function() {
+                // Kod za autentifikaciju
+            })
+            .catch(function(error) {
+                console.log("Error setting persistence:", error.message);
+            });
+
+        // Handler za login sa nadimkom
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const nickname = document.getElementById("nickname").value;
+            console.log("Checking nickname:", nickname);
+
+            // Provera da li nadimak postoji u Firestore
+            db.collection("nicknames").doc(nickname).get()
+                .then((docSnapshot) => {
+                    if (docSnapshot.exists) {
+                        console.log("Nickname exists:", nickname);
+
+                        // Ako nadimak postoji, loguj korisnika
+                        firebase.auth().signInAnonymously()
+                            .then(() => {
+                                firebase.auth().currentUser.updateProfile({
+                                    displayName: nickname
+                                }).then(() => {
+                                    console.log("Logged in successfully as " + nickname);
+                                    
+                                    // Sakrij formu i prikaži sadržaj
+                                    document.getElementById("loginForm").style.display = "none";
+                                    document.getElementById("content").style.display = "block";
+                                });
+                            })
+                            .catch((error) => {
+                                console.error("Error logging in:", error.message);
+                                document.getElementById("errorMessage").textContent = "Error logging in: " + error.message;
+                            });
+                    } else {
+                        console.log("Nickname not found:", nickname);
+                        document.getElementById("errorMessage").textContent = "Nickname not found!";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error checking nickname:", error);
+                    document.getElementById("errorMessage").textContent = "Error checking nickname: " + error.message;
+                });
+        });
+
+    </script>
+</body>
+</html>
+
 
     <!-- Poruka o grešci -->
     <p id="errorMessage" style="color:red;"></p>
