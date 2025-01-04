@@ -1,161 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firebase Nadimci - Admin Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izaberite sadržaj i započnite svoju filmsku avanturu danas.</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+            overflow: hidden;
+        }
 
-  <!-- Firebase SDK (compatibilna verzija) -->
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+        .buttons-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 60%;
+            padding: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 15px; 
+            box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
+            background-color: rgba(0, 0, 0, 0.3); 
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
 
-  <style>
-    /* Style for the popup */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
+        .button-item {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            width: 20%;
+        }
 
-    #popup-content {
-      background: #121212;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-    }
+        .button-item img {
+            width: 100%;
+            height: auto;
+            filter: brightness(0.8);
+        }
 
-  </style>
+        .button-item h3 {
+            padding: 10px;
+            margin: 0;
+            font-size: 10px; 
+            color: #fff;
+        }
+
+        footer {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
+    <header>
+        <h1>Izaberite sadržaj</h1>
+        <p>i započnite svoju filmsku avanturu.</p>
+    </header>
 
-  <script>
-    // Firebase konfiguracija
-    const firebaseConfig = {
-      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-      authDomain: "svenaekranu-64477.firebaseapp.com",
-      projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
-      messagingSenderId: "15230160013",
-      appId: "1:15230160013:web:89144bb5079637e787e6c4",
-      measurementId: "G-PED21PPQQJ"
-    };
+    <main>
+        <div class="buttons-section">
+            <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
+                <h3>Strani Sadrzaj</h3>
+            </div>
+            <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
+                <h3>Turski Sadrzaj</h3>
+            </div>
+            <div class="button-item" onclick="location.href='#domace-serije'">
+                <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
+                <h3>Domaci Sadrzaj</h3>
+            </div>
+        </div>
+    </main>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-
-    // Funkcija za prijavu sa nadimkom
-    function signIn() {
-      const nickname = document.getElementById('nickname').value;
-      const statusDiv = document.getElementById('status');
-      const popup = document.getElementById('popup');
-
-      if (!nickname) {
-        statusDiv.textContent = 'Molimo vas unesite nadimak!';
-        return;
-      }
-
-      // Prijava kao anonimni korisnik
-      auth.signInAnonymously()
-        .then((userCredential) => {
-          // Provera da li nadimak postoji u bazi
-          db.collection('nicknames').doc(nickname).get()
-            .then((doc) => {
-              if (doc.exists && doc.data().available) {
-                statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
-
-                // Sačuvaj nadimak u cookie-u
-                setCookie('nickname', nickname, 7);  // Sačuvaj kao cookie na 7 dana
-
-                // Otvori sadržaj stranice nakon prijave
-                document.getElementById('content').style.display = 'block';
-              } else {
-                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
-              }
-            })
-            .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
-              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
-            });
-        })
-        .catch((error) => {
-          console.error('Greška pri prijavi: ', error);
-          statusDiv.textContent = 'Greška prilikom prijave.';
-        });
-    }
-
-    // Provera prijave prilikom učitavanja stranice
-    window.onload = function() {
-      const nickname = getCookie('nickname');  // Pokušaj dobiti nadimak iz cookie-a
-
-      if (nickname) {
-        // Ako postoji sačuvani nadimak u cookie-u, proveri da li je validan u Firebase-u
-        db.collection('nicknames').doc(nickname).get()
-          .then((doc) => {
-            if (doc.exists && doc.data().available) {
-              // Ako je nadimak validan, otvori sadržaj
-              console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
-              document.getElementById('content').style.display = 'block';
-            } else {
-              // Ako nije validan, izbriši ga iz cookie-a i prikazi popup
-              setCookie('nickname', '', -1); // Obriši cookie
-              document.getElementById('popup').style.display = 'flex';
-            }
-          })
-          .catch((error) => {
-            console.error('Greška pri proveri nadimka: ', error);
-            document.getElementById('popup').style.display = 'flex';
-          });
-      } else {
-        document.getElementById('popup').style.display = 'flex';
-      }
-    };
-
-    // Funkcija za postavljanje cookies
-    function setCookie(name, value, days) {
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
-    }
-
-    // Funkcija za čitanje cookies
-    function getCookie(name) {
-      const nameEq = name + "=";
-      const ca = document.cookie.split(';');
-      for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEq) == 0) return c.substring(nameEq.length, c.length);
-      }
-      return null;
-    }
-  </script>
-
-</body>
-</html>
-
-
-
-
+    <footer>
+        <!-- Footer content -->
+    </footer>
 <script>
       /* ------------------- */
       /* ACCESS DENIED ERROR */
@@ -319,3 +259,6 @@
         window.location.href = searchUrl;
       }
     </script>
+
+</body>
+</html>
