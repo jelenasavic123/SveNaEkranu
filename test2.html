@@ -8,33 +8,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
   <style>
-    /* Style for the popup */
-    #popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
-
-    #popup-content {
-      width: 60%;
-      height: auto;
-      max-width: 600px;
-      max-height: 80vh;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-      text-align: center;
-    }
-
-    /* Style for the second page after login */
     body {
       font-family: 'Helvetica Neue', Arial, sans-serif;
       margin: 0;
@@ -97,31 +70,6 @@
       position: absolute;
       bottom: 0;
     }
-
-    /* Responsive styles for smaller screens */
-    @media (max-width: 768px) {
-      body {
-        font-size: 16px; /* Smanjenje fonta za mobilne uređaje */
-        padding: 10px;
-      }
-      .buttons-section {
-        flex-direction: column; /* Vertikalni raspored za mobilne uređaje */
-        width: 90%; /* Širina prilagođena mobilnim uređajima */
-      }
-      .button-item {
-        width: 100%; /* Puni širinu za mobilne uređaje */
-        margin-bottom: 20px; /* Razmak između dugmadi za mobilne uređaje */
-      }
-    }
-
-    @media (max-width: 480px) {
-      #popup-content {
-        padding: 15px; /* Manja širina i padding za mobilne uređaje */
-      }
-      .button-item img {
-        height: 150px; /* Smanjena visina slika za mobilne uređaje */
-      }
-    }
   </style>
 </head>
 <body>
@@ -153,18 +101,7 @@
     </footer>
   </div>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
-
   <script>
-    // Firebase konfiguracija
     // Firebase konfiguracija
     const firebaseConfig = {
       apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
@@ -184,14 +121,12 @@
     function signIn() {
       const nickname = document.getElementById('nickname').value;
       const statusDiv = document.getElementById('status');
-      const popup = document.getElementById('popup');
 
       if (!nickname) {
         statusDiv.textContent = 'Molimo vas unesite nadimak!';
         return;
       }
 
-      // Prijava kao anonimni korisnik
       auth.signInAnonymously()
         .then((userCredential) => {
           // Provera da li nadimak postoji u bazi
@@ -199,7 +134,6 @@
             .then((doc) => {
               if (doc.exists && doc.data().available) {
                 statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                popup.style.display = 'none';
                 // Sačuvaj nadimak u localStorage
                 localStorage.setItem('nickname', nickname);
                 // Otvoriti sadržaj stranice nakon prijave
@@ -231,22 +165,32 @@
               console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
               document.getElementById('content').style.display = 'block';
             } else {
-              // Ako nije validan, izbriši ga iz localStorage i prikazi popup
+              // Ako nije validan, izbriši ga iz localStorage i ne prikazuj status
               localStorage.removeItem('nickname');
-              document.getElementById('popup').style.display = 'flex';
+              // Prikazati poruku ili pustiti funkciju da se ponovo učita
+              document.getElementById('status').textContent = '';
+              document.getElementById('nickname-container').style.display = 'block';
             }
           })
           .catch((error) => {
             console.error('Greška pri proveri nadimka: ', error);
-            document.getElementById('popup').style.display = 'flex';
+            document.getElementById('status').textContent = 'Greška pri proveri nadimka.';
           });
       } else {
-        document.getElementById('popup').style.display = 'flex';
+        document.getElementById('nickname-container').style.display = 'block';
       }
     };
   </script>
+
+  <div id="nickname-container" style="display: none;">
+    <label for="nickname">Unesite nadimak:</label>
+    <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
+    <button onclick="signIn()">Prijavi se</button>
+    <p id="status"></p>
+  </div>
 </body>
 </html>
+
 
 
 
