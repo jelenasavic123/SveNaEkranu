@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firebase User Notification</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-firestore.js"></script>
     <style>
         #hiddenContent {
             display: none;
@@ -28,23 +26,23 @@
     <!-- Hidden content -->
     <div id="hiddenContent">
         <header>
-            <h1>Izaberite sadržaj</h1>
-            <p>i započnite svoju filmsku avanturu.</p>
+            <h1>Choose Your Content</h1>
+            <p>And start your movie adventure.</p>
         </header>
 
         <main>
             <div class="buttons-section">
                 <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
                     <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-                    <h3>Strani Sadrzaj</h3>
+                    <h3>Foreign Content</h3>
                 </div>
                 <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
                     <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-                    <h3>Turski Sadrzaj</h3>
+                    <h3>Turkish Content</h3>
                 </div>
                 <div class="button-item" onclick="location.href='#domace-serije'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-                    <h3>Domaci Sadrzaj</h3>
+                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domestic Series">
+                    <h3>Domestic Content</h3>
                 </div>
             </div>
         </main>
@@ -55,7 +53,7 @@
             apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
             authDomain: "svenaekranu-64477.firebaseapp.com",
             projectId: "svenaekranu-64477",
-            storageBucket: "svenaekranu-64477.firebasestorage.app",
+            storageBucket: "svenaekranu-64477.appspot.com",
             messagingSenderId: "15230160013",
             appId: "1:15230160013:web:89144bb5079637e787e6c4",
             measurementId: "G-PED21PPQQJ"
@@ -66,7 +64,6 @@
 
         const userId = 'guest_' + Date.now();
 
-        // Proverava da li korisnik već postoji
         function checkUserExistence() {
             db.collection('userVisits')
               .where('userId', '==', userId)
@@ -89,7 +86,6 @@
               });
         }
 
-        // Beleži novu posetu
         function logNewVisit() {
             db.collection('userVisits').add({
                 userId: userId,
@@ -104,7 +100,6 @@
             });
         }
 
-        // Praćenje promene statusa korisnika
         function monitorApproval() {
             db.collection('userVisits')
               .where('userId', '==', userId)
@@ -118,19 +113,16 @@
               });
         }
 
-        // Odobrenje pristupa
         function grantAccess() {
             document.getElementById('popup').style.display = 'none';
             document.getElementById('hiddenContent').style.display = 'block';
             console.log('Access granted!');
         }
 
-        // Prikazivanje popup obaveštenja
         function showPopup() {
             document.getElementById('popup').style.display = 'block';
         }
 
-        // Zatvaranje popup-a
         function closePopup() {
             document.getElementById('popup').style.display = 'none';
         }
@@ -141,6 +133,7 @@
     </script>
 </body>
 </html>
+
 
 
 
