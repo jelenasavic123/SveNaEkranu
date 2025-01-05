@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google" content="notranslate"> <!-- Dodato za sprečavanje blokiranja popupova -->
   <title>Firebase Nadimci - Admin Panel</title>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
@@ -21,13 +20,17 @@
       justify-content: center;
       align-items: center;
       color: white;
-      z-index: 1001; /* Dodato da popup bude iznad svih elemenata */
     }
 
     #popup-content {
-      background: #121212;
+      width: 60%;
+      height: auto;
+      max-width: 600px;
+      max-height: 80vh;
+      background: rgba(0, 0, 0, 0.9);
       padding: 20px;
       border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
       text-align: center;
     }
 
@@ -94,6 +97,31 @@
       position: absolute;
       bottom: 0;
     }
+
+    /* Responsive styles for smaller screens */
+    @media (max-width: 768px) {
+      body {
+        font-size: 16px; /* Smanjenje fonta za mobilne uređaje */
+        padding: 10px;
+      }
+      .buttons-section {
+        flex-direction: column; /* Vertikalni raspored za mobilne uređaje */
+        width: 90%; /* Širina prilagođena mobilnim uređajima */
+      }
+      .button-item {
+        width: 100%; /* Puni širinu za mobilne uređaje */
+        margin-bottom: 20px; /* Razmak između dugmadi za mobilne uređaje */
+      }
+    }
+
+    @media (max-width: 480px) {
+      #popup-content {
+        padding: 15px; /* Manja širina i padding za mobilne uređaje */
+      }
+      .button-item img {
+        height: 150px; /* Smanjena visina slika za mobilne uređaje */
+      }
+    }
   </style>
 </head>
 <body>
@@ -138,13 +166,13 @@
   <script>
     // Firebase konfiguracija
     const firebaseConfig = {
-      apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-      authDomain: "svenaekranu-64477.firebaseapp.com",
-      projectId: "svenaekranu-64477",
-      storageBucket: "svenaekranu-64477.firebasestorage.app",
-      messagingSenderId: "15230160013",
-      appId: "1:15230160013:web:89144bb5079637e787e6c4",
-      measurementId: "G-PED21PPQQJ"
+      apiKey: "API_KEY_HERE",
+      authDomain: "AUTH_DOMAIN_HERE",
+      projectId: "PROJECT_ID_HERE",
+      storageBucket: "STORAGE_BUCKET_HERE",
+      messagingSenderId: "MESSAGING_SENDER_ID_HERE",
+      appId: "APP_ID_HERE",
+      measurementId: "MEASUREMENT_ID_HERE"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -218,6 +246,7 @@
   </script>
 </body>
 </html>
+
 
 
 
