@@ -86,12 +86,15 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
     const nickname = document.getElementById('nickname').value.trim();
     const messageElement = document.getElementById('message');
-    
+
     if (nickname) {
-        // Prvo, anonimna prijava
-        auth.signInAnonymously()
+        // Postavljanje persistence za Firebase autentifikaciju
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(function() {
+                // Pokušaj prijave anonimno
+                return firebase.auth().signInAnonymously();
+            })
             .then(() => {
-                // Prikazivanje poruke o uspehu
                 messageElement.innerHTML = `Dobrodošao, <strong>${nickname}</strong>!`;
                 messageElement.style.color = 'green';
 
@@ -112,6 +115,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
 </body>
 </html>
+
 
 
 
