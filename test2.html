@@ -1,117 +1,836 @@
-<!DOCTYPE html>
-<html lang="hr">
+ <!DOCTYPE html>
+<html lang="en">
 <head>
+
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logovanje sa Nadimkom i Firebase</title>
-
-    <!-- Firebase Skripte - samo kompatibilna verzija -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
-
+    <title>Chat App with Firebase</title>
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <!-- CSS -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .container h1 {
-            text-align: center;
-        }
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        .message {
-            text-align: center;
-            margin-top: 20px;
-        }
+/* Existing styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin-top: 0;
+   background: linear-gradient(135deg, #E0C3FC, #8EC5FC); /* Pastelni prelaz */
+
+}
+#login-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#chat-screen {
+    position: fixed;
+    bottom: 0; /* Uveravamo se da je na dnu */
+    width: 100%; /* Postavljamo da zauzima punu širinu */
+}
+#loginScreen {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 350px;
+    width: 100%;
+    text-align: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.hidden {
+    display: none;
+}
+input[type="text"], input[type="password"] {
+    width: 60%;
+    padding: 15px;
+    margin: 25px 0;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+button {
+    padding: 15px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+    align-self: center;
+}
+.message {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    position: relative;
+    padding: 0px;
+    background-color: #e9e9e9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 95%;
+}
+.message img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.reply-box {
+    background-color: #d3d3d3;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 4px;
+    margin-top: 10px;
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.reply-box::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
+    border-width: 10px 10px 0 10px;
+    border-style: solid;
+    border-color: #d3d3d3 transparent transparent transparent;
+    transform: translateX(-50%);
+}
+.reply-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.reply-info img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+.reply-info span {
+    font-size: 0.9em;
+    font-weight: bold;
+}
+.reply-text {
+    margin-top: 5px;
+}
+.message-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.message-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.message-user {
+    font-weight: bold;
+}
+.message-timestamp {
+    font-size: 0.8rem;
+    color: #999;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+.reply-btn, .delete-btn {
+    cursor: pointer;
+    padding: 1px 1px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.6em;
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+}
+.reply-btn {
+    background-color: #007bff;
+}
+.reply-btn:hover {
+    background-color: #0056b3;
+}
+.delete-btn {
+    background-color: #dc3545;
+    right: 60px;
+}
+.delete-btn:hover {
+    background-color: #c82333;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 5px;
+}
+.selected {
+    border: 2px solid #007bff;
+}
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Postavljamo visinu na 100% */
+    justify-content: flex-start; /* Da bi se sadržaj prikazivao od vrha */
+    align-items: center;
+}
+
+#chat-box {
+    flex: 1; /* Da popuni preostalu visinu u chat-container */
+    overflow-y: auto; /* Omogućava pomeranje kada je sadržaj veći od okvira */
+    width: 100%; /* Zauzima punu širinu */
+    max-width: 600px; /* Maksimalna širina */
+    padding: 10px; /* Postavi padding na pozitivnu vrednost */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Senka */
+    border-radius: 8px; /* Zaobljeni uglovi */
+    margin-bottom: 20%; /* Ostavlja 20% praznog prostora na dnu */
+}
+
+
+#message-input-container {
+    position: fixed;
+    bottom: 0; /* Uveravamo se da je na dnu */
+    left: 50%; /* Pomeri sa leve strane do sredine */
+    width: 100%; /* Širina kontejnera */
+    transform: translateX(-50%); /* Centriraj kontejner horizontalno */
+    background-color: #fff;
+    padding: 7px 10px; /* Smanjeni padding (gore/dole) i povećani (levo/desno) */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center; /* Vertikalno centriranje sadržaja */
+    height: 40px; /* Postavite željenu visinu */
+}
+
+#message-input {
+    width: 75%; /* Širina input polja */
+    padding: 5px; /* Smanjite padding za ulaz */
+    font-size: 12px; /* Smanjite veličinu fonta */
+}
+
+#send-btn {
+    padding: 5px; /* Smanjite padding za dugme */
+    font-size: 10px; /* Smanjite veličinu fonta */
+}
+
+
+#logout-btn {
+    padding: 1px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: fixed;
+    top: 4px;
+    right: 1px;
+}
+#logout-btn:hover {
+    background-color: #c82333;
+}
+#avatar-upload {
+    display: none;
+}
+#uploaded-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: none;
+}
+#password-container {
+    display: none;
+    margin-top: 10px;
+}
+/* Styles for the modal */
+#avatar-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+#avatar-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+#avatar-modal-content h2 {
+    margin: 0 0 10px;
+}
+#avatar-modal-content .avatar {
+    margin: 10px;
+}
+#close-modal {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+#close-modal:hover {
+    background-color: #c82333;
+}
+#welcome-text {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Responsive design for mobile devices */
+@media screen and (max-width: 768px) {
+    #loginScreen, #chat-box {
+        width: 95%; /* Smanjujemo širinu za mobilne uređaje */
+    }
+    input[type="text"], input[type="password"], #message-input {
+        font-size: 12px; /* Manja veličina fonta za mobilne uređaje */
+        padding: 8px; /* Manje padding za bolji izgled */
+    }
+    button, #send-btn, #logout-btn {
+        font-size: 12px; /* Manja veličina fonta za dugmad */
+        padding: 6px; /* Manje padding za dugmad */
+    }
+}
+
     </style>
 </head>
-<body>
 
-<div class="container">
-    <h1>Dobrodošao!</h1>
-    <form id="loginForm">
-        <input type="text" id="nickname" class="input-field" placeholder="Unesite nadimak" required>
-        <button type="submit" class="btn">Prijavi se</button>
-    </form>
-    <div class="message" id="message"></div>
-</div>
+<!-- BEGIN: Powered by Supercounters.com -->
+<center><script type="text/javascript" src="//widget.supercounters.com/ssl/online_i.js"></script><script type="text/javascript">sc_online_i(1700555,"ffffff","e61c1c");</script><br><noscript><a href="https://www.supercounters.com/">free online counter</a></noscript>
+</center>
+<!-- END: Powered by Supercounters.com -->
+
+<body>
+    <div class="container">
+        <div id="login-screen">
+            <h1>Prijava</h1>
+            <input type="text" id="username" placeholder="Unesite svoje ime">
+            <button id="login-btn">Prijavi se</button>
+            <div id="welcome-text">
+                <p>Nakon što se prijavite, bićete u mogućnosti da prijavite eventualne greške i neispravne epizode. Takođe, možete se povezati sa drugim korisnicima putem našeg chat sistema za bilo kakva pitanja ili diskusije u vezi sa aplikacijom.</p>
+            </div>
+            <input type="file" id="avatar-upload" accept="image/*">
+            <img id="uploaded-avatar" src="" alt="Avatar">
+        </div>
+
+        <div id="chat-screen" style="display:none;"> <!-- Skriveno dok korisnik ne obavi prijavu -->
+            <div id="chat-container">
+                <div id="chat-box"></div>
+                <div id="message-input-container">
+                    <input type="text" id="message-input" placeholder="Unesite poruku...">
+                    <button id="send-btn">Pošalji</button>
+                </div>
+                <button id="logout-btn">Odjavi se</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for avatar selection -->
+    <div id="avatar-modal" style="display:none;"> <!-- Skriveno dok se ne otvori modal -->
+        <div id="avatar-modal-content">
+            <h2>Izaberite Avatar</h2>
+            <div id="avatars-container">
+                <img src="https://static.vecteezy.com/system/resources/previews/001/993/889/non_2x/beautiful-latin-woman-avatar-character-icon-free-vector.jpg" class="avatar" data-avatar="https://static.vecteezy.com/system/resources/previews/001/993/889/non_2x/beautiful-latin-woman-avatar-character-icon-free-vector.jpg" alt="Avatar 1">
+                <img src="https://static.vecteezy.com/system/resources/previews/002/002/257/non_2x/beautiful-woman-avatar-character-icon-free-vector.jpg" class="avatar" data-avatar="https://static.vecteezy.com/system/resources/previews/002/002/257/non_2x/beautiful-woman-avatar-character-icon-free-vector.jpg" alt="Avatar 2">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOXbOWUPYSg9U7KFrXG0fYPGtHapXfmqpjoRJ7W-zEWDMo3dyaMbxwnYbR8tVlbP09nbw&usqp=CAU" class="avatar" data-avatar="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOXbOWUPYSg9U7KFrXG0fYPGtHapXfmqpjoRJ7W-zEWDMo3dyaMbxwnYbR8tVlbP09nbw&usqp=CAU" alt="Avatar 3">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNI3kQLeYMnpy05PhEiuzS1rtRmNVL7VKvwcE4ACmQSQT1rRmUO5mHLyjH-mGHq0ueUQY&usqp=CAU" class="avatar" data-avatar="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNI3kQLeYMnpy05PhEiuzS1rtRmNVL7VKvwcE4ACmQSQT1rRmUO5mHLyjH-mGHq0ueUQY&usqp=CAU" alt="Avatar 4">
+                <img src="https://www.shutterstock.com/image-vector/avatar-girls-icon-vector-woman-260nw-433429546.jpg" class="avatar" data-avatar="https://www.shutterstock.com/image-vector/avatar-girls-icon-vector-woman-260nw-433429546.jpg" alt="Avatar 5">
+                <img src="https://as1.ftcdn.net/v2/jpg/01/12/70/16/1000_F_112701616_X71EL4aiwMMv6y8hmjpXcwpKGqDqSm7q.jpg" class="avatar" data-avatar="https://as1.ftcdn.net/v2/jpg/01/12/70/16/1000_F_112701616_X71EL4aiwMMv6y8hmjpXcwpKGqDqSm7q.jpg" alt="Avatar 6">
+                <!-- Add more avatars as needed -->
+            </div>
+            <button id="close-modal">Zatvori</button>
+        </div>
+    </div>
+</body>
+
+ <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <script>
-// Firebase konfiguracija
-const firebaseConfig = {
-    apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-    authDomain: "svenaekranu-64477.firebaseapp.com",
-    projectId: "svenaekranu-64477",
-    storageBucket: "svenaekranu-64477.firebasestorage.app",
-    messagingSenderId: "15230160013",
-    appId: "1:15230160013:web:89144bb5079637e787e6c4",
-    measurementId: "G-PED21PPQQJ"
-};
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAcp6ogJFrSnw2U6kTW0isDtSuWR7i20bs",
+        authDomain: "chat-4a2d6.firebaseapp.com",
+        projectId: "chat-4a2d6",
+        storageBucket: "chat-4a2d6.appspot.com",
+        messagingSenderId: "1045553997806",
+        appId: "1:1045553997806:web:bdffccdb2bd9f3bb9510ff",
+        measurementId: "G-X0564DDDLZ"
+    };
 
-// Inicijalizacija Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-// Funkcija za prijavu korisnika sa nadimkom
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Sprečava reload stranice
+    let selectedAvatar = '';
+    let replyToMessage = null;
 
-    const nickname = document.getElementById('nickname').value.trim();
-    const messageElement = document.getElementById('message');
+    const loginScreen = document.getElementById('login-screen');
+    const chatScreen = document.getElementById('chat-screen');
+    const loginBtn = document.getElementById('login-btn');
+    const messageInput = document.getElementById('message-input');
+    const chatBox = document.getElementById('chat-box');
+    const sendBtn = document.getElementById('send-btn');
+    const userDisplay = document.getElementById('user-display');
+    const logoutBtn = document.getElementById('logout-btn');
+    const avatars = document.querySelectorAll('.avatar');
+    const avatarModal = document.getElementById('avatar-modal');
+    const closeModal = document.getElementById('close-modal');
+    const avatarsContainer = document.getElementById('avatars-container');
 
-    if (nickname) {
-        // Postavljanje persistence za Firebase autentifikaciju
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .then(function() {
-                // Pokušaj prijave anonimno
-                return firebase.auth().signInAnonymously();
-            })
+    loginBtn.addEventListener('click', () => {
+        const username = document.getElementById('username').value.trim();
+        if (username) {
+            localStorage.setItem('username', username);
+            loginScreen.style.display = 'none';
+            avatarModal.style.display = 'flex'; // Show avatar selection modal
+        }
+    });
+
+    avatarsContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('avatar')) {
+            selectedAvatar = event.target.getAttribute('data-avatar');
+            avatarModal.style.display = 'none'; // Hide avatar modal
+            chatScreen.style.display = 'block'; // Show chat screen
+            userDisplay.textContent = `Korisnik: ${localStorage.getItem('username')}`;
+        }
+    });
+
+    closeModal.addEventListener('click', () => {
+        avatarModal.style.display = 'none'; // Hide avatar modal
+    });
+
+    sendBtn.addEventListener('click', () => {
+        const message = messageInput.value.trim();
+        if (message === '') return;
+
+        const username = localStorage.getItem('username');
+        const avatar = selectedAvatar || 'default-avatar.png'; // Use selected avatar or default avatar
+
+        const messageData = {
+            username: username,
+            avatar: avatar,
+            text: message, // Use 'text' here for consistency
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            replyTo: replyToMessage ? replyToMessage : null // Ensure replyTo is consistent
+        };
+
+        // Save message to Firestore
+        db.collection('messages').add(messageData)
             .then(() => {
-                messageElement.innerHTML = `Dobrodošao, <strong>${nickname}</strong>!`;
-                messageElement.style.color = 'green';
-
-                // Preusmeravanje korisnika na željeni URL nakon uspešne prijave
-                window.location.href = "https://www.svenadlanu.xyz/";
+                messageInput.value = '';
+                replyToMessage = null;
             })
             .catch((error) => {
-                // Ako dođe do greške pri prijavi
-                messageElement.innerHTML = `Greška pri prijavi: ${error.message}`;
-                messageElement.style.color = 'red';
+                console.error('Error sending message: ', error);
             });
-    } else {
-        messageElement.innerHTML = 'Molimo vas unesite nadimak!';
-        messageElement.style.color = 'red';
+    });
+
+    // Load messages from Firestore
+    db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+        chatBox.innerHTML = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            
+            if (data.avatar) {
+                const avatarImg = document.createElement('img');
+                avatarImg.src = data.avatar;
+                messageDiv.appendChild(avatarImg);
+            }
+            
+            const messageText = document.createElement('div');
+            messageText.textContent = `${data.username}: ${data.text}`; // Use 'text' here for consistency
+            messageDiv.appendChild(messageText);
+
+            if (data.replyTo) {
+                db.collection('messages').doc(data.replyTo).get().then(replyDoc => {
+                    const replyData = replyDoc.data();
+                    if (replyData) {
+                        const replyBox = document.createElement('div');
+                        replyBox.classList.add('reply-box');
+
+                        const replyInfo = document.createElement('div');
+                        replyInfo.classList.add('reply-info');
+                        if (replyData.avatar) {
+                            const replyAvatar = document.createElement('img');
+                            replyAvatar.src = replyData.avatar;
+                            replyInfo.appendChild(replyAvatar);
+                        }
+                        const replyUser = document.createElement('span');
+                        replyUser.textContent = replyData.username;
+                        replyInfo.appendChild(replyUser);
+                        replyBox.appendChild(replyInfo);
+
+                        const replyText = document.createElement('div');
+                        replyText.classList.add('reply-text');
+                        replyText.textContent = replyData.text; // Use 'text' here for consistency
+                        replyBox.appendChild(replyText);
+
+                        messageDiv.appendChild(replyBox);
+                    }
+                });
+            }
+
+            const replyBtn = document.createElement('button');
+            replyBtn.textContent = 'Odgovori';
+            replyBtn.classList.add('reply-btn');
+            replyBtn.addEventListener('click', () => {
+                replyToMessage = doc.id;
+            });
+            messageDiv.appendChild(replyBtn);
+
+            if (localStorage.getItem('username') === data.username) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Obriši';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.addEventListener('click', () => {
+                    db.collection('messages').doc(doc.id).delete();
+                });
+                messageDiv.appendChild(deleteBtn);
+            }
+
+            chatBox.appendChild(messageDiv);
+        });
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('username');
+        chatScreen.style.display = 'none';
+        loginScreen.style.display = 'block';
+    });
+    
+    
+    // Function to render messages
+    function renderMessages() {
+        db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+            chatBox.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                
+                if (data.avatar) {
+                    const avatarImg = document.createElement('img');
+                    avatarImg.src = data.avatar;
+                    avatarImg.classList.add('message-avatar');
+                    messageDiv.appendChild(avatarImg);
+                }
+                
+                const messageHeader = document.createElement('div');
+                messageHeader.classList.add('message-header');
+                
+                const messageUser = document.createElement('span');
+                messageUser.classList.add('message-user');
+                messageUser.textContent = data.username;
+                messageHeader.appendChild(messageUser);
+                
+                const messageTimestamp = document.createElement('span');
+                messageTimestamp.classList.add('message-timestamp');
+                messageTimestamp.textContent = data.timestamp ? data.timestamp.toDate().toLocaleTimeString() : '';
+                messageHeader.appendChild(messageTimestamp);
+                
+                messageDiv.appendChild(messageHeader);
+                
+                const messageText = document.createElement('div');
+                messageText.textContent = data.text;
+                messageDiv.appendChild(messageText);
+
+                if (data.replyTo) {
+                    db.collection('messages').doc(data.replyTo).get().then(replyDoc => {
+                        const replyData = replyDoc.data();
+                        if (replyData) {
+                            const replyBox = document.createElement('div');
+                            replyBox.classList.add('reply-box');
+
+                            const replyInfo = document.createElement('div');
+                            replyInfo.classList.add('reply-info');
+                            if (replyData.avatar) {
+                                const replyAvatar = document.createElement('img');
+                                replyAvatar.src = replyData.avatar;
+                                replyInfo.appendChild(replyAvatar);
+                            }
+                            const replyUser = document.createElement('span');
+                            replyUser.textContent = replyData.username;
+                            replyInfo.appendChild(replyUser);
+                            replyBox.appendChild(replyInfo);
+
+                            const replyText = document.createElement('div');
+                            replyText.classList.add('reply-text');
+                            replyText.textContent = replyData.text;
+                            replyBox.appendChild(replyText);
+
+                            messageDiv.appendChild(replyBox);
+                        }
+                    });
+                }
+
+                const replyBtn = document.createElement('button');
+                replyBtn.textContent = 'Odgovori';
+                replyBtn.classList.add('reply-btn');
+                replyBtn.addEventListener('click', () => {
+                    replyToMessage = doc.id;
+                });
+                messageDiv.appendChild(replyBtn);
+
+                if (localStorage.getItem('username') === data.username) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Obriši';
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.addEventListener('click', () => {
+                        db.collection('messages').doc(doc.id).delete();
+                    });
+                    messageDiv.appendChild(deleteBtn);
+                }
+
+                chatBox.appendChild(messageDiv);
+            });
+        });
+    }
+    
+    renderMessages();
+    
+    document.addEventListener('DOMContentLoaded', () => {
+    // Proverite da li su ime i avatar već sačuvani u localStorage
+    const savedUsername = localStorage.getItem('username');
+    const savedAvatar = localStorage.getItem('avatar');
+
+    if (savedUsername) {
+        selectedAvatar = savedAvatar || 'default-avatar.png'; // Koristi sačuvani avatar ili podrazumevani
+        loginScreen.style.display = 'none';
+        chatScreen.style.display = 'block';
+        userDisplay.textContent = `Korisnik: ${savedUsername}`;
+        // Postavite avatar ako postoji
+        if (savedAvatar) {
+            document.getElementById('uploaded-avatar').src = savedAvatar;
+            document.getElementById('uploaded-avatar').style.display = 'block';
+        }
     }
 });
+
+// Dodajte kod za sačuvavanje avatara u localStorage prilikom izbora avatara
+avatarsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('avatar')) {
+        selectedAvatar = event.target.getAttribute('data-avatar');
+        localStorage.setItem('avatar', selectedAvatar); // Sačuvaj avatar u localStorage
+        avatarModal.style.display = 'none'; // Sakrij modal
+        chatScreen.style.display = 'block'; // Prikaži chat ekran
+        userDisplay.textContent = `Korisnik: ${localStorage.getItem('username')}`;
+        document.getElementById('uploaded-avatar').src = selectedAvatar;
+        document.getElementById('uploaded-avatar').style.display = 'block';
+    }
+});
+
+// Dodajte kod za brisanje korisničkih podataka prilikom odjave
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('avatar');
+    loginScreen.style.display = 'flex';
+    chatScreen.style.display = 'none';
+});
+
+function renderMessages() {
+    db.collection('messages').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        chatBox.innerHTML = '';
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            
+            if (data.avatar) {
+                const avatarImg = document.createElement('img');
+                avatarImg.src = data.avatar;
+                avatarImg.classList.add('message-avatar');
+                messageDiv.appendChild(avatarImg);
+            }
+            
+            const messageHeader = document.createElement('div');
+            messageHeader.classList.add('message-header');
+            
+            const messageUser = document.createElement('span');
+            messageUser.classList.add('message-user');
+            messageUser.textContent = data.username;
+            messageHeader.appendChild(messageUser);
+            
+            const messageTimestamp = document.createElement('span');
+            messageTimestamp.classList.add('message-timestamp');
+            messageTimestamp.textContent = data.timestamp ? data.timestamp.toDate().toLocaleTimeString() : '';
+            messageHeader.appendChild(messageTimestamp);
+            
+            messageDiv.appendChild(messageHeader);
+            
+            const messageText = document.createElement('div');
+            messageText.innerHTML = detectLinks(data.text); // Use the function to detect links
+            messageDiv.appendChild(messageText);
+
+            if (data.replyTo) {
+                db.collection('messages').doc(data.replyTo).get().then(replyDoc => {
+                    const replyData = replyDoc.data();
+                    if (replyData) {
+                        const replyBox = document.createElement('div');
+                        replyBox.classList.add('reply-box');
+
+                        const replyInfo = document.createElement('div');
+                        replyInfo.classList.add('reply-info');
+                        if (replyData.avatar) {
+                            const replyAvatar = document.createElement('img');
+                            replyAvatar.src = replyData.avatar;
+                            replyInfo.appendChild(replyAvatar);
+                        }
+                        const replyUser = document.createElement('span');
+                        replyUser.textContent = replyData.username;
+                        replyInfo.appendChild(replyUser);
+                        replyBox.appendChild(replyInfo);
+
+                        const replyText = document.createElement('div');
+                        replyText.classList.add('reply-text');
+                        replyText.textContent = replyData.text;
+                        replyBox.appendChild(replyText);
+
+                        messageDiv.appendChild(replyBox);
+                    }
+                });
+            }
+
+            const replyBtn = document.createElement('button');
+            replyBtn.textContent = 'Odgovori';
+            replyBtn.classList.add('reply-btn');
+            replyBtn.addEventListener('click', () => {
+                replyToMessage = doc.id;
+            });
+            messageDiv.appendChild(replyBtn);
+
+            if (localStorage.getItem('username') === data.username) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Obriši';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.addEventListener('click', () => {
+                    db.collection('messages').doc(doc.id).delete();
+                });
+                messageDiv.appendChild(deleteBtn);
+            }
+
+            chatBox.prepend(messageDiv); // Add new messages to the top
+
+            // Scroll to the bottom after appending new messages
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    });
+}
+
+// Function to detect links in the message and convert them to <a> tags
+function detectLinks(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    });
+}
+
+
+// Dodaj ovo u tvoj postojeći JavaScript kod
+
+
+
+// Ref za kolekciju online korisnika
+const onlineUsersRef = db.collection('onlineUsers');
+
+// Element za prikaz online korisnika
+const onlineUsersList = document.getElementById('online-users-list');
+
+// Funkcija za prikaz online korisnika
+function loadOnlineUsers() {
+    onlineUsersRef.onSnapshot(snapshot => {
+        onlineUsersList.innerHTML = ''; // Očisti listu pre nego što je popunimo
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const userItem = document.createElement('li');
+            userItem.textContent = data.username;
+
+            const avatarImg = document.createElement('img');
+            avatarImg.src = data.avatar;
+            avatarImg.className = 'message-avatar'; // Pretpostavljamo da već imaš stil za avatara
+
+            userItem.prepend(avatarImg); // Dodaj avatar ispred imena
+            onlineUsersList.appendChild(userItem);
+        });
+    });
+}
+
+// Funkcija za automatsko skrolovanje na dno chat-a
+function scrollToBottom() {
+    setTimeout(() => {
+        chatBox.scrollTop = chatBox.scrollHeight;  // Skroluje na dno chat prozora
+    }, 300);  // Kašnjenje povećano na 300 milisekundi
+}
+
+// Učitavanje poruka iz baze i prikazivanje u chat prozoru
+db.collection('messages').orderBy('timestamp').onSnapshot(snapshot => {
+    chatBox.innerHTML = '';  // Čisti chatBox pre nego što dodamo nove poruke
+
+    snapshot.forEach(doc => {
+        const data = doc.data();  // Dobijamo podatke iz dokumenta
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+
+        // Ako postoji avatar, prikazujemo ga
+        if (data.avatar) {
+            const avatarImg = document.createElement('img');
+            avatarImg.src = data.avatar;
+            messageDiv.appendChild(avatarImg);
+        }
+
+        // Prikazujemo tekst poruke
+        const messageText = document.createElement('div');
+        messageText.textContent = `${data.username}: ${data.text}`;
+        messageDiv.appendChild(messageText);
+
+        chatBox.appendChild(messageDiv);  // Dodajemo poruku u chatBox
+    });
+
+    // Nakon što su sve poruke učitane, skrolujemo na dno
+    scrollToBottom();
+});
+
 </script>
+
 
 </body>
 </html>
