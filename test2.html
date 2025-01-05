@@ -6,74 +6,33 @@
     <title>Firebase User Notification</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.auto.min.js"></script> <!-- Polyfill -->
     <style>
-      /* Style for the second page after login */
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-      overflow: hidden;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
 
-    .buttons-section {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      width: 60%;
-      padding: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.5); 
-      border-radius: 15px; 
-      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
-      background-color: rgba(0, 0, 0, 0.3); 
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
 
-    .button-item {
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.2); 
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-      width: 20%;
-    }
-
-    .button-item img {
-      width: 100%;
-      height: auto;
-      filter: brightness(0.8);
-    }
-
-    .button-item h3 {
-      padding: 10px;
-      margin: 0;
-      font-size: 10px; 
-      color: #fff;
-    }
-
-    footer {
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      padding: 20px;
-      position: absolute;
-      bottom: 0;
-    }
-      
         #hiddenContent {
             display: none;
         }
@@ -83,7 +42,7 @@
     <h1>Welcome to the Site!</h1>
 
     <!-- Popup -->
-    <div id="popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px;">
+    <div id="popup">
         <h2>Access Pending</h2>
         <p>Please wait for admin approval before proceeding.</p>
         <button onclick="closePopup()">Close</button>
@@ -91,132 +50,68 @@
 
     <!-- Hidden content -->
     <div id="hiddenContent">
-        <header>
-            <h1>Izaberite sadržaj</h1>
-            <p>i započnite svoju filmsku avanturu.</p>
-        </header>
-
-        <main>
-            <div class="buttons-section">
-                <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-                    <h3>Strani Sadrzaj</h3>
-                </div>
-                <div class="button-item" onclick="location.href='https://rivestream.live/iptv'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-                    <h3>Turski Sadrzaj</h3>
-                </div>
-                <div class="button-item" onclick="location.href='#domace-serije'">
-                    <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-                    <h3>Domaci Sadrzaj</h3>
-                </div>
-            </div>
-        </main>
+        <p>Welcome! You now have access to the content.</p>
     </div>
 
     <script>
-       const firebaseConfig = {
-    apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-    authDomain: "svenaekranu-64477.firebaseapp.com",
-    projectId: "svenaekranu-64477",
-    storageBucket: "svenaekranu-64477.firebasestorage.app",
-    messagingSenderId: "15230160013",
-    appId: "1:15230160013:web:89144bb5079637e787e6c4",
-    measurementId: "G-PED21PPQQJ"
-};
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+            authDomain: "svenaekranu-64477.firebaseapp.com",
+            projectId: "svenaekranu-64477",
+            storageBucket: "svenaekranu-64477.firebasestorage.app",
+            messagingSenderId: "15230160013",
+            appId: "1:15230160013:web:89144bb5079637e787e6c4",
+            measurementId: "G-PED21PPQQJ"
+        };
 
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-// Funkcija za generisanje ili učitavanje userId-a iz localStorage
-function getUserId() {
-    let storedUserId = localStorage.getItem('userId');
-    if (!storedUserId) {
-        storedUserId = 'guest_' + Date.now(); // Generiše novi ID
-        localStorage.setItem('userId', storedUserId); // Čuva ga u localStorage
-    }
-    return storedUserId;
-}
+        function checkUserExistence() {
+            try {
+                const userId = localStorage.getItem('userId') || 'guest_' + Date.now();
+                localStorage.setItem('userId', userId);
 
-const userId = getUserId();
-
-// Proverava da li korisnik već postoji
-function checkUserExistence() {
-    db.collection('userVisits')
-        .where('userId', '==', userId)
-        .get()
-        .then(querySnapshot => {
-            if (!querySnapshot.empty) {
-                const userData = querySnapshot.docs[0].data();
-                if (userData.status === 'approved') {
-                    grantAccess(); // Odobrava pristup
-                } else {
-                    showPopup(); // Prikazuje poruku čekanja
-                    monitorApproval(); // Aktivno prati promenu statusa
-                }
-            } else {
-                logNewVisit(); // Dodaje novog korisnika
+                db.collection('userVisits')
+                    .where('userId', '==', userId)
+                    .get()
+                    .then(querySnapshot => {
+                        if (!querySnapshot.empty) {
+                            const data = querySnapshot.docs[0].data();
+                            if (data.status === 'approved') {
+                                grantAccess();
+                            } else {
+                                showPopup();
+                            }
+                        } else {
+                            db.collection('userVisits').add({ userId, status: 'pending' });
+                            showPopup();
+                        }
+                    });
+            } catch (error) {
+                console.error('Error:', error);
             }
-        })
-        .catch(error => {
-            console.error('Error checking user existence:', error);
-        });
-}
+        }
 
-// Beleži novu posetu samo ako korisnik ne postoji
-function logNewVisit() {
-    db.collection('userVisits').add({
-        userId: userId,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        status: 'pending'
-    }).then(() => {
-        console.log('User visit logged. Awaiting admin approval...');
-        showPopup();
-        monitorApproval();
-    }).catch(error => {
-        console.error('Error logging visit: ', error);
-    });
-}
+        function grantAccess() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('hiddenContent').style.display = 'block';
+        }
 
-// Praćenje promene statusa korisnika
-function monitorApproval() {
-    db.collection('userVisits')
-        .where('userId', '==', userId)
-        .onSnapshot(snapshot => {
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.status === 'approved') {
-                    grantAccess();
-                }
-            });
-        });
-}
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
 
-// Odobrenje pristupa
-function grantAccess() {
-    document.getElementById('popup').style.display = 'none';
-    document.getElementById('hiddenContent').style.display = 'block';
-    console.log('Access granted!');
-}
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
 
-// Prikazivanje popup obaveštenja
-function showPopup() {
-    document.getElementById('popup').style.display = 'block';
-}
-
-// Zatvaranje popup-a
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-}
-
-// Proverava korisnički status kada se stranica učita
-window.onload = function () {
-    checkUserExistence();
-};
-
+        window.onload = checkUserExistence;
     </script>
 </body>
 </html>
+
 
 
 
