@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Page</title>
+    <title>Firebase User Notification</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <style>
+        #hiddenContent {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Site</h1>
+    <h1>Welcome to the Site!</h1>
 
-    <div id="content" style="display: none;">
+    <!-- Popup -->
+    <div id="popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 10px;">
+        <h2>Access Pending</h2>
+        <p>Please wait for admin approval before proceeding.</p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <!-- Hidden content -->
+    <div id="hiddenContent">
         <header>
             <h1>Izaberite sadržaj</h1>
             <p>i započnite svoju filmsku avanturu.</p>
@@ -36,7 +51,6 @@
     </div>
 
     <script>
-        // Firebase konfiguracija
         const firebaseConfig = {
             apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
             authDomain: "svenaekranu-64477.firebaseapp.com",
@@ -47,61 +61,87 @@
             measurementId: "G-PED21PPQQJ"
         };
 
-        // Inicijalizacija Firebase-a
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
 
-        // Prijava korisnika pomoću Firebase Authentication
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                console.log('User is logged in:', user.uid);
-                sendVisitRequest();  // Poziva slanje zahteva odmah ako je korisnik prijavljen
-                document.getElementById('content').style.display = 'block'; // Prikazuje sadržaj
-            } else {
-                console.log('No user is logged in');
-                alert('Please log in to access the content.');
-            }
-        });
+        const userId = 'guest_' + Date.now();
 
-        // Slanje posete u Firestore
-        function sendVisitRequest() {
-            const userId = auth.currentUser ? auth.currentUser.uid : null;  // ID korisnika
-
-            if (userId) {
-                console.log("Sending visit request for userId: " + userId);
-
-                db.collection('userVisits').add({
-                    userId: userId,
-                    status: 'pending',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    console.log('Visit request sent!');
-                    // Prikazivanje sadržaja
-                    document.getElementById('content').style.display = 'block';
-                }).catch(error => {
-                    console.error('Error sending request: ', error);
-                });
-            } else {
-                console.log('User not logged in');
-            }
+        // Proverava da li korisnik već postoji
+        function checkUserExistence() {
+            db.collection('userVisits')
+              .where('userId', '==', userId)
+              .get()
+              .then(querySnapshot => {
+                  if (!querySnapshot.empty) {
+                      const userData = querySnapshot.docs[0].data();
+                      if (userData.status === 'approved') {
+                          grantAccess();
+                      } else {
+                          showPopup();
+                          monitorApproval();
+                      }
+                  } else {
+                      logNewVisit();
+                  }
+              })
+              .catch(error => {
+                  console.error('Error checking user existence:', error);
+              });
         }
 
-        // Funkcija za prijavu korisnika
-        function login() {
-            const email = prompt("Enter email:");
-            const password = prompt("Enter password:");
-            auth.signInWithEmailAndPassword(email, password)
-                .then(userCredential => {
-                    console.log("User logged in: ", userCredential.user);
-                })
-                .catch(error => {
-                    console.error("Error logging in: ", error.message);
-                });
+        // Beleži novu posetu
+        function logNewVisit() {
+            db.collection('userVisits').add({
+                userId: userId,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'pending'
+            }).then(() => {
+                console.log('User visit logged. Awaiting admin approval...');
+                showPopup();
+                monitorApproval();
+            }).catch(error => {
+                console.error('Error logging visit: ', error);
+            });
         }
+
+        // Praćenje promene statusa korisnika
+        function monitorApproval() {
+            db.collection('userVisits')
+              .where('userId', '==', userId)
+              .onSnapshot(snapshot => {
+                  snapshot.forEach(doc => {
+                      const data = doc.data();
+                      if (data.status === 'approved') {
+                          grantAccess();
+                      }
+                  });
+              });
+        }
+
+        // Odobrenje pristupa
+        function grantAccess() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('hiddenContent').style.display = 'block';
+            console.log('Access granted!');
+        }
+
+        // Prikazivanje popup obaveštenja
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        // Zatvaranje popup-a
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        window.onload = function() {
+            checkUserExistence();
+        };
     </script>
 </body>
 </html>
+
 
 
 
