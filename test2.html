@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logovanje sa Nadimkom i Firebase</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Skripte -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,30 +67,31 @@
 <script>
 // Firebase konfiguracija
 const firebaseConfig = {
-  apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-  authDomain: "svenaekranu-64477.firebaseapp.com",
-  projectId: "svenaekranu-64477",
-  storageBucket: "svenaekranu-64477.firebasestorage.app",
-  messagingSenderId: "15230160013",
-  appId: "1:15230160013:web:89144bb5079637e787e6c4",
-  measurementId: "G-PED21PPQQJ"
+    apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+    authDomain: "svenaekranu-64477.firebaseapp.com",
+    projectId: "svenaekranu-64477",
+    storageBucket: "svenaekranu-64477.firebasestorage.app",
+    messagingSenderId: "15230160013",
+    appId: "1:15230160013:web:89144bb5079637e787e6c4",
+    measurementId: "G-PED21PPQQJ"
 };
 
-// Inicijalizuj Firebase
+// Inicijalizacija Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 // Funkcija za prijavu korisnika sa nadimkom
 document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Sprečava reload stranice
+    event.preventDefault();  // Sprečava refresh stranice
 
     const nickname = document.getElementById('nickname').value.trim();
     const messageElement = document.getElementById('message');
     
     if (nickname) {
-        // Autentifikacija sa Firebase-om koristeći nadimak
+        // Prvo, anonimna prijava
         auth.signInAnonymously()
             .then(() => {
+                // Prikazivanje poruke o uspehu
                 messageElement.innerHTML = `Dobrodošao, <strong>${nickname}</strong>!`;
                 messageElement.style.color = 'green';
 
@@ -97,6 +99,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
                 window.location.href = "https://www.svenadlanu.xyz/";
             })
             .catch((error) => {
+                // Ako dođe do greške pri prijavi
                 messageElement.innerHTML = `Greška pri prijavi: ${error.message}`;
                 messageElement.style.color = 'red';
             });
@@ -109,9 +112,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
 </body>
 </html>
-
-
-
 
 
 
