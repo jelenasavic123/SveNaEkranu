@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logovanje sa Nadimkom i Firebase</title>
 
-    <!-- Firebase Skripte -->
+    <!-- Firebase Skripte - samo kompatibilna verzija -->
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
@@ -82,7 +82,7 @@ const auth = firebase.auth();
 
 // Funkcija za prijavu korisnika sa nadimkom
 document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Sprečava refresh stranice
+    event.preventDefault();  // Sprečava reload stranice
 
     const nickname = document.getElementById('nickname').value.trim();
     const messageElement = document.getElementById('message');
@@ -112,7 +112,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
 </body>
 </html>
-
 
 
 
