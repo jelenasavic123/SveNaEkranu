@@ -270,8 +270,6 @@
 }
 
 
-
-
 /* Navbar container */
 .navbar {
   display: grid;                 /* Using Grid for even distribution */
@@ -314,6 +312,82 @@ box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 
+ /* Style for the popup */
+    #popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    #popup-content {
+      background: #121212;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    /* Style for the second page after login */
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+      overflow: hidden;
+    }
+
+    .buttons-section {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      width: 60%;
+      padding: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.5); 
+      border-radius: 15px; 
+      box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7); 
+      background-color: rgba(0, 0, 0, 0.3); 
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+
+    .button-item {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.2); 
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8); 
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      width: 20%;
+    }
+
+    .button-item img {
+      width: 100%;
+      height: auto;
+      filter: brightness(0.8);
+    }
+
+    .button-item h3 {
+      padding: 10px;
+      margin: 0;
+      font-size: 10px; 
+      color: #fff;
+    }
+
+
 </style>
 
 </head>
@@ -336,10 +410,6 @@ box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
     <p><strong>Nudimo kompletan Netflix, Hulu, Disney+, Prime, Apple+ sadržaj po neverovatno niskoj ceni.</strong></p>
   </div>
 </div>
-
-
-
-
 <nav class="navbar">
   <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">
     <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Home Icon" class="nav-icon">
@@ -361,15 +431,11 @@ box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
   </a>
 </nav>
 
-
   <div id="content" style="display: none;">
     <header>
       <h1>Izaberite sadržaj</h1>
       <p>i započnite svoju filmsku avanturu.</p>
     </header>
-    
-    
-
     <main>
       <div class="buttons-section">
         <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
@@ -386,12 +452,6 @@ box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
         </div>
       </div>
     </main>
-
-    <footer>
-      <!-- Footer content -->
-    </footer>
-  </div>
-
 
   <div id="subscription-info" style="display: none;">
     Pretplata traje: <span id="remaining-days">20</span> dana
@@ -504,13 +564,8 @@ box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
       }
     };
   </script>
-</body>
-</html>
-
-
-
-
-<script>
+  
+  <script>
       /* ------------------- */
       /* ACCESS DENIED ERROR */
       /* ------------------- */
