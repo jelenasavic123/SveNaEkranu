@@ -25,26 +25,143 @@
     background-size: cover;
   }
 
-  /* Style for the popup */
-  #popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    color: white;
-  }
 
-  #popup-content {
-    background: #121212;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
+/* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Poluprovidna crna pozadina */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Popup iznad svih drugih elemenata */
+}
+
+/* Sadržaj popupa u stilu Netflixa */
+#popup-content {
+  background-color: #141414; /* Tamna pozadina poput Netflix-a */
+  color: white; /* Tekst u beloj boji */
+  padding: 40px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Animacija za popup */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
   }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Poluprovidna crna pozadina */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Popup iznad svih drugih elemenata */
+  flex-direction: column; /* Postavlja elemente u kolonu (vertikalno) */
+}
+
+/* Sadržaj popupa (login forma) */
+#popup-content {
+  background-color: #141414; /* Tamna pozadina poput Netflix-a */
+  color: white; /* Tekst u beloj boji */
+  padding: 40px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Animacija za popup */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stil za input */
+#popup input {
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Stil za dugme */
+#popup button {
+  width: 100%;
+  padding: 15px;
+  background-color: #e50914; /* Netflix crvena */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#popup button:hover {
+  background-color: #f40612; /* Tamnija crvena pri hover-u */
+}
+
+/* Status poruke */
+#popup p {
+  font-size: 14px;
+  margin-top: 10px;
+  color: #999;
+}
+
+/* Stil za dodatni tekst ispod login forme */
+#info-text {
+  width: 800px; /* Postavlja širinu teksta na tačno 800px */
+  margin-top: 20px; /* Ostavlja prostor između login forme i teksta */
+  font-size: 14px;
+  color: #ddd; /* Svetlo siva boja za tekst */
+  text-align: center; /* Centriranje teksta unutar div-a */
+  line-height: 1.5; /* Bolja čitljivost */
+  display: block;
+  margin-left: auto; /* Centriranje div-a */
+  margin-right: auto; /* Centriranje div-a */
+}
+
+/* Stil za tekst u #info-text */
+#info-text p {
+  margin: 10px 0;
+}
+
+#info-text strong {
+  color: #e50914; /* Netflix crvena za isticanje ključnih informacija */
+}
+
+
 .buttons-section {
   display: flex;
   justify-content: center; /* Ostavlja dugmadi centriranim unutar sekcije */
@@ -135,7 +252,8 @@
   gap: 0px;                     /* Space between images */
   padding: 50px 0;               /* Padding on top and bottom */
   position: fixed;               /* Fix navbar to top */
-  box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2); /* Subtle shadow and glowing effect */
+box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
+
   top: 0;
   width: 50%;
   z-index: 100;                  /* Ensure navbar stays on top */
@@ -153,7 +271,7 @@
 
 /* Navbar icon size */
 .navbar .nav-icon {
-  width: 70px;                   /* Initial icon size */
+  width: 30px;                   /* Initial icon size */
   transition: transform 0.3s ease, width 0.3s ease;  /* Smooth transition for transformation and resizing */
 }
 
@@ -173,6 +291,27 @@
 
 </head>
 <body>
+
+
+<!-- Popup za nadimak (login) -->
+<div id="popup">
+  <div id="popup-content">
+    <h2>Prijavite se</h2>
+    <input type="text" id="nickname" placeholder="Ovde unesite vase pretplatnicko ime">
+    <button onclick="signIn()">Prijavi se</button>
+    <p id="status"></p>
+  </div>
+
+  <!-- Tekst ispod login forme koji je u centru -->
+  <div id="info-text">
+    <p><strong>Postanite član, kontaktirajte nas za više informacija</strong></p>
+    <p>Obratite se našem timu za sve detalje o pretplati i pristupu sadržaju.</p>
+    <p><strong>Nudimo kompletan Netflix, Hulu, Disney+, Prime, Apple+ sadržaj po neverovatno niskoj ceni.</strong></p>
+  </div>
+</div>
+
+
+
 
 <nav class="navbar">
   <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">
@@ -226,15 +365,6 @@
     </footer>
   </div>
 
-  <!-- Popup for nickname -->
-  <div id="popup">
-    <div id="popup-content">
-      <h2>Unesite nadimak</h2>
-      <input type="text" id="nickname" placeholder="Unesite svoj nadimak">
-      <button onclick="signIn()">Prijavi se</button>
-      <p id="status"></p>
-    </div>
-  </div>
 
   <div id="subscription-info" style="display: none;">
     Pretplata traje: <span id="remaining-days">20</span> dana
@@ -263,7 +393,7 @@
       const popup = document.getElementById('popup');
 
       if (!nickname) {
-        statusDiv.textContent = 'Molimo vas unesite nadimak!';
+        statusDiv.textContent = 'Unesite ime koje vam je dodeljeno od strane našeg tima za pristup sadržaju.';
         return;
       }
 
@@ -284,17 +414,17 @@
                 document.getElementById('content').style.display = 'block';
                 updateSubscriptionInfo(expirationDate); // Ažuriraj informaciju o pretplati
               } else {
-                statusDiv.textContent = 'Nadimak nije pronađen ili nije aktivan.';
+                statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
               }
             })
             .catch((error) => {
-              console.error('Greška prilikom pretrage nadimka: ', error);
-              statusDiv.textContent = 'Greška prilikom pretrage nadimka.';
+              console.error('Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.: ', error);
+              statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
             });
         })
         .catch((error) => {
           console.error('Greška pri prijavi: ', error);
-          statusDiv.textContent = 'Greška prilikom prijave.';
+          statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
         });
     }
 
