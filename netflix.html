@@ -166,9 +166,100 @@
         #link1:hover, #link2:hover {
             background-color: #b20610;
         }
+        
+        
+        
+             /* Gornji Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px; /* Povećan prostor za veći navbar */
+    background-color: #141414;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar .logo img {
+    height: 50px;  /* Povećanje visine loga */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;  /* Veći razmak između linkova */
+}
+
+.nav-links li {
+    padding: 15px 20px; /* Veći padding za bolje klikabilnost */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;  /* Povećan font */
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #e50914; /* Netflix crvena */
+}
+
+/* Vertikalni Sidebar */
+.sidebar {
+    position: fixed;
+    top: 40%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px 25px;  /* Povećan padding */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;  /* Veći razmak između dugmića */
+    z-index: 1000;
+}
+
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-links li {
+    margin: 15px 0;  /* Veći razmak između listi */
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 11px;  /* Veći font za bolju čitljivost */
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 15px 15px; /* Povećan padding za šire dugmiće */
+    transition: all 0.3s ease;
+}
+
+.sidebar-links a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e50914;
+    border-radius: 18px; /* Veći border-radius za moderan izgled */
+}
     </style>
 </head>
 <body>
+
+<!-- Vertikalni Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-links">
+            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">Netflix Filmovi</a></li>
+            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflixserije.html">Netflix Serije</a></li>
+        </ul>
+    </div>
 
     <div class="logo">
         <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
