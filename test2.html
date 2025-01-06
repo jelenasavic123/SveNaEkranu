@@ -36,13 +36,16 @@
       // Anonimna prijava
       auth.signInAnonymously().then((userCredential) => {
         const user = userCredential.user;
-        
+
         // Dodavanje imena korisnika u Firestore
         db.collection("users").doc(user.uid).set({
           name: userName
         }).then(() => {
           console.log("Korisnik je uspešno registrovan sa imenom!");
           alert(`Dobrodošli, ${userName}`);
+          
+          // Preusmeravanje korisnika nakon uspešnog logovanja
+          window.location.href = "tvoj-link.html";  // Promeni link na željeni
         }).catch((error) => {
           console.error("Greška prilikom čuvanja imena:", error);
         });
@@ -69,6 +72,9 @@
           if (doc.exists) {
             const userName = doc.data().name;
             alert(`Dobrodošli, ${userName}`);
+            
+            // Preusmeravanje korisnika ako je već prijavljen
+            window.location.href = "https://www.svenadlanu.xyz";  // Promeni link na željeni
           } else {
             console.log("Ime nije pronađeno u bazi podataka.");
           }
@@ -81,7 +87,6 @@
   </script>
 </body>
 </html>
-
 
 
 
