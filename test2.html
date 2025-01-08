@@ -8,376 +8,253 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
     <style>
-      /* Critical CSS - Only styles that affect page layout and loading */
-      body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-        background-color: #121212;
-        /* Rezervna boja za slučaj da slika ne učita */
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        overflow: hidden;
-      }
-      /* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
-      #popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        /* Poluprovidna crna pozadina */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        /* Popup iznad svih drugih elemenata */
-      }
-      /* Sadržaj popupa u stilu Netflixa */
-      #popup-content {
-        background-color: #141414;
-        /* Tamna pozadina poput Netflix-a */
-        color: white;
-        /* Tekst u beloj boji */
-        padding: 40px;
-        border-radius: 10px;
-        width: 400px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-        animation: fadeIn 0.3s ease-out;
-      }
-      /* Animacija za popup */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.8);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-      /* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
-      #popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        /* Poluprovidna crna pozadina */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        /* Popup iznad svih drugih elemenata */
-        flex-direction: column;
-        /* Postavlja elemente u kolonu (vertikalno) */
-      }
-      /* Sadržaj popupa (login forma) */
-      #popup-content {
-        background-color: #141414;
-        /* Tamna pozadina poput Netflix-a */
-        color: white;
-        /* Tekst u beloj boji */
-        padding: 30px;
-        border-radius: 20px;
-        width: 100px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-        animation: fadeIn 0.3s ease-out;
-      }
-      /* Animacija za popup */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.8);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-      /* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
-      #popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        /* Poluprovidna crna pozadina */
-        display: flex;
-        justify-content: center;
-        /* Centriranje sadržaja horizontalno */
-        align-items: center;
-        /* Centriranje sadržaja vertikalno */
-        z-index: 9999;
-        /* Popup iznad svih drugih elemenata */
-      }
-      /* Sadržaj popupa */
-      #popup-content {
-        background-color: #141414;
-        color: white;
-        padding: 40px;
-        border-radius: 10px;
-        width: 400px;
-        /* Možeš promeniti širinu prema potrebama */
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-      }
-      /* Stil za input */
-      #popup input {
-        width: 60%;
-        /* Uzimanje 100% širine roditeljskog elementa */
-        padding: 10px;
-        margin: 15px 0;
-        background-color: #333;
-        color: white;
-        border: 1px solid #fff;
-        border-radius: 5px;
-        font-size: 11px;
-        box-sizing: border-box;
-        /* Osigurava da padding ne utiče na širinu */
-      }
-      /* Stil za dugme */
-      #popup button {
-        width: 40%;
-        /* Uzimanje 100% širine roditeljskog elementa */
-        padding: 10px;
-        background-color: #e50914;
-        /* Netflix crvena */
-        color: white;
-        border: none;
-        border-radius: 15px;
-        font-size: 10px;
-        /* Uvećaj font za bolje prikazivanje */
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      #popup button:hover {
-        background-color: #f40612;
-        /* Tamnija crvena pri hover-u */
-      }
-      /* Status poruke */
-      #popup p {
-        font-size: 10px;
-        margin-top: 10px;
-        color: #fff;
-      }
-      /* Stil za dodatni tekst ispod login forme */
-      #info-text {
-        width: 800px;
-        /* Postavlja širinu teksta na tačno 800px */
-        margin-top: 20px;
-        /* Ostavlja prostor između login forme i teksta */
-        font-size: 14px;
-        color: #ddd;
-        /* Svetlo siva boja za tekst */
-        text-align: center;
-        /* Centriranje teksta unutar div-a */
-        line-height: 1.5;
-        /* Bolja čitljivost */
-        display: block;
-        margin-left: auto;
-        /* Centriranje div-a */
-        margin-right: auto;
-        /* Centriranje div-a */
-      }
-      /* Stil za tekst u #info-text */
-      #info-text p {
-        margin: 10px 0;
-      }
-      #info-text strong {
-        color: #e50914;
-        /* Netflix crvena za isticanje ključnih informacija */
-      }
-      .buttons-section {
-        display: flex;
-        justify-content: center;
-        /* Ostavlja dugmadi centriranim unutar sekcije */
-        gap: 20px;
-        width: 50%;
-        padding: 20px;
-        border: 3px solid rgba(255, 255, 255, 0.5);
-        border-radius: 15px;
-        box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
-        background-color: rgba(0, 0, 0, 0.3);
-        transition: box-shadow 0.3s, border-color 0.3s;
-        margin-left: 20px;
-        /* Pomera sekciju u desno za 20px */
-      }
-      .button-item {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-radius: 8px;
-        overflow: hidden;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
-        cursor: pointer;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-        width: 20%;
-      }
-      /* Lazy Load Image Optimization */
-      .button-item img {
-        width: 100%;
-        height: auto;
-        filter: brightness(0.8);
-      }
-      .button-item h3 {
-        padding: 10px;
-        margin: 0;
-        font-size: 10px;
-        color: #fff;
-      }
-      /* Style for subscription info in the top-right corner */
-      #subscription-info {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        color: white;
-        font-size: 12px;
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 5px 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
-      }
-      /* Optimization - Small tweaks for faster rendering */
-      img {
-        display: block;
-        max-width: 100%;
-        height: auto;
-      }
-      /* Use media queries for responsive layouts */
-      @media (max-width: 768px) {
-        .buttons-section {
-          flex-direction: column;
-          width: 90%;
-        }
-        .button-item {
-          width: 100%;
-          margin-bottom: 10px;
-        }
-      }
-      header {
-        margin-left: 100px;
-        /* Pomera ceo header udesno */
-        padding-left: 10px;
-        /* Daje dodatnu kontrolu za pomeranje sadržaja unutar header-a */
-      }
-      /* Navbar container */
-      .navbar {
-        display: grid;
-        /* Using Grid for even distribution */
-        grid-template-columns: repeat(6, 1fr);
-        /* Create 6 equal columns */
-        gap: 0px;
-        /* Space between images */
-        padding: 50px 0;
-        /* Padding on top and bottom */
-        position: fixed;
-        /* Fix navbar to top */
-        box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
-        top: 0;
-        width: 50%;
-        z-index: 100;
-        /* Ensure navbar stays on top */
-        transition: width 0.3s ease;
-        /* Smooth transition for navbar width */
-      }
-      /* Navbar icon style */
-      .navbar a {
-        display: block;
-        /* Block display to make entire area clickable */
-        text-decoration: none;
-        /* Remove underline from links */
-        display: flex;
-        /* Flexbox for centering images */
-        justify-content: center;
-        /* Center the images horizontally */
-        align-items: center;
-        /* Center the images vertically */
-      }
-      /* Navbar icon size */
-      .navbar .nav-icon {
-        width: 30px;
-        /* Initial icon size */
-        transition: transform 0.3s ease, width 0.3s ease;
-        /* Smooth transition for transformation and resizing */
-      }
-      /* Hover effect for navbar icons */
-      .navbar a:hover .nav-icon {
-        transform: scale(0.8);
-        /* Increase icon size by 20% */
-        width: 84px;
-        /* Optionally increase width if you want smoother scaling */
-      }
-      /* Optional effect for navbar on hover (expand the navbar slightly) */
-      .navbar:hover {
-        width: 60%;
-        /* Expand navbar width on hover */
-      }
-      /* Style for the popup */
-      #popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-        color: white;
-      }
-      #popup-content {
-        background: #121212;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-      }
-      /* Style for the second page after login */
+     /* Critical CSS - Only styles that affect page layout and loading */
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
+  background-color: #121212;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+}
 
-      .buttons-section {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        width: 60%;
-        padding: 20px;
-        border: 3px solid rgba(255, 255, 255, 0.5);
-        border-radius: 15px;
-        box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
-        background-color: rgba(0, 0, 0, 0.3);
-        transition: box-shadow 0.3s, border-color 0.3s;
-      }
-      .button-item {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-radius: 8px;
-        overflow: hidden;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
-        cursor: pointer;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-        width: 20%;
-      }
-      .button-item img {
-        width: 100%;
-        height: auto;
-        filter: brightness(0.8);
-      }
-      .button-item h3 {
-        padding: 10px;
-        margin: 0;
-        font-size: 10px;
-        color: #fff;
-      }
+/* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column; /* Postavlja elemente u kolonu (vertikalno) */
+}
+
+/* Sadržaj popupa u stilu Netflixa */
+#popup-content {
+  background-color: #141414;
+  color: white;
+  padding: 40px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Animacija za popup */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stil za input */
+#popup input {
+  width: 60%;
+  padding: 10px;
+  margin: 15px 0;
+  background-color: #333;
+  color: white;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+/* Stil za dugme */
+#popup button {
+  width: 40%;
+  padding: 10px;
+  background-color: #e50914; /* Netflix crvena */
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#popup button:hover {
+  background-color: #f40612; /* Tamnija crvena pri hover-u */
+}
+
+/* Status poruke */
+#popup p {
+  font-size: 10px;
+  margin-top: 10px;
+  color: #fff;
+}
+
+/* Stil za dodatni tekst ispod login forme */
+#info-text {
+  width: 800px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ddd;
+  text-align: center;
+  line-height: 1.5;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Stil za tekst u #info-text */
+#info-text p {
+  margin: 10px 0;
+}
+
+#info-text strong {
+  color: #e50914; /* Netflix crvena za isticanje ključnih informacija */
+}
+
+.buttons-section {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 50%;
+  padding: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s, border-color 0.3s;
+  margin-left: 20px;
+}
+
+.button-item {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  width: 20%;
+}
+
+/* Lazy Load Image Optimization */
+.button-item img {
+  width: 100%;
+  height: auto;
+  filter: brightness(0.8);
+}
+
+.button-item h3 {
+  padding: 10px;
+  margin: 0;
+  font-size: 10px;
+  color: #fff;
+}
+
+/* Style for subscription info in the top-right corner */
+#subscription-info {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Optimization - Small tweaks for faster rendering */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Use media queries for responsive layouts */
+@media (max-width: 768px) {
+  .buttons-section {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .button-item {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+header {
+  margin-left: 100px;
+  padding-left: 10px;
+}
+
+.navbar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0px;
+  padding: 50px 0;
+  position: fixed;
+  box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
+  top: 0;
+  width: 50%;
+  z-index: 100;
+  transition: width 0.3s ease;
+}
+
+.navbar a {
+  display: block;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar .nav-icon {
+  width: 30px;
+  transition: transform 0.3s ease, width 0.3s ease;
+}
+
+.navbar a:hover .nav-icon {
+  transform: scale(0.8);
+  width: 84px;
+}
+
+.navbar:hover {
+  width: 60%;
+}
+
+#popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+#popup-content {
+  background: #121212;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
     </style>
   </head>
   <body>
