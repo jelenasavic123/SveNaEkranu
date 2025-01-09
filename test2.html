@@ -286,8 +286,8 @@ header {
       <!-- Tekst ispod login forme koji je u centru -->
       <div id="info-text">
         <p><strong>Postanite član, kontaktirajte nas za više informacija</strong></p>
-        <p>Obratite se našem timu za sve detalje o pretplati i pristupu sadržaju.</p>
-        <p><strong>Nudimo kompletan Netflix, Hulu, Disney+, Prime, Apple+ sadržaj po neverovatno niskoj ceni.</strong></p>
+        <p>Obratite se našem timu za sve detalje o pristupu aplikaciji sadržaju.</p>
+        <p><strong>Nudimo kompletan Netflix, Hulu, Disney+, Prime, Apple+ i jos mnogo toga.</strong></p>
       </div>
     </div>
     <nav class="navbar">
@@ -391,17 +391,17 @@ header {
                     document.getElementById('content').style.display = 'block';
                     updateSubscriptionInfo(expirationDate); // Ažuriraj informaciju o pretplati
                   } else {
-                    statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
+                    statusDiv.textContent = 'Nemate aktivnu nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
                   }
                 })
                 .catch((error) => {
-                  console.error('Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.: ', error);
-                  statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
+                  console.error('Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.: ', error);
+                  statusDiv.textContent = 'Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
                 });
             })
             .catch((error) => {
               console.error('Greška pri prijavi: ', error);
-              statusDiv.textContent = 'Nemate aktivnu pretplatu. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
+              statusDiv.textContent = 'Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
             });
         }
         // Funkcija za ažuriranje broja dana pretplate
