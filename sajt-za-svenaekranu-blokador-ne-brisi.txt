@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderni Buttonovi za TV Ekran</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            font-size: 1.8em;
+            padding: 20px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-transform: uppercase;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #e64a19;
+            transform: scale(1.1);
+        }
+
+        .btn:focus {
+            outline: none;
+            border: 3px solid #ffeb3b;
+        }
+
+        .btn:active {
+            background-color: #d84315;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        #iframe-container {
+            width: 100%;
+            height: 100vh; /* Da zauzme celu visinu ekrana */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        iframe {
+            width: 100vw; /* 100% širine ekrana */
+            height: 100vh; /* 100% visine ekrana */
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Izbor Tema</h1>
+<div class="button-container">
+    <button class="btn" id="horoskop-btn">Horoskop</button>
+    <button class="btn" id="tv-prognoza-btn">TV Prognoza</button>
+    <button class="btn" id="gatanje-btn">Gatanje</button>
+</div>
+
+<!-- Iframe koji prikazuje sadržaj stranica kad dugme bude kliknuto -->
+<div id="iframe-container">
+    <!-- Početno je prazno, biće popunjeno kad korisnik klikne na dugme -->
+</div>
+
+<script>
+    // Funkcija za prikazivanje sadržaja u iframe-u
+    function prikaziSadrzaj(url) {
+        var iframe = document.createElement('iframe');
+        iframe.src = url;
+        
+        // Umetanje iframe-a u div
+        document.getElementById('iframe-container').innerHTML = ''; // Resetujemo prethodni sadržaj
+        document.getElementById('iframe-container').appendChild(iframe);
+    }
+
+    // Prikazivanje horoskopa odmah pri učitavanju stranice
+    window.onload = function() {
+        prikaziSadrzaj('https://horoskopapp.blogspot.com/');
+    };
+
+    // Dodavanje događaja za "Horoskop" dugme
+    document.getElementById('horoskop-btn').addEventListener('click', function() {
+        prikaziSadrzaj('https://horoskopapp.blogspot.com/');
+    });
+
+    // Dodavanje događaja za "TV Prognoza" dugme
+    document.getElementById('tv-prognoza-btn').addEventListener('click', function() {
+        prikaziSadrzaj('https://vremedanas.blogspot.com/');
+    });
+
+    // Dodavanje događaja za "Gatanje" dugme
+    document.getElementById('gatanje-btn').addEventListener('click', function() {
+        prikaziSadrzaj('https://gatanjesvenadlanu.blogspot.com/');
+    });
+</script>
+
+</body>
+</html>
