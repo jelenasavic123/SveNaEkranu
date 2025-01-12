@@ -255,9 +255,10 @@
         }
 
         function openEpisode(episode) {
-            const tmdbId = currentSeriesId;
-            window.open(`https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}`, '_blank');
-        }
+    const tmdbId = currentSeriesId;
+    window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}`;
+}
+
 
         closeBtn.addEventListener('click', () => {
             popup.style.display = 'none';
