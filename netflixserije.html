@@ -105,7 +105,26 @@
             border-radius: 50%;
         }
 
-        /* Seasons and Episodes */
+        /* Info about the series */
+        .series-info {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .series-info img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .series-info div {
+            color: #fff;
+            font-size: 14px;
+        }
+
         .season-list {
             display: flex;
             flex-wrap: wrap;
@@ -179,8 +198,18 @@
     <div id="popup" class="popup">
         <div class="popup-content">
             <span id="close" class="close">&times;</span>
-            <h2 id="series-title"></h2>
-            <p id="series-overview"></p>
+            <!-- Info o seriji sa slikom -->
+            <div class="series-info">
+                <img id="series-poster" src="" alt="Poster serije">
+                <div>
+                    <h3 id="series-title"></h3>
+                    <p id="series-overview"></p>
+                    <p><strong>Godina:</strong> <span id="series-year"></span></p>
+                    <p><strong>Žanrovi:</strong> <span id="series-genres"></span></p>
+                    <p><strong>Broj sezona:</strong> <span id="series-seasons"></span></p>
+                    <p><strong>Broj epizoda:</strong> <span id="series-episodes"></span></p>
+                </div>
+            </div>
 
             <div id="seasons" class="season-list"></div>
 
@@ -202,13 +231,18 @@
     const apiKey = '2701858e9bccab54d4d0e4931420a739';
     const netflixProviderId = 8; // Netflix ID
     const baseUrl = 'https://api.themoviedb.org/3/';
-    const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=1&with_watch_providers=${netflixProviderId}&watch_region=US`;
+    let currentPage = 1; // Keeps track of the current page
 
     const seriesList = document.getElementById('series-list');
     const popup = document.getElementById('popup');
     const closeBtn = document.getElementById('close');
     const seriesTitle = document.getElementById('series-title');
     const seriesOverview = document.getElementById('series-overview');
+    const seriesPoster = document.getElementById('series-poster');
+    const seriesYear = document.getElementById('series-year');
+    const seriesGenres = document.getElementById('series-genres');
+    const seriesSeasons = document.getElementById('series-seasons');
+    const seriesEpisodes = document.getElementById('series-episodes');
     const seasonsContainer = document.getElementById('seasons');
     const episodesContainer = document.getElementById('episodes');
     const languagePopup = document.getElementById('language-popup');
@@ -219,16 +253,31 @@
     let currentSeriesId = null;
     let selectedEpisode = null;
 
+    // Function to detect when the user reaches the bottom of the page
+    function checkScroll() {
+        // When the user scrolls near the bottom of the page, load more series
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+            currentPage++;
+            fetchSeries();  // Call your existing function to load more series
+        }
+    }
+
+    // Attach the scroll event listener
+    window.addEventListener('scroll', checkScroll);
+
+    // Modify your fetchSeries function to support infinite scrolling
     async function fetchSeries() {
         document.getElementById('loading').style.display = 'block'; // Show loading message
-        const response = await fetch(apiUrl);
+
+        // Modify the URL to include the current page
+        const apiUrlWithPage = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
+        const response = await fetch(apiUrlWithPage);
         const data = await response.json();
         displaySeries(data.results);
         document.getElementById('loading').style.display = 'none'; // Hide loading message
     }
 
     function displaySeries(series) {
-        seriesList.innerHTML = '';
         series.forEach(seriesItem => {
             const card = document.createElement('div');
             card.classList.add('series-card');
@@ -244,11 +293,18 @@
     async function openPopup(seriesItem) {
         seriesTitle.textContent = seriesItem.name;
         seriesOverview.textContent = seriesItem.overview;
+        seriesPoster.src = `https://image.tmdb.org/t/p/w500${seriesItem.poster_path}`;
         currentSeriesId = seriesItem.id;
 
-        // Preuzmi informacije o sezonama serije
-        const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
+        // Preuzmi informacije o sezoni serije
+        const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=hr-HR`);
         const seasonData = await seasonsResponse.json();
+
+        // Info o seriji (godina, žanrovi, broj sezona, epizoda)
+        seriesYear.textContent = seasonData.first_air_date.split('-')[0];
+        seriesGenres.textContent = seasonData.genres.map(genre => genre.name).join(', ');
+        seriesSeasons.textContent = seasonData.seasons.length;
+        seriesEpisodes.textContent = seasonData.number_of_episodes;
 
         // Filtriranje sezona, označavanje "Sezone 0" kao specijalne epizode
         const seasons = seasonData.seasons.map(season => {
@@ -282,7 +338,7 @@
         currentSeason = seasonNumber;
         // Clear previous episodes first
         episodesContainer.innerHTML = '';
-        const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
+        const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=hr-HR`);
         const episodesData = await episodesResponse.json();
         displayEpisodes(episodesData.episodes);
     }
