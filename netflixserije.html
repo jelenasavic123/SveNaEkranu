@@ -238,6 +238,26 @@
         .logo img {
             width: 105px;
         }
+        
+        
+        /* Stil za sliku u kartici */
+.series-card .image-container {
+    position: relative;
+}
+
+.series-card .rating {
+    position: absolute;
+    top: 5px;
+    right: 1px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
     </style>
 </head>
 <body>
@@ -377,17 +397,21 @@
     }
 
     function displaySeries(series) {
-        series.forEach(serie => {
-            const seriesCard = document.createElement('div');
-            seriesCard.classList.add('series-card');
-            seriesCard.innerHTML = `
+    series.forEach(serie => {
+        const seriesCard = document.createElement('div');
+        seriesCard.classList.add('series-card');
+        seriesCard.innerHTML = `
+            <div class="image-container">
                 <img src="https://image.tmdb.org/t/p/w500/${serie.poster_path}" alt="${serie.name}">
-                <h3>${serie.name}</h3>
-            `;
-            seriesCard.addEventListener('click', () => showSeriesDetails(serie.id));
-            seriesList.appendChild(seriesCard);
-        });
-    }
+                <div class="rating">${serie.vote_average}</div> <!-- Dodali smo ocenu -->
+            </div>
+            <h3>${serie.name}</h3>
+        `;
+        seriesCard.addEventListener('click', () => showSeriesDetails(serie.id));
+        seriesList.appendChild(seriesCard);
+    });
+}
+
 
     async function showSeriesDetails(id) {
         currentSeriesId = id;
