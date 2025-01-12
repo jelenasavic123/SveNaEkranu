@@ -3,455 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serije - TMDB</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 0;a
-            display: flex;
-            background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG')  center center / cover no-repeat fixed;
-            flex-direction: column;
-            align-items: center;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
         }
 
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3.5px;
-            justify-content: center;
-            margin: 2px 0;
+        h2, h3 {
+            color: #fff;
+            font-weight: bold;
         }
 
-        .filter-button {
-            padding: 5.6px 7px;
-            font-size: 5.6px;
-            color: white;
-            background-color: #ff0000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        a {
+            text-decoration: none;
+            color: inherit;
         }
 
-        .filter-button:hover {
-            background-color: #b20610;
+        /* Main Content */
+        #series-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
 
-        .movie-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            justify-content: center;
-            padding: 20px 0;
-            width: 100%;
-        }
-
-        .movie-item {
+        .series-card {
             position: relative;
-            width: 150px;
-            height: 255px;
-            background-color: #333;
+            cursor: pointer;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            overflow: hidden;
+            background-color: #222;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .movie-item:hover {
-            transform: scale(1.05);
-        }
-
-        .movie-item img {
+        .series-card img {
             width: 100%;
-            height: 100%;
-            border-radius: 10px;
+            height: 300px;
             object-fit: cover;
         }
 
-        .movie-item h3 {
+        .series-card h3 {
             position: absolute;
             bottom: 10px;
             left: 10px;
-            color: white;
-            font-size: 11.2px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 5px;
-            border-radius: 5px;
+            font-size: 18px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
-        .movie-item .genre {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 7.7px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px;
-            border-radius: 5px;
+        .series-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
 
-        .movie-item .rating {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: white;
-            font-size: 7px;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        .loading {
-            text-align: center;
-            color: #fff;
-            font-size: 16.8px;
-            margin: 20px 0;
-        }
-
-        .logo {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .logo img {
-            width: 105px;
-        }
-
-        #popup {
+        /* Popup */
+        .popup {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 9999;
         }
 
         .popup-content {
-            background-color: #333;
+            background-color: #1f1f1f;
             padding: 20px;
             border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            overflow-y: auto;
+            max-height: 80%;
             position: relative;
         }
 
-        #movieDetails {
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            color: #fff;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        /* Seasons and Episodes */
+        .season-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
             margin-top: 20px;
+        }
+
+        .season-button {
+            padding: 12px 20px;
+            background-color: #e50914;
             color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
 
-        #movie-poster {
-            width: 100px;
-            height: auto;
+        .season-button:hover {
+            background-color: #b20710;
+        }
+
+        .episode-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
             margin-top: 20px;
-            border-radius: 10px;
         }
 
-        #link1, #link2 {
-            display: inline-block;
-            margin: 10px;
+        .episode-button {
             padding: 10px;
+            background-color: #333;
             color: white;
-            background-color: #ff0000;
-            text-decoration: none;
-            border-radius: 5px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
 
-        #link1:hover, #link2:hover {
-            background-color: #b20610;
+        .episode-button:hover {
+            background-color: #e50914;
         }
-        
-        
-        
-        
-        /* Gornji Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 50px; /* Povećan prostor za veći navbar */
-    background-color: #141414;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
 
-.navbar .logo img {
-    height: 50px;  /* Povećanje visine loga */
-}
+        /* Responsive */
+        @media (max-width: 768px) {
+            .series-card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 30px;  /* Veći razmak između linkova */
-}
+            .season-button {
+                font-size: 14px;
+                padding: 10px 15px;
+            }
 
-.nav-links li {
-    padding: 15px 20px; /* Veći padding za bolje klikabilnost */
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;  /* Povećan font */
-    text-transform: uppercase;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: #e50914; /* Netflix crvena */
-}
-
-/* Vertikalni Sidebar */
-.sidebar {
-    position: fixed;
-    top: 40%;
-    right: 0;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 30px 25px;  /* Povećan padding */
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;  /* Veći razmak između dugmića */
-    z-index: 1000;
-}
-
-.sidebar-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar-links li {
-    margin: 15px 0;  /* Veći razmak između listi */
-}
-
-.sidebar-links a {
-    text-decoration: none;
-    color: white;
-    font-size: 11px;  /* Veći font za bolju čitljivost */
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 15px 15px; /* Povećan padding za šire dugmiće */
-    transition: all 0.3s ease;
-}
-
-.sidebar-links a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #e50914;
-    border-radius: 18px; /* Veći border-radius za moderan izgled */
-}
-
-
+            .episode-button {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="series-list"></div>
 
-<!-- Vertikalni Sidebar -->
-    <div class="sidebar">
-        <ul class="sidebar-links">
-            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">Netflix Filmovi</a></li>
-            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflixserije.html">Netflix Serije</a></li>
-        </ul>
-    </div>
-
-    <div class="logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-    </div>
-
-    <div id="popup">
+    <!-- Popup prozor -->
+    <div id="popup" class="popup">
         <div class="popup-content">
-        <img id="movie-poster" src="" alt="Movie Poster" />
-            <span id="closePopup" style="cursor: pointer; font-size: 24px; color: white; position: absolute; top: 10px; right: 10px;">&times;</span>
-            <div id="movieDetails"></div>
-            
-            <div>
-                <a href="#" id="link1" target="_blank">Gledaj na Srpskom</a>
-                <a href="#" id="link2" target="_blank">Gledaj na Hrvatskom</a>
-            </div>
+            <span id="close" class="close">&times;</span>
+            <h2 id="series-title"></h2>
+            <p id="series-overview"></p>
+
+            <div id="seasons" class="season-list"></div>
+
+            <div id="episodes" class="episode-list"></div>
         </div>
     </div>
 
-    <div class="filters" id="year-filters"></div>
-    <div class="filters" id="genre-filters"></div>
-
-    <div class="movie-list" id="movie-list"></div>
-    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
-
     <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739'; // Zameni sa svojim TMDb API ključem
-        const baseUrl = `https://api.themoviedb.org/3/`;
-        const netflixProviderId = 8; // Netflix ID
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const apiUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + apiKey + '&language=sr-SR&sort_by=popularity.desc&page=1';
 
-        let currentPage = 1;
-        let currentFilter = { type: 'popular', value: '' };
-        let isLoading = false;
+        const seriesList = document.getElementById('series-list');
+        const popup = document.getElementById('popup');
+        const closeBtn = document.getElementById('close');
+        const seriesTitle = document.getElementById('series-title');
+        const seriesOverview = document.getElementById('series-overview');
+        const seasonsContainer = document.getElementById('seasons');
+        const episodesContainer = document.getElementById('episodes');
+        let currentSeason = 1;
+        let currentSeriesId = null;
 
-        const movieList = document.getElementById('movie-list');
-        const yearFilters = document.getElementById('year-filters');
-        const genreFilters = document.getElementById('genre-filters');
-
-        // Generišemo dugmadi za godine
-        for (let year = 2024; year >= 2000; year--) {
-            const button = document.createElement('button');
-            button.classList.add('filter-button');
-            button.textContent = year;
-            button.onclick = () => fetchFilteredMovies('year', year);
-            yearFilters.appendChild(button);
+        async function fetchSeries() {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            displaySeries(data.results);
         }
 
-        // Generišemo dugmadi za žanrove
-        fetch(`${baseUrl}genre/tv/list?api_key=${apiKey}&language=en-US`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Greška u preuzimanju žanrova: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                data.genres.forEach(genre => {
-                    const button = document.createElement('button');
-                    button.classList.add('filter-button');
-                    button.textContent = genre.name;
-                    button.onclick = () => fetchFilteredMovies('genre', genre.id);
-                    genreFilters.appendChild(button);
-                });
-            })
-            .catch(error => console.error('Greška pri učitavanju žanrova:', error));
-
-        // Funkcija za učitavanje serija
-        function fetchMovies() {
-            if (isLoading) return;
-
-            isLoading = true;
-            document.getElementById('loading').style.display = 'block';
-
-            let url = `${baseUrl}discover/tv?api_key=${apiKey}&language=us-SR&with_watch_providers=${netflixProviderId}&watch_region=US&page=${currentPage}`;
-
-            if (currentFilter.type === 'year') {
-                url += `&first_air_date_year=${currentFilter.value}`;
-            } else if (currentFilter.type === 'genre') {
-                url += `&with_genres=${currentFilter.value}`;
-            }
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const series = data.results;
-
-                    series.forEach(serie => {
-                        const movieItem = document.createElement('div');
-                        movieItem.classList.add('movie-item');
-                        movieItem.setAttribute('tabindex', 0); // Dodaje fokus za navigaciju tastaturom
-
-                        const movieImage = document.createElement('img');
-                        movieImage.src = `https://image.tmdb.org/t/p/w500${serie.poster_path}`;
-                        movieImage.alt = serie.name;
-
-                        const movieTitle = document.createElement('h3');
-                        movieTitle.textContent = serie.name;
-
-                        const movieRating = document.createElement('div');
-                        movieRating.classList.add('rating');
-                        movieRating.textContent = `TMDB: ${serie.vote_average}`;
-
-                        movieItem.appendChild(movieImage);
-                        movieItem.appendChild(movieTitle);
-                        movieItem.appendChild(movieRating);
-
-                        // Dodavanje eventa na klik na seriju
-                        movieItem.addEventListener('click', () => {
-                            displayPopup(serie.id); // Pozivanje funkcije za prikaz pop-up prozora sa detaljima
-                        });
-
-                        movieList.appendChild(movieItem);
-                    });
-
-                    currentPage++;
-                    isLoading = false;
-                    document.getElementById('loading').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Greška pri učitavanju serija:', error);
-                    isLoading = false;
-                    document.getElementById('loading').style.display = 'none';
-                });
-        }
-
-        // Funkcija za prikazivanje popupa sa detaljima o seriji
-        async function displayPopup(serieId) {
-            const popup = document.getElementById('popup');
-            const link1 = document.getElementById('link1');
-            const link2 = document.getElementById('link2');
-            const closePopup = document.getElementById('closePopup');
-            const movieDetails = document.getElementById('movieDetails');
-            const moviePoster = document.getElementById('movie-poster');
-
-            link1.addEventListener('click', function(event) {
-                event.preventDefault();
-                window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${serieId}&season=1&episode=1&ds_lang=sr`;
-            });
-
-            link2.addEventListener('click', function(event) {
-                event.preventDefault();
-                window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${serieId}&season=1&episode=1&ds_lang=hr`;
-            });
-
-            const serieDetailsUrl = `https://api.themoviedb.org/3/tv/${serieId}?api_key=${apiKey}&language=hr-HR`;
-            try {
-                const response = await fetch(serieDetailsUrl);
-                const serie = await response.json();
-
-                // Prikazivanje detalja o seriji u popup-u
-                movieDetails.innerHTML = `
-                    <h2>${serie.name} (${new Date(serie.first_air_date).getFullYear()})</h2>
-                    <p><strong>Žanr:</strong> ${serie.genres.map(genre => genre.name).join(', ')}</p>
-                    <p><strong>Broj sezona:</strong> ${serie.number_of_seasons}</p>
-                    <p><strong>Opis:</strong> ${serie.overview}</p>
+        function displaySeries(series) {
+            seriesList.innerHTML = '';
+            series.forEach(seriesItem => {
+                const card = document.createElement('div');
+                card.classList.add('series-card');
+                card.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${seriesItem.poster_path}" alt="${seriesItem.name}">
+                    <h3>${seriesItem.name}</h3>
                 `;
-
-                // Prikazivanje postera u popup-u
-                moviePoster.src = `https://image.tmdb.org/t/p/w500${serie.poster_path}`;
-
-                // Prikazivanje popupa
-                popup.style.display = 'flex';
-
-                // Zatvaranje popupa
-                closePopup.addEventListener('click', function () {
-                    popup.style.display = 'none';
-                });
-            } catch (error) {
-                console.error('Greška pri učitavanju detalja o seriji:', error);
-            }
+                card.addEventListener('click', () => openPopup(seriesItem));
+                seriesList.appendChild(card);
+            });
         }
 
-        // Funkcija za filtriranje serija
-        function fetchFilteredMovies(type, value) {
-            currentFilter = { type, value };
-            currentPage = 1;
-            movieList.innerHTML = '';
-            fetchMovies();
+        async function openPopup(seriesItem) {
+            seriesTitle.textContent = seriesItem.name;
+            seriesOverview.textContent = seriesItem.overview;
+            currentSeriesId = seriesItem.id;
+
+            // Preuzmi informacije o sezonama serije
+            const seasonsResponse = await fetch(`https://api.themoviedb.org/3/tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
+            const seasonData = await seasonsResponse.json();
+            displaySeasons(seasonData.seasons);
+            episodesContainer.innerHTML = '';  // Clear episodes initially
+            popup.style.display = 'flex';
         }
 
-    // Event za scroll
-    window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-            fetchMovies();
+        function displaySeasons(seasons) {
+            seasonsContainer.innerHTML = '';  // Clear the previous season buttons
+            seasons.forEach(season => {
+                const seasonButton = document.createElement('button');
+                seasonButton.classList.add('season-button');
+                seasonButton.textContent = `Sezona ${season.season_number}`;
+                seasonButton.addEventListener('click', () => loadEpisodes(season.season_number));
+                seasonsContainer.appendChild(seasonButton);
+            });
         }
-    });
 
-    // Učitavanje početnih serija
-    fetchMovies();
+        async function loadEpisodes(seasonNumber) {
+            currentSeason = seasonNumber;
+            const episodesResponse = await fetch(`https://api.themoviedb.org/3/tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
+            const episodesData = await episodesResponse.json();
+            displayEpisodes(episodesData.episodes);
+        }
+
+        function displayEpisodes(episodes) {
+            episodesContainer.innerHTML = '';  // Clear previous episode list
+            episodes.forEach(episode => {
+                const episodeButton = document.createElement('button');
+                episodeButton.classList.add('episode-button');
+                episodeButton.textContent = `Epizoda ${episode.episode_number}: ${episode.name}`;
+                episodeButton.addEventListener('click', () => openEpisode(episode));
+                episodesContainer.appendChild(episodeButton);
+            });
+        }
+
+        function openEpisode(episode) {
+            const tmdbId = currentSeriesId;
+            window.open(`https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}`, '_blank');
+        }
+
+        closeBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+
+        fetchSeries();
     </script>
-
 </body>
 </html>
