@@ -151,30 +151,31 @@
             background-color: #e50914;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .series-card {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-
-            .season-button {
-                font-size: 14px;
-                padding: 10px 15px;
-            }
-
-            .episode-button {
-                font-size: 12px;
-                padding: 8px;
-            }
+        /* Language Selection Popup */
+        .language-button {
+            padding: 12px 20px;
+            background-color: #e50914;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            width: 100%;
         }
+
+        .language-button:hover {
+            background-color: #b20710;
+        }
+
     </style>
 </head>
 <body>
     <div id="loading" style="display: none;">Učitavanje...</div>
     <div id="series-list"></div>
 
-    <!-- Popup prozor -->
+    <!-- Popup prozor za seriju -->
     <div id="popup" class="popup">
         <div class="popup-content">
             <span id="close" class="close">&times;</span>
@@ -187,126 +188,147 @@
         </div>
     </div>
 
-    <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const netflixProviderId = 8; // Netflix ID
-        const baseUrl = 'https://api.themoviedb.org/3/';
-        let currentPage = 1;
-        let loading = false;
+    <!-- Popup za izbor jezika -->
+    <div id="language-popup" class="popup">
+        <div class="popup-content">
+            <span id="close-language-popup" class="close">&times;</span>
+            <h2>Izaberite jezik za gledanje</h2>
+            <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
+            <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
+        </div>
+    </div>
 
-        const seriesList = document.getElementById('series-list');
-        const popup = document.getElementById('popup');
-        const closeBtn = document.getElementById('close');
-        const seriesTitle = document.getElementById('series-title');
-        const seriesOverview = document.getElementById('series-overview');
-        const seasonsContainer = document.getElementById('seasons');
-        const episodesContainer = document.getElementById('episodes');
-        let currentSeason = 1;
-        let currentSeriesId = null;
+<script>
+    const apiKey = '2701858e9bccab54d4d0e4931420a739';
+    const netflixProviderId = 8; // Netflix ID
+    const baseUrl = 'https://api.themoviedb.org/3/';
+    const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=1&with_watch_providers=${netflixProviderId}&watch_region=US`;
 
-        // Fetch and display series
-        async function fetchSeries() {
-            if (loading) return; // Prevent multiple requests at once
-            loading = true;
+    const seriesList = document.getElementById('series-list');
+    const popup = document.getElementById('popup');
+    const closeBtn = document.getElementById('close');
+    const seriesTitle = document.getElementById('series-title');
+    const seriesOverview = document.getElementById('series-overview');
+    const seasonsContainer = document.getElementById('seasons');
+    const episodesContainer = document.getElementById('episodes');
+    const languagePopup = document.getElementById('language-popup');
+    const closeLanguagePopup = document.getElementById('close-language-popup');
+    const watchSrButton = document.getElementById('watch-sr');
+    const watchHrButton = document.getElementById('watch-hr');
+    let currentSeason = 1;
+    let currentSeriesId = null;
+    let selectedEpisode = null;
 
-            document.getElementById('loading').style.display = 'block'; // Show loading message
-            const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            displaySeries(data.results);
+    async function fetchSeries() {
+        document.getElementById('loading').style.display = 'block'; // Show loading message
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        displaySeries(data.results);
+        document.getElementById('loading').style.display = 'none'; // Hide loading message
+    }
 
-            loading = false;
-            document.getElementById('loading').style.display = 'none'; // Hide loading message
-            currentPage++;
+    function displaySeries(series) {
+        seriesList.innerHTML = '';
+        series.forEach(seriesItem => {
+            const card = document.createElement('div');
+            card.classList.add('series-card');
+            card.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${seriesItem.poster_path}" alt="${seriesItem.name}">
+                <h3>${seriesItem.name}</h3>
+            `;
+            card.addEventListener('click', () => openPopup(seriesItem));
+            seriesList.appendChild(card);
+        });
+    }
 
-            // If there are no more series, stop the scroll loading
-            if (data.results.length === 0) {
-                window.removeEventListener('scroll', onScroll);
+    async function openPopup(seriesItem) {
+        seriesTitle.textContent = seriesItem.name;
+        seriesOverview.textContent = seriesItem.overview;
+        currentSeriesId = seriesItem.id;
+
+        // Preuzmi informacije o sezonama serije
+        const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
+        const seasonData = await seasonsResponse.json();
+
+        // Filtriranje sezona, označavanje "Sezone 0" kao specijalne epizode
+        const seasons = seasonData.seasons.map(season => {
+            if (season.season_number === 0) {
+                return {
+                    ...season,
+                    season_number: 'Specijalne Epizode'  // Promenjujemo naziv za sezonu 0
+                };
             }
-        }
-
-        // Display series on the page
-        function displaySeries(series) {
-            series.forEach(seriesItem => {
-                const card = document.createElement('div');
-                card.classList.add('series-card');
-                card.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${seriesItem.poster_path}" alt="${seriesItem.name}">
-                    <h3>${seriesItem.name}</h3>
-                `;
-                card.addEventListener('click', () => openPopup(seriesItem));
-                seriesList.appendChild(card);
-            });
-        }
-
-        // Open popup for series details
-        async function openPopup(seriesItem) {
-            seriesTitle.textContent = seriesItem.name;
-            seriesOverview.textContent = seriesItem.overview;
-            currentSeriesId = seriesItem.id;
-
-            const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
-            const seasonData = await seasonsResponse.json();
-            displaySeasons(seasonData.seasons);
-            episodesContainer.innerHTML = ''; // Clear episodes initially
-            popup.style.display = 'flex';
-        }
-
-        // Display seasons of the selected series
-        function displaySeasons(seasons) {
-            seasonsContainer.innerHTML = ''; // Clear previous season buttons
-            seasons.forEach(season => {
-                const seasonButton = document.createElement('button');
-                seasonButton.classList.add('season-button');
-                seasonButton.textContent = `Sezona ${season.season_number}`;
-                seasonButton.addEventListener('click', () => loadEpisodes(season.season_number));
-                seasonsContainer.appendChild(seasonButton);
-            });
-        }
-
-        // Load episodes for a selected season
-        async function loadEpisodes(seasonNumber) {
-            currentSeason = seasonNumber;
-            const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
-            const episodesData = await episodesResponse.json();
-            displayEpisodes(episodesData.episodes);
-        }
-
-        // Display episodes of a selected season
-        function displayEpisodes(episodes) {
-            episodesContainer.innerHTML = ''; // Clear previous episode list
-            episodes.forEach(episode => {
-                const episodeButton = document.createElement('button');
-                episodeButton.classList.add('episode-button');
-                episodeButton.textContent = `Epizoda ${episode.episode_number}: ${episode.name}`;
-                episodeButton.addEventListener('click', () => openEpisode(episode));
-                episodesContainer.appendChild(episodeButton);
-            });
-        }
-
-        // Open episode in new page
-        function openEpisode(episode) {
-            const tmdbId = currentSeriesId;
-            window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}&lang=sr`;
-        }
-
-        // Close popup
-        closeBtn.addEventListener('click', () => {
-            popup.style.display = 'none';
+            return season;
         });
 
-        // Detect scroll to bottom of the page and load more series
-        function onScroll() {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                fetchSeries();
-            }
-        }
+        // Prikazivanje svih sezona
+        displaySeasons(seasons);
+        episodesContainer.innerHTML = ''; // Clear episodes initially
+        popup.style.display = 'flex';
+    }
 
-        // Initial fetch of series
-        fetchSeries();
+    function displaySeasons(seasons) {
+        seasonsContainer.innerHTML = ''; // Clear previous season buttons
+        seasons.forEach(season => {
+            const seasonButton = document.createElement('button');
+            seasonButton.classList.add('season-button');
+            seasonButton.textContent = `Sezona ${season.season_number}`;
+            seasonButton.addEventListener('click', () => loadEpisodes(season.season_number));
+            seasonsContainer.appendChild(seasonButton);
+        });
+    }
 
-        // Listen for scroll events to trigger fetching more series
-        window.addEventListener('scroll', onScroll);
-    </script>
+    async function loadEpisodes(seasonNumber) {
+        currentSeason = seasonNumber;
+        // Clear previous episodes first
+        episodesContainer.innerHTML = '';
+        const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
+        const episodesData = await episodesResponse.json();
+        displayEpisodes(episodesData.episodes);
+    }
+
+    function displayEpisodes(episodes) {
+        episodesContainer.innerHTML = ''; // Clear previous episode list
+        episodes.forEach(episode => {
+            const episodeButton = document.createElement('button');
+            episodeButton.classList.add('episode-button');
+            
+            // Prikazivanje samo broja sezone i epizode, bez naziva epizode
+            episodeButton.textContent = `Sezona ${currentSeason}, Epizoda ${episode.episode_number}`;
+            
+            episodeButton.addEventListener('click', () => openEpisode(episode));
+            episodesContainer.appendChild(episodeButton);
+        });
+    }
+
+    function openEpisode(episode) {
+        // Čuvanje odabrane epizode
+        selectedEpisode = episode;
+
+        // Prikazivanje popup-a za jezik
+        languagePopup.style.display = 'flex';
+    }
+
+    closeBtn.addEventListener('click', () => {
+        popup.style.display = 'none';
+    });
+
+    closeLanguagePopup.addEventListener('click', () => {
+        languagePopup.style.display = 'none';
+    });
+
+    watchSrButton.addEventListener('click', () => {
+        const tmdbId = currentSeriesId;
+        window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}&lang=sr`;
+    });
+
+    watchHrButton.addEventListener('click', () => {
+        const tmdbId = currentSeriesId;
+        window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}&lang=hr`;
+    });
+
+    fetchSeries();
+</script>
+
 </body>
 </html>
