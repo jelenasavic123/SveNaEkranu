@@ -191,7 +191,8 @@
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
         const netflixProviderId = 8; // Netflix ID
         const baseUrl = 'https://api.themoviedb.org/3/';
-        const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=1&with_watch_providers=${netflixProviderId}&watch_region=US`;
+        let currentPage = 1;
+        let loading = false;
 
         const seriesList = document.getElementById('series-list');
         const popup = document.getElementById('popup');
@@ -203,16 +204,29 @@
         let currentSeason = 1;
         let currentSeriesId = null;
 
+        // Fetch and display series
         async function fetchSeries() {
+            if (loading) return; // Prevent multiple requests at once
+            loading = true;
+
             document.getElementById('loading').style.display = 'block'; // Show loading message
+            const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
             const response = await fetch(apiUrl);
             const data = await response.json();
             displaySeries(data.results);
+
+            loading = false;
             document.getElementById('loading').style.display = 'none'; // Hide loading message
+            currentPage++;
+
+            // If there are no more series, stop the scroll loading
+            if (data.results.length === 0) {
+                window.removeEventListener('scroll', onScroll);
+            }
         }
 
+        // Display series on the page
         function displaySeries(series) {
-            seriesList.innerHTML = '';
             series.forEach(seriesItem => {
                 const card = document.createElement('div');
                 card.classList.add('series-card');
@@ -225,12 +239,12 @@
             });
         }
 
+        // Open popup for series details
         async function openPopup(seriesItem) {
             seriesTitle.textContent = seriesItem.name;
             seriesOverview.textContent = seriesItem.overview;
             currentSeriesId = seriesItem.id;
 
-            // Preuzmi informacije o sezonama serije
             const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
             const seasonData = await seasonsResponse.json();
             displaySeasons(seasonData.seasons);
@@ -238,6 +252,7 @@
             popup.style.display = 'flex';
         }
 
+        // Display seasons of the selected series
         function displaySeasons(seasons) {
             seasonsContainer.innerHTML = ''; // Clear previous season buttons
             seasons.forEach(season => {
@@ -249,6 +264,7 @@
             });
         }
 
+        // Load episodes for a selected season
         async function loadEpisodes(seasonNumber) {
             currentSeason = seasonNumber;
             const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
@@ -256,6 +272,7 @@
             displayEpisodes(episodesData.episodes);
         }
 
+        // Display episodes of a selected season
         function displayEpisodes(episodes) {
             episodesContainer.innerHTML = ''; // Clear previous episode list
             episodes.forEach(episode => {
@@ -267,16 +284,29 @@
             });
         }
 
+        // Open episode in new page
         function openEpisode(episode) {
             const tmdbId = currentSeriesId;
             window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}&lang=sr`;
         }
 
+        // Close popup
         closeBtn.addEventListener('click', () => {
             popup.style.display = 'none';
         });
 
+        // Detect scroll to bottom of the page and load more series
+        function onScroll() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                fetchSeries();
+            }
+        }
+
+        // Initial fetch of series
         fetchSeries();
+
+        // Listen for scroll events to trigger fetching more series
+        window.addEventListener('scroll', onScroll);
     </script>
 </body>
 </html>
