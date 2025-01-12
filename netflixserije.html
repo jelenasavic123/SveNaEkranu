@@ -60,6 +60,14 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         }
 
+        /* Loading Spinner */
+        #loading {
+            text-align: center;
+            color: #fff;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
         /* Popup */
         .popup {
             display: none;
@@ -163,6 +171,7 @@
     </style>
 </head>
 <body>
+    <div id="loading" style="display: none;">Učitavanje...</div>
     <div id="series-list"></div>
 
     <!-- Popup prozor -->
@@ -180,7 +189,9 @@
 
     <script>
         const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const apiUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + apiKey + '&language=sr-SR&sort_by=popularity.desc&page=1';
+        const netflixProviderId = 8; // Netflix ID
+        const baseUrl = 'https://api.themoviedb.org/3/';
+        const apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=1&with_watch_providers=${netflixProviderId}&watch_region=US`;
 
         const seriesList = document.getElementById('series-list');
         const popup = document.getElementById('popup');
@@ -193,9 +204,11 @@
         let currentSeriesId = null;
 
         async function fetchSeries() {
+            document.getElementById('loading').style.display = 'block'; // Show loading message
             const response = await fetch(apiUrl);
             const data = await response.json();
             displaySeries(data.results);
+            document.getElementById('loading').style.display = 'none'; // Hide loading message
         }
 
         function displaySeries(series) {
@@ -218,15 +231,15 @@
             currentSeriesId = seriesItem.id;
 
             // Preuzmi informacije o sezonama serije
-            const seasonsResponse = await fetch(`https://api.themoviedb.org/3/tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
+            const seasonsResponse = await fetch(`${baseUrl}tv/${seriesItem.id}?api_key=${apiKey}&language=sr-SR`);
             const seasonData = await seasonsResponse.json();
             displaySeasons(seasonData.seasons);
-            episodesContainer.innerHTML = '';  // Clear episodes initially
+            episodesContainer.innerHTML = ''; // Clear episodes initially
             popup.style.display = 'flex';
         }
 
         function displaySeasons(seasons) {
-            seasonsContainer.innerHTML = '';  // Clear the previous season buttons
+            seasonsContainer.innerHTML = ''; // Clear previous season buttons
             seasons.forEach(season => {
                 const seasonButton = document.createElement('button');
                 seasonButton.classList.add('season-button');
@@ -238,13 +251,13 @@
 
         async function loadEpisodes(seasonNumber) {
             currentSeason = seasonNumber;
-            const episodesResponse = await fetch(`https://api.themoviedb.org/3/tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
+            const episodesResponse = await fetch(`${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=sr-SR`);
             const episodesData = await episodesResponse.json();
             displayEpisodes(episodesData.episodes);
         }
 
         function displayEpisodes(episodes) {
-            episodesContainer.innerHTML = '';  // Clear previous episode list
+            episodesContainer.innerHTML = ''; // Clear previous episode list
             episodes.forEach(episode => {
                 const episodeButton = document.createElement('button');
                 episodeButton.classList.add('episode-button');
@@ -255,10 +268,9 @@
         }
 
         function openEpisode(episode) {
-    const tmdbId = currentSeriesId;
-    window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}`;
-}
-
+            const tmdbId = currentSeriesId;
+            window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${episode.episode_number}&lang=sr`;
+        }
 
         closeBtn.addEventListener('click', () => {
             popup.style.display = 'none';
