@@ -37,9 +37,9 @@
 
 /* Stilovi za karticu serije */
 .series-card {
+ width: 90%; /* Slika zauzima celu širinu kartice */
+    height: auto; /* Visina slike se prilagođava */
     position: relative;
-    width: 150px; /* Širina kartice */
-    height: 255px; /* Visina kartice */
     background-color: #333; /* Pozadina kartice */
     border-radius: 10px; /* Zaobljeni ivice */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Senka oko kartice */
@@ -51,9 +51,11 @@
 .series-card img {
     width: 100%; /* Slika zauzima celu širinu kartice */
     height: auto; /* Visina slike se prilagođava */
+    object-fit: cover; /* Slika popunjava prostor, zadržavajući proporcije */
     border-radius: 10px;
     transition: transform 0.3s ease; /* Efekat transformacije slike */
 }
+
 
 /* Stil za tekst (naslov) unutar kartice */
 .series-card h3 {
