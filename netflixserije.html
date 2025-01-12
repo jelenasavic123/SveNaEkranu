@@ -398,12 +398,12 @@
 
             link1.addEventListener('click', function(event) {
                 event.preventDefault();
-                window.location.href = `https://api.hexa.watch/tv/${serieId}/1/1`;
+                window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${serieId}&season=1&episode=1&ds_lang=sr`;
             });
 
             link2.addEventListener('click', function(event) {
                 event.preventDefault();
-                window.location.href = `https://api.hexa.watch/tv/${serieId}/1/1`;
+                window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${serieId}&season=1&episode=1&ds_lang=hr`;
             });
 
             const serieDetailsUrl = `https://api.themoviedb.org/3/tv/${serieId}?api_key=${apiKey}&language=hr-HR`;
