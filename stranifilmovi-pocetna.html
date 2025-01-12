@@ -415,12 +415,12 @@ async function displayPopup(movieId) {
 
     link1.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&lang=sr`;
+        window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}&ds_lang=hr`;
     });
 
     link2.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&lang=hr`;
+        window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}&ds_lang=sr`;
     });
 
     // Fetch movie details
