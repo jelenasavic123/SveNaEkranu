@@ -415,12 +415,12 @@ async function displayPopup(movieId) {
 
     link1.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&server=2`;
+        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&lang=sr`;
     });
 
     link2.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&server=2`;
+        window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&lang=hr`;
     });
 
     // Fetch movie details
@@ -533,65 +533,5 @@ function startSpeechRecognition() {
 loadPopularMovies();
 
 </script>
-
-    <script>
-function moveFocusUp() {
-    let currentElement = document.activeElement;
-    let previousElement = currentElement.previousElementSibling;
-
-    // Provera da li je prethodni element interaktivan (npr. dugme, input, video player)
-    while (previousElement && !isFocusable(previousElement)) {
-        previousElement = previousElement.previousElementSibling;
-    }
-
-    if (previousElement) {
-        previousElement.focus();
-    }
-}
-
-function moveFocusDown() {
-    let currentElement = document.activeElement;
-    let nextElement = currentElement.nextElementSibling;
-
-    // Provera da li je sledeći element interaktivan (npr. dugme, input, video player)
-    while (nextElement && !isFocusable(nextElement)) {
-        nextElement = nextElement.nextElementSibling;
-    }
-
-    if (nextElement) {
-        nextElement.focus();
-    }
-}
-
-function moveFocusLeft() {
-    let currentElement = document.activeElement;
-    // Ovdje implementirajte logiku za pomicanje lijevo (ako je potrebno)
-    if (currentElement.tagName === "VIDEO") {
-        currentElement.play();  // Ako je video plejer, pušta ga
-    }
-}
-
-function moveFocusRight() {
-    let currentElement = document.activeElement;
-    // Ovdje implementirajte logiku za pomicanje desno (ako je potrebno)
-    if (currentElement.tagName === "VIDEO") {
-        currentElement.pause();  // Ako je video plejer, pauzira ga
-    }
-}
-
-// Funkcija koja proverava da li je element fokusibilan
-function isFocusable(element) {
-    return element && (
-        element.tagName === "BUTTON" || 
-        element.tagName === "A" || 
-        element.tagName === "INPUT" || 
-        element.tagName === "TEXTAREA" || 
-        element.tagName === "VIDEO" ||
-        element.getAttribute('tabindex') !== null
-    );
-}
-</script>
-
-
 </body>
 </html>
