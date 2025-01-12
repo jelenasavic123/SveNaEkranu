@@ -258,9 +258,59 @@
     text-align: center;
 }
 
+/* Vertikalni Sidebar */
+.sidebar {
+    position: fixed;
+    top: 40%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px 25px;  /* Povećan padding */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;  /* Veći razmak između dugmića */
+    z-index: 1000;
+}
+
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-links li {
+    margin: 15px 0;  /* Veći razmak između listi */
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 11px;  /* Veći font za bolju čitljivost */
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 15px 15px; /* Povećan padding za šire dugmiće */
+    transition: all 0.3s ease;
+}
+
+.sidebar-links a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e50914;
+    border-radius: 18px; /* Veći border-radius za moderan izgled */
+}
+
     </style>
 </head>
 <body>
+
+<!-- Vertikalni Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-links">
+            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">Hulu Filmovi</a></li>
+            <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflixserije.html">Hulu Serije</a></li>
+        </ul>
+    </div>
+    
 <div class="logo">
      <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu Logo">
     </div>
@@ -302,8 +352,10 @@
             <h2>Izaberite jezik za gledanje</h2>
             <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
             <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
+            
         </div>
     </div>
+    
 
 <script>
     const apiKey = '2701858e9bccab54d4d0e4931420a739';
