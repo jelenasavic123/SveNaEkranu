@@ -464,12 +464,12 @@ async function displayPopup(movieId) {
 
     link1.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://player.smashy.stream/movie/609681?btPosition=2${movieId}&?btPosition=200&subLang=Serbian`;
+        window.location.href = `https://player.smashy.stream/movie/${movieId}&?btPosition=200&subLang=Serbian`;
     });
 
     link2.addEventListener('click', function(event) {
         event.preventDefault(); // Sprečava default ponašanje linka
-        window.location.href = `https://player.smashy.stream/movie/609681?btPosition=2${movieId}&?btPosition=200&subLang=Serbian`;
+        window.location.href = `https://player.smashy.stream/movie/${movieId}&?btPosition=200&subLang=Serbian`;
     });
 
     // Fetch movie details
