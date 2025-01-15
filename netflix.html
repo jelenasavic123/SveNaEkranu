@@ -127,6 +127,10 @@
 
       let currentMovieId = null; // Čuvanje trenutnog movieId
       let videoVolume = 1; // Početni nivo zvuka (maksimalni nivo)
+      let isMuted = false; // Status zvuka
+      let currentSelection = 0; // Indeks trenutnog izabranog filma u listi
+
+      const movieItems = []; // Lista filmova
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -135,7 +139,7 @@
           .then(response => response.json())
           .then(data => {
             const movies = data.results;
-            movies.forEach(movie => {
+            movies.forEach((movie, index) => {
               const movieItem = document.createElement('div');
               movieItem.classList.add('movie-item');
               const movieImage = document.createElement('img');
@@ -148,6 +152,7 @@
                 displayVideoPlayer(movie.id); // Otvori video player direktno
               });
               movieList.appendChild(movieItem);
+              movieItems.push(movieItem); // Dodavanje u listu filmova
             });
           })
           .catch(error => {
@@ -163,7 +168,7 @@
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
         
         // Dodavanje parametara za autoplay sa zvukom kada platforma dozvoljava
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=${isMuted ? 'true' : 'false'}`;  // Autoplay sa zvukom
       }
 
       // Promena jezika kada korisnik izabere novi jezik
@@ -171,15 +176,74 @@
         if (currentMovieId) {
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
-          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
+          videoIframe.src = `${videoUrl}?autoplay=1&muted=${isMuted ? 'true' : 'false'}`; // Autoplay sa zvukom
         }
         // Zatvaranje menija nakon promene jezika
         languageSelect.classList.remove('open');
       });
 
+      // Kontrola video playera putem tastature ili daljinskog uređaja
+      document.addEventListener('keydown', function(event) {
+        if (event.key === ' ') {  // Spacebar za play/pause
+          togglePlayPause();
+        } else if (event.key === 'm' || event.key === 'M') {  // "M" za mute/unmute
+          toggleMute();
+        } else if (event.key === 'f' || event.key === 'F') {  // "F" za fullscreen
+          toggleFullScreen();
+        } else if (event.key >= '1' && event.key <= '9') {  // Brojevi za navigaciju filmovima
+          navigateMovies(event.key);
+        } else if (event.key === 'ArrowRight') {  // Strelica desno za sledeći film
+          navigateRight();
+        } else if (event.key === 'ArrowLeft') {  // Strelica levo za prethodni film
+          navigateLeft();
+        } else if (event.key === 'ArrowDown') {  // Strelica dole za menjanje jezika
+          languageSelect.selectedIndex = (languageSelect.selectedIndex + 1) % languageSelect.length;
+        } else if (event.key === 'ArrowUp') {  // Strelica gore za menjanje jezika
+          languageSelect.selectedIndex = (languageSelect.selectedIndex - 1 + languageSelect.length) % languageSelect.length;
+        }
+      });
+
+      // Funkcija za pauzu/play
+      function togglePlayPause() {
+        const iframeDoc = videoIframe.contentWindow;
+        iframeDoc.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      }
+
+      // Funkcija za mute/unmute
+      function toggleMute() {
+        isMuted = !isMuted;
+        const iframeDoc = videoIframe.contentWindow;
+        iframeDoc.postMessage('{"event":"command","func":"mute","args":""}', '*');
+      }
+
+      // Funkcija za fullscreen
+      function toggleFullScreen() {
+        const iframeDoc = videoIframe.contentWindow;
+        iframeDoc.postMessage('{"event":"command","func":"enterFullScreen","args":""}', '*');
+      }
+
+      // Navigacija kroz filmove pomoću brojeva (1-9)
+      function navigateMovies(number) {
+        const index = parseInt(number) - 1;
+        if (movieItems[index]) {
+          movieItems[index].click(); // Klik na film
+        }
+      }
+
+      // Navigacija levo kroz filmove
+      function navigateLeft() {
+        currentSelection = Math.max(currentSelection - 1, 0);
+        movieItems[currentSelection].scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Navigacija desno kroz filmove
+      function navigateRight() {
+        currentSelection = Math.min(currentSelection + 1, movieItems.length - 1);
+        movieItems[currentSelection].scrollIntoView({ behavior: 'smooth' });
+      }
+
       // Funkcija za otvaranje i zatvaranje menija
       languageSelect.addEventListener('click', function(event) {
-        // Otvori ili zatvori meni ako klikneš na selekt
         if (event.target === languageSelect) {
           languageSelect.classList.toggle('open');
         }
@@ -187,7 +251,6 @@
 
       // Klik na film - video će se otvoriti
       videoPlayer.addEventListener('click', function(event) {
-        // Zatvori video player ako se klikne na njega
         if (event.target === videoPlayer) {
           videoPlayer.style.display = 'none';
           videoIframe.src = '';
