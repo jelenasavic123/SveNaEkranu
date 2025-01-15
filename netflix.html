@@ -85,6 +85,9 @@
         border: none;
         border-radius: 5px;
       }
+      #languageSelect.open {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -94,7 +97,7 @@
     <!-- Video Player -->
     <div id="videoPlayer">
       <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-      <select id="languageSelect">
+      <select id="languageSelect" class="open">
         <option value="sr">Srpski</option>
         <option value="hr">Hrvatski</option>
         <option value="mk">Makedonski</option>
@@ -123,6 +126,7 @@
       };
 
       let currentMovieId = null; // Čuvanje trenutnog movieId
+      let videoVolume = 1; // Početni nivo zvuka (maksimalni nivo)
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -168,6 +172,25 @@
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
           videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
+        }
+        // Zatvaranje menija nakon promene jezika
+        languageSelect.classList.remove('open');
+      });
+
+      // Funkcija za otvaranje i zatvaranje menija
+      languageSelect.addEventListener('click', function(event) {
+        // Otvori ili zatvori meni ako klikneš na selekt
+        if (event.target === languageSelect) {
+          languageSelect.classList.toggle('open');
+        }
+      });
+
+      // Klik na film - video će se otvoriti
+      videoPlayer.addEventListener('click', function(event) {
+        // Zatvori video player ako se klikne na njega
+        if (event.target === videoPlayer) {
+          videoPlayer.style.display = 'none';
+          videoIframe.src = '';
         }
       });
 
