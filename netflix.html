@@ -169,13 +169,12 @@
       sessionStorage.setItem('currentMovieId', currentMovieId); // Čuvanje ID filma u sessionStorage
       languageMenu.style.display = 'flex';
 
-      // Fokusi na Srpski jezik (ali ga ne selektuje automatski)
-      setTimeout(() => {
-        document.getElementById('sr').focus();
-      }, 0); // Odeljenje funkcije da bismo omogućili prikazivanje menija pre fokusa
+      // Fokus na "Srpski" jezik pri otvaranju
+      document.getElementById('sr').focus();
 
-      // Čuvanje stanja popupa (da li je otvoren)
+      // Sačuvaj da je meni otvoren
       sessionStorage.setItem('languageMenuOpen', 'true');
+      sessionStorage.setItem('selectedLanguage', 'sr'); // Sačuvaj da je Srpski jezik izabran
     }
 
     // Funkcija za promenu jezika
@@ -189,6 +188,9 @@
       // Dodavanje crvene boje za izabrani jezik
       document.getElementById(lang).classList.add('selectedLanguage');
 
+      // Sačuvaj izabrani jezik u sessionStorage
+      sessionStorage.setItem('selectedLanguage', lang);
+
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
       window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
@@ -196,13 +198,19 @@
     // Funkcija za zatvaranje jezickog menija
     function closeLanguageMenu() {
       languageMenu.style.display = 'none';
-      sessionStorage.setItem('languageMenuOpen', 'false'); // Zatvaranje popupa u sessionStorage
+      sessionStorage.setItem('languageMenuOpen', 'false'); // Sačuvaj da je meni zatvoren
     }
 
     // Provera da li treba da se otvori popup pri učitavanju stranice
     if (sessionStorage.getItem('languageMenuOpen') === 'true') {
       languageMenu.style.display = 'flex';
-      currentMovieId = sessionStorage.getItem('currentMovieId'); // Učitavanje ID filma sa kojem je otvoren meni
+      currentMovieId = sessionStorage.getItem('currentMovieId'); // Učitavanje ID filma sa kojim je otvoren meni
+
+      // Fokusiraj dugme za jezik koje je prethodno bilo izabrano
+      const selectedLanguage = sessionStorage.getItem('selectedLanguage');
+      if (selectedLanguage) {
+        document.getElementById(selectedLanguage).focus();
+      }
     }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
