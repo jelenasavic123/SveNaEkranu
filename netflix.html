@@ -75,28 +75,7 @@
         height: 100%;
         border: none;
       }
-      #videoControls {
-        position: absolute;
-        bottom: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        z-index: 1000;
-      }
-      .control-button {
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        border: none;
-        padding: 10px;
-        margin: 5px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 20px;
-      }
-      .control-button:hover {
-        background-color: rgba(0, 0, 0, 1);
-      }
+      
       #languageSelect {
         position: absolute;
         top: 20px;
@@ -106,6 +85,7 @@
         color: white;
         border: none;
         border-radius: 5px;
+        z-index: 1000;
       }
     </style>
   </head>
@@ -116,16 +96,7 @@
     <!-- Video Player -->
     <div id="videoPlayer">
       <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-
-      <!-- Video Controls -->
-      <div id="videoControls">
-        <button id="playPauseButton" class="control-button">Play</button>
-        <button id="muteButton" class="control-button">Mute</button>
-        <button id="volumeUpButton" class="control-button">↑</button>
-        <button id="volumeDownButton" class="control-button">↓</button>
-      </div>
-
-      <select id="languageSelect">
+      <select id="languageSelect" tabindex="-1">
         <option value="sr">Srpski</option>
         <option value="hr">Hrvatski</option>
         <option value="mk">Makedonski</option>
@@ -141,12 +112,9 @@
       const movieList = document.getElementById('movie-list');
       const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
-      const playPauseButton = document.getElementById('playPauseButton');
-      const muteButton = document.getElementById('muteButton');
-      const volumeUpButton = document.getElementById('volumeUpButton');
-      const volumeDownButton = document.getElementById('volumeDownButton');
       const languageSelect = document.getElementById('languageSelect');
 
+      // Specifični URL-ovi za svaki jezik
       const languageUrls = {
         sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
         hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
@@ -156,9 +124,7 @@
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
       };
 
-      let currentMovieId = null;
-      let videoMuted = false;
-      let videoPlaying = false;
+      let currentMovieId = null; // Čuvanje trenutnog movieId
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -189,70 +155,28 @@
 
       // Funkcija za prikazivanje video player-a
       function displayVideoPlayer(movieId) {
-        currentMovieId = movieId;
+        currentMovieId = movieId; // Čuvanje movieId
         videoPlayer.style.display = 'flex';
         const selectedLang = languageSelect.value;
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
         
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
-        playPauseButton.textContent = "Pause";
-        videoPlaying = true;
+        // Dodavanje parametara za autoplay sa zvukom kada platforma dozvoljava
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
+        
+        // Dodavanje fokusa na video iframe
+        videoIframe.focus(); // Ovo osigurava da se iframe fokusira na video player
       }
 
-      // Play/Pause dugme
-      playPauseButton.addEventListener('click', () => {
-        if (videoPlaying) {
-          videoIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-          playPauseButton.textContent = "Play";
-        } else {
-          videoIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-          playPauseButton.textContent = "Pause";
-        }
-        videoPlaying = !videoPlaying;
-      });
-
-      // Mute/Unmute dugme
-      muteButton.addEventListener('click', () => {
-        videoMuted = !videoMuted;
-        videoIframe.src = `${videoIframe.src.split('?')[0]}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
-        muteButton.textContent = videoMuted ? "Unmute" : "Mute";
-      });
-
-      // Volume Up dugme
-      volumeUpButton.addEventListener('click', () => {
-        let volume = videoIframe.contentWindow.document.querySelector('video').volume;
-        if (volume < 1) {
-          volume += 0.1;
-          videoIframe.contentWindow.document.querySelector('video').volume = volume;
-        }
-      });
-
-      // Volume Down dugme
-      volumeDownButton.addEventListener('click', () => {
-        let volume = videoIframe.contentWindow.document.querySelector('video').volume;
-        if (volume > 0) {
-          volume -= 0.1;
-          videoIframe.contentWindow.document.querySelector('video').volume = volume;
-        }
-      });
-
-      // Promena jezika
+      // Promena jezika kada korisnik izabere novi jezik
       languageSelect.addEventListener('change', function() {
         if (currentMovieId) {
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
-          videoIframe.src = `${videoUrl}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
+          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
         }
       });
 
-      // Detekcija tastature za daljinsko upravljanje
-      document.addEventListener('keydown', function(event) {
-        if (event.key === "1") {
-          muteButton.click(); // Mute/Unmute kada pritisneš "1"
-        }
-      });
-
-      // Prikazivanje filmova
+      // Prikazivanje prvih filmova
       fetchMovies();
     </script>
   </body>
