@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gledaj Kasnije</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Globalni stilovi */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background-color: #141414;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 2rem;
+      color: #e50914;
+    }
+
+    /* Lista "Gledaj kasnije" */
+    #watchLaterList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .movie-item {
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .movie-item:hover {
+      transform: scale(1.05);
+    }
+
+    .movie-item img {
+      width: 100%;
+      border-bottom: 1px solid #333;
+    }
+
+    .movie-item h3 {
+      font-size: 16px;
+      margin: 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* Popup stilovi */
+    #moviePopup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 90%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+    }
+
+    #moviePopupContent {
+      background-color: #1f1f1f;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #moviePopupImage {
+      width: 20%;
+    }
+
+    #moviePopupDetails {
+      padding: 20px;
+    }
+
+    #moviePopupDetails h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #e50914;
+    }
+
+    .languageButton, .removeButton {
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .languageButton:hover, .removeButton:hover {
+      background-color: #f40612;
+    }
+
+    #closePopupButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #closePopupButton:hover {
+      color: #e50914;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gledaj Kasnije</h1>
+  <div id="watchLaterList"></div>
+
+  <!-- Popup -->
+  <div id="moviePopup">
+    <button id="closePopupButton" onclick="closePopup()">×</button>
+    <div id="moviePopupContent">
+      <img id="moviePopupImage" src="" alt="Movie Poster">
+      <div id="moviePopupDetails">
+        <h2 id="moviePopupTitle"></h2>
+        <button class="removeButton" onclick="removeFromWatchLater()">Obriši film iz omiljenog</button>
+        <p id="moviePopupOverview"></p>
+        <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
+        <div id="languageMenu">
+          <div>Izaberite jezik za film:</div>
+          <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
+          <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
+          <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
+          <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
+          <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
+          <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  const apiKey = '2701858e9bccab54d4d0e4931420a739';
+  const languageUrls = {
+    sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
+    hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+    mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+    bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
+    sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
+    en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
+  };
+
+  let currentMovieId;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+    renderWatchLaterList(watchLaterList);
+  });
+
+  function renderWatchLaterList(watchLaterList) {
+    const container = document.getElementById('watchLaterList');
+    container.innerHTML = '';
+
+    if (watchLaterList.length === 0) {
+      container.innerHTML = '<p style="text-align:center; color: #b3b3b3;">Nema filmova u listi Gledaj kasnije.</p>';
+    } else {
+      watchLaterList.forEach(movie => {
+        const movieDiv = document.createElement('div');
+        movieDiv.classList.add('movie-item');
+        movieDiv.innerHTML = `
+          <img src="${movie.poster}" alt="${movie.title}">
+          <h3>${movie.title}</h3>
+        `;
+        movieDiv.addEventListener('click', () => displayMovieInfo(movie.id));
+        container.appendChild(movieDiv);
+      });
+    }
+  }
+
+  function displayMovieInfo(movieId) {
+    currentMovieId = movieId;
+    fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+        document.getElementById('moviePopupTitle').textContent = data.title;
+        document.getElementById('moviePopupOverview').textContent = data.overview;
+        document.getElementById('moviePopupReleaseDate').textContent = data.release_date;
+
+        document.getElementById('moviePopup').style.display = 'flex';
+
+        // Fokus na dugme za izbor srpskog jezika
+        document.getElementById('sr').focus();
+      });
+  }
+
+  function changeLanguage(language) {
+    const movieUrl = languageUrls[language].replace('{movieId}', currentMovieId);
+    window.location.href = movieUrl;
+  }
+
+  function closePopup() {
+    document.getElementById('moviePopup').style.display = 'none';
+  }
+
+  function removeFromWatchLater() {
+    const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+    const updatedList = watchLaterList.filter(movie => movie.id !== currentMovieId);
+
+    localStorage.setItem('watchLater', JSON.stringify(updatedList));
+    renderWatchLaterList(updatedList);
+    closePopup();
+  }
+</script>
+
+</body>
+</html>
