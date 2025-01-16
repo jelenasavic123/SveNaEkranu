@@ -89,9 +89,10 @@
       color: white;
       padding: 10px;
       border-radius: 5px;
-      display: flex;
-      gap: 10px;
+      display: none;
       z-index: 1000;
+      flex-direction: row;
+      gap: 10px;
     }
 
     .languageButton {
@@ -108,6 +109,10 @@
       background-color: rgba(0, 0, 0, 0.9);
     }
 
+    /* Za selektovanje i prepoznavanje kada je dugme u fokusu */
+    .languageButton:focus {
+      outline: 2px solid yellow;
+    }
   </style>
 </head>
 <body>
@@ -143,6 +148,9 @@
     };
 
     let currentMovieId = null;
+    let navbarTimeout = null;
+    let keyDownTime = 0;
+    let keyHeld = false;
 
     function fetchMovies() {
       let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=us-SR&with_watch_providers=8&watch_region=US`;
@@ -177,6 +185,7 @@
       const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
       videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
       languageNavbar.style.display = 'flex'; // Prikazivanje navbar-a
+      resetNavbarTimeout(); // Resetovanje vremena za sakrivanje navbar-a
     }
 
     function changeLanguage(lang) {
@@ -184,7 +193,47 @@
         const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
         videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
       }
+      resetNavbarTimeout(); // Resetovanje vremena za sakrivanje navbar-a nakon promene jezika
     }
+
+    // Resetovanje timeout-a za skrivanje navbar-a nakon 10 sekundi
+    function resetNavbarTimeout() {
+      if (navbarTimeout) {
+        clearTimeout(navbarTimeout); // Ako postoji prethodni timeout, poništiti ga
+      }
+
+      navbarTimeout = setTimeout(function() {
+        languageNavbar.style.display = 'none'; // Sakrij navbar nakon 10 sekundi
+      }, 10000); // 10000 milisekundi (10 sekundi)
+    }
+
+    // Aktivacija menija kada se pritisne strelica prema dole i drži više od 2 sekunde
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "ArrowDown" && !keyHeld) {
+        keyDownTime = Date.now();
+        keyHeld = true;
+
+        setTimeout(() => {
+          if (keyHeld && Date.now() - keyDownTime >= 2000) {
+            languageNavbar.style.display = 'flex'; // Prikazivanje navbar-a
+            document.querySelector('.languageButton').focus(); // Fokus na prvi dugme u navbar-u
+          }
+        }, 2000); // Ako se taster zadrži 2 sekunde
+      }
+    });
+
+    // Ako korisnik pusti taster, poništiti stanje
+    document.addEventListener('keyup', function(event) {
+      if (event.key === "ArrowDown") {
+        keyHeld = false;
+      }
+    });
+
+    // Kada korisnik klikne na iframe, treba da se prikaže navbar za jezike
+    videoIframe.addEventListener('click', function() {
+      languageNavbar.style.display = 'flex';
+      resetNavbarTimeout(); // Resetovanje vremena za sakrivanje navbar-a nakon klika
+    });
 
     fetchMovies();
   </script>
