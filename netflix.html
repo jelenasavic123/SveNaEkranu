@@ -155,6 +155,16 @@
       text-align: center;
       margin-bottom: 20px;
     }
+    
+    /* Dodaj crveni fokus oko dugmadi */
+.languageButton:focus {
+  outline: 3px solid red;
+}
+
+/* Stavi crveni fokus na dugme za Srpski kad se popup otvori */
+.languageButton.selected {
+  outline: 3px solid red;
+}
   </style>
 </head>
 <body>
@@ -276,6 +286,14 @@
     function changeLanguage(lang) {
       // Sačuvaj izabrani jezik u sessionStorage
       sessionStorage.setItem('selectedLanguage', lang);
+
+      // Resetuj sve dugmadi selektovane klase
+      const buttons = document.querySelectorAll('.languageButton');
+      buttons.forEach(button => button.classList.remove('selectedLanguage'));
+
+      // Dodaj crvenu pozadinu selektovanom dugmetu
+      document.getElementById(lang).classList.add('selectedLanguage');
+
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
       window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
@@ -295,6 +313,30 @@
         moviePopup.style.display = 'flex'; // Ponovno otvoriti pop-up
       }
     }
+    
+    function openPopup() {
+  document.getElementById("languageMenu").style.display = 'block';
+  
+  // Automatski dodeljujemo fokus na dugme "Srpski"
+  document.getElementById("sr").focus();
+  document.getElementById("sr").classList.add("selected");
+}
+
+function closePopup() {
+  document.getElementById("languageMenu").style.display = 'none';
+  
+  // Uklanjamo crveni okvir kad se popup zatvori
+  const buttons = document.querySelectorAll(".languageButton");
+  buttons.forEach(button => button.classList.remove("selected"));
+}
+
+function changeLanguage(language) {
+  // Funkcija za promenu jezika (ova bi trebalo da se implementira)
+  console.log("Promenjen jezik na: " + language);
+  
+  // Zatvaranje popupa nakon što je jezik promenjen
+  closePopup();
+}
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
