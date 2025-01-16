@@ -201,6 +201,14 @@
       sessionStorage.setItem('languageMenuOpen', 'false'); // Sačuvaj da je meni zatvoren
     }
 
+    // Dodajemo event listener za klik na telo stranice
+    document.body.addEventListener('click', function(event) {
+      // Proveravamo da li je kliknut element van popupa
+      if (!languageMenu.contains(event.target) && !event.target.closest('.movie-item')) {
+        closeLanguageMenu(); // Zatvaramo meni ako kliknemo izvan popupa
+      }
+    });
+
     // Provera da li treba da se otvori popup pri učitavanju stranice
     if (sessionStorage.getItem('languageMenuOpen') === 'true') {
       languageMenu.style.display = 'flex';
