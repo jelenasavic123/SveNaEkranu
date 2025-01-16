@@ -271,10 +271,12 @@
     // Provera da li treba da se otvori popup pri učitavanju stranice
     if (sessionStorage.getItem('moviePopupOpen') === 'true') {
       moviePopup.style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById(currentLanguage).focus(); // Fokusiranje na prethodno selektovani jezik
+      }, 0);
     }
 
-    // Učitaj filmove pri pokretanju stranice
-    fetchMovies();
+    fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
 </body>
 </html>
