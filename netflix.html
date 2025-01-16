@@ -15,7 +15,6 @@
         flex-direction: column;
         align-items: center;
       }
-
       .movie-list {
         display: flex;
         flex-wrap: wrap;
@@ -24,7 +23,6 @@
         padding: 20px 0;
         width: 100%;
       }
-
       .movie-item {
         position: relative;
         width: 150px;
@@ -35,18 +33,15 @@
         transition: transform 0.3s ease;
         cursor: pointer;
       }
-
       .movie-item:hover {
         transform: scale(1.05);
       }
-
       .movie-item img {
         width: 100%;
         height: 100%;
         border-radius: 10px;
         object-fit: cover;
       }
-
       .movie-item h3 {
         position: absolute;
         bottom: 10px;
@@ -57,14 +52,12 @@
         padding: 5px;
         border-radius: 5px;
       }
-
       .loading {
         text-align: center;
         color: #fff;
         font-size: 16.8px;
         margin: 20px 0;
       }
-
       #videoPlayer {
         position: fixed;
         top: 0;
@@ -77,63 +70,49 @@
         align-items: center;
         z-index: 999;
         overflow: hidden;
-        flex-direction: column;  
+        flex-direction: column;
       }
-
       iframe {
         width: 100%;
         height: 90%;
         border: none;
       }
+      #controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      #fullScreenButton {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
 
       #languageSelect {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 10px;
-        background-color: rgba(0, 0, 0, 0.6);
+        padding: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
         color: white;
         border: none;
         border-radius: 5px;
-        z-index: 1000;
         width: 150px;
         text-align: center;
-        display: none; /* Poništavamo prikaz dok nije otvoreno dugmetom */
       }
 
-      /* Dugmadi za daljinski */
-      .remote-buttons {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        gap: 10px;
-      }
-
-      .remote-button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #ff0000; /* Početna boja - crvena */
-        border: none;
-        cursor: pointer;
-      }
-
-      .remote-button.green {
-        background-color: #00ff00; /* Zelena boja */
-      }
-
-      .remote-button.yellow {
-        background-color: #ffff00; /* Žuta boja */
-      }
-
-      /* Efekat fokusa (crveni okvir) kada je selektovan */
-      #languageSelect:focus {
-        outline: 3px solid red;
+      /* Fokus stajl za tabindex elemente */
+      iframe:focus, #languageSelect:focus, #fullScreenButton:focus {
+        outline: none;
+        border: 2px solid red; /* Crvena boja kada je element u fokusu */
       }
 
       iframe:focus, #languageSelect:focus {
-        outline: none;
+        box-shadow: 0 0 10px red; /* Dodavanje svetleće crvene ivice */
       }
     </style>
   </head>
@@ -144,23 +123,18 @@
     <!-- Video Player -->
     <div id="videoPlayer">
       <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
-
-      <!-- Dugmadi za daljinski -->
-      <div class="remote-buttons">
-        <button class="remote-button red" id="openLanguageMenu">Red</button>
-        <button class="remote-button green" id="selectLanguageGreen">Green</button>
-        <button class="remote-button yellow" id="selectLanguageYellow">Yellow</button>
+      <div id="controls">
+        <!-- Jezik i Full-Screen dugme u horizontalnom rasporedu -->
+        <select id="languageSelect" tabindex="1">
+          <option value="sr">Srpski</option>
+          <option value="hr">Hrvatski</option>
+          <option value="mk">Makedonski</option>
+          <option value="bs">Bosanski</option>
+          <option value="sl">Slovenski</option>
+          <option value="en">Engleski</option>
+        </select>
+        <button id="fullScreenButton" onclick="toggleFullScreen()" tabindex="2">Full Screen</button>
       </div>
-
-      <!-- Jezički meni -->
-      <select id="languageSelect" tabindex="1">
-        <option value="sr">Srpski</option>
-        <option value="hr">Hrvatski</option>
-        <option value="mk">Makedonski</option>
-        <option value="bs">Bosanski</option>
-        <option value="sl">Slovenski</option>
-        <option value="en">Engleski</option>
-      </select>
     </div>
 
     <script>
@@ -170,9 +144,6 @@
       const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
       const languageSelect = document.getElementById('languageSelect');
-      const openLanguageMenuButton = document.getElementById('openLanguageMenu');
-      const selectLanguageGreenButton = document.getElementById('selectLanguageGreen');
-      const selectLanguageYellowButton = document.getElementById('selectLanguageYellow');
 
       // Specifični URL-ovi za svaki jezik
       const languageUrls = {
@@ -184,7 +155,7 @@
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
       };
 
-      let currentMovieId = null;
+      let currentMovieId = null; // Čuvanje trenutnog movieId
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -203,7 +174,7 @@
               movieTitle.textContent = movie.title;
               movieItem.appendChild(movieTitle);
               movieItem.addEventListener('click', () => {
-                displayVideoPlayer(movie.id);
+                displayVideoPlayer(movie.id); // Otvori video player direktno
               });
               movieList.appendChild(movieItem);
             });
@@ -215,40 +186,34 @@
 
       // Funkcija za prikazivanje video player-a
       function displayVideoPlayer(movieId) {
-        currentMovieId = movieId;
-        videoPlayer.style.display = 'flex';
+        currentMovieId = movieId; // Čuvanje movieId
+        videoPlayer.style.display = 'flex'; // Prikazivanje video player-a
         const selectedLang = languageSelect.value;
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;
+        
+        // Dodavanje parametara za autoplay sa zvukom kada platforma dozvoljava
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
       }
 
-      // Promena jezika
+      // Promena jezika kada korisnik izabere novi jezik
       languageSelect.addEventListener('change', function() {
         if (currentMovieId) {
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
-          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;
+          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
         }
       });
 
-      // Dugme za otvaranje menija jezika
-      openLanguageMenuButton.addEventListener('click', () => {
-        languageSelect.style.display = languageSelect.style.display === 'block' ? 'none' : 'block';
-      });
+      // Funkcija za prebacivanje u full-screen režim
+      function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+          videoPlayer.requestFullscreen().catch(err => console.log(`Greška pri ulasku u full-screen: ${err.message}`));
+        } else {
+          document.exitFullscreen().catch(err => console.log(`Greška pri izlasku iz full-screen: ${err.message}`));
+        }
+      }
 
-      // Dugme za odabir zelenog jezika
-      selectLanguageGreenButton.addEventListener('click', () => {
-        languageSelect.value = 'hr';  // Postavi jezik na Hrvatski
-        languageSelect.dispatchEvent(new Event('change'));
-      });
-
-      // Dugme za odabir žutog jezika
-      selectLanguageYellowButton.addEventListener('click', () => {
-        languageSelect.value = 'mk';  // Postavi jezik na Makedonski
-        languageSelect.dispatchEvent(new Event('change'));
-      });
-
-      // Prikazivanje filmova
+      // Prikazivanje prvih filmova
       fetchMovies();
     </script>
   </body>
