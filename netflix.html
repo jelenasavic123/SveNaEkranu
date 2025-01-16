@@ -104,23 +104,20 @@
     <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
     <!-- Video Player -->
-    <div id="videoPlayer">
-      <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
-      <select id="languageSelect" tabindex="0">
-        <option value="sr">Srpski</option>
-        <option value="hr">Hrvatski</option>
-        <option value="mk">Makedonski</option>
-        <option value="bs">Bosanski</option>
-        <option value="sl">Slovenski</option>
-        <option value="en">Engleski</option>
-      </select>
-    </div>
+    <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
+    <select id="languageSelect" tabindex="0">
+      <option value="sr">Srpski</option>
+      <option value="hr">Hrvatski</option>
+      <option value="mk">Makedonski</option>
+      <option value="bs">Bosanski</option>
+      <option value="sl">Slovenski</option>
+      <option value="en">Engleski</option>
+    </select>
 
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739'; // Zameni sa svojim TMDb API ključem
       const baseUrl = `https://api.themoviedb.org/3/`;
       const movieList = document.getElementById('movie-list');
-      const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
       const languageSelect = document.getElementById('languageSelect');
 
@@ -166,7 +163,7 @@
       // Funkcija za prikazivanje video player-a
       function displayVideoPlayer(movieId) {
         currentMovieId = movieId; // Čuvanje movieId
-        videoPlayer.style.display = 'flex';
+        videoIframe.style.display = 'block';
         const selectedLang = languageSelect.value;
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
         
