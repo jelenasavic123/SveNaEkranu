@@ -22,20 +22,25 @@
         color: #e50914;
         text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
       }
-      /* Lista "Gledaj kasnije" */
       #watchLaterList {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        /* Širina postera 120px */
+        gap: 15px;
+        /* Razmak između postera */
         padding: 20px;
       }
-      .movie-item {
-        background-color: rgba(31, 31, 31, 0.8);
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      .movie-item img {
+        width: 120px;
+        /* Fiksirana širina */
+        height: 200px;
+        /* Fiksirana visina */
+        object-fit: cover;
+        /* Sprečava deformaciju slike */
+        display: block;
+        margin: 0 auto;
+        /* Centriranje slike unutar kartice */
+        border-bottom: 1px solid #333;
       }
       .movie-item:hover {
         transform: scale(1.1);
@@ -124,6 +129,15 @@
       #closePopupButton:hover {
         color: #e50914;
       }
+      .languageButton:last-of-type {
+  background-color: #555; /* Neutralna boja */
+  color: #fff;
+}
+
+.languageButton:last-of-type:hover {
+  background-color: #333;
+}
+
     </style>
   </head>
   <body>
@@ -139,19 +153,21 @@
           <h2 id="moviePopupTitle"></h2>
           <button class="removeButton" onclick="removeFromWatchLater()">Obriši film iz omiljenog</button>
           <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
-          <div id="languageMenu">
-            <div>Izaberite jezik za film:</div>
-            <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
-            <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
-            <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
-            <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
-            <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
-            <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
-          </div>
+         <div id="languageMenu">
+  <div>Izaberite jezik za film:</div>
+  <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
+  <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
+  <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
+  <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
+  <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
+  <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
+  <button class="languageButton" onclick="closePopup()"></button>
+</div>
+
         </div>
       </div>
     </div>
-<script>
+    <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
       const languageUrls = {
         sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
