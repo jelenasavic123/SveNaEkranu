@@ -240,6 +240,7 @@
           const savedLanguage = sessionStorage.getItem('selectedLanguage');
           if (savedLanguage) {
             document.getElementById(savedLanguage).focus();
+            document.getElementById(savedLanguage).classList.add('selectedLanguage');
           } else {
             // Ako nije sačuvan jezik, postavi fokus na Srpski
             setTimeout(() => {
@@ -271,3 +272,4 @@
   </script>
 </body>
 </html>
+v
