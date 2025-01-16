@@ -6,37 +6,125 @@
     <style>
       body {
         font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: white;
         margin: 0;
         padding: 0;
         display: flex;
+        background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center / cover no-repeat fixed;
+        flex-direction: column;
+        align-items: center;
+      }
+      .movie-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: center;
+        padding: 20px 0;
+        width: 100%;
+      }
+      .movie-item {
+        position: relative;
+        width: 150px;
+        height: 255px;
+        background-color: #333;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+      }
+      .movie-item:hover {
+        transform: scale(1.05);
+      }
+      .movie-item img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+      .movie-item h3 {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        color: white;
+        font-size: 11.2px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+        border-radius: 5px;
+      }
+      .loading {
+        text-align: center;
+        color: #fff;
+        font-size: 16.8px;
+        margin: 20px 0;
+      }
+      #videoPlayer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        display: none;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        background-color: #121212;
+        z-index: 999;
+        overflow: hidden;
       }
       iframe {
-        width: 80%;
-        height: 80%;
+        width: 100%;
+        height: 100%;
         border: none;
       }
       #videoControls {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        color: white;
-        z-index: 999;
+        bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        z-index: 1000;
       }
-      #videoControls select {
+      .control-button {
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
         border: none;
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+      }
+      .control-button:hover {
+        background-color: rgba(0, 0, 0, 1);
+      }
+      #languageSelect {
+        position: absolute;
+        top: 20px;
+        right: 20px;
         padding: 5px;
-        margin-right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        border-radius: 5px;
       }
     </style>
   </head>
   <body>
-    <div id="videoControls">
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
+
+    <!-- Video Player -->
+    <div id="videoPlayer">
+      <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
+
+      <!-- Video Controls -->
+      <div id="videoControls">
+        <button id="playPauseButton" class="control-button">Play</button>
+        <button id="muteButton" class="control-button">Mute</button>
+        <button id="volumeUpButton" class="control-button">↑</button>
+        <button id="volumeDownButton" class="control-button">↓</button>
+      </div>
+
       <select id="languageSelect">
         <option value="sr">Srpski</option>
         <option value="hr">Hrvatski</option>
@@ -45,19 +133,20 @@
         <option value="sl">Slovenski</option>
         <option value="en">Engleski</option>
       </select>
-      <button id="fullscreenBtn">Fullscreen</button>
     </div>
 
-    <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-
     <script>
-      const languageSelect = document.getElementById('languageSelect');
-      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const apiKey = '2701858e9bccab54d4d0e4931420a739'; // Zameni sa svojim TMDb API ključem
+      const baseUrl = `https://api.themoviedb.org/3/`;
+      const movieList = document.getElementById('movie-list');
+      const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
-      const urlParams = new URLSearchParams(window.location.search);
-      const movieId = urlParams.get('movieId'); // Dohvatanje movieId sa URL-a
+      const playPauseButton = document.getElementById('playPauseButton');
+      const muteButton = document.getElementById('muteButton');
+      const volumeUpButton = document.getElementById('volumeUpButton');
+      const volumeDownButton = document.getElementById('volumeDownButton');
+      const languageSelect = document.getElementById('languageSelect');
 
-      // Specifični URL-ovi za svaki jezik
       const languageUrls = {
         sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
         hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
@@ -67,35 +156,104 @@
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
       };
 
-      let currentLanguage = 'sr'; // Podrazumevani jezik
+      let currentMovieId = null;
+      let videoMuted = false;
+      let videoPlaying = false;
 
-      // Učitavanje video URL-a prema jeziku
-      function loadVideo() {
-        const videoUrl = languageUrls[currentLanguage].replace("{movieId}", movieId);
-        videoIframe.src = `${videoUrl}?autoplay=1`;
+      // Učitavanje filmova
+      function fetchMovies() {
+        let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=us-SR&with_watch_providers=8&watch_region=US`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            const movies = data.results;
+            movies.forEach(movie => {
+              const movieItem = document.createElement('div');
+              movieItem.classList.add('movie-item');
+              const movieImage = document.createElement('img');
+              movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+              movieItem.appendChild(movieImage);
+              const movieTitle = document.createElement('h3');
+              movieTitle.textContent = movie.title;
+              movieItem.appendChild(movieTitle);
+              movieItem.addEventListener('click', () => {
+                displayVideoPlayer(movie.id); // Otvori video player direktno
+              });
+              movieList.appendChild(movieItem);
+            });
+          })
+          .catch(error => {
+            console.error('Greška pri učitavanju filmova:', error);
+          });
       }
 
-      // Promena jezika
-      languageSelect.addEventListener('change', function() {
-        currentLanguage = languageSelect.value;
-        loadVideo(); // Reload video sa novim jezikom
+      // Funkcija za prikazivanje video player-a
+      function displayVideoPlayer(movieId) {
+        currentMovieId = movieId;
+        videoPlayer.style.display = 'flex';
+        const selectedLang = languageSelect.value;
+        const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
+        
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
+        playPauseButton.textContent = "Pause";
+        videoPlaying = true;
+      }
+
+      // Play/Pause dugme
+      playPauseButton.addEventListener('click', () => {
+        if (videoPlaying) {
+          videoIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          playPauseButton.textContent = "Play";
+        } else {
+          videoIframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          playPauseButton.textContent = "Pause";
+        }
+        videoPlaying = !videoPlaying;
       });
 
-      // Aktiviranje fullscreen moda
-      fullscreenBtn.addEventListener('click', function() {
-        if (videoIframe.requestFullscreen) {
-          videoIframe.requestFullscreen();
-        } else if (videoIframe.mozRequestFullScreen) { // Firefox
-          videoIframe.mozRequestFullScreen();
-        } else if (videoIframe.webkitRequestFullscreen) { // Chrome, Safari, Opera
-          videoIframe.webkitRequestFullscreen();
-        } else if (videoIframe.msRequestFullscreen) { // IE/Edge
-          videoIframe.msRequestFullscreen();
+      // Mute/Unmute dugme
+      muteButton.addEventListener('click', () => {
+        videoMuted = !videoMuted;
+        videoIframe.src = `${videoIframe.src.split('?')[0]}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
+        muteButton.textContent = videoMuted ? "Unmute" : "Mute";
+      });
+
+      // Volume Up dugme
+      volumeUpButton.addEventListener('click', () => {
+        let volume = videoIframe.contentWindow.document.querySelector('video').volume;
+        if (volume < 1) {
+          volume += 0.1;
+          videoIframe.contentWindow.document.querySelector('video').volume = volume;
         }
       });
 
-      // Učitavanje videa prilikom učitavanja stranice
-      loadVideo();
+      // Volume Down dugme
+      volumeDownButton.addEventListener('click', () => {
+        let volume = videoIframe.contentWindow.document.querySelector('video').volume;
+        if (volume > 0) {
+          volume -= 0.1;
+          videoIframe.contentWindow.document.querySelector('video').volume = volume;
+        }
+      });
+
+      // Promena jezika
+      languageSelect.addEventListener('change', function() {
+        if (currentMovieId) {
+          const selectedLang = languageSelect.value;
+          const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
+          videoIframe.src = `${videoUrl}?autoplay=1&muted=${videoMuted ? 'true' : 'false'}`;
+        }
+      });
+
+      // Detekcija tastature za daljinsko upravljanje
+      document.addEventListener('keydown', function(event) {
+        if (event.key === "1") {
+          muteButton.click(); // Mute/Unmute kada pritisneš "1"
+        }
+      });
+
+      // Prikazivanje filmova
+      fetchMovies();
     </script>
   </body>
 </html>
