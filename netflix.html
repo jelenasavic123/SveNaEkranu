@@ -15,6 +15,7 @@
         flex-direction: column;
         align-items: center;
       }
+
       .movie-list {
         display: flex;
         flex-wrap: wrap;
@@ -23,6 +24,7 @@
         padding: 20px 0;
         width: 100%;
       }
+
       .movie-item {
         position: relative;
         width: 150px;
@@ -33,15 +35,18 @@
         transition: transform 0.3s ease;
         cursor: pointer;
       }
+
       .movie-item:hover {
         transform: scale(1.05);
       }
+
       .movie-item img {
         width: 100%;
         height: 100%;
         border-radius: 10px;
         object-fit: cover;
       }
+
       .movie-item h3 {
         position: absolute;
         bottom: 10px;
@@ -52,12 +57,14 @@
         padding: 5px;
         border-radius: 5px;
       }
+
       .loading {
         text-align: center;
         color: #fff;
         font-size: 16.8px;
         margin: 20px 0;
       }
+
       #videoPlayer {
         position: fixed;
         top: 0;
@@ -70,11 +77,12 @@
         align-items: center;
         z-index: 999;
         overflow: hidden;
-        flex-direction: column;  /* Vertikalno poravnanje */
+        flex-direction: column;  
       }
+
       iframe {
         width: 100%;
-        height: 90%;  /* Video player zauzima 90% prostora */
+        height: 90%;
         border: none;
       }
 
@@ -90,15 +98,42 @@
         z-index: 1000;
         width: 150px;
         text-align: center;
+        display: none; /* Poništavamo prikaz dok nije otvoreno dugmetom */
+      }
+
+      /* Dugmadi za daljinski */
+      .remote-buttons {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .remote-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #ff0000; /* Početna boja - crvena */
+        border: none;
+        cursor: pointer;
+      }
+
+      .remote-button.green {
+        background-color: #00ff00; /* Zelena boja */
+      }
+
+      .remote-button.yellow {
+        background-color: #ffff00; /* Žuta boja */
       }
 
       /* Efekat fokusa (crveni okvir) kada je selektovan */
       #languageSelect:focus {
-        outline: 3px solid red;  /* Crveni okvir pri fokusu */
+        outline: 3px solid red;
       }
 
       iframe:focus, #languageSelect:focus {
-        outline: none;  /* Uklanja outline kada je selektovan */
+        outline: none;
       }
     </style>
   </head>
@@ -109,6 +144,15 @@
     <!-- Video Player -->
     <div id="videoPlayer">
       <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
+
+      <!-- Dugmadi za daljinski -->
+      <div class="remote-buttons">
+        <button class="remote-button red" id="openLanguageMenu">Red</button>
+        <button class="remote-button green" id="selectLanguageGreen">Green</button>
+        <button class="remote-button yellow" id="selectLanguageYellow">Yellow</button>
+      </div>
+
+      <!-- Jezički meni -->
       <select id="languageSelect" tabindex="1">
         <option value="sr">Srpski</option>
         <option value="hr">Hrvatski</option>
@@ -126,6 +170,9 @@
       const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
       const languageSelect = document.getElementById('languageSelect');
+      const openLanguageMenuButton = document.getElementById('openLanguageMenu');
+      const selectLanguageGreenButton = document.getElementById('selectLanguageGreen');
+      const selectLanguageYellowButton = document.getElementById('selectLanguageYellow');
 
       // Specifični URL-ovi za svaki jezik
       const languageUrls = {
@@ -137,7 +184,7 @@
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
       };
 
-      let currentMovieId = null; // Čuvanje trenutnog movieId
+      let currentMovieId = null;
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -156,7 +203,7 @@
               movieTitle.textContent = movie.title;
               movieItem.appendChild(movieTitle);
               movieItem.addEventListener('click', () => {
-                displayVideoPlayer(movie.id); // Otvori video player direktno
+                displayVideoPlayer(movie.id);
               });
               movieList.appendChild(movieItem);
             });
@@ -168,25 +215,40 @@
 
       // Funkcija za prikazivanje video player-a
       function displayVideoPlayer(movieId) {
-        currentMovieId = movieId; // Čuvanje movieId
-        videoPlayer.style.display = 'flex'; // Prikazivanje video player-a
+        currentMovieId = movieId;
+        videoPlayer.style.display = 'flex';
         const selectedLang = languageSelect.value;
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
-        
-        // Dodavanje parametara za autoplay sa zvukom kada platforma dozvoljava
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;
       }
 
-      // Promena jezika kada korisnik izabere novi jezik
+      // Promena jezika
       languageSelect.addEventListener('change', function() {
         if (currentMovieId) {
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
-          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
+          videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;
         }
       });
 
-      // Prikazivanje prvih filmova
+      // Dugme za otvaranje menija jezika
+      openLanguageMenuButton.addEventListener('click', () => {
+        languageSelect.style.display = languageSelect.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Dugme za odabir zelenog jezika
+      selectLanguageGreenButton.addEventListener('click', () => {
+        languageSelect.value = 'hr';  // Postavi jezik na Hrvatski
+        languageSelect.dispatchEvent(new Event('change'));
+      });
+
+      // Dugme za odabir žutog jezika
+      selectLanguageYellowButton.addEventListener('click', () => {
+        languageSelect.value = 'mk';  // Postavi jezik na Makedonski
+        languageSelect.dispatchEvent(new Event('change'));
+      });
+
+      // Prikazivanje filmova
       fetchMovies();
     </script>
   </body>
