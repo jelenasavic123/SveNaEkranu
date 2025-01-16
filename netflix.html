@@ -173,6 +173,9 @@
       setTimeout(() => {
         document.getElementById('sr').focus();
       }, 0); // Odeljenje funkcije da bismo omogućili prikazivanje menija pre fokusa
+
+      // Čuvanje stanja popupa (da li je otvoren)
+      sessionStorage.setItem('languageMenuOpen', 'true');
     }
 
     // Funkcija za promenu jezika
@@ -193,11 +196,13 @@
     // Funkcija za zatvaranje jezickog menija
     function closeLanguageMenu() {
       languageMenu.style.display = 'none';
+      sessionStorage.setItem('languageMenuOpen', 'false'); // Zatvaranje popupa u sessionStorage
     }
 
-    // Ne prikazujemo popup meni pri učitavanju stranice
-    if (sessionStorage.getItem('currentMovieId')) {
-      currentMovieId = sessionStorage.getItem('currentMovieId');
+    // Provera da li treba da se otvori popup pri učitavanju stranice
+    if (sessionStorage.getItem('languageMenuOpen') === 'true') {
+      languageMenu.style.display = 'flex';
+      currentMovieId = sessionStorage.getItem('currentMovieId'); // Učitavanje ID filma sa kojem je otvoren meni
     }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
