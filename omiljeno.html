@@ -159,12 +159,12 @@
           <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
 <div id="languageMenu">
   <div>Izaberite jezik za film:</div>
-  <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
-  <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
-  <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
-  <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
-  <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
-  <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
+  <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Bosanski2</button>
+  <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Bosanski1</button>
+  <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Hrvatski2</button>
+  <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Hrvatski1</button>
+  <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Srpski Cyr</button>
+  <button class="languageButton" id="en" onclick="changeLanguage('en')">Srpski Lat</button>
   <button class="languageButton" onclick="closePopup()">Zatvori</button>
 </div>
 
@@ -174,12 +174,12 @@
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
       const languageUrls = {
-        sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
-        hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+       sr: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
+        hr: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
-        bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
-        sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
-        en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
+        bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+        sl: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+        en: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr"
       };
       let currentMovieId;
       document.addEventListener('DOMContentLoaded', () => {
