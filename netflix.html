@@ -88,6 +88,11 @@
       background-color: rgba(0, 0, 0, 0.9);
     }
 
+    /* Oznacavanje izabranog jezika */
+    .selectedLanguage {
+      background-color: red;
+    }
+
     #closeMenuButton {
       background-color: red;
       color: white;
@@ -163,10 +168,24 @@
       currentMovieId = movieId;
       sessionStorage.setItem('currentMovieId', currentMovieId); // Čuvanje ID filma u sessionStorage
       languageMenu.style.display = 'flex';
+
+      // Fokusi na Srpski jezik (ali ga ne selektuje automatski)
+      setTimeout(() => {
+        document.getElementById('sr').focus();
+      }, 0); // Odeljenje funkcije da bismo omogućili prikazivanje menija pre fokusa
     }
 
     // Funkcija za promenu jezika
     function changeLanguage(lang) {
+      // Resetovanje svih dugmadi (uklanjanje klase 'selectedLanguage')
+      const buttons = document.querySelectorAll('.languageButton');
+      buttons.forEach(button => {
+        button.classList.remove('selectedLanguage');
+      });
+
+      // Dodavanje crvene boje za izabrani jezik
+      document.getElementById(lang).classList.add('selectedLanguage');
+
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
       window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
@@ -176,10 +195,9 @@
       languageMenu.style.display = 'none';
     }
 
-    // Proveravamo da li postoji sačuvan ID filma u sessionStorage
+    // Ne prikazujemo popup meni pri učitavanju stranice
     if (sessionStorage.getItem('currentMovieId')) {
       currentMovieId = sessionStorage.getItem('currentMovieId');
-      displayLanguageMenu(currentMovieId); // Prikazujemo popup meni kada se korisnik vrati
     }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
