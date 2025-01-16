@@ -213,68 +213,52 @@
       #saveToWatchLater:hover {
         background-color: #f40612;
       }
-      .custom-alert {
+      #customAlert {
         display: none;
         position: fixed;
-        top: 50%;
+        top: 20%;
         left: 50%;
         transform: translate(-50%, -50%);
         background: rgba(0, 0, 0, 0.8);
-        /* Providna crna pozadina */
-        padding: 30px;
-        color: white;
-        /* Bele boje teksta */
+        /* Tamna pozadina sa providnošću */
+        color: #fff;
+        /* Bela boja teksta */
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        /* Blaga senka */
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
         text-align: center;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        /* Snažnija senka */
-        border-radius: 12px;
-        /* Veće zaobljenje ivica */
-        z-index: 2000;
-        width: 90%;
-        /* Prilagodljivo za manje ekrane */
+        z-index: 1000;
+        animation: fadeInOut 5s ease-in-out;
+        width: 80%;
+        /* Prilagodljivo za male ekrane */
         max-width: 400px;
         /* Maksimalna širina */
-        font-family: 'Arial', sans-serif;
-        /* Moderni font */
+        backdrop-filter: blur(10px);
+        /* Zamućenje pozadine */
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Suptilna ivica */
       }
-      .custom-alert p {
-        margin: 0 0 20px;
-        font-size: 18px;
-        /* Veći tekst za naslov */
-        line-height: 1.5;
-      }
-      .custom-alert button {
-        padding: 10px 20px;
-        background-color: #e50914;
-        /* Netflix crvena */
-        color: white;
-        /* Bele boje teksta */
-        border: none;
-        border-radius: 8px;
-        /* Zaobljene ivice */
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: bold;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        /* Glatka tranzicija */
-      }
-      .custom-alert button:hover {
-        background-color: #f40612;
-        /* Svetlija crvena pri hover-u */
-        transform: scale(1.05);
-        /* Malo povećanje */
-      }
-      .custom-alert-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        /* Tamna providna pozadina za masku */
-        z-index: 1999;
-        /* Ispod popupa */
+      /* Animacija ulaska i izlaska */
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -60%);
+        }
+        10% {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+        90% {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, -60%);
+        }
       }
     </style>
   </head>
@@ -315,9 +299,8 @@
         </div>
       </div>
     </div>
-    <div id="customAlert" class="custom-alert">
-      <p id="customAlertMessage"></p>
-      <button onclick="closeCustomAlert()">U redu</button>
+    <div id="customAlert" style="display: none;">
+      <span id="customAlertMessage"></span>
     </div>
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -478,39 +461,27 @@
           displayMovieInfo(savedMovieId);
         }
       });
-      function saveToWatchLater(movieId, movieTitle, moviePoster) {
-        const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
-        const movie = {
-          id: movieId,
-          title: movieTitle,
-          poster: moviePoster
-        };
-        // Proverite da li film već postoji u listi
-        const exists = watchLaterList.some(item => item.id === movieId);
-        if (!exists) {
-          watchLaterList.push(movie);
-          localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
-          alert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
-        } else {
-          alert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
-        }
-      }
       function showCustomAlert(message) {
         const alertBox = document.getElementById('customAlert');
         const alertMessage = document.getElementById('customAlertMessage');
         alertMessage.textContent = message;
         alertBox.style.display = 'block';
+        // Dodajemo tajmer da automatski zatvori alert posle 5 sekundi
+        setTimeout(() => {
+          closeCustomAlert();
+        }, 5000);
       }
       function closeCustomAlert() {
         const alertBox = document.getElementById('customAlert');
         alertBox.style.display = 'none';
       }
+      // Funkcija za dodavanje filma u listu "Gledaj kasnije"
       function saveToWatchLater(movieId, movieTitle, moviePoster) {
         const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
         const movie = {
           id: movieId,
           title: movieTitle,
-          poster: moviePoster
+          poster: moviePoster,
         };
         const exists = watchLaterList.some(item => item.id === movieId);
         if (!exists) {
@@ -521,6 +492,7 @@
           showCustomAlert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
         }
       }
+      // Event listener za dugme "Dodaj u Omiljeno"
       document.getElementById('saveToWatchLater').addEventListener('click', () => {
         const movieTitle = document.getElementById('moviePopupTitle').textContent;
         const moviePoster = document.getElementById('moviePopupImage').src;
