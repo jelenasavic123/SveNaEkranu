@@ -80,16 +80,18 @@
       outline: none;
     }
 
-    #languageMenu {
+    /* Navbar za izbor jezika unutar iframe */
+    #languageNavbar {
       position: absolute;
       top: 10px;
       left: 10px;
       background-color: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 15px;
+      padding: 10px;
       border-radius: 5px;
+      display: flex;
+      gap: 10px;
       z-index: 1000;
-      display: none;
     }
 
     .languageButton {
@@ -105,6 +107,7 @@
     .languageButton:hover {
       background-color: rgba(0, 0, 0, 0.9);
     }
+
   </style>
 </head>
 <body>
@@ -112,7 +115,7 @@
 
   <div id="videoPlayer">
     <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
-    <div id="languageMenu">
+    <div id="languageNavbar">
       <button class="languageButton" onclick="changeLanguage('sr')">Srpski</button>
       <button class="languageButton" onclick="changeLanguage('hr')">Hrvatski</button>
       <button class="languageButton" onclick="changeLanguage('mk')">Makedonski</button>
@@ -128,7 +131,7 @@
     const movieList = document.getElementById('movie-list');
     const videoPlayer = document.getElementById('videoPlayer');
     const videoIframe = document.getElementById('videoIframe');
-    const languageMenu = document.getElementById('languageMenu');
+    const languageNavbar = document.getElementById('languageNavbar');
 
     const languageUrls = {
       sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
@@ -170,17 +173,16 @@
     function displayVideoPlayer(movieId) {
       currentMovieId = movieId;
       videoPlayer.style.display = 'flex';
-      const selectedLang = 'sr'; // Postavite podrazumevani jezik
+      const selectedLang = 'sr'; // Podrazumevani jezik
       const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
       videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
-      languageMenu.style.display = 'block';
+      languageNavbar.style.display = 'flex'; // Prikazivanje navbar-a
     }
 
     function changeLanguage(lang) {
       if (currentMovieId) {
         const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
         videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
-        languageMenu.style.display = 'none'; // Zatvori meni nakon što promenite jezik
       }
     }
 
