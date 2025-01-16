@@ -268,8 +268,21 @@
       sessionStorage.removeItem('selectedLanguage');
     }
 
+    // Provera sessionStorage kada se stranica učita
+    window.onload = function() {
+      const savedLanguage = sessionStorage.getItem('selectedLanguage');
+      const isPopupOpen = sessionStorage.getItem('popupOpen');
+
+      if (isPopupOpen) {
+        moviePopup.style.display = 'flex';
+        if (savedLanguage) {
+          document.getElementById(savedLanguage).focus();
+          document.getElementById(savedLanguage).classList.add('selectedLanguage');
+        }
+      }
+    };
+
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
 </body>
 </html>
-v
