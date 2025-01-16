@@ -81,36 +81,19 @@
     }
 
     #languageMenu {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 10px;
+      left: 10px;
       background-color: rgba(0, 0, 0, 0.7);
       color: white;
-      border-radius: 10px;
-      padding: 20px;
-      display: none;
+      padding: 15px;
+      border-radius: 5px;
       z-index: 1000;
-      flex-direction: column;
-      gap: 10px;
+      display: none;
     }
 
     .languageButton {
       background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .languageButton:hover {
-      background-color: rgba(0, 0, 0, 0.9);
-    }
-
-    #closeMenuButton {
-      background-color: red;
       color: white;
       border: none;
       padding: 10px 20px;
@@ -118,24 +101,25 @@
       cursor: pointer;
       border-radius: 5px;
     }
+
+    .languageButton:hover {
+      background-color: rgba(0, 0, 0, 0.9);
+    }
   </style>
 </head>
 <body>
   <div class="movie-list" id="movie-list"></div>
-  <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
   <div id="videoPlayer">
     <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
-  </div>
-
-  <div id="languageMenu">
-    <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
-    <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
-    <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
-    <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
-    <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
-    <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
-    <button id="closeMenuButton" onclick="closeLanguageMenu()">Zatvori</button>
+    <div id="languageMenu">
+      <button class="languageButton" onclick="changeLanguage('sr')">Srpski</button>
+      <button class="languageButton" onclick="changeLanguage('hr')">Hrvatski</button>
+      <button class="languageButton" onclick="changeLanguage('mk')">Makedonski</button>
+      <button class="languageButton" onclick="changeLanguage('bs')">Bosanski</button>
+      <button class="languageButton" onclick="changeLanguage('sl')">Slovenski</button>
+      <button class="languageButton" onclick="changeLanguage('en')">Engleski</button>
+    </div>
   </div>
 
   <script>
@@ -186,43 +170,19 @@
     function displayVideoPlayer(movieId) {
       currentMovieId = movieId;
       videoPlayer.style.display = 'flex';
-      const selectedLang = 'sr';
+      const selectedLang = 'sr'; // Postavite podrazumevani jezik
       const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
-      videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`; // Isključivanje kontrole iframe-a
+      videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
+      languageMenu.style.display = 'block';
     }
 
     function changeLanguage(lang) {
       if (currentMovieId) {
         const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`; // Isključivanje kontrole iframe-a
+        videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
+        languageMenu.style.display = 'none'; // Zatvori meni nakon što promenite jezik
       }
     }
-
-    function openLanguageMenu() {
-      languageMenu.style.display = 'flex';
-    }
-
-    function closeLanguageMenu() {
-      languageMenu.style.display = 'none';
-      videoIframe.focus();
-    }
-
-    let backPressCount = 0;
-
-    // Praćenje kada korisnik pritisne dugme "back"
-    document.addEventListener('keydown', function(event) {
-      if (event.key === "ArrowLeft" || event.key === "Backspace") { // Ako korisnik pritisne "back" ili "ArrowLeft"
-        if (backPressCount === 0) {
-          // Ako je prvi pritisak, otvori meni
-          openLanguageMenu();
-          backPressCount++;
-        } else {
-          // Ako je drugi pritisak, zatvori meni i vrati se na prethodni ekran
-          closeLanguageMenu();
-          backPressCount = 0;
-        }
-      }
-    });
 
     fetchMovies();
   </script>
