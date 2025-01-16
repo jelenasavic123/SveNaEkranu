@@ -18,7 +18,7 @@
     }
 
     .movie-list {
-      display: flex;a
+      display: flex;
       flex-wrap: wrap;
       gap: 14px;
       justify-content: center;
@@ -126,6 +126,7 @@
 
   <div id="videoPlayer">
     <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
+    <button id="closePlayerButton" style="position: absolute; bottom: 20px; left: 20px; padding: 10px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 5px;">Zatvori</button>
   </div>
 
   <div id="languageMenu">
@@ -144,7 +145,9 @@
     const movieList = document.getElementById('movie-list');
     const videoPlayer = document.getElementById('videoPlayer');
     const videoIframe = document.getElementById('videoIframe');
+    const closePlayerButton = document.getElementById('closePlayerButton');
     const languageMenu = document.getElementById('languageMenu');
+    const closeMenuButton = document.getElementById('closeMenuButton');
 
     const languageUrls = {
       sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
@@ -156,8 +159,8 @@
     };
 
     let currentMovieId = null;
-    let keyDownTime = 0;
-    let keyHeld = false;
+    let selectedLang = 'sr';
+    let isVideoPlaying = false;
 
     function fetchMovies() {
       let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=us-SR&with_watch_providers=8&watch_region=US`;
@@ -175,7 +178,7 @@
             movieTitle.textContent = movie.title;
             movieItem.appendChild(movieTitle);
             movieItem.addEventListener('click', () => {
-              displayVideoPlayer(movie.id);
+              displayLanguageMenu(movie.id);
             });
             movieList.appendChild(movieItem);
           });
@@ -185,69 +188,41 @@
         });
     }
 
-    function displayVideoPlayer(movieId) {
+    function displayLanguageMenu(movieId) {
       currentMovieId = movieId;
-      videoPlayer.style.display = 'flex';
-      const selectedLang = 'sr';
-      const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
-      videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`; // Isključivanje kontrole iframe-a
+      languageMenu.style.display = 'flex';
     }
 
     function changeLanguage(lang) {
-      if (currentMovieId) {
-        const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
-        videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`; // Isključivanje kontrole iframe-a
-      }
-    }
-
-    function openLanguageMenu() {
-      languageMenu.style.display = 'flex';
-      document.querySelector('.languageButton').focus();  // Fokusiraj prvi jezički dugme
+      selectedLang = lang;
+      const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
+      videoIframe.src = `${videoUrl}?autoplay=1&muted=false&controls=0`;
+      closeLanguageMenu(); // Zatvori jezički meni
+      isVideoPlaying = true;
+      videoPlayer.style.display = 'flex';
     }
 
     function closeLanguageMenu() {
       languageMenu.style.display = 'none';
-      videoIframe.focus();
     }
 
-    // Praćenje da li je fokus na meniju za jezike
-    let menuFocused = false;
+    function closeVideoPlayer() {
+      videoPlayer.style.display = 'none';
+      isVideoPlaying = false;
+      openLanguageMenu(); // Ponovno otvori jezički meni
+    }
 
-    document.addEventListener('keydown', function(event) {
-      if (event.key === "ArrowDown" && !menuFocused) {
-        if (!keyHeld) {
-          keyDownTime = Date.now();
-          keyHeld = true;
-
-          setTimeout(() => {
-            if (keyHeld && Date.now() - keyDownTime >= 2000) {
-              openLanguageMenu();
-            }
-          }, 2000);
-        }
+    function openLanguageMenu() {
+      if (!isVideoPlaying) {
+        languageMenu.style.display = 'flex';
       }
+    }
+
+    closePlayerButton.addEventListener('click', () => {
+      closeVideoPlayer();
     });
 
-    document.addEventListener('keyup', function(event) {
-      if (event.key === "ArrowDown") {
-        keyHeld = false;
-      }
-    });
-
-    // Kada je fokus na meniju, onemogućujemo akciju strelice na dole
-    document.addEventListener('focusin', function(event) {
-      if (event.target.closest('#languageMenu')) {
-        menuFocused = true;
-      }
-    });
-
-    document.addEventListener('focusout', function(event) {
-      if (!event.target.closest('#languageMenu')) {
-        menuFocused = false;
-      }
-    });
-
-    fetchMovies();
+    fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
 </body>
 </html>
