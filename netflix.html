@@ -191,7 +191,6 @@
     };
 
     let currentMovieId = null;
-    let currentLanguage = sessionStorage.getItem('currentLanguage') || 'sr'; // Učitaj prethodni odabrani jezik iz sessionStorage
 
     // Funkcija za učitavanje filmova
     function fetchMovies() {
@@ -228,20 +227,24 @@
         .then(response => response.json())
         .then(data => {
           const movie = data;
-          document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-          document.getElementById('moviePopupTitle').textContent = movie.title;
-          document.getElementById('moviePopupOverview').textContent = movie.overview;
-          document.getElementById('moviePopupReleaseDate').textContent = movie.release_date;
-          document.getElementById('moviePopupGenres').textContent = movie.genres.map(genre => genre.name).join(', ');
-
-          // Prikazivanje popupa
-          moviePopup.style.display = 'flex';
-          sessionStorage.setItem('moviePopupOpen', 'true'); // Čuvanje stanja popupa
           
-          // Postavljanje fokusa na dugme za prethodno izabrani jezik
-          setTimeout(() => {
-            document.getElementById(currentLanguage).focus();
-          }, 0);
+          // Sačuvaj podatke u sessionStorage
+          sessionStorage.setItem('movieId', movie.id);
+          sessionStorage.setItem('movieTitle', movie.title);
+          sessionStorage.setItem('moviePoster', `https://image.tmdb.org/t/p/w500${movie.poster_path}`);
+          sessionStorage.setItem('movieOverview', movie.overview);
+          sessionStorage.setItem('movieReleaseDate', movie.release_date);
+          sessionStorage.setItem('movieGenres', movie.genres.map(genre => genre.name).join(', '));
+
+          // Prikazivanje podataka u pop-upu
+          document.getElementById('moviePopupImage').src = sessionStorage.getItem('moviePoster');
+          document.getElementById('moviePopupTitle').textContent = sessionStorage.getItem('movieTitle');
+          document.getElementById('moviePopupOverview').textContent = sessionStorage.getItem('movieOverview');
+          document.getElementById('moviePopupReleaseDate').textContent = sessionStorage.getItem('movieReleaseDate');
+          document.getElementById('moviePopupGenres').textContent = sessionStorage.getItem('movieGenres');
+
+          // Otvori pop-up
+          moviePopup.style.display = 'flex';
         })
         .catch(error => {
           console.error('Greška pri učitavanju podataka o filmu:', error);
@@ -250,9 +253,6 @@
 
     // Funkcija za promenu jezika
     function changeLanguage(lang) {
-      currentLanguage = lang;
-      sessionStorage.setItem('currentLanguage', lang); // Čuvanje odabranog jezika u sessionStorage
-
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
       window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
@@ -260,7 +260,6 @@
     // Funkcija za zatvaranje popup-a
     function closePopup() {
       moviePopup.style.display = 'none';
-      sessionStorage.setItem('moviePopupOpen', 'false'); // Čuvanje stanja popupa u sessionStorage
     }
 
     // Funkcija za zatvaranje jezickog menija
@@ -268,13 +267,25 @@
       languageMenu.style.display = 'none';
     }
 
-    // Provera da li treba da se otvori popup pri učitavanju stranice
-    if (sessionStorage.getItem('moviePopupOpen') === 'true') {
-      moviePopup.style.display = 'flex';
-      setTimeout(() => {
-        document.getElementById(currentLanguage).focus(); // Fokusiranje na prethodno selektovani jezik
-      }, 0);
-    }
+    // Funkcija koja se poziva kada se učita stranica
+    window.addEventListener('load', function() {
+      // Proverite da li su podaci o filmu sačuvani u sessionStorage
+      if (sessionStorage.getItem('movieId')) {
+        document.getElementById('moviePopupImage').src = sessionStorage.getItem('moviePoster');
+        document.getElementById('moviePopupTitle').textContent = sessionStorage.getItem('movieTitle');
+        document.getElementById('moviePopupOverview').textContent = sessionStorage.getItem('movieOverview');
+        document.getElementById('moviePopupReleaseDate').textContent = sessionStorage.getItem('movieReleaseDate');
+        document.getElementById('moviePopupGenres').textContent = sessionStorage.getItem('movieGenres');
+
+        // Prikazivanje pop-upa
+        moviePopup.style.display = 'flex';
+
+        // Postavljanje fokusa na dugme za "Srpski" jezik
+        setTimeout(() => {
+          document.getElementById('sr').focus();
+        }, 0);
+      }
+    });
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
