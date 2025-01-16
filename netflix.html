@@ -178,6 +178,16 @@
 
       // Prikazivanje prvih filmova
       fetchMovies();
+
+      // Dodavanje event listenera za tastere sa daljinskog upravljača
+      document.addEventListener('keydown', function(event) {
+        if (event.key === '1') {  // Ako pritisne taster "1"
+          // Aktiviraj fokus na padajući meni
+          languageSelect.focus();
+          // Pokušaj da otvoriš meni (na nekim uređajima ovo može biti potrebno)
+          languageSelect.click(); // Ovo može otvoriti meni na određenim uređajima
+        }
+      });
     </script>
   </body>
 </html>
