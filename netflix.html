@@ -31,6 +31,7 @@
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s ease;
+        cursor: pointer;
       }
       .movie-item:hover {
         transform: scale(1.05);
@@ -86,12 +87,6 @@
         border: none;
         border-radius: 5px;
         z-index: 1000;
-        transition: box-shadow 0.3s ease;
-      }
-
-      /* Fokus na select kada je aktivan */
-      #languageSelect:focus {
-        box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.7);
       }
 
       iframe:focus {
@@ -104,20 +99,23 @@
     <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
     <!-- Video Player -->
-    <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
-    <select id="languageSelect" tabindex="0">
-      <option value="sr">Srpski</option>
-      <option value="hr">Hrvatski</option>
-      <option value="mk">Makedonski</option>
-      <option value="bs">Bosanski</option>
-      <option value="sl">Slovenski</option>
-      <option value="en">Engleski</option>
-    </select>
+    <div id="videoPlayer">
+      <iframe id="videoIframe" src="" frameborder="0" allowfullscreen tabindex="0"></iframe>
+      <select id="languageSelect" tabindex="1">
+        <option value="sr">Srpski</option>
+        <option value="hr">Hrvatski</option>
+        <option value="mk">Makedonski</option>
+        <option value="bs">Bosanski</option>
+        <option value="sl">Slovenski</option>
+        <option value="en">Engleski</option>
+      </select>
+    </div>
 
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739'; // Zameni sa svojim TMDb API ključem
       const baseUrl = `https://api.themoviedb.org/3/`;
       const movieList = document.getElementById('movie-list');
+      const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
       const languageSelect = document.getElementById('languageSelect');
 
@@ -163,7 +161,7 @@
       // Funkcija za prikazivanje video player-a
       function displayVideoPlayer(movieId) {
         currentMovieId = movieId; // Čuvanje movieId
-        videoIframe.style.display = 'block';
+        videoPlayer.style.display = 'flex'; // Prikazivanje video player-a
         const selectedLang = languageSelect.value;
         const videoUrl = languageUrls[selectedLang].replace("{movieId}", movieId);
         
@@ -171,7 +169,7 @@
         videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
         
         // Dodavanje fokusa na video iframe
-        videoIframe.focus(); // Ovo osigurava da se iframe fokusira na video player
+        videoIframe.focus(); // Fokus na video player
       }
 
       // Promena jezika kada korisnik izabere novi jezik
@@ -180,22 +178,6 @@
           const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
           videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
-        }
-      });
-
-      // Dodavanje event listener-a za focus da se vrati fokus na video player kada izađemo iz selekta
-      languageSelect.addEventListener('blur', function() {
-        videoIframe.focus(); // Prebacuje fokus na iframe
-      });
-
-      // Dodavanje event listener-a za keydown da se omogući navigacija
-      languageSelect.addEventListener('keydown', function(event) {
-        if (event.key === 'Tab') {
-          setTimeout(() => {
-            if (document.activeElement === languageSelect) {
-              videoIframe.focus();
-            }
-          }, 0);
         }
       });
 
