@@ -132,6 +132,12 @@
       background-color: red;
     }
 
+    /* Oznacavanje fokusa sa crvenom bojom */
+    .languageButton:focus {
+      outline: 2px solid red;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+
     #closeMenuButton {
       background-color: red;
       color: white;
@@ -141,6 +147,13 @@
       cursor: pointer;
       border-radius: 5px;
       margin-top: 20px;
+    }
+
+    #popupMessage {
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 20px;
     }
   </style>
 </head>
@@ -161,6 +174,7 @@
         
         <!-- Dodavanje jezičkog menija -->
         <div id="languageMenu">
+          <div id="popupMessage">Izaberite drugi jezik za film</div>
           <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
           <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
           <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
@@ -239,13 +253,14 @@
           // Ako je jezik ranije sačuvan, postavi fokus na odgovarajući jezik
           const savedLanguage = sessionStorage.getItem('selectedLanguage');
           if (savedLanguage) {
-            document.getElementById(savedLanguage).focus();
             document.getElementById(savedLanguage).classList.add('selectedLanguage');
+            setTimeout(() => {
+              document.getElementById(savedLanguage).focus();
+            }, 0);
           } else {
             // Ako nije sačuvan jezik, postavi fokus na Srpski
             setTimeout(() => {
               document.getElementById('sr').focus();
-              document.getElementById('sr').classList.add('selectedLanguage');
             }, 0);
           }
 
