@@ -186,9 +186,20 @@
         }
       });
 
-      // Dodajemo event listener za "blur" da bismo vratili fokus na video player kada se izlazi iz select-a
+      // Dodavanje event listener-a za focus da se vrati fokus na video player kada izađemo iz selekta
       languageSelect.addEventListener('blur', function() {
-        videoIframe.focus(); // Vraća fokus na iframe kada se izlazi iz select-a
+        videoIframe.focus(); // Prebacuje fokus na iframe
+      });
+
+      // Dodavanje event listener-a za keydown da se omogući navigacija
+      languageSelect.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+          setTimeout(() => {
+            if (document.activeElement === languageSelect) {
+              videoIframe.focus();
+            }
+          }, 0);
+        }
       });
 
       // Prikazivanje prvih filmova
