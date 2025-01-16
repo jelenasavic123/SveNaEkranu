@@ -114,6 +114,21 @@
       iframe:focus, #languageSelect:focus {
         box-shadow: 0 0 10px red; /* Dodavanje svetleće crvene ivice */
       }
+
+      /* Skriven jezik meni dok ne bude prikazan */
+      #languageSelectWrapper {
+        visibility: hidden; /* Meni je inicijalno nevidljiv */
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body>
@@ -137,6 +152,18 @@
       </div>
     </div>
 
+    <!-- Meni za izbor jezika -->
+    <div id="languageSelectWrapper">
+      <select id="languageSelectMenu" onchange="changeLanguage()">
+        <option value="sr">Srpski</option>
+        <option value="hr">Hrvatski</option>
+        <option value="mk">Makedonski</option>
+        <option value="bs">Bosanski</option>
+        <option value="sl">Slovenski</option>
+        <option value="en">Engleski</option>
+      </select>
+    </div>
+
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739'; // Zameni sa svojim TMDb API ključem
       const baseUrl = `https://api.themoviedb.org/3/`;
@@ -144,6 +171,13 @@
       const videoPlayer = document.getElementById('videoPlayer');
       const videoIframe = document.getElementById('videoIframe');
       const languageSelect = document.getElementById('languageSelect');
+      const fullScreenButton = document.getElementById('fullScreenButton');
+      const languageSelectWrapper = document.getElementById('languageSelectWrapper');
+      const languageSelectMenu = document.getElementById('languageSelectMenu');
+
+      let currentMovieId = null; // Čuvanje trenutnog movieId
+      let langTimeout;
+      let isHoldingButton = false;
 
       // Specifični URL-ovi za svaki jezik
       const languageUrls = {
@@ -154,8 +188,6 @@
         sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
       };
-
-      let currentMovieId = null; // Čuvanje trenutnog movieId
 
       // Učitavanje filmova
       function fetchMovies() {
@@ -195,14 +227,15 @@
         videoIframe.src = `${videoUrl}?autoplay=1&muted=false`;  // Autoplay sa zvukom
       }
 
-      // Promena jezika kada korisnik izabere novi jezik
-      languageSelect.addEventListener('change', function() {
+      // Funkcija za promenu jezika
+      function changeLanguage() {
+        const selectedLang = languageSelectMenu.value;
         if (currentMovieId) {
-          const selectedLang = languageSelect.value;
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
           videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
         }
-      });
+        languageSelectWrapper.style.visibility = 'hidden'; // Sakrij meni
+      }
 
       // Funkcija za prebacivanje u full-screen režim
       function toggleFullScreen() {
@@ -212,6 +245,19 @@
           document.exitFullscreen().catch(err => console.log(`Greška pri izlasku iz full-screen: ${err.message}`));
         }
       }
+
+      // Detekcija dugmeta i prikazivanje menija nakon zadržavanja
+      fullScreenButton.addEventListener('mousedown', () => {
+        isHoldingButton = true;
+        langTimeout = setTimeout(() => {
+          languageSelectWrapper.style.visibility = 'visible'; // Pokaži meni
+        }, 3000); // Ako se dugme drži 3 sekunde
+      });
+
+      fullScreenButton.addEventListener('mouseup', () => {
+        clearTimeout(langTimeout);
+        isHoldingButton = false;
+      });
 
       // Prikazivanje prvih filmova
       fetchMovies();
