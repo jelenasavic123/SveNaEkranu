@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filmoteka</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -59,7 +60,6 @@
       border-radius: 5px;
     }
 
-    /* Popup za film */
     #moviePopup {
       display: none;
       position: fixed;
@@ -104,7 +104,6 @@
       border-radius: 5px;
     }
 
-    /* Jezički meni u pop-up prozoru */
     #languageMenu {
       display: flex;
       flex-direction: column;
@@ -127,7 +126,6 @@
       background-color: rgba(0, 0, 0, 0.9);
     }
 
-    /* Oznacavanje izabranog jezika */
     .selectedLanguage {
       background-color: red;
     }
@@ -148,7 +146,6 @@
   <div class="movie-list" id="movie-list"></div>
   <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
 
-  <!-- Popup za informacije o filmu -->
   <div id="moviePopup">
     <button id="closePopupButton" onclick="closePopup()">X</button>
     <div id="moviePopupContent">
@@ -158,8 +155,6 @@
         <p id="moviePopupOverview"></p>
         <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
         <p><strong>Žanrovi:</strong> <span id="moviePopupGenres"></span></p>
-        
-        <!-- Dodavanje jezičkog menija -->
         <div id="languageMenu">
           <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
           <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
@@ -178,9 +173,6 @@
     const baseUrl = `https://api.themoviedb.org/3/`;
     const movieList = document.getElementById('movie-list');
     const moviePopup = document.getElementById('moviePopup');
-    const closePopupButton = document.getElementById('closePopupButton');
-    const languageMenu = document.getElementById('languageMenu');
-
     const languageUrls = {
       sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
       hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
@@ -189,17 +181,14 @@
       sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
       en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
     };
-
     let currentMovieId = null;
 
-    // Funkcija za učitavanje filmova
     function fetchMovies() {
       let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=en-US`;
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          const movies = data.results;
-          movies.forEach(movie => {
+          data.results.forEach(movie => {
             const movieItem = document.createElement('div');
             movieItem.classList.add('movie-item');
             const movieImage = document.createElement('img');
@@ -214,73 +203,40 @@
             movieList.appendChild(movieItem);
           });
         })
-        .catch(error => {
-          console.error('Greška pri učitavanju filmova:', error);
-        });
+        .catch(error => console.error('Greška pri učitavanju filmova:', error));
     }
 
-    // Funkcija za prikazivanje popup prozora sa informacijama o filmu
     function displayMovieInfo(movieId) {
       currentMovieId = movieId;
       let url = `${baseUrl}movie/${movieId}?api_key=${apiKey}&language=en-US`;
       fetch(url)
         .then(response => response.json())
-        .then(data => {
-          const movie = data;
+        .then(movie => {
           document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
           document.getElementById('moviePopupTitle').textContent = movie.title;
           document.getElementById('moviePopupOverview').textContent = movie.overview;
           document.getElementById('moviePopupReleaseDate').textContent = movie.release_date;
           document.getElementById('moviePopupGenres').textContent = movie.genres.map(genre => genre.name).join(', ');
-
-          // Prikazivanje popupa
           moviePopup.style.display = 'flex';
-
-          // Ako je jezik ranije sačuvan, postavi fokus na odgovarajući jezik
           const savedLanguage = sessionStorage.getItem('selectedLanguage');
           if (savedLanguage) {
-            document.getElementById(savedLanguage).focus();
             document.getElementById(savedLanguage).classList.add('selectedLanguage');
-          } else {
-            // Ako nije sačuvan jezik, postavi fokus na Srpski
-            setTimeout(() => {
-              document.getElementById('sr').focus();
-            }, 0);
           }
-
-          // Sačuvaj status pop-upa
-          sessionStorage.setItem('popupOpen', 'true');
         })
-        .catch(error => {
-          console.error('Greška pri učitavanju podataka o filmu:', error);
-        });
+        .catch(error => console.error('Greška pri učitavanju podataka o filmu:', error));
     }
 
-    // Funkcija za promenu jezika
     function changeLanguage(lang) {
-      // Sačuvaj izabrani jezik u sessionStorage
       sessionStorage.setItem('selectedLanguage', lang);
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
-      window.location.href = videoUrl; // Preusmeri korisnika na URL videa
+      window.open(videoUrl, '_blank');
     }
 
-    // Funkcija za zatvaranje popup-a
     function closePopup() {
       moviePopup.style.display = 'none';
-      // Resetuj izabrani jezik u sessionStorage kada se zatvori pop-up
-      sessionStorage.removeItem('selectedLanguage');
-      sessionStorage.removeItem('popupOpen');
     }
 
-    // Provera sessionStorage kada se učita stranica
-    window.onload = function() {
-      const popupOpen = sessionStorage.getItem('popupOpen');
-      if (popupOpen === 'true') {
-        moviePopup.style.display = 'flex'; // Ponovno otvoriti pop-up
-      }
-    }
-
-    fetchMovies(); // Učitaj filmove pri pokretanju stranice
+    window.onload = fetchMovies;
   </script>
 </body>
 </html>
