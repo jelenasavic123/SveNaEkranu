@@ -37,10 +37,17 @@
         transform: scale(1.05);
       }
       .movie-item img {
-        width: 70%;
+        width: 100%;
+        /* Poster popunjava širinu kartice */
+        height: auto;
+        /* Skaliranje prema proporcijama */
+        display: block;
+        /* Uklanja razmak ispod slike */
         border-bottom: 1px solid #333;
+        object-fit: cover;
+        /* Prilagođava slike unutar određenog okvira (opcionalno) */
       }
-      .movie-item h3 {
+      vie-item h3 {
         font-size: 11px;
         margin: 1px;
         text-overflow: ellipsis;
@@ -185,7 +192,7 @@
       }
       function displayMovieInfo(movieId) {
         currentMovieId = movieId;
-        fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=en-EN`)
           .then(response => response.json())
           .then(data => {
             document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
@@ -194,7 +201,7 @@
             document.getElementById('moviePopupReleaseDate').textContent = data.release_date;
             document.getElementById('moviePopup').style.display = 'flex';
             // Fokus na dugme za izbor srpskog jezika
-            document.getElementById('sr').focus();
+            document.getElementById('en').focus();
           });
       }
       function changeLanguage(language) {
