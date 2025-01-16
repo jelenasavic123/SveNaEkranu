@@ -131,6 +131,7 @@
 
     let currentMovieId = null;
 
+    // Funkcija za učitavanje filmova
     function fetchMovies() {
       let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=us-SR&with_watch_providers=8&watch_region=US`;
       fetch(url)
@@ -157,18 +158,28 @@
         });
     }
 
+    // Funkcija za prikazivanje jezickog menija
     function displayLanguageMenu(movieId) {
       currentMovieId = movieId;
+      sessionStorage.setItem('currentMovieId', currentMovieId); // Čuvanje ID filma u sessionStorage
       languageMenu.style.display = 'flex';
     }
 
+    // Funkcija za promenu jezika
     function changeLanguage(lang) {
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
-      window.location.href = videoUrl;  // Preusmeri korisnika na URL videa
+      window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
 
+    // Funkcija za zatvaranje jezickog menija
     function closeLanguageMenu() {
       languageMenu.style.display = 'none';
+    }
+
+    // Proveravamo da li postoji sačuvan ID filma u sessionStorage
+    if (sessionStorage.getItem('currentMovieId')) {
+      currentMovieId = sessionStorage.getItem('currentMovieId');
+      displayLanguageMenu(currentMovieId); // Prikazujemo popup meni kada se korisnik vrati
     }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
