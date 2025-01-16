@@ -223,6 +223,8 @@
           const videoUrl = languageUrls[selectedLang].replace("{movieId}", currentMovieId);
           videoIframe.src = `${videoUrl}?autoplay=1&muted=false`; // Autoplay sa zvukom
         }
+        // Sakrij jezički meni nakon izbora jezika
+        languageMenu.style.display = 'none';
       });
 
       // Funkcija za prebacivanje u full-screen režim
@@ -243,11 +245,11 @@
 
             // Startujemo interval da proverimo da li je taster držan
             setTimeout(() => {
-              if (keyHeld && Date.now() - keyDownTime >= 4000) {
-                // Ako je taster držan 4 sekunde, prikažemo jezički meni
+              if (keyHeld && Date.now() - keyDownTime >= 2000) {
+                // Ako je taster držan 2 sekunde, prikažemo jezički meni
                 languageMenu.style.display = 'block';
               }
-            }, 4000);
+            }, 2000);
           }
         }
       });
