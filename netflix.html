@@ -247,6 +247,9 @@
               document.getElementById('sr').focus();
             }, 0);
           }
+
+          // Sačuvaj status pop-upa
+          sessionStorage.setItem('popupOpen', 'true');
         })
         .catch(error => {
           console.error('Greška pri učitavanju podataka o filmu:', error);
@@ -266,21 +269,16 @@
       moviePopup.style.display = 'none';
       // Resetuj izabrani jezik u sessionStorage kada se zatvori pop-up
       sessionStorage.removeItem('selectedLanguage');
+      sessionStorage.removeItem('popupOpen');
     }
 
-    // Provera sessionStorage kada se stranica učita
+    // Provera sessionStorage kada se učita stranica
     window.onload = function() {
-      const savedLanguage = sessionStorage.getItem('selectedLanguage');
-      const isPopupOpen = sessionStorage.getItem('popupOpen');
-
-      if (isPopupOpen) {
-        moviePopup.style.display = 'flex';
-        if (savedLanguage) {
-          document.getElementById(savedLanguage).focus();
-          document.getElementById(savedLanguage).classList.add('selectedLanguage');
-        }
+      const popupOpen = sessionStorage.getItem('popupOpen');
+      if (popupOpen === 'true') {
+        moviePopup.style.display = 'flex'; // Ponovno otvoriti pop-up
       }
-    };
+    }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
   </script>
