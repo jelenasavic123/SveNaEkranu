@@ -150,7 +150,6 @@
 
   <!-- Popup za informacije o filmu -->
   <div id="moviePopup">
-    <!-- Dugme za zatvaranje (X) u gornjem desnom kutu -->
     <button id="closePopupButton" onclick="closePopup()">X</button>
     <div id="moviePopupContent">
       <img id="moviePopupImage" src="" alt="Movie Poster">
@@ -238,7 +237,7 @@
           moviePopup.style.display = 'flex';
 
           // Ako je jezik ranije sačuvan, postavi fokus na odgovarajući jezik
-          const savedLanguage = localStorage.getItem('selectedLanguage');
+          const savedLanguage = sessionStorage.getItem('selectedLanguage');
           if (savedLanguage) {
             document.getElementById(savedLanguage).focus();
           } else {
@@ -255,8 +254,8 @@
 
     // Funkcija za promenu jezika
     function changeLanguage(lang) {
-      // Sačuvaj izabrani jezik u localStorage
-      localStorage.setItem('selectedLanguage', lang);
+      // Sačuvaj izabrani jezik u sessionStorage
+      sessionStorage.setItem('selectedLanguage', lang);
       const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
       window.location.href = videoUrl; // Preusmeri korisnika na URL videa
     }
@@ -264,8 +263,8 @@
     // Funkcija za zatvaranje popup-a
     function closePopup() {
       moviePopup.style.display = 'none';
-      // Resetuj izabrani jezik u localStorage kada se zatvori pop-up
-      localStorage.removeItem('selectedLanguage');
+      // Resetuj izabrani jezik u sessionStorage kada se zatvori pop-up
+      sessionStorage.removeItem('selectedLanguage');
     }
 
     fetchMovies(); // Učitaj filmove pri pokretanju stranice
