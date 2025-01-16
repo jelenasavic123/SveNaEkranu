@@ -213,10 +213,64 @@
       #saveToWatchLater:hover {
         background-color: #f40612;
       }
+      
+      
+   .custom-alert {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8); /* Providna crna pozadina */
+  padding: 30px;
+  color: white; /* Bele boje teksta */
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Snažnija senka */
+  border-radius: 12px; /* Veće zaobljenje ivica */
+  z-index: 2000;
+  width: 90%; /* Prilagodljivo za manje ekrane */
+  max-width: 400px; /* Maksimalna širina */
+  font-family: 'Arial', sans-serif; /* Moderni font */
+}
+
+.custom-alert p {
+  margin: 0 0 20px;
+  font-size: 18px; /* Veći tekst za naslov */
+  line-height: 1.5;
+}
+
+.custom-alert button {
+  padding: 10px 20px;
+  background-color: #e50914; /* Netflix crvena */
+  color: white; /* Bele boje teksta */
+  border: none;
+  border-radius: 8px; /* Zaobljene ivice */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Glatka tranzicija */
+}
+
+.custom-alert button:hover {
+  background-color: #f40612; /* Svetlija crvena pri hover-u */
+  transform: scale(1.05); /* Malo povećanje */
+}
+
+.custom-alert-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Tamna providna pozadina za masku */
+  z-index: 1999; /* Ispod popupa */
+}
+
+
     </style>
   </head>
   <body>
-
     <!-- Vertikalni Sidebar -->
     <div class="sidebar">
       <ul class="sidebar-links">
@@ -252,6 +306,11 @@
         </div>
       </div>
     </div>
+    
+<div id="customAlert" class="custom-alert">
+  <p id="customAlertMessage"></p>
+  <button onclick="closeCustomAlert()">U redu</button>
+</div>
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
       const baseUrl = `https://api.themoviedb.org/3/`;
@@ -412,22 +471,52 @@
         }
       });
       function saveToWatchLater(movieId, movieTitle, moviePoster) {
-        const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
-        const movie = {
-          id: movieId,
-          title: movieTitle,
-          poster: moviePoster
-        };
-        // Proverite da li film već postoji u listi
-        const exists = watchLaterList.some(item => item.id === movieId);
-        if (!exists) {
-          watchLaterList.push(movie);
-          localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
-          alert('Film je dodat u listu Gledaj kasnije.');
-        } else {
-          alert('Film je već u listi Gledaj kasnije.');
-        }
-      }
+  const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+  const movie = {
+    id: movieId,
+    title: movieTitle,
+    poster: moviePoster
+  };
+  // Proverite da li film već postoji u listi
+  const exists = watchLaterList.some(item => item.id === movieId);
+  if (!exists) {
+    watchLaterList.push(movie);
+    localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
+    alert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
+  } else {
+    alert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
+  }
+}
+function showCustomAlert(message) {
+  const alertBox = document.getElementById('customAlert');
+  const alertMessage = document.getElementById('customAlertMessage');
+  alertMessage.textContent = message;
+  alertBox.style.display = 'block';
+}
+
+function closeCustomAlert() {
+  const alertBox = document.getElementById('customAlert');
+  alertBox.style.display = 'none';
+}
+
+function saveToWatchLater(movieId, movieTitle, moviePoster) {
+  const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+  const movie = {
+    id: movieId,
+    title: movieTitle,
+    poster: moviePoster
+  };
+  const exists = watchLaterList.some(item => item.id === movieId);
+  if (!exists) {
+    watchLaterList.push(movie);
+    localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
+    showCustomAlert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
+  } else {
+    showCustomAlert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
+  }
+}
+
+
       document.getElementById('saveToWatchLater').addEventListener('click', () => {
         const movieTitle = document.getElementById('moviePopupTitle').textContent;
         const moviePoster = document.getElementById('moviePopupImage').src;
