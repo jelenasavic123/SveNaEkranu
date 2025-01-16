@@ -80,8 +80,11 @@
       }
       #moviePopupImage {
         width: 10%;
+        margin: 1px;
         height: auto;
+        transition: color 0.3s ease;
         display: block;
+        border-radius:5px;
       }
       #moviePopupDetails {
         padding: 20px;
@@ -102,8 +105,8 @@
         background-color: #e50914;
         color: #fff;
         border: none;
-        padding: 7px 10px;
-        font-size: 0.7rem;
+        padding: 10px 20px;
+        font-size: 1rem;
         border-radius: 25px;
         cursor: pointer;
         transition: background-color 0.3s ease;
@@ -121,7 +124,7 @@
         right: 20px;
         background: none;
         border: none;
-        font-size: 4rem;
+        font-size: 2rem;
         color: #fff;
         cursor: pointer;
         transition: color 0.3s ease;
@@ -129,15 +132,6 @@
       #closePopupButton:hover {
         color: #e50914;
       }
-      
-      .languageButton:last-of-type {
-  background-color: #555; /* Neutralna boja */
-  color: #fff;
-}
-
-.languageButton:last-of-type:hover {
-  background-color: #333;
-}
     </style>
   </head>
   <body>
@@ -153,17 +147,15 @@
           <h2 id="moviePopupTitle"></h2>
           <button class="removeButton" onclick="removeFromWatchLater()">Obriši film iz omiljenog</button>
           <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
-         <div id="languageMenu">
-  <div>Izaberite jezik za film:</div>
-  <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
-  <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
-  <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
-  <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
-  <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
-  <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
-  <button class="languageButton" onclick="closePopup()">Zatvori</button>
-</div>
-
+          <div id="languageMenu">
+            <div>Izaberite jezik za film:</div>
+            <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Srpski</button>
+            <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Hrvatski</button>
+            <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Makedonski</button>
+            <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Bosanski</button>
+            <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Slovenski</button>
+            <button class="languageButton" id="en" onclick="changeLanguage('en')">Engleski</button>
+          </div>
         </div>
       </div>
     </div>
