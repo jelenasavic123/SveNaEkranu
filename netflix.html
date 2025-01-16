@@ -186,6 +186,11 @@
         }
       });
 
+      // Dodajemo event listener za "blur" da bismo vratili fokus na video player kada se izlazi iz select-a
+      languageSelect.addEventListener('blur', function() {
+        videoIframe.focus(); // Vraća fokus na iframe kada se izlazi iz select-a
+      });
+
       // Prikazivanje prvih filmova
       fetchMovies();
     </script>
