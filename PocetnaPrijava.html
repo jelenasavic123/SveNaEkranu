@@ -1,543 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Nadimci - Admin Panel</title>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+    <title>Mssovie Recommendations</title>
     <style>
-      /* Critical CSS - Only styles that affect page layout and loading */
-      body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: url('https://jelenasavic123.github.io/SveNaEkranu/pocetnahd1.JPG') center center/cover no-repeat;
-        background-color: #121212;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        overflow: hidden;
-      }
-      /* Zavesa koja pokriva ceo ekran sa poluprovidnom pozadinom */
-      #popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        flex-direction: column;
-        /* Postavlja elemente u kolonu (vertikalno) */
-      }
-      /* Sadržaj popupa u stilu Netflixa */
-      #popup-content {
-        background-color: #141414;
-        color: white;
-        padding: 40px;
-        border-radius: 10px;
-        width: 400px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-        animation: fadeIn 0.3s ease-out;
-      }
-      /* Animacija za popup */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.8);
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #fff;
         }
-        to {
-          opacity: 1;
-          transform: scale(1);
+        header {
+            background-color: #E50914;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
         }
-      }
-      /* Stil za input */
-      #popup input {
-        width: 60%;
-        padding: 10px;
-        margin: 15px 0;
-        background-color: #333;
-        color: white;
-        border: 1px solid #fff;
-        border-radius: 5px;
-        font-size: 11px;
-        box-sizing: border-box;
-      }
-      /* Stil za dugme */
-      #popup button {
-        width: 40%;
-        padding: 10px;
-        background-color: #e50914;
-        /* Netflix crvena */
-        color: white;
-        border: none;
-        border-radius: 15px;
-        font-size: 10px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-      #popup button:hover {
-        background-color: #f40612;
-        /* Tamnija crvena pri hover-u */
-      }
-      /* Status poruke */
-      #popup p {
-        font-size: 10px;
-        margin-top: 10px;
-        color: #fff;
-      }
-      /* Stil za dodatni tekst ispod login forme */
-      #info-text {
-        width: 800px;
-        margin-top: 20px;
-        font-size: 14px;
-        color: #ddd;
-        text-align: center;
-        line-height: 1.5;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      /* Stil za tekst u #info-text */
-      #info-text p {
-        margin: 10px 0;
-      }
-      #info-text strong {
-        color: #e50914;
-        /* Netflix crvena za isticanje ključnih informacija */
-      }
-      .buttons-section {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        width: 50%;
-        padding: 20px;
-        border: 3px solid rgba(255, 255, 255, 0.5);
-        border-radius: 15px;
-        box-shadow: 0 8px 11px rgba(0, 0, 0, 0.7);
-        background-color: rgba(0, 0, 0, 0.3);
-        transition: box-shadow 0.3s, border-color 0.3s;
-        margin-left: 20px;
-      }
-      .button-item {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-radius: 8px;
-        overflow: hidden;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
-        cursor: pointer;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-        width: 20%;
-      }
-      /* Lazy Load Image Optimization */
-      .button-item img {
-        width: 100%;
-        height: auto;
-        filter: brightness(0.8);
-      }
-      .button-item h3 {
-        padding: 10px;
-        margin: 0;
-        font-size: 10px;
-        color: #fff;
-      }
-      /* Style for subscription info in the top-right corner */
-      #subscription-info {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        color: white;
-        font-size: 12px;
-        background-color: rgba(0, 0, 0, 0.7);
-        padding: 5px 10px;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
-      }
-      /* Optimization - Small tweaks for faster rendering */
-      img {
-        display: block;
-        max-width: 100%;
-        height: auto;
-      }
-      /* Use media queries for responsive layouts */
-      @media (max-width: 768px) {
-        .buttons-section {
-          flex-direction: column;
-          width: 90%;
+        nav {
+            background-color: #1e1e1e;
+            padding: 10px 0;
+            text-align: center;
         }
-        .button-item {
-          width: 100%;
-          margin-bottom: 10px;
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 0 15px;
+            display: inline-block;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
-      }
-      header {
-        margin-left: 100px;
-        padding-left: 10px;
-      }
-      .navbar {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 0px;
-        padding: 50px 0;
-        position: fixed;
-        box-shadow: 0 10px 80px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.2);
-        top: 0;
-        width: 50%;
-        z-index: 100;
-        transition: width 0.3s ease;
-      }
-      .navbar a {
-        display: block;
-        text-decoration: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .navbar .nav-icon {
-        width: 30px;
-        transition: transform 0.3s ease, width 0.3s ease;
-      }
-      .navbar a:hover .nav-icon {
-        transform: scale(0.8);
-        width: 84px;
-      }
-      .navbar:hover {
-        width: 60%;
-      }
-      #popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-        color: white;
-      }
-      #popup-content {
-        background: #121212;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-      }
+        nav a:hover {
+            background-color: #E50914;
+        }
+        .movie-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .movie-card {
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .movie-card h3 {
+            font-size: 18px;
+            margin: 10px;
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+        .popup.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .popup-content {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+        .popup-content img {
+            max-width: 150px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .popup-content h2 {
+            margin: 10px 0;
+        }
+        .popup-content p {
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #E50914;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+        .more-info-btn {
+            background: #E50914;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .more-info-btn:hover {
+            background: #b20710;
+        }
+        
+        #external-content {
+            display: none;
+            padding: 20px;
+        }
+        
+        
+                nav {
+            background-color: #1e1e1e;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            margin: 0 15px;
+            display: inline-block;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #E50914;
+        }
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background-color: #E50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
     </style>
-  </head>
-  <body>
+    <script>
+        let currentMovies = [];
 
-    <!-- Popup za nadimak (login) -->
-    <div id="popup">
-      <div id="popup-content">
-        <h2>Prijavite se</h2>
-        <input type="text" id="nickname" placeholder="Ovde unesite vase pretplatnicko ime">
-        <button onclick="signIn()">Prijavi se</button>
-        <p id="status"></p>
-      </div>
-      <div style="position: fixed; bottom: 10px; right: 10px; max-width: 100px; padding: 10px; border: 1px solid rgba(0, 123, 255, 0.8); border-radius: 8px; text-align: center; font-family: Arial, sans-serif; color: #333; background-color: rgba(249, 249, 249, 0.5); pointer-events: none;" tabindex="-1">
-        <h2 style="font-size: 11px; margin-bottom: 8px; color: #fff;">Kontaktirajtae nas!</h2>
-        <p style="font-size: 10px; margin-bottom: 12px;">
-          Skenirajte QR kod za kontakt.
-        </p>
-        <a href="https://me-qr.com" style="text-decoration: none;">
-          <img src="https://cdn.me-qr.com/qr/157219997.png?v=1736373319" alt="QR kod za kontakt" style="border: 0; width: 100%; height: auto; cursor: pointer; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
-        </a>
-        <p style="font-size: 8px; color: #666; margin-top: 6px;">
-          <a href="https://me-qr.com" style="color: #007BFF; text-decoration: underline;"></a>
-        </p>
-      </div>
+        async function fetchMoviesByYear(startYear, endYear) {
+            const apiKey = '2701858e9bccab54d4d0e4931420a739';
+            const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&primary_release_date.gte=${startYear}-01-01&primary_release_date.lte=${endYear}-12-31`);
+            const data = await response.json();
+            currentMovies = data.results;
+            displayMovies(currentMovies);
+        }
 
-      <!-- Tekst ispod login forme koji je u centru -->
-      <div id="info-text">
-        <p><strong>Postanite član, kontaktirajte nas za više informacija</strong></p>
-        <p>Obratite se našem timu za sve detalje o pristupu aplikaciji sadržaju.</p>
-        <p><strong>Nudimo kompletan Netflix, Hulu, Disney+, Prime, Apple+ i jos mnogo toga.</strong></p>
-      </div>
-    </div>
-    <nav class="navbar">
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Home Icon" class="nav-icon">
-      </a>
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/marvel.html">
-        <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Popular Icon" class="nav-icon">
-      </a>
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/hulu.html">
-        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Genres Icon" class="nav-icon">
-      </a>
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/apple.html">
-        <img src="https://jelenasavic123.github.io/SveNaEkranu/apple+.jpg" alt="Top Rated Icon" class="nav-icon">
-      </a>
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/prime.html">
-        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Search Icon" class="nav-icon">
-      </a>
-      <a href="https://jelenasavic123.github.io/SveNaEkranu/dizni.html">
-        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Search Icon" class="nav-icon">
-      </a>
-    </nav>
-    <div id="content" style="display: none;">
-      <header>
-        <h1>Izaberite sadržaj</h1>
-        <p>i započnite svoju filmsku avanturu.</p>
-      </header>
-      <main>
-        <div class="buttons-section">
-          <div class="button-item" onclick="location.href='https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html'">
-            <img src="https://jelenasavic123.github.io/SveNaEkranu/strano.jpg" alt="Netflix Movies">
-            <h3>Strani Sadrzaj</h3>
-          </div>
-          <div class="button-item" onclick="location.href='https://sndekranuturske.blogspot.com/p/postovi-sa-blogger-body-font-family.html'">
-            <img src="https://jelenasavic123.github.io/SveNaEkranu/turskeserije.jpg" alt="Netflix Series">
-            <h3>Turski Sadrzaj</h3>
-          </div>
-          <div class="button-item" onclick="location.href='https://netplayz.ru/search?type=series'">
-            <img src="https://jelenasavic123.github.io/SveNaEkranu/domaci.JPG" alt="Domaće Serije">
-            <h3>Domaci Sadrzaj</h3>
-          </div>
-        </div>
-      </main>
-      <div id="subscription-info" style="display: none;">
-        Pretplata traje: <span id="remaining-days">20</span> dana
-      </div>
-      <div style="position: fixed; bottom: 10px; right: 10px; max-width: 100px; padding: 10px; border: 1px solid rgba(0, 123, 255, 0.8); border-radius: 8px; text-align: center; font-family: Arial, sans-serif; color: #333; background-color: rgba(249, 249, 249, 0.5); pointer-events: none;" tabindex="-1">
-        <h2 style="font-size: 11px; margin-bottom: 8px; color: #fff;">Kontaktirajtae nas!</h2>
-        <p style="font-size: 10px; margin-bottom: 12px;">
-          Skenirajte QR kod za kontakt.
-        </p>
-        <a href="https://me-qr.com" style="text-decoration: none;">
-          <img src="https://cdn.me-qr.com/qr/157219997.png?v=1736373319" alt="QR kod za kontakt" style="border: 0; width: 100%; height: auto; cursor: pointer; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
-        </a>
-        <p style="font-size: 8px; color: #666; margin-top: 6px;">
-          <a href="https://me-qr.com" style="color: #007BFF; text-decoration: underline;"></a>
-        </p>
-      </div>
-      <script>
-        // Firebase konfiguracija
-        const firebaseConfig = {
-          apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
-          authDomain: "svenaekranu-64477.firebaseapp.com",
-          projectId: "svenaekranu-64477",
-          storageBucket: "svenaekranu-64477.firebasestorage.app",
-          messagingSenderId: "15230160013",
-          appId: "1:15230160013:web:89144bb5079637e787e6c4",
-          measurementId: "G-PED21PPQQJ"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-        // Funkcija za prijavu sa nadimkom
-        function signIn() {
-          const nickname = document.getElementById('nickname').value;
-          const statusDiv = document.getElementById('status');
-          const popup = document.getElementById('popup');
-          if (!nickname) {
-            statusDiv.textContent = 'Unesite ime koje vam je dodeljeno od strane našeg tima za pristup sadržaju.';
-            return;
-          }
-          // Prijava kao anonimni korisnik
-          auth.signInAnonymously()
-            .then((userCredential) => {
-              // Provera da li nadimak postoji u bazi
-              db.collection('nicknames').doc(nickname).get()
-                .then((doc) => {
-                  if (doc.exists && doc.data().available) {
-                    statusDiv.textContent = 'Prijavljeni ste kao: ' + nickname;
-                    popup.style.display = 'none';
-                    // Sačuvaj nadimak i datum isteka pretplate u localStorage
-                    const expirationDate = doc.data().expirationDate; // Pretpostavljam da je ovo datum u bazi
-                    localStorage.setItem('nickname', nickname);
-                    localStorage.setItem('expirationDate', expirationDate);
-                    // Otvori sadržaj stranice nakon prijave
-                    document.getElementById('content').style.display = 'block';
-                    updateSubscriptionInfo(expirationDate); // Ažuriraj informaciju o pretplati
-                  } else {
-                    statusDiv.textContent = 'Nemate aktivnu nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
-                  }
-                })
-                .catch((error) => {
-                  console.error('Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.: ', error);
-                  statusDiv.textContent = 'Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
-                });
-            })
-            .catch((error) => {
-              console.error('Greška pri prijavi: ', error);
-              statusDiv.textContent = 'Nemate aktivan nalog. Obratite se našem timu kako bismo vam kreirali nalog i omogućili pristup sadržaju.';
+        function displayMovies(movies) {
+            const container = document.querySelector('.movie-container');
+            container.innerHTML = '';
+
+            movies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.classList.add('movie-card');
+
+                const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
+                movieCard.innerHTML = `
+                    <img src="${posterPath}" alt="${movie.title}">
+                    <h3>${movie.title}</h3>
+                `;
+
+                movieCard.addEventListener('click', () => showPopup(movie));
+                container.appendChild(movieCard);
             });
         }
-        // Funkcija za ažuriranje broja dana pretplate
-        function updateSubscriptionInfo(expirationDate) {
-          const remainingDaysElement = document.getElementById('remaining-days');
-          const subscriptionInfoElement = document.getElementById('subscription-info');
-          // Pretpostavljamo da expirationDate dolazi u formatu 'yyyy-mm-dd'
-          const expiration = new Date(expirationDate);
-          const today = new Date();
-          const diffTime = expiration - today;
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          if (diffDays >= 0) {
-            remainingDaysElement.textContent = diffDays;
-            subscriptionInfoElement.style.display = 'block';
-          } else {
-            remainingDaysElement.textContent = 0;
-            subscriptionInfoElement.style.display = 'block';
-          }
+
+        function showPopup(movie) {
+            const popup = document.querySelector('.popup');
+            const popupContent = document.querySelector('.popup-content');
+
+            const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
+            popupContent.innerHTML = `
+                <button class="close-btn" onclick="closePopup()">X</button>
+                <img src="${posterPath}" alt="${movie.title}">
+                <h2>${movie.title}</h2>
+                <p>${movie.overview || 'No description available.'}</p>
+                <p><strong>Release Date:</strong> ${movie.release_date}</p>
+                <p><strong>Rating:</strong> ${movie.vote_average}</p>
+                <a href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" class="more-info-btn">More Info & Recommendations</a>
+            `;
+
+            popup.classList.add('active');
         }
-        // Provera prijave prilikom učitavanja stranice
-        window.onload = function() {
-          const nickname = localStorage.getItem('nickname');
-          const expirationDate = localStorage.getItem('expirationDate');
-          if (nickname && expirationDate) {
-            // Ako postoji sačuvani nadimak u localStorage, proveri da li je validan u Firebase-u
-            db.collection('nicknames').doc(nickname).get()
-              .then((doc) => {
-                if (doc.exists && doc.data().available) {
-                  // Ako je nadimak validan, otvori sadržaj
-                  console.log("Korisnik je već prijavljen sa nadimkom: " + nickname);
-                  document.getElementById('content').style.display = 'block';
-                  updateSubscriptionInfo(expirationDate); // Ažuriraj informaciju o pretplati
-                } else {
-                  // Ako nije validan, izbriši ga iz localStorage i prikazi popup
-                  localStorage.removeItem('nickname');
-                  localStorage.removeItem('expirationDate');
-                  document.getElementById('popup').style.display = 'flex';
-                }
-              })
-              .catch((error) => {
-                console.error('Greška pri proveri nadimka: ', error);
-                document.getElementById('popup').style.display = 'flex';
-              });
-          } else {
-            document.getElementById('popup').style.display = 'flex';
-          }
-        };
-      </script>
-      <script>
-        /* ------------------- */
-        /* ACCESS DENIED ERROR */
-        /* ------------------- */
-        function display_access_denied_error() {
-          document.body.innerHTML = '<div id="access-denied-error" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: url(\'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG\') no-repeat center center; background-size: cover;">' +
-            '<div style="text-align: center; background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">' +
-            '<h1 style="font-size: 32px; margin-bottom: 20px;">Latest Updates on Turkish Series</h1>' // Naslov iznad dugmeta
-            +
-            '<button onclick="window.location.href=\'https://jelenasavic123.github.io/SveNaEkranu/sajt-za-svenaekranu-blokador-ne-brisi.html\'" style="padding: 20px 40px; font-size: 24px; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;">' +
-            'Poseti Sajt' +
-            '</button>' +
-            '<p style="margin-top: 20px; font-size: 18px; color: #333;">Follow the latest news, reviews, and trends in the world of series. Stay up-to-date with premieres.</p>' // Tekst ispod dugmeta
-            +
-            '</div>' +
-            '</div>'
+
+        function closePopup() {
+            const popup = document.querySelector('.popup');
+            popup.classList.remove('active');
         }
-        /* ------------------------- */
-        /* BLOCK BLACKLIST COUNTRIES */
-        /* ------------------------- */
-        function block_blacklist_countries() {
-          // Blacklist countries
-          const blacklist_countries = [
-            "AR", // Ankara
-            "AD", // Adana
-            "IS", // Istanbul
-            "IZ", // Izmir
-            "US", // United States
-            "VN", // Vietnam
-            "UM", // United States Minor Outlying Islands
-            "SG", // Singapore
-            "NZ", // New Zealand
-            "MX", // Mexico
-            "LR", // Liberia
-            "IL", // Israel
-            "IE", // Ireland
-            "FI", // Finland
-            "EG", // Egypt
-            "KY", // Cayman Islands
-            "CA", // Canada
-            "BD", // Bangladesh
-            "AR", // Argentina
-            "AQ", // Antarctica
-            "AX", // Aland Islands
-            "AS", // American Samoa
-            "BR", // Brazil
-            "CN", // China 
-            "HK", // Hong Kong
-            "CX", // Christmas Island
-            "CC", // Cocos
-            "CK", // Cook Islands
-            "GF", // French Guiana
-            "IN", // India
-            "KP", // Korea
-            "KR", // KR
-            "MY", // Malaysia
-            "MC", // Monaco
-            "PL", // Poland
-            "SA", // Saudi Arabia
-            "UM", // Ukrajina
-            "AE", // Ujedinjeni Arapski Emirati
-            "JP", // Japan
-            "NG", //  Nigeria
-            "PH", //  Philippines 
-            "KE", //  Philippines 
-            "GB", //  United Kingdom 
-          ]
-          // Detecting the users country
-          function get_country_code(api_url) {
-            fetch(api_url, {
-                method: 'GET'
-              })
-              .then(response => response.json()) // Getting ip info as json
-              .then(result => {
-                if (blacklist_countries.includes(result.country)) { // If my ip country code is in blacklist
-                  display_access_denied_error() // Access denied error
-                }
-              })
-              .catch(error => console.log('error', error))
-          }
-          // Getting country code from third party api
-          get_country_code("https://get.geojs.io/v1/ip/country.json")
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMoviesByYear(1930, 1970); // Prikaz starijih filmova od 1930. do 1970. godine
+        });
+        
+                function changeMovieList(option) {
+            alert(`You selected: ${option}`);
+            // Ovde možeš dodati funkcionalnost za promenu liste filmova
         }
-        /* ------------------------- */
-        /* ALLOW WHITELIST COUNTRIES */
-        /* ------------------------- */
-        function allow_whitelist_countries() {
-          // Whitelist countries
-          const whitelist_countries = []
-          // Detecting the users country
-          function get_country_code(api_url) {
-            fetch(api_url, {
-                method: 'GET'
-              })
-              .then(response => response.json()) // Getting ip info as json
-              .then(result => {
-                if (!whitelist_countries.includes(result.country)) { // If my ip country code is not in whitelist
-                  display_access_denied_error() // Access denied error
-                }
-              })
-              .catch(error => console.log('error', error))
-          }
-          // Getting country code from third party api
-          get_country_code("https://get.geojs.io/v1/ip/country.json")
+
+        function loadExternalPage(url) {
+            // Sakrij trenutni sadržaj i prikaži iframe za eksterni sadržaj
+            document.body.innerHTML = `
+                <button class="back-btn" onclick="window.location.reload()">Back</button>
+                <iframe src="${url}" allowfullscreen></iframe>
+            `;
         }
-        /* -------------- */
-        /* CALL FUNCTIONS */
-        /* -------------- */
-        block_blacklist_countries() // Block blacklist countries
-        // allow_whitelist_countries() // Allow whitelist countries
-        function performSearch(event) {
-          event.preventDefault();
-          var query = document.getElementById('search-input').value;
-          var searchUrl = 'https://www.svenadlanuplus.club/search?q=' + encodeURIComponent(query);
-          // Preusmeravanje na URL za pretragu
-          window.location.href = searchUrl;
-        }
-      </script>
-      <div class="widget">
-      </div>
-  </body>
+        
+        
+    </script>
+</head>
+<body>
+    <header>
+        Movie
+    </header>
+    
+    <!-- Navigation Bar -->
+ <nav>
+        <a href="javascript:void(0);" onclick="changeMovieList('oldMovies')">Old Movies</a>
+        <a href="javascript:void(0);" onclick="loadExternalPage('https://jelenasavic123.github.io/atv/horoskop.html')">Horoscope</a>
+        <a href="javascript:void(0);" onclick="loadExternalPage('https://jelenasavic123.github.io/atv/tvprogram.html')">Tv Program</a>
+    </nav>
+
+
+    <nav>
+
+    </nav>
+
+    <div class="movie-container">
+        <p>Loading movies...</p>
+    </div>
+
+    <div class="popup">
+        <div class="popup-content"></div>
+    </div>
+</body>
 </html>
