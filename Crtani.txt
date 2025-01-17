@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #121212;
+        color: white;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: url('https://jelenasavic123.github.io/SveNaEkranu/pozadinacrtani.jpg') center center / cover no-repeat fixed;
+        min-height: 100vh;
+      }
+      .filters {
+        display: flex;
+        gap: 10px;a
+        margin: 7px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .filter-button {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        padding: 7px 10px;
+        font-size: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+      .filter-button:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      .filter-button.active {
+        background-color: red;
+      }
+      .movie-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+      }
+      .movie-item {
+        position: relative;
+        width: 150px;
+        height: 255px;
+        background-color: #333;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+      .movie-item:hover {
+        transform: scale(1.05);
+      }
+      .movie-item img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        object-fit: cover;
+      }
+      .movie-item h3 {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        color: white;
+        font-size: 12px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+        border-radius: 5px;
+      }
+      .loading {
+        text-align: center;
+        font-size: 18px;
+        margin: 20px 0;
+      }
+      #moviePopup {
+        display: none;
+        position: fixed;
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        background-color: rgba(0, 0, 0, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        z-index: 1000;
+        overflow-y: auto;
+      }
+      #moviePopupContent {
+        display: flex;
+        gap: 20px;
+      }
+      #moviePopup img {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      #moviePopupDetails {
+        color: white;
+        flex-grow: 1;
+      }
+      #closePopupButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      #languageMenu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .languageButton {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        padding: 7px 30px;
+        font-size: 15px;
+        cursor: pointer;
+        border-radius: 15px;
+        transition: background-color 0.3s ease;
+      }
+      .languageButton:hover {
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+      .selectedLanguage {
+        background-color: red;
+      }
+      .languageButton:focus {
+        outline: 2px solid red;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+      #closeMenuButton {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 7px 20px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      /* Vertikalni Sidebar */
+      .sidebar {
+        position: fixed;
+        top: 40%;
+        right: 0;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 30px 25px;
+        /* Povećan padding */
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        /* Veći razmak između dugmića */
+        z-index: 1000;
+      }
+      .sidebar-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar-links li {
+        margin: 15px 0;
+        /* Veći razmak između listi */
+      }
+      .sidebar-links a {
+        text-decoration: none;
+        color: white;
+        font-size: 11px;
+        /* Veći font za bolju čitljivost */
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 15px 15px;
+        /* Povećan padding za šire dugmiće */
+        transition: all 0.3s ease;
+      }
+      .sidebar-links a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #e50914;
+        border-radius: 18px;
+        /* Veći border-radius za moderan izgled */
+      }
+      /* "Gledaj kasnije" dugme */
+      #saveToWatchLater {
+        display: inline-block;
+        background-color: #e50914;
+        color: #fff;
+        border: none;
+        padding: 7px 5px;
+        font-size: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      #saveToWatchLater:hover {
+        background-color: #f40612;
+      }
+      .custom-alert {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        /* Providna crna pozadina */
+        padding: 30px;
+        color: white;
+        /* Bele boje teksta */
+        text-align: center;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        /* Snažnija senka */
+        border-radius: 12px;
+        /* Veće zaobljenje ivica */
+        z-index: 2000;
+        width: 90%;
+        /* Prilagodljivo za manje ekrane */
+        max-width: 400px;
+        /* Maksimalna širina */
+        font-family: 'Arial', sans-serif;
+        /* Moderni font */
+      }
+      .custom-alert p {
+        margin: 0 0 20px;
+        font-size: 18px;
+        /* Veći tekst za naslov */
+        line-height: 1.5;
+      }
+      .custom-alert button {
+        padding: 10px 20px;
+        background-color: #e50914;
+        /* Netflix crvena */
+        color: white;
+        /* Bele boje teksta */
+        border: none;
+        border-radius: 8px;
+        /* Zaobljene ivice */
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        /* Glatka tranzicija */
+      }
+      .custom-alert button:hover {
+        background-color: #f40612;
+        /* Svetlija crvena pri hover-u */
+        transform: scale(1.05);
+        /* Malo povećanje */
+      }
+      .custom-alert-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        /* Tamna providna pozadina za masku */
+        z-index: 1999;
+        /* Ispod popupa */
+      }
+      
+      #filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+  }
+
+  #filters button {
+    background-color: #1c1c1c; /* Tamno siva boja */
+    color: #ffffff; /* Bela boja za tekst */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  #filters button:hover {
+    background-color: #e50914; /* Netflix crvena */
+    transform: scale(1.05); /* Blago povećanje */
+  }
+
+  #filters button:active {
+    transform: scale(0.95); /* Smanjenje na klik */
+  }
+
+  #filters button.selected {
+    background-color: #e50914; /* Crvena boja za aktivni filter */
+  }
+    </style>
+  </head>
+  <body>
+  
+
+    <!-- Vertikalni Sidebar -->
+    <div class="sidebar">
+      <ul class="sidebar-links">
+        <li><a href="https://jelenasavic123.github.io/SveNaEkranu/omiljeno.html">Omiljeni Sadrzaj</a></li>
+      </ul>
+    </div>
+    <div class="filters" id="year-filters"></div>
+    <div class="filters" id="genre-filters"></div>
+    <div class="movie-list" id="movie-list"></div>
+    <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
+    <div id="moviePopup">
+      <button id="closePopupButton" onclick="closePopup()">X</button>
+      <div id="moviePopupContent">
+        <img id="moviePopupImage" src="" alt="Movie Poster">
+        <div id="moviePopupDetails">
+          <h2 id="moviePopupTitle"></h2>
+          <p id="moviePopupOverview"></p>
+          <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
+          <p><strong>Žanrovi:</strong> <span id="moviePopupGenres"></span></p>
+          <button id="saveToWatchLater">💾Dodaj u Omiljeno</button>
+          <div id="languageMenu">
+            <div>Prevod nedostaje? Pokušajte s drugim jezikom iz liste.</div>
+            <button class="languageButton" id="sr" tabindex="1" onclick="changeLanguage('sr')">Srpski Lat</button>
+            <button class="languageButton" id="hr" tabindex="2" onclick="changeLanguage('hr')">Srpski</button>
+            <button class="languageButton" id="mk" tabindex="3" onclick="changeLanguage('mk')">Hrvatski</button>
+            <button class="languageButton" id="bs" tabindex="4" onclick="changeLanguage('bs')">Hrvatski</button>
+            <button class="languageButton" id="sl" tabindex="5" onclick="changeLanguage('sl')">Bosanski</button>
+            <button class="languageButton" id="en" tabindex="6" onclick="changeLanguage('en')">Bosanski</button>
+            <button id="closeMenuButton" tabindex="7" onclick="closePopup()">Zatvori</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="customAlert" class="custom-alert">
+      <p id="customAlertMessage"></p>
+      <button onclick="closeCustomAlert()">U redu</button>
+    </div>
+<script>
+  const apiKey = '2701858e9bccab54d4d0e4931420a739';
+  const baseUrl = `https://api.themoviedb.org/3/`;
+  const movieList = document.getElementById('movie-list');
+  const loadingIndicator = document.getElementById('loading');
+  const moviePopup = document.getElementById('moviePopup');
+  const filters = document.getElementById('filters');
+  let currentPage = 1;
+  let isLoading = false;
+  let currentMovieId = null;
+  let currentFilter = 'old-cartoons'; // Default filter
+
+  // URL-ovi za jezike
+  const languageUrls = {
+    sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
+    hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+    mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+    bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
+    sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
+    en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
+  };
+
+  // Prikaz informacija o filmu
+  function displayMovieInfo(movieId) {
+    currentMovieId = movieId;
+    sessionStorage.setItem('currentMovieId', movieId);
+    sessionStorage.setItem('popupOpen', 'true');
+    const url = `${baseUrl}movie/${movieId}?api_key=${apiKey}&language=hr-HR`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+        document.getElementById('moviePopupTitle').textContent = data.title;
+        document.getElementById('moviePopupOverview').textContent = data.overview;
+        document.getElementById('moviePopupReleaseDate').textContent = data.release_date;
+        document.getElementById('moviePopupGenres').textContent = data.genres.map(genre => genre.name).join(', ');
+        moviePopup.style.display = 'flex';
+      })
+      .catch(error => console.error('Error fetching movie details:', error));
+  }
+
+  // Zatvaranje popup-a
+  function closePopup() {
+    moviePopup.style.display = 'none';
+    sessionStorage.setItem('popupOpen', 'false');
+  }
+
+  // Promena jezika i otvaranje odgovarajućeg linka
+  function changeLanguage(lang) {
+    sessionStorage.setItem('selectedLanguage', lang);
+    const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
+    window.location.href = videoUrl;
+  }
+
+  // Fetch funkcija sa filterima
+  function fetchMovies(filter) {
+    isLoading = true;
+    loadingIndicator.style.display = 'block';
+    let url;
+
+    switch (filter) {
+      case 'old-cartoons':
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.lte=2010-12-31&page=${currentPage}`;
+        break;
+      case 'new-cartoons':
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.gte=2011-01-01&page=${currentPage}`;
+        break;
+      case 'regional-cartoons':
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&region=EU&page=${currentPage}`;
+        break;
+      case 'family-cartoons':
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16,10751&page=${currentPage}`;
+        break;
+      case 'adult-cartoons':
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=US&certification=R&page=${currentPage}`;
+        break;
+      // Add more cases for other filters here
+      default:
+        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&page=${currentPage}`;
+        break;
+    }
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.results.length === 0 || currentPage > data.total_pages) {
+          isLoading = false;
+          loadingIndicator.style.display = 'none';
+          return;
+        }
+
+        data.results.forEach(movie => {
+          const movieItem = document.createElement('div');
+          movieItem.classList.add('movie-item');
+
+          const movieImage = document.createElement('img');
+          movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+          movieImage.alt = movie.title;
+          movieImage.onclick = () => displayMovieInfo(movie.id);
+          movieItem.appendChild(movieImage);
+
+          const movieTitle = document.createElement('h3');
+          movieTitle.textContent = movie.title;
+          movieItem.appendChild(movieTitle);
+
+          movieList.appendChild(movieItem);
+        });
+
+        currentPage++;
+        isLoading = false;
+        loadingIndicator.style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error fetching movies:', error);
+        isLoading = false;
+        loadingIndicator.style.display = 'none';
+      });
+  }
+
+ document.addEventListener('DOMContentLoaded', () => {
+  const filtersContainer = document.createElement('div');
+  filtersContainer.id = 'filters';
+
+  const filterOptions = [
+    { id: 'old-cartoons', label: 'Stari crtaći' },
+    { id: 'new-cartoons', label: 'Novi crtaći' },
+    { id: 'regional-cartoons', label: 'Regionalni crtaći' },
+    { id: 'family-cartoons', label: 'Porodični crtaći' },
+    { id: 'adult-cartoons', label: 'Odrasli crtaći' },
+    { id: 'classic-cartoons', label: 'Klasični crtaći' },
+    { id: 'retro-cartoons', label: 'Retro crtaći' },
+    { id: 'modern-cartoons', label: 'Savremeni crtaći' },
+    { id: 'disney-cartoons', label: 'Disney crtaći' },
+    { id: 'pixar-cartoons', label: 'Pixar crtaći' },
+    { id: 'dreamworks-cartoons', label: 'DreamWorks crtaći' },
+    { id: 'studio-ghibli', label: 'Studio Ghibli crtaći' },
+    { id: 'cartoon-saloon', label: 'Cartoon Saloon' },
+    { id: 'paramount-animation', label: 'Paramount Animation' },
+    { id: 'laika-studios', label: 'Laika Studios' },
+    { id: 'sony-animation', label: 'Sony Pictures Animation' },
+  ];
+
+  filterOptions.forEach(option => {
+    const button = document.createElement('button');
+    button.textContent = option.label;
+    button.onclick = () => {
+      document.querySelectorAll('#filters button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      currentFilter = option.id;
+      currentPage = 1;
+      movieList.innerHTML = '';
+      fetchMovies(currentFilter);
+    };
+    filtersContainer.appendChild(button);
+  });
+
+  document.body.insertBefore(filtersContainer, movieList);
+
+  // Fetch initial movies based on the default filter
+  fetchMovies(currentFilter);
+
+  const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
+  const savedMovieId = sessionStorage.getItem('currentMovieId');
+  if (popupOpen && savedMovieId) {
+    displayMovieInfo(savedMovieId);
+  }
+});
+
+
+  // Funkcija za čuvanje filma u "Gledaj kasnije"
+  function saveToWatchLater(movieId, movieTitle, moviePoster) {
+    const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+    const movie = {
+      id: movieId,
+      title: movieTitle,
+      poster: moviePoster
+    };
+    const exists = watchLaterList.some(item => item.id === movieId);
+    if (!exists) {
+      watchLaterList.push(movie);
+      localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
+      alert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
+    } else {
+      alert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+      fetchMovies(currentFilter);
+    }
+  });
+</script>
+
