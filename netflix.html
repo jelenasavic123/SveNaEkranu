@@ -291,241 +291,220 @@
     <div class="movie-list" id="movie-list"></div>
     <div id="loading" class="loading" style="display: none;">Učitavanje...</div>
     <div id="moviePopup">
-  <button id="closePopupButton" tabindex="1" onclick="closePopup()">X</button>
-  <div id="moviePopupContent">
-    <img id="moviePopupImage" src="" alt="Movie Poster">
-    <div id="moviePopupDetails">
-      <h2 id="moviePopupTitle"></h2>
-      <p id="moviePopupOverview"></p>
-      <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
-      <p><strong>Žanrovi:</strong> <span id="moviePopupGenres"></span></p>
-      <button id="saveToWatchLater" tabindex="2">💾Dodaj u Omiljeno</button>
-      <div id="languageMenu">
-        <div>Prevod nedostaje? Pokušajte s drugim jezikom iz liste.</div>
-        <button class="languageButton" id="sr" tabindex="3" onclick="changeLanguage('sr')">Srpski Lat</button>
-        <button id="closeMenuButton" tabindex="4" onclick="closePopup()">Zatvori</button>
+      <button id="closePopupButton" tabindex="7" onclick="closePopup()">X</button>
+      <div id="moviePopupContent">
+        <img id="moviePopupImage" src="" alt="Movie Poster">
+        <div id="moviePopupDetails">
+          <h2 id="moviePopupTitle"></h2>
+          <p id="moviePopupOverview"></p>
+          <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
+          <p><strong>Žanrovi:</strong> <span id="moviePopupGenres"></span></p>
+          <button id="saveToWatchLater">💾Dodaj u Omiljeno</button>
+          <div id="languageMenu">
+            <div>Prevod nedostaje? Pokušajte s drugim jezikom iz liste.</div>
+            <button class="languageButton" id="sr" tabindex="1" onclick="changeLanguage('sr')">Srpski Lat</button>
+            <button id="closeMenuButton" tabindex="7" onclick="closePopup()">Zatvori</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
     <div id="customAlert" style="display: none;">
       <span id="customAlertMessage"></span>
     </div>
     <script>
-  const apiKey = '2701858e9bccab54d4d0e4931420a739';
-  const baseUrl = `https://api.themoviedb.org/3/`;
-  const movieList = document.getElementById('movie-list');
-  const yearFilters = document.getElementById('year-filters');
-  const genreFilters = document.getElementById('genre-filters');
-  const loadingIndicator = document.getElementById('loading');
-  const moviePopup = document.getElementById('moviePopup');
-  let currentPage = 8;
-  let isLoading = false;
-  let selectedYear = null;
-  let selectedGenre = null;
-  let currentMovieId = null;
-  const languageUrls = {
-    sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
-    hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
-    mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
-    bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
-    sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
-    en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
-  };
-
-  function displayMovieInfo(movieId) {
-  currentMovieId = movieId;
-  sessionStorage.setItem('currentMovieId', movieId);
-  sessionStorage.setItem('popupOpen', 'true');
-  const url = `${baseUrl}movie/${movieId}?api_key=${apiKey}&language=hr-HR`;
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
-      document.getElementById('moviePopupTitle').textContent = data.title;
-      document.getElementById('moviePopupOverview').textContent = data.overview;
-      document.getElementById('moviePopupReleaseDate').textContent = data.release_date;
-      document.getElementById('moviePopupGenres').textContent = data.genres.map(genre => genre.name).join(', ');
-      moviePopup.style.display = 'flex';
-      
-      // Fokusiraj dugme za srpski jezik odmah pri otvaranju popup-a
-      const focusButton = document.getElementById('sr'); // Fokusiramo srpski jezik
-      focusButton.focus(); // Fokusiraj dugme
-
-      // Ostatak koda za odabir jezika
-      const savedLanguage = sessionStorage.getItem('selectedLanguage');
-      const focusButtonSavedLang = savedLanguage ? document.getElementById(savedLanguage) : document.getElementById('sr');
-      document.querySelectorAll('.languageButton').forEach(button => button.classList.remove('selectedLanguage'));
-      focusButtonSavedLang.classList.add('selectedLanguage');
-    })
-    .catch(error => {
-      console.error('Error fetching movie details:', error);
-    });
-}
-
-
-  function closePopup() {
-    moviePopup.style.display = 'none';
-    sessionStorage.setItem('popupOpen', 'false');
-  }
-
-  function changeLanguage(lang) {
-    sessionStorage.setItem('selectedLanguage', lang);
-    const buttons = document.querySelectorAll('.languageButton');
-    buttons.forEach(button => button.classList.remove('selectedLanguage'));
-    document.getElementById(lang).classList.add('selectedLanguage');
-    const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
-    window.location.href = videoUrl;
-  }
-
-  function fetchGenres() {
-    const url = `${baseUrl}genre/movie/list?api_key=${apiKey}&language=en`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        data.genres.forEach(genre => {
+      const apiKey = '2701858e9bccab54d4d0e4931420a739';
+      const baseUrl = `https://api.themoviedb.org/3/`;
+      const movieList = document.getElementById('movie-list');
+      const yearFilters = document.getElementById('year-filters');
+      const genreFilters = document.getElementById('genre-filters');
+      const loadingIndicator = document.getElementById('loading');
+      const moviePopup = document.getElementById('moviePopup');
+      let currentPage = 8;
+      let isLoading = false;
+      let selectedYear = null;
+      let selectedGenre = null;
+      let currentMovieId = null;
+      const languageUrls = {
+        sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
+        hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+        mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+        bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
+        sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
+        en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
+      };
+      function displayMovieInfo(movieId) {
+        currentMovieId = movieId;
+        sessionStorage.setItem('currentMovieId', movieId);
+        sessionStorage.setItem('popupOpen', 'true');
+        const url = `${baseUrl}movie/${movieId}?api_key=${apiKey}&language=hr-HR`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('moviePopupImage').src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+            document.getElementById('moviePopupTitle').textContent = data.title;
+            document.getElementById('moviePopupOverview').textContent = data.overview;
+            document.getElementById('moviePopupReleaseDate').textContent = data.release_date;
+            document.getElementById('moviePopupGenres').textContent = data.genres.map(genre => genre.name).join(', ');
+            moviePopup.style.display = 'flex';
+            const savedLanguage = sessionStorage.getItem('selectedLanguage');
+            const focusButton = savedLanguage ? document.getElementById(savedLanguage) : document.getElementById('sr');
+            focusButton.focus();
+            document.querySelectorAll('.languageButton').forEach(button => button.classList.remove('selectedLanguage'));
+            focusButton.classList.add('selectedLanguage');
+          })
+          .catch(error => {
+            console.error('Error fetching movie details:', error);
+          });
+      }
+      function closePopup() {
+        moviePopup.style.display = 'none';
+        sessionStorage.setItem('popupOpen', 'false');
+      }
+      function changeLanguage(lang) {
+        sessionStorage.setItem('selectedLanguage', lang);
+        const buttons = document.querySelectorAll('.languageButton');
+        buttons.forEach(button => button.classList.remove('selectedLanguage'));
+        document.getElementById(lang).classList.add('selectedLanguage');
+        const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
+        window.location.href = videoUrl;
+      }
+      function fetchGenres() {
+        const url = `${baseUrl}genre/movie/list?api_key=${apiKey}&language=en`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            data.genres.forEach(genre => {
+              const button = document.createElement('button');
+              button.classList.add('filter-button');
+              button.textContent = genre.name;
+              button.dataset.id = genre.id;
+              button.onclick = () => {
+                selectedGenre = genre.id;
+                selectedYear = null;
+                clearMovies();
+                updateActiveFilter(genreFilters, genre.id);
+                updateActiveFilter(yearFilters, null);
+                fetchMovies();
+              };
+              genreFilters.appendChild(button);
+            });
+          })
+          .catch(error => console.error('Error fetching genres:', error));
+      }
+      function generateYearFilters() {
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= 2017; year--) {
           const button = document.createElement('button');
           button.classList.add('filter-button');
-          button.textContent = genre.name;
-          button.dataset.id = genre.id;
+          button.textContent = year;
+          button.dataset.id = year;
           button.onclick = () => {
-            selectedGenre = genre.id;
-            selectedYear = null;
+            selectedYear = year;
+            selectedGenre = null;
             clearMovies();
-            updateActiveFilter(genreFilters, genre.id);
-            updateActiveFilter(yearFilters, null);
+            updateActiveFilter(yearFilters, year);
+            updateActiveFilter(genreFilters, null);
             fetchMovies();
           };
-          genreFilters.appendChild(button);
-        });
-      })
-      .catch(error => console.error('Error fetching genres:', error));
-  }
-
-  function generateYearFilters() {
-    const currentYear = new Date().getFullYear();
-    for (let year = currentYear; year >= 2017; year--) {
-      const button = document.createElement('button');
-      button.classList.add('filter-button');
-      button.textContent = year;
-      button.dataset.id = year;
-      button.onclick = () => {
-        selectedYear = year;
-        selectedGenre = null;
-        clearMovies();
-        updateActiveFilter(yearFilters, year);
-        updateActiveFilter(genreFilters, null);
-        fetchMovies();
-      };
-      yearFilters.appendChild(button);
-    }
-  }
-
-  function updateActiveFilter(container, id) {
-    const buttons = container.querySelectorAll('.filter-button');
-    buttons.forEach(button => button.classList.remove('active'));
-    const activeButton = [...buttons].find(btn => btn.dataset.id == id);
-    if (activeButton) activeButton.classList.add('active');
-  }
-
-  function fetchMovies() {
-    isLoading = true;
-    loadingIndicator.style.display = 'block';
-    let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_watch_providers=8&watch_region=RS&page=${currentPage}`;
-    if (selectedYear) url += `&primary_release_year=${selectedYear}`;
-    if (selectedGenre) url += `&with_genres=${selectedGenre}`;
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        if (data.results.length === 0 || currentPage > data.total_pages) {
-          isLoading = false;
-          loadingIndicator.style.display = 'none';
-          return;
+          yearFilters.appendChild(button);
         }
-        data.results.forEach(movie => {
-          const movieItem = document.createElement('div');
-          movieItem.classList.add('movie-item');
-          const movieImage = document.createElement('img');
-          movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-          movieImage.alt = movie.title;
-          movieImage.onclick = () => displayMovieInfo(movie.id);
-          movieItem.appendChild(movieImage);
-          const movieTitle = document.createElement('h3');
-          movieTitle.textContent = movie.title;
-          movieItem.appendChild(movieTitle);
-          movieList.appendChild(movieItem);
-        });
-        currentPage++;
-        isLoading = false;
-        loadingIndicator.style.display = 'none';
-      })
-      .catch(error => {
-        console.error('Error fetching movies:', error);
-        isLoading = false;
-        loadingIndicator.style.display = 'none';
+      }
+      function updateActiveFilter(container, id) {
+        const buttons = container.querySelectorAll('.filter-button');
+        buttons.forEach(button => button.classList.remove('active'));
+        const activeButton = [...buttons].find(btn => btn.dataset.id == id);
+        if (activeButton) activeButton.classList.add('active');
+      }
+      function fetchMovies() {
+        isLoading = true;
+        loadingIndicator.style.display = 'block';
+        let url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_watch_providers=8&watch_region=RS&page=${currentPage}`;
+        if (selectedYear) url += `&primary_release_year=${selectedYear}`;
+        if (selectedGenre) url += `&with_genres=${selectedGenre}`;
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            if (data.results.length === 0 || currentPage > data.total_pages) {
+              isLoading = false;
+              loadingIndicator.style.display = 'none';
+              return;
+            }
+            data.results.forEach(movie => {
+              const movieItem = document.createElement('div');
+              movieItem.classList.add('movie-item');
+              const movieImage = document.createElement('img');
+              movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+              movieImage.alt = movie.title;
+              movieImage.onclick = () => displayMovieInfo(movie.id);
+              movieItem.appendChild(movieImage);
+              const movieTitle = document.createElement('h3');
+              movieTitle.textContent = movie.title;
+              movieItem.appendChild(movieTitle);
+              movieList.appendChild(movieItem);
+            });
+            currentPage++;
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+          })
+          .catch(error => {
+            console.error('Error fetching movies:', error);
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+          });
+      }
+      function clearMovies() {
+        movieList.innerHTML = '';
+      }
+      window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+          fetchMovies();
+        }
       });
-  }
-
-  function clearMovies() {
-    movieList.innerHTML = '';
-  }
-
-  window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-      fetchMovies();
-    }
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    generateYearFilters();
-    fetchGenres();
-    fetchMovies();
-    const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
-    const savedMovieId = sessionStorage.getItem('currentMovieId');
-    if (popupOpen && savedMovieId) {
-      displayMovieInfo(savedMovieId);
-    }
-  });
-
-  function showCustomAlert(message) {
-    const alertBox = document.getElementById('customAlert');
-    const alertMessage = document.getElementById('customAlertMessage');
-    alertMessage.textContent = message;
-    alertBox.style.display = 'block';
-    // Dodajemo tajmer da automatski zatvori alert posle 5 sekundi
-    setTimeout(() => {
-      closeCustomAlert();
-    }, 5000);
-  }
-
-  function closeCustomAlert() {
-    const alertBox = document.getElementById('customAlert');
-    alertBox.style.display = 'none';
-  }
-
-  // Funkcija za dodavanje filma u listu "Gledaj kasnije"
-  function saveToWatchLater(movieId, movieTitle, moviePoster) {
-    const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
-    const movie = {
-      id: movieId,
-      title: movieTitle,
-      poster: moviePoster,
-    };
-    const exists = watchLaterList.some(item => item.id === movieId);
-    if (!exists) {
-      watchLaterList.push(movie);
-      localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
-      showCustomAlert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
-    } else {
-      showCustomAlert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
-    }
-  }
-
-  // Event listener za dugme "Dodaj u Omiljeno"
-  document.getElementById('saveToWatchLater').addEventListener('click', () => {
-    const movieTitle = document.getElementById('moviePopupTitle').textContent;
-    const moviePoster = document.getElementById('moviePopupImage').src;
-    saveToWatchLater(currentMovieId, movieTitle, moviePoster);
-  });
-</script>
+      document.addEventListener('DOMContentLoaded', () => {
+        generateYearFilters();
+        fetchGenres();
+        fetchMovies();
+        const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
+        const savedMovieId = sessionStorage.getItem('currentMovieId');
+        if (popupOpen && savedMovieId) {
+          displayMovieInfo(savedMovieId);
+        }
+      });
+      function showCustomAlert(message) {
+        const alertBox = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('customAlertMessage');
+        alertMessage.textContent = message;
+        alertBox.style.display = 'block';
+        // Dodajemo tajmer da automatski zatvori alert posle 5 sekundi
+        setTimeout(() => {
+          closeCustomAlert();
+        }, 5000);
+      }
+      function closeCustomAlert() {
+        const alertBox = document.getElementById('customAlert');
+        alertBox.style.display = 'none';
+      }
+      // Funkcija za dodavanje filma u listu "Gledaj kasnije"
+      function saveToWatchLater(movieId, movieTitle, moviePoster) {
+        const watchLaterList = JSON.parse(localStorage.getItem('watchLater')) || [];
+        const movie = {
+          id: movieId,
+          title: movieTitle,
+          poster: moviePoster,
+        };
+        const exists = watchLaterList.some(item => item.id === movieId);
+        if (!exists) {
+          watchLaterList.push(movie);
+          localStorage.setItem('watchLater', JSON.stringify(watchLaterList));
+          showCustomAlert(`Film "${movieTitle}" je dodat u listu Gledaj kasnije.`);
+        } else {
+          showCustomAlert(`Film "${movieTitle}" je već u listi Gledaj kasnije.`);
+        }
+      }
+      // Event listener za dugme "Dodaj u Omiljeno"
+      document.getElementById('saveToWatchLater').addEventListener('click', () => {
+        const movieTitle = document.getElementById('moviePopupTitle').textContent;
+        const moviePoster = document.getElementById('moviePopupImage').src;
+        saveToWatchLater(currentMovieId, movieTitle, moviePoster);
+      });
+    </script>
