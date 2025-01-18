@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preusmerivač Linkova</title>
+  <title>Link Preusmerivač</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,70 +33,73 @@
   </style>
 </head>
 <body>
-  <h1>Dodavanje i Generisanje Preusmeravanja</h1>
-  <div id="form-container">
+  <h1>Dodavanje Linkova za Preusmeravanje</h1>
+  <p>Unesite TMDB ID i odgovarajući link da biste generisali HTML fajl za preusmeravanje.</p>
+  <div>
     <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID (npr. 762509)">
-    <input type="text" id="dooodster-link" placeholder="Unesite originalni link (npr. https://dooodster.com/e/6mfqxg1589sl)">
-    <button id="generate-btn">Generiši Preusmeravajući Fajl</button>
+    <input type="text" id="original-link" placeholder="Unesite originalni link (npr. https://dooodster.com/e/6mfqxg1589sl)">
+    <button id="generate-btn">Generiši HTML</button>
   </div>
+
+  <h2>Generisani Linkovi</h2>
   <table>
     <thead>
       <tr>
-        <th>TMDB Link</th>
+        <th>TMDB ID</th>
         <th>Originalni Link</th>
+        <th>Preuzmi HTML</th>
       </tr>
     </thead>
-    <tbody id="links-table">
-      <!-- Linkovi će se ovde prikazati -->
+    <tbody id="generated-links">
+      <!-- Generisani linkovi će se prikazati ovde -->
     </tbody>
   </table>
+
   <script>
-    const generateButton = document.getElementById('generate-btn');
-    const linksTable = document.getElementById('links-table');
+    const generateBtn = document.getElementById('generate-btn');
+    const generatedLinks = document.getElementById('generated-links');
 
-    generateButton.addEventListener('click', () => {
+    generateBtn.addEventListener('click', () => {
       const tmdbId = document.getElementById('tmdb-id').value.trim();
-      const dooodsterLink = document.getElementById('dooodster-link').value.trim();
+      const originalLink = document.getElementById('original-link').value.trim();
 
-      if (!tmdbId || !dooodsterLink) {
+      if (!tmdbId || !originalLink) {
         alert('Unesite oba polja!');
         return;
       }
 
-      const fileName = `id/${tmdbId}.html`;
-      const redirectCode = `
+      // Kreiranje sadržaja za HTML fajl
+      const htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Redirecting...</title>
-          <meta http-equiv="refresh" content="0;url=${dooodsterLink}">
+          <meta http-equiv="refresh" content="0;url=${originalLink}">
         </head>
         <body>
-          <p>Redirecting to <a href="${dooodsterLink}">${dooodsterLink}</a>...</p>
+          <p>Redirecting to <a href="${originalLink}">${originalLink}</a>...</p>
         </body>
         </html>
       `;
 
-      // Prikazujemo generisani link u tabeli
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><a href="https://jelenasavic123.github.io/SveNaEkranu/${fileName}" target="_blank">${fileName}</a></td>
-        <td><a href="${dooodsterLink}" target="_blank">${dooodsterLink}</a></td>
+      // Kreiranje fajla za preuzimanje
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+
+      // Dodavanje u tabelu
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${tmdbId}</td>
+        <td><a href="${originalLink}" target="_blank">${originalLink}</a></td>
+        <td><a href="${url}" download="${tmdbId}.html">Preuzmi HTML</a></td>
       `;
-      linksTable.appendChild(row);
+      generatedLinks.appendChild(newRow);
 
-      // Preuzimanje fajla za preusmeravanje
-      const blob = new Blob([redirectCode], { type: 'text/html' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      a.click();
-
-      // Čistimo unos
+      // Čišćenje input polja
       document.getElementById('tmdb-id').value = '';
-      document.getElementById('dooodster-link').value = '';
+      document.getElementById('original-link').value = '';
     });
   </script>
 </body>
