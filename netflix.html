@@ -196,6 +196,57 @@ footer a {
   margin: 0 5px;
 }
 
+#moviePopup {
+  display: none; /* Sakriven po defaultu */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: #111;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+#moviePopup .popup-content img {
+  max-width: 10%;
+  border-radius: 10px;
+}
+
+#moviePopup .popup-content h2 {
+  color: #e50914;
+}
+
+#moviePopup .popup-content .watch-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #e50914;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+#moviePopup .popup-content .close-button {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #444;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#moviePopup .popup-content .close-button:hover {
+  background-color: #e50914;
+}
+
+
     </style>
    
   </head>
@@ -214,15 +265,6 @@ footer a {
     <div class="name">Netlify</div>
   </a>
 
-  <script>
-    // Sakrij element nakon 3 sekunde
-    setTimeout(() => {
-      const element = document.getElementById('temp-display');
-      if (element) {
-        element.style.display = 'none';
-      }
-    }, 3000); // 3000ms = 3 sekunde
-  </script>
   
     <header>
       <h1>Netflix</h1>
@@ -259,10 +301,6 @@ const yearFilters = document.getElementById('year-filters');
 const genreFilters = document.getElementById('genre-filters');
 const moviePopup = document.getElementById('moviePopup');
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
- const netflixSound = document.getElementById('netflixSound');
-    const popup = document.getElementById('popup');
-    const backdrop = document.getElementById('backdrop');
-    const playSoundButton = document.getElementById('playSound');
 
 let currentPage = 1;
 let isLoading = false;
@@ -324,24 +362,25 @@ async function openMoviePopup(movieId) {
     const movie = await response.json();
     const watchLink = languageUrls.sr.replace('{movieId}', movieId); // Generisanje linka za gledanje
 
+    // Dodavanje sadržaja u popup
     moviePopup.innerHTML = `
       <div class="popup-content">
         <img src="${imageBaseUrl + movie.poster_path}" alt="${movie.title}" />
         <h2>${movie.title}</h2>
         <p>${movie.overview}</p>
-        <button class="watch-button" onclick="window.location.href='${watchLink}'">Gledaj film</button>
+        <button class="watch-link" onclick="window.location.href='${watchLink}'">Gledaj film</button>
         <button class="close-button" onclick="closeMoviePopup()">Zatvori</button>
       </div>
     `;
-    moviePopup.style.display = 'block';
+    moviePopup.style.display = 'block'; // Prikazivanje popup-a
   } catch (error) {
-    console.error('Error fetching movie details:', error);
+    console.error('Greška pri preuzimanju detalja filma:', error);
   }
 }
 
 // Funkcija za zatvaranje popup-a
 function closeMoviePopup() {
-  moviePopup.style.display = 'none';
+  moviePopup.style.display = 'none'; // Sakrivanje popup-a
 }
 
 // Funkcija za preuzimanje i prikazivanje žanrova
@@ -404,43 +443,7 @@ window.addEventListener('scroll', () => {
 // Pokreni inicijalizaciju
 initialize();
 
- // Show popup and play sound
-    window.addEventListener('load', () => {
-      netflixSound.play().then(() => {
-        console.log('Sound playing successfully.');
-        popup.classList.add('active');
-        setTimeout(() => popup.classList.remove('active'), 3000); // Hide popup after 3 seconds
-      }).catch(error => {
 
-      });
-    });
-    
-    // Pokušaj automatske reprodukcije
-    window.addEventListener('load', () => {
-      netflixSound.play()
-        .then(() => {
-          console.log('Zvuk je uspešno pokrenut automatski.');
-        })
-        .catch(error => {
-          console.log('Automatska reprodukcija nije uspela:', error);
-          // Prikazivanje popup-a za korisničku interakciju
-          popup.classList.add('active');
-          backdrop.classList.add('active');
-        });
-    });
-
-    // Ručna reprodukcija zvuka na klik korisnika
-    playSoundButton.addEventListener('click', () => {
-      netflixSound.play()
-        .then(() => {
-          console.log('Zvuk je pokrenut na korisnički zahtev.');
-          popup.classList.remove('active');
-          backdrop.classList.remove('active');
-        })
-        .catch(error => {
-          console.error('Greška pri pokretanju zvuka:', error);
-        });
-    });
     </script>
     
   </body>
