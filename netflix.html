@@ -362,8 +362,9 @@ body.popup-open::before {
   </head>
   <body>
   
-  <!-- Audio element -->
-  <audio id="netflixSound" src="https://files.catbox.moe/aus6st.mp3"></audio>
+ <!-- Audio element -->
+  <audio id="netflixSound" src="https://files.catbox.moe/aus6st.mp3" preload="auto"></audio>
+
   
     <a class="container" href="https://netlify.com" target="_blank" id="temp-display">
     <div class="logo">
@@ -419,6 +420,10 @@ const yearFilters = document.getElementById('year-filters');
 const genreFilters = document.getElementById('genre-filters');
 const moviePopup = document.getElementById('moviePopup');
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+ const netflixSound = document.getElementById('netflixSound');
+    const popup = document.getElementById('popup');
+    const backdrop = document.getElementById('backdrop');
+    const playSoundButton = document.getElementById('playSound');
 
 let currentPage = 1;
 let isLoading = false;
@@ -570,7 +575,33 @@ initialize();
 
       });
     });
+    
+    // Pokušaj automatske reprodukcije
+    window.addEventListener('load', () => {
+      netflixSound.play()
+        .then(() => {
+          console.log('Zvuk je uspešno pokrenut automatski.');
+        })
+        .catch(error => {
+          console.log('Automatska reprodukcija nije uspela:', error);
+          // Prikazivanje popup-a za korisničku interakciju
+          popup.classList.add('active');
+          backdrop.classList.add('active');
+        });
+    });
 
+    // Ručna reprodukcija zvuka na klik korisnika
+    playSoundButton.addEventListener('click', () => {
+      netflixSound.play()
+        .then(() => {
+          console.log('Zvuk je pokrenut na korisnički zahtev.');
+          popup.classList.remove('active');
+          backdrop.classList.remove('active');
+        })
+        .catch(error => {
+          console.error('Greška pri pokretanju zvuka:', error);
+        });
+    });
     </script>
     
   </body>
