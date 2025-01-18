@@ -151,7 +151,7 @@
   background-color: darkred;
   }
       #closeMenuButton {
-         background-color: rgba(0, 0, 0, 0.7);
+         background-color: rgba(0, 0, 0, 0.9);
         color: white;
         border: none;
         padding: 7px 20px;
@@ -160,6 +160,13 @@
         border-radius: 5px;
         margin-top: 20px;
       }
+      
+            #closePopupButton:focus {
+  outline: none; /* Uklanja standardni outline */
+  background-color: #f0f0f0; /* Promena pozadinske boje kada je dugme u fokusu */
+  border: 2px solid #007bff; /* Dodavanje ivice kada je dugme u fokusu */
+  color: #007bff; /* Promena boje teksta kada je dugme u fokusu */
+}
       /* Vertikalni Sidebar */
       .sidebar {
         position: fixed;
@@ -264,6 +271,9 @@
           transform: translate(-50%, -60%);
         }
       }
+      
+
+
     </style>
   </head>
   <body>
