@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Preusmerivač</title>
+  <title>Preusmerivač Linkova</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,9 +16,6 @@
       margin: 5px 0;
       width: 100%;
       box-sizing: border-box;
-    }
-    #form-container {
-      margin-bottom: 20px;
     }
     table {
       width: 100%;
@@ -36,11 +33,11 @@
   </style>
 </head>
 <body>
-  <h1>Link Preusmerivač</h1>
+  <h1>Dodavanje i Generisanje Preusmeravanja</h1>
   <div id="form-container">
-    <input type="text" id="dooodster-link" placeholder="Unesite Dooodster link (npr. https://dooodster.com/e/6mfqxg1589sl)">
     <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID (npr. 762509)">
-    <button id="add-link-btn">Dodaj Link</button>
+    <input type="text" id="dooodster-link" placeholder="Unesite originalni link (npr. https://dooodster.com/e/6mfqxg1589sl)">
+    <button id="generate-btn">Generiši Preusmeravajući Fajl</button>
   </div>
   <table>
     <thead>
@@ -53,56 +50,54 @@
       <!-- Linkovi će se ovde prikazati -->
     </tbody>
   </table>
-
   <script>
-    // Mapa linkova (TMDB ID -> Originalni link)
-    const links = {};
-
-    // Elementi DOM-a
-    const dooodsterInput = document.getElementById('dooodster-link');
-    const tmdbInput = document.getElementById('tmdb-id');
-    const addLinkBtn = document.getElementById('add-link-btn');
+    const generateButton = document.getElementById('generate-btn');
     const linksTable = document.getElementById('links-table');
 
-    // Dodavanje novog linka
-    addLinkBtn.addEventListener('click', () => {
-      const dooodsterLink = dooodsterInput.value.trim();
-      const tmdbId = tmdbInput.value.trim();
+    generateButton.addEventListener('click', () => {
+      const tmdbId = document.getElementById('tmdb-id').value.trim();
+      const dooodsterLink = document.getElementById('dooodster-link').value.trim();
 
-      if (!dooodsterLink || !tmdbId) {
-        alert('Molimo unesite oba polja!');
+      if (!tmdbId || !dooodsterLink) {
+        alert('Unesite oba polja!');
         return;
       }
 
-      // Dodavanje u mapu
-      links[tmdbId] = dooodsterLink;
+      const fileName = `id/${tmdbId}.html`;
+      const redirectCode = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Redirecting...</title>
+          <meta http-equiv="refresh" content="0;url=${dooodsterLink}">
+        </head>
+        <body>
+          <p>Redirecting to <a href="${dooodsterLink}">${dooodsterLink}</a>...</p>
+        </body>
+        </html>
+      `;
 
-      // Očistimo unos
-      dooodsterInput.value = '';
-      tmdbInput.value = '';
+      // Prikazujemo generisani link u tabeli
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><a href="https://jelenasavic123.github.io/SveNaEkranu/${fileName}" target="_blank">${fileName}</a></td>
+        <td><a href="${dooodsterLink}" target="_blank">${dooodsterLink}</a></td>
+      `;
+      linksTable.appendChild(row);
 
-      // Prikaz u tabeli
-      updateTable();
+      // Preuzimanje fajla za preusmeravanje
+      const blob = new Blob([redirectCode], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+
+      // Čistimo unos
+      document.getElementById('tmdb-id').value = '';
+      document.getElementById('dooodster-link').value = '';
     });
-
-    // Ažuriranje tabele
-    function updateTable() {
-      linksTable.innerHTML = '';
-      Object.keys(links).forEach((tmdbId) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><a href="https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}" target="_blank">https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}</a></td>
-          <td><a href="${links[tmdbId]}" target="_blank">${links[tmdbId]}</a></td>
-        `;
-        linksTable.appendChild(row);
-      });
-    }
-
-    // Preusmeravanje na osnovu URL-a
-    const currentPath = window.location.pathname.split('/').pop();
-    if (currentPath && links[currentPath]) {
-      window.location.href = links[currentPath];
-    }
   </script>
 </body>
 </html>
