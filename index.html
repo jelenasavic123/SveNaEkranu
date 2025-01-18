@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Konverter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #form-container {
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Link Konverter</h1>
+  <div id="form-container">
+    <input type="text" id="dooodster-link" placeholder="Unesite Dooodster link">
+    <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID">
+    <button id="add-link-btn">Dodaj Link</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Originalni Link</th>
+        <th>TMDB Link</th>
+      </tr>
+    </thead>
+    <tbody id="links-table">
+      <!-- Linkovi će se ovde prikazati -->
+    </tbody>
+  </table>
+  <script>
+    // Lista linkova
+    let links = [];
+
+    // Elementi DOM-a
+    const dooodsterInput = document.getElementById('dooodster-link');
+    const tmdbInput = document.getElementById('tmdb-id');
+    const addLinkBtn = document.getElementById('add-link-btn');
+    const linksTable = document.getElementById('links-table');
+
+    // Prikazivanje linkova u tabeli
+    function displayLinks() {
+      linksTable.innerHTML = '';
+      links.forEach(({ original, tmdb }) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><a href="${original}" target="_blank">${original}</a></td>
+          <td><a href="${tmdb}" target="_blank">${tmdb}</a></td>
+        `;
+        linksTable.appendChild(row);
+      });
+    }
+
+    // Dodavanje novog linka
+    addLinkBtn.addEventListener('click', () => {
+      const dooodsterLink = dooodsterInput.value.trim();
+      const tmdbId = tmdbInput.value.trim();
+
+      if (!dooodsterLink || !tmdbId) {
+        alert('Molimo unesite oba polja!');
+        return;
+      }
+
+      const tmdbLink = `https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}`;
+
+      // Dodajemo novi link u listu
+      links.push({ original: dooodsterLink, tmdb: tmdbLink });
+
+      // Očistimo unos i osvežimo tabelu
+      dooodsterInput.value = '';
+      tmdbInput.value = '';
+      displayLinks();
+    });
+  </script>
+</body>
+</html>
