@@ -3,13 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Konverter</title>
+  <title>Link Preusmerivač</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       max-width: 800px;
       margin: 20px auto;
       padding: 10px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #form-container {
+      margin-bottom: 20px;
     }
     table {
       width: 100%;
@@ -24,66 +33,36 @@
     th {
       background-color: #f4f4f4;
     }
-    input, button {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    #form-container {
-      margin-bottom: 20px;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
   </style>
 </head>
 <body>
-  <h1>Link Konverter</h1>
+  <h1>Link Preusmerivač</h1>
   <div id="form-container">
-    <input type="text" id="dooodster-link" placeholder="Unesite Dooodster link">
-    <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID">
+    <input type="text" id="dooodster-link" placeholder="Unesite Dooodster link (npr. https://dooodster.com/e/6mfqxg1589sl)">
+    <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID (npr. 762509)">
     <button id="add-link-btn">Dodaj Link</button>
   </div>
   <table>
     <thead>
       <tr>
-        <th>Originalni Link</th>
         <th>TMDB Link</th>
+        <th>Originalni Link</th>
       </tr>
     </thead>
     <tbody id="links-table">
       <!-- Linkovi će se ovde prikazati -->
     </tbody>
   </table>
+
   <script>
-    // Lista linkova
-    let links = [];
+    // Mapa linkova (TMDB ID -> Originalni link)
+    const links = {};
 
     // Elementi DOM-a
     const dooodsterInput = document.getElementById('dooodster-link');
     const tmdbInput = document.getElementById('tmdb-id');
     const addLinkBtn = document.getElementById('add-link-btn');
     const linksTable = document.getElementById('links-table');
-
-    // Prikazivanje linkova u tabeli
-    function displayLinks() {
-      linksTable.innerHTML = '';
-      links.forEach(({ original, tmdb }) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><a href="${original}" target="_blank">${original}</a></td>
-          <td><a href="${tmdb}" target="_blank">${tmdb}</a></td>
-        `;
-        linksTable.appendChild(row);
-      });
-    }
 
     // Dodavanje novog linka
     addLinkBtn.addEventListener('click', () => {
@@ -95,16 +74,35 @@
         return;
       }
 
-      const tmdbLink = `https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}`;
+      // Dodavanje u mapu
+      links[tmdbId] = dooodsterLink;
 
-      // Dodajemo novi link u listu
-      links.push({ original: dooodsterLink, tmdb: tmdbLink });
-
-      // Očistimo unos i osvežimo tabelu
+      // Očistimo unos
       dooodsterInput.value = '';
       tmdbInput.value = '';
-      displayLinks();
+
+      // Prikaz u tabeli
+      updateTable();
     });
+
+    // Ažuriranje tabele
+    function updateTable() {
+      linksTable.innerHTML = '';
+      Object.keys(links).forEach((tmdbId) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><a href="https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}" target="_blank">https://jelenasavic123.github.io/SveNaEkranu/${tmdbId}</a></td>
+          <td><a href="${links[tmdbId]}" target="_blank">${links[tmdbId]}</a></td>
+        `;
+        linksTable.appendChild(row);
+      });
+    }
+
+    // Preusmeravanje na osnovu URL-a
+    const currentPath = window.location.pathname.split('/').pop();
+    if (currentPath && links[currentPath]) {
+      window.location.href = links[currentPath];
+    }
   </script>
 </body>
 </html>
