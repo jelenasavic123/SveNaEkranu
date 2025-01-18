@@ -362,6 +362,9 @@ body.popup-open::before {
   </head>
   <body>
   
+  <!-- Audio element -->
+  <audio id="netflixSound" src="https://files.catbox.moe/aus6st.mp3"></audio>
+  
     <a class="container" href="https://netlify.com" target="_blank" id="temp-display">
     <div class="logo">
       <div class="uno"></div>
@@ -370,8 +373,7 @@ body.popup-open::before {
     </div>
     <div class="name">Netlify</div>
   </a>
- <!-- Audio element -->
-  <audio id="netflixSound" src="https://files.catbox.moe/aus6st.mp3"></audio>
+
   <script>
     // Sakrij element nakon 3 sekunde
     setTimeout(() => {
@@ -570,24 +572,6 @@ initialize();
     });
 
     </script>
-    <script>
-  window.addEventListener('load', () => {
-    const netflixSound = document.getElementById('netflixSound');
     
-    // Pokreni zvuk nakon što se stranica učita
-    const playSound = () => {
-      netflixSound.play().catch((error) => {
-        console.log('Autoplay blocked:', error);
-      });
-    };
-
-    // Proveri podršku za autoplay
-    if ('autoplay' in netflixSound) {
-      playSound();
-    } else {
-      document.addEventListener('click', playSound, { once: true });
-    }
-  });
-</script>
   </body>
 </html>
