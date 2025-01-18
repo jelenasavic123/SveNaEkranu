@@ -300,6 +300,7 @@ const movieList = document.getElementById('movie-list');
 const yearFilters = document.getElementById('year-filters');
 const genreFilters = document.getElementById('genre-filters');
 const moviePopup = document.getElementById('moviePopup');
+const logoContainer = document.querySelector('.logo'); // Selektujemo logo
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
 
 let currentPage = 1;
@@ -440,8 +441,19 @@ window.addEventListener('scroll', () => {
   }
 });
 
+// Funkcija za uklanjanje Netflix loga nakon 3 sekunde
+function hideLogoAfterDelay() {
+  setTimeout(() => {
+    if (logoContainer) {
+      logoContainer.style.display = 'none'; // Sakrivanje loga
+    }
+  }, 3000); // 3000 ms = 3 sekunde
+}
+
 // Pokreni inicijalizaciju
 initialize();
+hideLogoAfterDelay(); // Pozivanje funkcije za skrivanje loga
+
 
 
     </script>
