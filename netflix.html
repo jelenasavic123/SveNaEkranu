@@ -406,7 +406,7 @@ body.popup-open::before {
     <footer>
       © 2025 Netflix Clone | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
     </footer>
-    
+    <audio id="netflixSound" src="https://assets.mixkit.co/sfx/preview/mixkit-tudum-4558.mp3"></audio>
     
     <script>
 const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -416,6 +416,8 @@ const yearFilters = document.getElementById('year-filters');
 const genreFilters = document.getElementById('genre-filters');
 const moviePopup = document.getElementById('moviePopup');
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+const popup = document.getElementById('popup');
+ const netflixSound = document.getElementById('netflixSound');
 
 let currentPage = 1;
 let isLoading = false;
@@ -556,6 +558,23 @@ window.addEventListener('scroll', () => {
 
 // Pokreni inicijalizaciju
 initialize();
+
+// Play sound and show popup automatically
+    window.addEventListener('load', () => {
+      netflixSound.play().then(() => {
+        console.log('Sound playing successfully.');
+        // Show popup
+        popup.classList.add('active');
+
+        // Hide popup after 3 seconds
+        setTimeout(() => {
+          popup.classList.remove('active');
+        }, 3000);
+      }).catch(error => {
+        console.error('Audio playback failed:', error);
+        alert('Autoplay blocked by browser. Please click anywhere to play sound.');
+      });
+    });
 
 
 
