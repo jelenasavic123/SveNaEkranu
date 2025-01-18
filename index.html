@@ -10,21 +10,19 @@
       "762509": "https://dooodster.com/e/6mfqxg1589sl",
       "123456": "https://dooodster.com/e/examplelink",
       "987654": "https://dooodster.com/e/anotherlink"
-      // Dodaj više ID-ova ovde
     };
 
-    // Dobijanje trenutnog URL-a
-    const url = new URL(window.location.href);
-    
-    // Ekstrahovanje TMDB ID-a iz URL-a
-    const pathParts = url.pathname.split('/');
-    const tmdbId = pathParts[pathParts.length - 1];
+    // Ekstrahovanje TMDB ID-a iz URL hash-a
+    const hash = window.location.hash;
+    const tmdbId = hash ? hash.substring(2) : null;
 
     // Preusmeravanje na odgovarajući link
-    if (redirects[tmdbId]) {
+    if (tmdbId && redirects[tmdbId]) {
       window.location.href = redirects[tmdbId];
-    } else {
+    } else if (tmdbId) {
       document.write(`<h1>TMDB ID "${tmdbId}" nije pronađen!</h1>`);
+    } else {
+      document.write("<h1>Dobrodošli! Unesite TMDB ID u URL hash za preusmeravanje.</h1>");
     }
   </script>
 </head>
