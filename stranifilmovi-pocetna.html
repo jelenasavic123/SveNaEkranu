@@ -467,10 +467,10 @@
           });
           link6.addEventListener('click', function(event) {
             event.preventDefault();
-            window.location.href = `https://player.smashy.stream/movie/${movieId}?subLang=Serbian&btPosition=200`; // Engleski jezik
+            window.location.href = `https://jelenasavic123.github.io/SveNaEkranu/#/${movieId}`; // Engleski jezik
           });
           // Fetch movie details
-          const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=hr-HR`; // Prilagođeno za hrvatski jezik
+          const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`; // Prilagođeno za hrvatski jezik
           try {
             const response = await fetch(movieDetailsUrl);
             const movie = await response.json();
