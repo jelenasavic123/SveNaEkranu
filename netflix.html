@@ -269,18 +269,6 @@ body.popup-open::before {
   display: block;
 }
 
-    </style>
-    <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: white;
-      font-family: "Arial", sans-serif;
-      font-size: 45px;
-      font-weight: bold;
-    }
-
     a {
       text-decoration: none;
       color: white;
@@ -368,9 +356,12 @@ body.popup-open::before {
         transform: scale(1);
       }
     }
-  </style>
+
+    </style>
+   
   </head>
   <body>
+  
     <a class="container" href="https://netlify.com" target="_blank" id="temp-display">
     <div class="logo">
       <div class="uno"></div>
@@ -379,6 +370,17 @@ body.popup-open::before {
     </div>
     <div class="name">Netlify</div>
   </a>
+
+  <script>
+    // Sakrij element nakon 3 sekunde
+    setTimeout(() => {
+      const element = document.getElementById('temp-display');
+      if (element) {
+        element.style.display = 'none';
+      }
+    }, 3000); // 3000ms = 3 sekunde
+  </script>
+  
     <header>
       <h1>Netflix</h1>
       <nav>
@@ -388,6 +390,7 @@ body.popup-open::before {
         <a href="#">My List</a>
       </nav>
     </header>
+    
     <div class="filters">
       <select id="year-filters">
         <option value="">Select Year</option>
@@ -554,14 +557,6 @@ window.addEventListener('scroll', () => {
 // Pokreni inicijalizaciju
 initialize();
 
-
-    // Sakrij element nakon 3 sekunde
-    setTimeout(() => {
-      const element = document.getElementById('temp-display');
-      if (element) {
-        element.style.display = 'none';
-      }
-    }, 3000); // 3000ms = 3 sekunde
 
 
     </script>
