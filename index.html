@@ -3,104 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Link Preusmerivač</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 10px;
+  <title>Preusmeravanje</title>
+  <script>
+    // Mapa TMDB ID-ova i originalnih linkova
+    const redirects = {
+      "762509": "https://dooodster.com/e/6mfqxg1589sl",
+      "123456": "https://dooodster.com/e/examplelink",
+      "987654": "https://dooodster.com/e/anotherlink"
+      // Dodaj više ID-ova ovde
+    };
+
+    // Dobijanje trenutnog URL-a
+    const url = new URL(window.location.href);
+    
+    // Ekstrahovanje TMDB ID-a iz URL-a
+    const pathParts = url.pathname.split('/');
+    const tmdbId = pathParts[pathParts.length - 1];
+
+    // Preusmeravanje na odgovarajući link
+    if (redirects[tmdbId]) {
+      window.location.href = redirects[tmdbId];
+    } else {
+      document.write(`<h1>TMDB ID "${tmdbId}" nije pronađen!</h1>`);
     }
-    input, button {
-      padding: 8px;
-      margin: 5px 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-  </style>
+  </script>
 </head>
 <body>
-  <h1>Dodavanje Linkova za Preusmeravanje</h1>
-  <p>Unesite TMDB ID i odgovarajući link da biste generisali HTML fajl za preusmeravanje.</p>
-  <div>
-    <input type="text" id="tmdb-id" placeholder="Unesite TMDB ID (npr. 762509)">
-    <input type="text" id="original-link" placeholder="Unesite originalni link (npr. https://dooodster.com/e/6mfqxg1589sl)">
-    <button id="generate-btn">Generiši HTML</button>
-  </div>
-
-  <h2>Generisani Linkovi</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>TMDB ID</th>
-        <th>Originalni Link</th>
-        <th>Preuzmi HTML</th>
-      </tr>
-    </thead>
-    <tbody id="generated-links">
-      <!-- Generisani linkovi će se prikazati ovde -->
-    </tbody>
-  </table>
-
-  <script>
-    const generateBtn = document.getElementById('generate-btn');
-    const generatedLinks = document.getElementById('generated-links');
-
-    generateBtn.addEventListener('click', () => {
-      const tmdbId = document.getElementById('tmdb-id').value.trim();
-      const originalLink = document.getElementById('original-link').value.trim();
-
-      if (!tmdbId || !originalLink) {
-        alert('Unesite oba polja!');
-        return;
-      }
-
-      // Kreiranje sadržaja za HTML fajl
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Redirecting...</title>
-          <meta http-equiv="refresh" content="0;url=${originalLink}">
-        </head>
-        <body>
-          <p>Redirecting to <a href="${originalLink}">${originalLink}</a>...</p>
-        </body>
-        </html>
-      `;
-
-      // Kreiranje fajla za preuzimanje
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-
-      // Dodavanje u tabelu
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td>${tmdbId}</td>
-        <td><a href="${originalLink}" target="_blank">${originalLink}</a></td>
-        <td><a href="${url}" download="${tmdbId}.html">Preuzmi HTML</a></td>
-      `;
-      generatedLinks.appendChild(newRow);
-
-      // Čišćenje input polja
-      document.getElementById('tmdb-id').value = '';
-      document.getElementById('original-link').value = '';
-    });
-  </script>
+  <noscript>Ovaj sajt zahteva JavaScript za preusmeravanje.</noscript>
 </body>
 </html>
