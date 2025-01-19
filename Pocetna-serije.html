@@ -361,7 +361,6 @@
       <ul class="sidebar-links">
         <li><a href="https://jelenasavic123.github.io/SveNaEkranu/Pocetna-serije.html">Sve serije</a></li>
         <li><a href="https://jelenasavic123.github.io/SveNaEkranu/stranifilmovi-pocetna.html">Svi Filmovi</a></li>
-        <li><a href="https://jelenasavic123.github.io/SveNaEkranu/omiljeno.html">Omiljeni Sadrzaj</a></li>
       </ul>
     </div>
     <div class="logo">
@@ -408,6 +407,7 @@
         <h2>Izaberite jezik za gledanje</h2>
         <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
         <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
+        <button id="watch-bh" class="language-button">Gledaj na hrvatskom</button>
       </div>
     </div>
     <script>
@@ -559,13 +559,13 @@
       });
       watchSrButton.addEventListener('click', () => {
         const tmdbId = currentSeriesId;
-        window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}&lang=sr`;
+        window.location.href = `https://vidsrc.xyz/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=sr`;
         // Dodajemo informaciju o sezoni i epizodi
         console.log(`Gledajte Sezonu ${currentSeason}, Epizodu ${selectedEpisode.episode_number} na srpskom.`);
       });
       watchHrButton.addEventListener('click', () => {
         const tmdbId = currentSeriesId;
-        window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}&lang=hr`;
+        window.location.href = `https://vidsrc.xyz/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=sr`;
         // Dodajemo informaciju o sezoni i epizodi
         console.log(`Gledajte Sezonu ${currentSeason}, Epizodu ${selectedEpisode.episode_number} na hrvatskom.`);
       });
