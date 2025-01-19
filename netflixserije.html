@@ -10,9 +10,9 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #121212;
         background: url('https://jelenasavic123.github.io/SveNaEkranu//slike/pozadina.jpg') center center / cover no-repeat fixed;
-        color: #fff;
+        background-color: #121212;
+        color: #000;
       }
       h2,
       h3 {
@@ -346,7 +346,6 @@
           transform: translate(-50%, -60%);
         }
       }
-
       .logo {
         margin: 20px 0;
         text-align: center;
@@ -410,6 +409,7 @@
         <h2>Izaberite jezik za gledanje</h2>
         <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
         <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
+        <button id="watch-bh" class="language-button">Gledaj na hrvatskom</button>
       </div>
     </div>
     <script>
@@ -477,7 +477,8 @@
       }
       async function fetchSeries() {
         document.getElementById('loading').style.display = 'block';
-        let apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
+       let apiUrl = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
+
         if (currentGenre) {
           apiUrl += `&with_genres=${currentGenre}`;
         }
@@ -548,7 +549,7 @@
             selectedEpisode = episode;
             languagePopup.style.display = 'flex';
           });
-          episodesContainer.appendChild(episodeButton);a
+          episodesContainer.appendChild(episodeButton);
         });
       }
       closeBtn.addEventListener('click', () => {
@@ -560,14 +561,13 @@
       });
       watchSrButton.addEventListener('click', () => {
         const tmdbId = currentSeriesId;
-        window.location.href = `https://vidsrc.vip/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}&lang=sr`;
+        window.location.href = `https://vidsrc.xyz/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=sr`;
         // Dodajemo informaciju o sezoni i epizodi
         console.log(`Gledajte Sezonu ${currentSeason}, Epizodu ${selectedEpisode.episode_number} na srpskom.`);
       });
       watchHrButton.addEventListener('click', () => {
         const tmdbId = currentSeriesId;
-        window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${currentSeason}&episode=${selectedEpisode.episode_number}&ds_lang=cr`;
-
+        window.location.href = `https://vidsrc.xyz/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=sr`;
         // Dodajemo informaciju o sezoni i epizodi
         console.log(`Gledajte Sezonu ${currentSeason}, Epizodu ${selectedEpisode.episode_number} na hrvatskom.`);
       });
@@ -623,6 +623,7 @@ async function showSeriesDetails(id) {
           displayMovieInfo(savedMovieId);
         }
       });
+
       
       document.getElementById('saveToWatchLater').addEventListener('click', () => {
         const movieTitle = seriesTitle.textContent;
