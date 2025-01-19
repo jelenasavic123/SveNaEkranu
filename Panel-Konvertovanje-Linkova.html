@@ -3,214 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preusmeravanje Linkova - Kontrolni Panel</title>
-    <script type="module">
-        // Import Firebase funkcija
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, set, get, remove, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    <title>Preusmeravanje - Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Preusmeravanje Linkova - Admin Panel</h1>
+    <form id="redirectForm">
+        <label for="tmdbId">TMDB ID:</label>
+        <input type="text" id="tmdbId" required><br><br>
+        <label for="url">URL:</label>
+        <input type="url" id="url" required><br><br>
+        <button type="submit">Dodaj/Izmeni Redirect</button>
+    </form>
 
+    <h2>Upute:</h2>
+    <p>Unesite TMDB ID i URL da biste dodali ili izmenili preusmeravanje.</p>
+
+    <script>
         // Firebase konfiguracija
-        const firebaseConfig = {
-            apiKey: "AIzaSyAYdeETi4ypfVTTQsNhn-lfdtx4maOEWrk",
-            authDomain: "preusmeravanjeklikova.firebaseapp.com",
-            databaseURL: "https://preusmeravanjeklikova-default-rtdb.firebaseio.com",
-            projectId: "preusmeravanjeklikova",
-            storageBucket: "preusmeravanjeklikova.firebasestorage.app",
-            messagingSenderId: "387493682555",
-            appId: "1:387493682555:web:73bb870f371ea47d4071de",
-            measurementId: "G-QQB1SDP71D"
-        };
-
+       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAYdeETi4ypfVTTQsNhn-lfdtx4maOEWrk",
+  authDomain: "preusmeravanjeklikova.firebaseapp.com",
+  databaseURL: "https://preusmeravanjeklikova-default-rtdb.firebaseio.com",
+  projectId: "preusmeravanjeklikova",
+  storageBucket: "preusmeravanjeklikova.firebasestorage.app",
+  messagingSenderId: "387493682555",
+  appId: "1:387493682555:web:73bb870f371ea47d4071de",
+  measurementId: "G-QQB1SDP71D"
+};
         // Inicijalizacija Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
 
-        // Funkcija za dodavanje novog TMDB ID-a i URL-a
-        function addLink() {
-            const tmdbId = document.getElementById('tmdbIdAdd').value;
-            const url = document.getElementById('urlAdd').value;
-            
+        // Dodavanje ili ažuriranje preusmeravanja
+        document.getElementById("redirectForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const tmdbId = document.getElementById("tmdbId").value;
+            const url = document.getElementById("url").value;
+
             if (tmdbId && url) {
-                const redirectsRef = ref(database, 'redirects/' + tmdbId);
-                set(redirectsRef, url)
+                // Reference na 'redirects' u Firebase
+                const redirectsRef = database.ref('redirects/' + tmdbId);
+                
+                // Upisivanje novog linka
+                redirectsRef.set(url)
                     .then(() => {
-                        console.log("Link sa TMDB ID: " + tmdbId + " je uspešno dodat sa URL-om: " + url);
-                        alert("Link je uspešno dodat!");
-                        document.getElementById('tmdbIdAdd').value = '';
-                        document.getElementById('urlAdd').value = '';
+                        alert("Preusmeravanje je uspešno dodano ili ažurirano!");
+                        document.getElementById("redirectForm").reset();
                     })
                     .catch((error) => {
-                        console.error("Greška pri dodavanju linka:", error);
-                        alert("Došlo je do greške pri dodavanju linka.");
-                    });
-            } else {
-                console.log("Greška: Nisu uneti TMDB ID ili URL.");
-                alert("Molimo vas da unesete i TMDB ID i URL.");
-            }
-        }
-
-        // Funkcija za pretragu i ažuriranje postojećeg linka
-        function editLink() {
-            const tmdbId = document.getElementById('tmdbIdEdit').value;
-            const newUrl = document.getElementById('urlEdit').value;
-
-            if (tmdbId) {
-                const redirectsRef = ref(database, 'redirects/' + tmdbId);
-                get(redirectsRef)
-                    .then((snapshot) => {
-                        if (snapshot.exists()) {
-                            if (newUrl) {
-                                // Ako je URL unet, ažuriraj URL
-                                update(redirectsRef, { [tmdbId]: newUrl })
-                                    .then(() => {
-                                        console.log("Link sa TMDB ID: " + tmdbId + " je ažuriran sa novim URL-om: " + newUrl);
-                                        alert("Link je uspešno ažuriran!");
-                                        document.getElementById('tmdbIdEdit').value = '';
-                                        document.getElementById('urlEdit').value = '';
-                                    })
-                                    .catch((error) => {
-                                        console.error("Greška pri ažuriranju linka:", error);
-                                        alert("Došlo je do greške pri ažuriranju linka.");
-                                    });
-                            } else {
-                                console.log("Greška: Nije unet novi URL za ažuriranje.");
-                                alert("Molimo vas da unesete novi URL za ažuriranje.");
-                            }
-                        } else {
-                            console.log("Greška: TMDB ID nije pronađen u bazi.");
-                            alert("TMDB ID nije pronađen u bazi.");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Greška pri preuzimanju linka:", error);
+                        console.error("Greška pri dodavanju ili ažuriranju preusmeravanja:", error);
                         alert("Došlo je do greške.");
                     });
             } else {
-                console.log("Greška: Nije unet TMDB ID za pretragu.");
-                alert("Molimo vas da unesete TMDB ID.");
+                alert("Molimo vas da popunite oba polja.");
             }
-        }
-
-        // Funkcija za brisanje postojećeg linka
-        function deleteLink() {
-            const tmdbId = document.getElementById('tmdbIdDelete').value;
-
-            if (tmdbId) {
-                const redirectsRef = ref(database, 'redirects/' + tmdbId);
-                remove(redirectsRef)
-                    .then(() => {
-                        console.log("Link sa TMDB ID: " + tmdbId + " je uspešno obrisan.");
-                        alert("Link je uspešno obrisan.");
-                        document.getElementById('tmdbIdDelete').value = '';
-                    })
-                    .catch((error) => {
-                        console.error("Greška pri brisanju linka:", error);
-                        alert("Došlo je do greške pri brisanju linka.");
-                    });
-            } else {
-                console.log("Greška: Nije unet TMDB ID za brisanje.");
-                alert("Molimo vas da unesete TMDB ID za brisanje.");
-            }
-        }
+        });
     </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        h1, h2 {
-            color: #333;
-        }
-
-        hr {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        input {
-            padding: 8px;
-            margin-bottom: 10px;
-            width: 100%;
-            max-width: 400px;
-            box-sizing: border-box;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .alert {
-            color: red;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <h1>Preusmeravanje Linkova - Kontrolni Panel</h1>
-
-        <!-- Panel za dodavanje linkova -->
-        <div class="form-group">
-            <h2>Dodaj novi link</h2>
-            <label for="tmdbIdAdd">TMDB ID:</label>
-            <input type="text" id="tmdbIdAdd" placeholder="Unesite TMDB ID"><br><br>
-            <label for="urlAdd">URL:</label>
-            <input type="text" id="urlAdd" placeholder="Unesite URL za preusmeravanje"><br><br>
-            <button onclick="addLink()">Dodaj Link</button>
-        </div>
-
-        <hr>
-
-        <!-- Panel za uređivanje ili ažuriranje linkova -->
-        <div class="form-group">
-            <h2>Uredi postojeći link</h2>
-            <label for="tmdbIdEdit">TMDB ID:</label>
-            <input type="text" id="tmdbIdEdit" placeholder="Unesite TMDB ID za pretragu"><br><br>
-            <label for="urlEdit">Novi URL:</label>
-            <input type="text" id="urlEdit" placeholder="Unesite novi URL"><br><br>
-            <button onclick="editLink()">Ažuriraj Link</button>
-        </div>
-
-        <hr>
-
-        <!-- Panel za brisanje linkova -->
-        <div class="form-group">
-            <h2>Obriši link</h2>
-            <label for="tmdbIdDelete">TMDB ID:</label>
-            <input type="text" id="tmdbIdDelete" placeholder="Unesite TMDB ID za brisanje"><br><br>
-            <button onclick="deleteLink()">Obriši Link</button>
-        </div>
-    </div>
-
 </body>
 </html>
