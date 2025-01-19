@@ -548,7 +548,7 @@
             selectedEpisode = episode;
             languagePopup.style.display = 'flex';
           });
-          episodesContainer.appendChild(episodeButton);
+          episodesContainer.appendChild(episodeButton);a
         });
       }
       closeBtn.addEventListener('click', () => {
@@ -566,7 +566,8 @@
       });
       watchHrButton.addEventListener('click', () => {
         const tmdbId = currentSeriesId;
-        window.location.href = `https://vidsrc.xyz/embed/tv/${tmdbId}/${currentSeason}/${selectedEpisode.episode_number}`;
+        window.location.href = `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${currentSeason}&episode=${selectedEpisode.episode_number}&ds_lang=cr`;
+
         // Dodajemo informaciju o sezoni i epizodi
         console.log(`Gledajte Sezonu ${currentSeason}, Epizodu ${selectedEpisode.episode_number} na hrvatskom.`);
       });
