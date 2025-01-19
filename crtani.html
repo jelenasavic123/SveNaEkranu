@@ -433,27 +433,76 @@ function displayMovieInfo(movieId) {
     loadingIndicator.style.display = 'block';
     let url;
 
-    switch (filter) {
-      case 'old-cartoons':
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.lte=2010-12-31&page=${currentPage}`;
-        break;
-      case 'new-cartoons':
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.gte=2011-01-01&page=${currentPage}`;
-        break;
-      case 'regional-cartoons':
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&region=EU&page=${currentPage}`;
-        break;
-      case 'family-cartoons':
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16,10751&page=${currentPage}`;
-        break;
-      case 'adult-cartoons':
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=US&certification=R&page=${currentPage}`;
-        break;
-      // Add more cases for other filters here
-      default:
-        url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&page=${currentPage}`;
-        break;
-    }
+switch (filter) {
+  case 'old-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.lte=2010-12-31&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'new-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.gte=2011-01-01&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'regional-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&region=EU&page=${currentPage}`;
+    break;
+
+  case 'family-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16,10751&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'adult-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'classic-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.lte=1980-12-31&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'retro-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.lte=1999-12-31&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'modern-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&release_date.gte=2000-01-01&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'disney-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'pixar-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'dreamworks-cartoons':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'studio-ghibli':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'cartoon-saloon':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'paramount-animation':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'laika-studios':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  case 'sony-animation':
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&certification_country=RS&certification=R&page=${currentPage}`;
+    break;
+
+  default:
+    url = `${baseUrl}discover/movie?api_key=${apiKey}&language=sr&with_genres=16&page=${currentPage}`;
+    break;
+}
+
 
     fetch(url)
       .then(response => response.json())
@@ -499,20 +548,12 @@ function displayMovieInfo(movieId) {
   const filterOptions = [
     { id: 'old-cartoons', label: 'Stari crtaći' },
     { id: 'new-cartoons', label: 'Novi crtaći' },
-    { id: 'regional-cartoons', label: 'Regionalni crtaći' },
     { id: 'family-cartoons', label: 'Porodični crtaći' },
     { id: 'adult-cartoons', label: 'Odrasli crtaći' },
     { id: 'classic-cartoons', label: 'Klasični crtaći' },
     { id: 'retro-cartoons', label: 'Retro crtaći' },
     { id: 'modern-cartoons', label: 'Savremeni crtaći' },
-    { id: 'disney-cartoons', label: 'Disney crtaći' },
-    { id: 'pixar-cartoons', label: 'Pixar crtaći' },
-    { id: 'dreamworks-cartoons', label: 'DreamWorks crtaći' },
-    { id: 'studio-ghibli', label: 'Studio Ghibli crtaći' },
-    { id: 'cartoon-saloon', label: 'Cartoon Saloon' },
-    { id: 'paramount-animation', label: 'Paramount Animation' },
-    { id: 'laika-studios', label: 'Laika Studios' },
-    { id: 'sony-animation', label: 'Sony Pictures Animation' },
+
   ];
 
   filterOptions.forEach(option => {
