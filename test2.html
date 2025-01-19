@@ -232,6 +232,151 @@
         border-radius: 10px;
         text-align: center;
       }
+      
+      
+            .container {
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+      .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .tab {
+        padding: 10px 20px;
+        margin: 0 10px;
+        cursor: pointer;
+        background-color: #333;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .tab:hover {
+        background-color: #555;
+      }
+      .tab.active {
+        background-color: #e50914;
+        color: #fff;
+      }
+      .movie-list {
+        display: flex;
+        overflow-x: auto;
+        gap: 15px;
+        padding: 10px 0;
+        scrollbar-width: thin;
+        scrollbar-color: #555 #000;
+      }
+      .movie-list::-webkit-scrollbar {
+        height: 10px;
+      }
+      .movie-list::-webkit-scrollbar-thumb {
+        background: #555;
+        border-radius: 10px;
+      }
+      .movie {
+        min-width: 200px;
+        background-color: #141414;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s;
+      }
+      .movie:hover {
+        transform: scale(1.1);
+      }
+      .movie img {
+        width: 100%;
+        display: block;
+      }
+      .movie-info {
+        padding: 10px;
+        text-align: center;
+      }
+      .movie h3 {
+        font-size: 1rem;
+        margin: 10px 0 5px;
+      }
+      .movie p {
+        font-size: 0.9rem;
+        color: #aaa;
+        margin: 0;
+      }
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 10%, transparent 90%);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .overlay {
+        display: none;
+      }
+      .movie {
+        width: 200px;
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+      }
+      .movie img {
+        width: 100%;
+      }
+      .movie-info {
+        padding: 10px;
+      }
+      #moviePopup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      #moviePopupContent {
+        max-width: 600px;
+        padding: 20px;
+        background: #1e1e1e;
+        border-radius: 10px;
+        text-align: center;
+      }
+      #moviePopup img {
+        width: 30%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+      #moviePopup button {
+        background: none;
+        border: none;
+        font-size: 16px;
+        color: #fff;
+        cursor: pointer;
+        margin: 5px;
+        padding: 10px 15px;
+        border: 1px solid #fff;
+        border-radius: 5px;
+      }
+      #moviePopup button:hover {
+        background: #fff;
+        color: #121212;
+      }
+      .loading {
+        text-align: center;
+        font-size: 18px;
+        margin-top: 20px;
+      }
     </style>
   </head>
   <body>
@@ -328,6 +473,32 @@
           <a href="https://me-qr.com" style="color: #007BFF; text-decoration: underline;"></a>
         </p>
       </div>
+       </div>
+    <div class="container">
+      <h1>Trending Filmovi</h1>
+      <div class="tabs">
+        <div class="tab active" data-timeframe="day">Danas</div>
+        <div class="tab" data-timeframe="week">Ove nedelje</div>
+      </div>
+      <div id="loading" class="loading" style="display: none;">Loading...</div>
+      <div class="movie-list" id="movie-list"></div>
+    </div>
+
+    <!-- Popup for movie details -->
+    <div id="moviePopup">
+      <div id="moviePopupContent">
+        <img id="moviePopupImage" src="" alt="Movie Poster">
+        <h2 id="moviePopupTitle"></h2>
+        <p id="moviePopupOverview"></p>
+        <p><strong>Release Date:</strong> <span id="moviePopupReleaseDate"></span></p>
+        <div id="languageMenu">
+          <button class="languageButton" onclick="changeLanguage('sr')">Gledaj na Sprskom</button>
+          <button class="languageButton" onclick="changeLanguage('hr')">Gledaj na Hrvatskom</button>
+          <button class="languageButton" onclick="changeLanguage('mk')">Geldaj na Bosanskom</button>
+        </div>
+        <button onclick="closePopup()">Close</button>
+      </div>
+    </div>
       <script>
         // Firebase konfiguracija
         const firebaseConfig = {
@@ -338,6 +509,8 @@
           messagingSenderId: "15230160013",
           appId: "1:15230160013:web:89144bb5079637e787e6c4",
           measurementId: "G-PED21PPQQJ"
+          
+          
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -426,6 +599,80 @@
             document.getElementById('popup').style.display = 'flex';
           }
         };
+        
+      const API_KEY = "2701858e9bccab54d4d0e4931420a739";
+      const BASE_URL = "https://api.themoviedb.org/3/trending/movie";
+      const BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+      const languageUrls = {
+        sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
+        hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
+        mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+      };
+      const tabs = document.querySelectorAll(".tab");
+      const movieList = document.getElementById("movie-list");
+      const loadingIndicator = document.getElementById("loading");
+      const moviePopup = document.getElementById("moviePopup");
+      const moviePopupImage = document.getElementById("moviePopupImage");
+      const moviePopupTitle = document.getElementById("moviePopupTitle");
+      const moviePopupOverview = document.getElementById("moviePopupOverview");
+      const moviePopupReleaseDate = document.getElementById("moviePopupReleaseDate");
+      let currentMovieId = null;
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelector(".tab.active").classList.remove("active");
+          tab.classList.add("active");
+          const timeframe = tab.getAttribute("data-timeframe");
+          fetchTrendingMovies(timeframe);
+        });
+      });
+      async function fetchTrendingMovies(timeframe = "day") {
+        loadingIndicator.style.display = "block";
+        movieList.innerHTML = "";
+        try {
+          const response = await fetch(`${BASE_URL}/${timeframe}?api_key=${API_KEY}`);
+          const data = await response.json();
+          displayMovies(data.results);
+        } catch (error) {
+          console.error("Error fetching trending movies:", error);
+        } finally {
+          loadingIndicator.style.display = "none";
+        }
+      }
+      function displayMovies(movies) {
+        movieList.innerHTML = movies.map(movie => `
+                <div class="movie" onclick="openPopup(${movie.id})">
+                    <img src="${BASE_IMAGE_URL}${movie.poster_path}" alt="${movie.title}">
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <p>Rating: ${movie.vote_average}</p>
+                    </div>
+                </div>
+            `).join("");
+      }
+      async function openPopup(movieId) {
+        currentMovieId = movieId;
+        const url = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          moviePopupImage.src = `${BASE_IMAGE_URL}${data.poster_path}`;
+          moviePopupTitle.textContent = data.title;
+          moviePopupOverview.textContent = data.overview;
+          moviePopupReleaseDate.textContent = data.release_date;
+          moviePopup.style.display = "flex";
+        } catch (error) {
+          console.error("Error fetching movie details:", error);
+        }
+      }
+      function closePopup() {
+        moviePopup.style.display = "none";
+      }
+      function changeLanguage(lang) {
+        if (!currentMovieId) return;
+        const videoUrl = languageUrls[lang].replace("{movieId}", currentMovieId);
+        window.location.href = videoUrl;
+      }
+      fetchTrendingMovies();
       </script>
       <script>
         /* ------------------- */
