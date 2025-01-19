@@ -274,24 +274,6 @@
           transform: translate(-50%, -60%);
         }
       }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      #closePopupButton:focus {
-        outline: 3px solid #ff0000;
-        border: 1px solid #ff0000;
-      }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      .movie-item img:focus {
-        outline: 3px solid transparent;
-        /* Premažemo okvir s providnom bojom */
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        /* Dodajemo sjaj umesto crvenog okvira */
-      }
       .logo {
         margin: 20px 0;
         text-align: center;
@@ -338,7 +320,6 @@
     </div>
     <div id="customAlert" style="display: none;">
       <span id="customAlertMessage"></span>
-      <img src="image1.jpg" alt="Movie Poster" id="firstMovieImage" autofocus>
     </div>
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -497,11 +478,6 @@
         generateYearFilters();
         fetchGenres();
         fetchMovies();
-        // Postavljanje fokusa na prvu sliku nakon što se slike učitaju
-        const firstMovieImage = document.querySelector('.movie-item img');
-        if (firstMovieImage) {
-          firstMovieImage.focus();
-        }
         const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
         const savedMovieId = sessionStorage.getItem('currentMovieId');
         if (popupOpen && savedMovieId) {
