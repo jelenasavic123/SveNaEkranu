@@ -30,27 +30,32 @@
         // Dohvati TMDB ID iz URL-a
         const urlParams = new URLSearchParams(window.location.search);
         const tmdbId = urlParams.get('tmdbId'); // uzmi vrednost 'tmdbId' iz URL-a
+        console.log("TMDB ID:", tmdbId); // Loguj TMDB ID
 
         if (tmdbId) {
             // Reference na 'redirects' u Firebase bazi
             const redirectsRef = database.ref('redirects/' + tmdbId);
+            console.log("Pokušavam da dobijem podatke za TMDB ID:", tmdbId); // Loguj kada pokušavamo da dohvatimo podatke
 
             // Dohvati URL iz baze na osnovu TMDB ID-a
             redirectsRef.get()
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const url = snapshot.val();
+                        console.log("URL iz baze:", url); // Loguj URL koji dolazi iz baze
                         // Preusmeravanje na URL
                         window.location.href = url;
                     } else {
+                        console.error("TMDB ID nije pronađen u bazi."); // Loguj grešku
                         alert("TMDB ID nije pronađen u bazi.");
                     }
                 })
                 .catch((error) => {
-                    console.error("Greška pri preuzimanju linka:", error);
+                    console.error("Greška pri preuzimanju linka:", error); // Loguj grešku
                     alert("Došlo je do greške.");
                 });
         } else {
+            console.error("Nije pronađen TMDB ID u URL-u."); // Loguj grešku
             alert("Nije pronađen TMDB ID u URL-u.");
         }
     </script>
