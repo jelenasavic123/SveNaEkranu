@@ -313,7 +313,9 @@
           <button id="saveToWatchLater">💾Dodaj u Omiljeno</button>
           <div id="languageMenu">
             <div>Prevod nedostaje? Pokušajte s drugim jezikom iz liste.</div>
-            <button class="languageButton" id="sr" tabindex="1" onclick="changeLanguage('sr')">Srpski Lat</button>
+            <button class="languageButton" id="sr" tabindex="1" onclick="changeLanguage('sr')">Gledaj na Srpskom</button>
+            <button class="languageButton" id="hr" tabindex="1" onclick="changeLanguage('hr')">Gledaj na Hrvatskom</button>
+            <button class="languageButton" id="mk" tabindex="1" onclick="changeLanguage('mk')">Gledaj na Bosanskom</button>
             <button id="closeMenuButton" tabindex="7" onclick="closePopup()">Zatvori</button>
           </div>
         </div>
@@ -336,10 +338,10 @@
       let selectedGenre = null;
       let currentMovieId = null;
       const languageUrls = {
-        sr: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
-        hr: "https://vidsrc.vip/embed/movie/{movieId}&lang=hr",
-        mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
-        bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
+        sr: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
+        hr: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
+        mk: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
+        bs: "https://vidsrc.vip/embed/movie?tmdb={movieId}&ds_lang=hr",
         sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
         
