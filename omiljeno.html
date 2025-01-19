@@ -82,10 +82,10 @@
         width: 10%;
         margin: 10px;
         height: auto;
-         padding: 10px 10px;
+        padding: 10px 10px;
         transition: color 0.3s ease;
         display: block;
-        border-radius:15px;
+        border-radius: 15px;
       }
       #moviePopupDetails {
         padding: 20px;
@@ -133,15 +133,14 @@
       #closePopupButton:hover {
         color: #009212;
       }
-      
       .languageButton:last-of-type {
-  background-color: #009212; /* Neutralna boja */
-  color: #fff;
-}
-
-.languageButton:last-of-type:hover {
-  background-color: #333;
-}
+        background-color: #009212;
+        /* Neutralna boja */
+        color: #fff;
+      }
+      .languageButton:last-of-type:hover {
+        background-color: #333;
+      }
     </style>
   </head>
   <body>
@@ -157,24 +156,20 @@
           <h2 id="moviePopupTitle"></h2>
           <button class="removeButton" onclick="removeFromWatchLater()">Obriši film iz omiljenog</button>
           <p><strong>Datum izlaska:</strong> <span id="moviePopupReleaseDate"></span></p>
-<div id="languageMenu">
-  <div>Izaberite jezik za film:</div>
-  <button class="languageButton" id="sr" onclick="changeLanguage('sr')">Bosanski2</button>
-  <button class="languageButton" id="hr" onclick="changeLanguage('hr')">Bosanski1</button>
-  <button class="languageButton" id="mk" onclick="changeLanguage('mk')">Hrvatski2</button>
-  <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Hrvatski1</button>
-  <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Srpski Cyr</button>
-  <button class="languageButton" id="en" onclick="changeLanguage('en')">Srpski Lat</button>
-  <button class="languageButton" onclick="closePopup()">Zatvori</button>
-</div>
-
+          <div id="languageMenu">
+            <div>Izaberite jezik za film:</div>
+            <button class="languageButton" id="bs" onclick="changeLanguage('bs')">Hrvatski</button>
+            <button class="languageButton" id="sl" onclick="changeLanguage('sl')">Srpski Cyr</button>
+            <button class="languageButton" id="en" onclick="changeLanguage('en')">Srpski Lat</button>
+            <button class="languageButton" onclick="closePopup()">Zatvori</button>
+          </div>
         </div>
       </div>
     </div>
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
       const languageUrls = {
-       sr: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
+        sr: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         hr: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         mk: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
         bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=sr",
