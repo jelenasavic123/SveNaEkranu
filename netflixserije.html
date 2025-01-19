@@ -472,7 +472,7 @@
         });
       }
       function generateYears() {
-        for (let year = 2025; year >= 2000; year--) {
+        for (let year = 2025; year >= 2014; year--) {
           const yearButton = document.createElement('button');
           yearButton.classList.add('year-button');
           yearButton.textContent = year;
@@ -595,6 +595,49 @@
           fetchSeries();
         }
       });
+      
+      // Dodatak za čuvanje stanja popup-a
+function savePopupData(seriesId) {
+  localStorage.setItem('popupData', seriesId); // Čuva ID serije
+  localStorage.setItem('popupOpen', true); // Beleži da je popup otvoren
+}
+
+// Obnova popup-a prilikom učitavanja stranice
+function restorePopupData() {
+  const isPopupOpen = localStorage.getItem('popupOpen') === 'true';
+  const savedSeriesId = localStorage.getItem('popupData');
+
+  if (isPopupOpen && savedSeriesId) {
+    showSeriesDetails(savedSeriesId); // Poziva postojeću funkciju za prikaz detalja
+    popup.style.display = 'flex'; // Prikazuje popup
+  }
+}
+
+// Modifikacija za zatvaranje popup-a
+closeBtn.addEventListener('click', () => {
+  popup.style.display = 'none';
+  languagePopup.style.display = 'none';
+  localStorage.setItem('popupOpen', false); // Beleži da je popup zatvoren
+});
+
+// Dodatak u funkciji showSeriesDetails
+async function showSeriesDetails(id) {
+  currentSeriesId = id;
+  const response = await fetch(`${baseUrl}tv/${id}?api_key=${apiKey}&language=sr-SR`);
+  const data = await response.json();
+  displaySeriesDetails(data);
+  savePopupData(id); // Čuva podatke o otvorenom popup-u
+}
+
+// Obnova stanja pri učitavanju stranice
+document.addEventListener('DOMContentLoaded', () => {
+  restorePopupData(); // Obnavlja popup ako je bio otvoren
+  fetchGenres();
+  generateYears();
+  fetchSeries();
+});
+
+      
       document.getElementById('saveToWatchLater').addEventListener('click', () => {
         const movieTitle = seriesTitle.textContent;
         const moviePoster = seriesPoster.src;
