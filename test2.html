@@ -277,34 +277,25 @@
         background: #555;
         border-radius: 10px;
       }
-      .movie {
-        min-width: 200px;
-        background-color: #141414;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        transition: transform 0.3s;
-      }
-      .movie:hover {
-        transform: scale(1.1);
-      }
-      .movie img {
-        width: 100%;
-        display: block;
-      }
-      .movie-info {
-        padding: 10px;
-        text-align: center;
-      }
-      .movie h3 {
-        font-size: 1rem;
-        margin: 10px 0 5px;
-      }
-      .movie p {
-        font-size: 0.9rem;
-        color: #aaa;
-        margin: 0;
-      }
+     .movie {
+  width: 150px; /* Smanjena širina */
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.movie img {
+  height: 200px; /* Smanjena visina */
+  object-fit: cover; /* Slike će se prilagoditi proporcijama */
+  width: 100%;
+}
+
+.movie-info {
+  padding: 8px; /* Smanjen padding za manji okvir informacija */
+}
+
       .overlay {
         position: fixed;
         top: 0;
