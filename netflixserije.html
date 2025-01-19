@@ -346,24 +346,7 @@
           transform: translate(-50%, -60%);
         }
       }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      #closePopupButton:focus {
-        outline: 3px solid #ff0000;
-        border: 1px solid #ff0000;
-      }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      .movie-item img:focus {
-        outline: 3px solid transparent;
-        /* Premažemo okvir s providnom bojom */
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        /* Dodajemo sjaj umesto crvenog okvira */
-      }
+
       .logo {
         margin: 20px 0;
         text-align: center;
@@ -629,14 +612,16 @@ async function showSeriesDetails(id) {
   savePopupData(id); // Čuva podatke o otvorenom popup-u
 }
 
-// Obnova stanja pri učitavanju stranice
-document.addEventListener('DOMContentLoaded', () => {
-  restorePopupData(); // Obnavlja popup ako je bio otvoren
-  fetchGenres();
-  generateYears();
-  fetchSeries();
-});
-
+      document.addEventListener('DOMContentLoaded', () => {
+        generateYearFilters();
+        fetchGenres();
+        fetchMovies();
+        const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
+        const savedMovieId = sessionStorage.getItem('currentMovieId');
+        if (popupOpen && savedMovieId) {
+          displayMovieInfo(savedMovieId);
+        }
+      });
       
       document.getElementById('saveToWatchLater').addEventListener('click', () => {
         const movieTitle = seriesTitle.textContent;
