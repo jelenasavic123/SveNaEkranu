@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preusmeravanje Linkova</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Preusmeravanje Linkova</h1>
+
+    <script>
+        // Firebase konfiguracija
+        const firebaseConfig = {
+            apiKey: "AIzaSyAYdeETi4ypfVTTQsNhn-lfdtx4maOEWrk",
+            authDomain: "preusmeravanjeklikova.firebaseapp.com",
+            databaseURL: "https://preusmeravanjeklikova-default-rtdb.firebaseio.com",
+            projectId: "preusmeravanjeklikova",
+            storageBucket: "preusmeravanjeklikova.firebasestorage.app",
+            messagingSenderId: "387493682555",
+            appId: "1:387493682555:web:73bb870f371ea47d4071de",
+            measurementId: "G-QQB1SDP71D"
+        };
+
+        // Inicijalizacija Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
+
+        // Dohvati TMDB ID iz URL-a
+        const urlParams = new URLSearchParams(window.location.search);
+        const tmdbId = urlParams.get('tmdbId'); // uzmi vrednost 'tmdbId' iz URL-a
+
+        if (tmdbId) {
+            // Reference na 'redirects' u Firebase bazi
+            const redirectsRef = database.ref('redirects/' + tmdbId);
+
+            // Dohvati URL iz baze na osnovu TMDB ID-a
+            redirectsRef.get()
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const url = snapshot.val();
+                        // Preusmeravanje na URL
+                        window.location.href = url;
+                    } else {
+                        alert("TMDB ID nije pronađen u bazi.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Greška pri preuzimanju linka:", error);
+                    alert("Došlo je do greške.");
+                });
+        } else {
+            alert("Nije pronađen TMDB ID u URL-u.");
+        }
+    </script>
+</body>
+</html>
