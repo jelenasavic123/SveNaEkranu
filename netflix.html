@@ -13,7 +13,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        background: url('https://jelenasavic123.github.io/SveNaEkranu/Pozadina.JPG') center center / cover no-repeat fixed;
+        background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
         min-height: 100vh;
       }
       .filters {
@@ -274,24 +274,7 @@
           transform: translate(-50%, -60%);
         }
       }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      #closePopupButton:focus {
-        outline: 3px solid #ff0000;
-        border: 1px solid #ff0000;
-      }
-      .movie-item img:focus {
-        border: 2px solid red;
-        /* Daje crveni okvir oko slike kada je u fokusu */
-      }
-      .movie-item img:focus {
-        outline: 3px solid transparent;
-        /* Premažemo okvir s providnom bojom */
-        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        /* Dodajemo sjaj umesto crvenog okvira */
-      }
+
       .logo {
         margin: 20px 0;
         text-align: center;
@@ -338,7 +321,6 @@
     </div>
     <div id="customAlert" style="display: none;">
       <span id="customAlertMessage"></span>
-      <img src="image1.jpg" alt="Movie Poster" id="firstMovieImage" autofocus>
     </div>
     <script>
       const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -360,6 +342,8 @@
         bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
         sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
+        
+        
       };
       function displayMovieInfo(movieId) {
         currentMovieId = movieId;
@@ -420,24 +404,26 @@
           })
           .catch(error => console.error('Error fetching genres:', error));
       }
-      function generateYearFilters() {
-        const currentYear = new Date().getFullYear();
-        for (let year = currentYear; year >= 2017; year--) {
-          const button = document.createElement('button');
-          button.classList.add('filter-button');
-          button.textContent = year;
-          button.dataset.id = year;
-          button.onclick = () => {
-            selectedYear = year;
-            selectedGenre = null;
-            clearMovies();
-            updateActiveFilter(yearFilters, year);
-            updateActiveFilter(genreFilters, null);
-            fetchMovies();
-          };
-          yearFilters.appendChild(button);
-        }
+      
+      // Generate year filter buttons dynamically
+    function generateYearFilters() {
+      const startYear = 2010;
+      const endYear = 2025;
+      for (let year = endYear; year >= startYear; year--) {
+        const button = document.createElement('button');
+        button.classList.add('filter-button');
+        button.dataset.id = year;
+        button.textContent = year;
+        button.onclick = () => {
+          selectedYear = year;
+          updateActiveFilter(yearFilters, year);
+          clearMovies();
+          currentPage = 1;
+          fetchMovies();
+        };
+        yearFilters.appendChild(button);
       }
+    }
       function updateActiveFilter(container, id) {
         const buttons = container.querySelectorAll('.filter-button');
         buttons.forEach(button => button.classList.remove('active'));
@@ -493,17 +479,22 @@
         generateYearFilters();
         fetchGenres();
         fetchMovies();
-        // Postavljanje fokusa na prvu sliku nakon što se slike učitaju
-        const firstMovieImage = document.querySelector('.movie-item img');
-        if (firstMovieImage) {
-          firstMovieImage.focus();
-        }
         const popupOpen = sessionStorage.getItem('popupOpen') === 'true';
         const savedMovieId = sessionStorage.getItem('currentMovieId');
         if (popupOpen && savedMovieId) {
           displayMovieInfo(savedMovieId);
         }
       });
+      function showCustomAlert(message) {
+        const alertBox = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('customAlertMessage');
+        alertMessage.textContent = message;
+        alertBox.style.display = 'block';
+        // Dodajemo tajmer da automatski zatvori alert posle 5 sekundi
+        setTimeout(() => {
+          closeCustomAlert();
+        }, 5000);
+      }
       function showCustomAlert(message) {
         const alertBox = document.getElementById('customAlert');
         const alertMessage = document.getElementById('customAlertMessage');
