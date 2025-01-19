@@ -50,9 +50,9 @@
         align-items: center;
       }
       .navbar a img {
-        width: 34px;
+        width: 25px;
         /* Velicina slike */
-        height: 34px;
+        height: 25px;
         margin-right: 10px;
         /* Razmak između ikone i teksta */
       }
@@ -62,12 +62,12 @@
       /* Pretraga na vrhu */
       .search-container {
         position: fixed;
-        top: 20px;
+        top: 10px;
         left: 50%;
         transform: translateX(-50%);
-        width: 30%;
+        width: 25%;
         max-width: 800px;
-        background-color: #141414;
+        background-color: #2c5f5a;
         padding: 15px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
         border-radius: 15px;
@@ -78,7 +78,7 @@
       }
       input[type="text"] {
         padding: 10px 20px;
-        font-size: 1.0rem;
+        font-size: 0.8rem;
         width: 50%;
         max-width: 600px;
         border-radius: 5px;
@@ -91,17 +91,7 @@
       input[type="text"]:focus {
         background-color: #444;
       }
-      .microphone-icon {
-        position: absolute;
-        right: 10px;
-        color: #e50914;
-        cursor: pointer;
-        font-size: 1.8rem;
-        transition: color 0.3s ease;
-      }
-      .microphone-icon:hover {
-        color: #f40612;
-      }
+
       /* Stilovi za filmove */
       .results-container {
         margin-top: 120px;
@@ -301,42 +291,48 @@
         background-color: #666;
       }
       
-      /* Vertikalni Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0; /* Sidebar je skroz gore */
-  right: 20%; /* 20% udaljen od desnog ruba */
-  transform: translateY(0); /* Uklonjeno centriranje po osi Y */
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 30px 25px; /* Povećan padding */
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px; /* Veći razmak između dugmića */
-  z-index: 1000;
-}
-.sidebar-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.sidebar-links li {
-  margin: 15px 0; /* Veći razmak između stavki liste */
-}
-.sidebar-links a {
-  text-decoration: none;
-  color: white;
-  font-size: 11px; /* Veći font za bolju čitljivost */
-  font-weight: bold;
-  text-transform: uppercase;
-  padding: 15px 15px; /* Povećan padding za šire dugmiće */
-  transition: all 0.3s ease;
-}
-.sidebar-links a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #e50914;
-  border-radius: 18px; /* Veći border-radius za moderan izgled */
-}
+        /* Vertikalni Sidebar */
+      .sidebar {
+        position: fixed;
+        top: 40%;
+        right: 0;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 30px 25px;
+        /* Povećan padding */
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        /* Veći razmak između dugmića */
+        z-index: 1000;
+      }
+      .sidebar-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar-links li {
+        margin: 15px 0;
+        /* Veći razmak između listi */
+      }
+      .sidebar-links a {
+        text-decoration: none;
+        color: white;
+        font-size: 9px;
+        /* Veći font za bolju čitljivost */
+        font-weight: bold;
+        text-transform: uppercase;
+        padding: 15px 15px;
+        /* Povećan padding za šire dugmiće */
+        transition: all 0.3s ease;
+      }
+      .sidebar-links a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #e50914;
+        border-radius: 18px;
+        /* Veći border-radius za moderan izgled */
+      }
 
     </style>
   </head>
@@ -360,15 +356,12 @@
     <div id="popup">
       <div class="popup-content">
         <img id="movie-poster" src="" alt="Movie Poster" />
-        <span id="closePopup" style="cursor: pointer; font-size: 24px; color: white; position: absolute; top: 10px; right: 10px;">&times;</span>
+        <span id="closePopup" style="cursor: pointer; font-size: 24px; color: white; position: absolute; top: 50px; right: 10px;">&times;</span>
         <div id="movieDetails"></div>
         <div>
-          <a href="#" id="link1" target="_blank">Gledaj na Glavnom serveru</a>
-          <a href="#" id="link2" target="_blank">Gledaj na Primarnom kanalu</a>
-          <a href="#" id="link3" target="_blank">Gledaj na Opciji 1</a>
-          <a href="#" id="link4" target="_blank">Gledaj na Opciji 2</a>
-          <a href="#" id="link5" target="_blank">Gledaj na Opciji 3</a>
-          <a href="#" id="link6" target="_blank">Gledaj na Opciji 4</a>
+          <a href="#" id="link1" target="_blank">Gledaj na Srpskomu</a>
+          <a href="#" id="link2" target="_blank">Gledaj na Hrvatskom</a>
+
         </div>
       </div>
       
@@ -437,10 +430,6 @@
           const popup = document.getElementById('popup')
           const link1 = document.getElementById('link1');
           const link2 = document.getElementById('link2');
-          const linkMK = document.getElementById('link3');
-          const linkBS = document.getElementById('link4');
-          const linkSL = document.getElementById('link5');
-          const linkEN = document.getElementById('link6');
           const closePopup = document.getElementById('closePopup');
           const movieDetails = document.getElementById('movieDetails');
           const moviePoster = document.getElementById('movie-poster');
@@ -453,22 +442,7 @@
             event.preventDefault();
             window.location.href = `https://vidsrc.vip/embed/movie/${movieId}&lang=hr`; // Hrvatski jezik
           });
-          link3.addEventListener('click', function(event) {
-            event.preventDefault();
-            window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}&ds_lang=sr`; // Makedonski jezik
-          });
-          link4.addEventListener('click', function(event) {
-            event.preventDefault();
-            window.location.href = `https://vidsrc.xyz/embed/movie?tmdb=${movieId}&ds_lang=hr`; // Bosanski jezik
-          });
-          link5.addEventListener('click', function(event) {
-            event.preventDefault();
-            window.location.href = `https://player.smashy.stream/movie/${movieId}?subLang=Serbian&btPosition=200`; // Slovenski jezik
-          });
-          link6.addEventListener('click', function(event) {
-            event.preventDefault();
-            window.location.href = `https://jelenasavic123.github.io/SveNaEkranu/#/${movieId}`; // Engleski jezik
-          });
+
           // Fetch movie details
           const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`; // Prilagođeno za hrvatski jezik
           try {
