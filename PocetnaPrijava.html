@@ -150,31 +150,33 @@
             background-color: #b20710;
         }
 
-        .actors-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 2px;
-        }
+.actors-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjusted margin top to give space above the actors */
+}
 
-        .actor {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 10px;
-        }
+.actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px; /* Optional: add horizontal spacing between actors */
+}
 
-        .actor-avatar {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 0px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+.actor-avatar {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px; /* Small space below image */
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-        .actor-name {
-            font-size: 13px;
-            color: #ccc;
-        }
+.actor-name {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 2px; /* Small space above the name, if needed */
+}
+
     </style>
  <script>
     let currentMovies = [];
