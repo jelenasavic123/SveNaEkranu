@@ -82,16 +82,20 @@
             visibility: visible;
             opacity: 1;
         }
-        .popup-content {
-            background: #222;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-            color: #fff;
-            position: relative;
-        }
+       .popup-content {
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90vw;  /* Width of the popup in percentage of viewport width */
+    max-height: 90vh; /* Height of the popup in percentage of viewport height */
+    width: 90%;       /* Ensure width is within 90% of the screen */
+    height: 90%;      /* Ensure height is within 90% of the screen */
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow-y: auto;  /* In case content exceeds the height, it will be scrollable */
+}
+
         .popup-content img {
             max-width: 150px;
             margin-bottom: 20px;
