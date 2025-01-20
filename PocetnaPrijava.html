@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mssovie Recommendations</title>
+    <title>Movie Recommendations</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -105,16 +105,16 @@
             color: #ccc;
         }
         .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             background: #E50914;
             color: #fff;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
-            border-radius: 50%;
+            border-radius: 5px;
             font-size: 16px;
+        }
+        .close-btn:focus {
+            outline: 2px solid #fff;
         }
         .more-info-btn {
             background: #E50914;
@@ -132,144 +132,145 @@
             background: #b20710;
         }
         
-        #external-content {
-            display: none;
-            padding: 20px;
-        }
-        
-        
-                nav {
-            background-color: #1e1e1e;
-            padding: 10px 0;
-            text-align: center;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 20px;
-            font-size: 18px;
-            margin: 0 15px;
-            display: inline-block;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        nav a:hover {
-            background-color: #E50914;
-        }
-        iframe {
-            width: 100%;
-            height: 100vh;
-            border: none;
-        }
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            background-color: #E50914;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-        }
+        nav button {
+    background-color: #E50914;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+    background-color: #b20710;
+}
+
     </style>
     <script>
-        let currentMovies = [];
+let currentMovies = [];
+const apiKey = '2701858e9bccab54d4d0e4931420a739';
 
-        async function fetchMoviesByYear(startYear, endYear) {
-            const apiKey = '2701858e9bccab54d4d0e4931420a739';
-            const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&primary_release_date.gte=${startYear}-01-01&primary_release_date.lte=${endYear}-12-31`);
-            const data = await response.json();
-            currentMovies = data.results;
-            displayMovies(currentMovies);
-        }
+// Dohvatanje filmova po godinama
+async function fetchMoviesByYear(startYear, endYear) {
+    endYear = Math.min(endYear, 2000); // Ograničenje godine do 2000
+    const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&primary_release_date.gte=${startYear}-01-01&primary_release_date.lte=${endYear}-12-31`);
+    const data = await response.json();
+    currentMovies = data.results;
+    displayMovies(currentMovies);
+}
 
-        function displayMovies(movies) {
-            const container = document.querySelector('.movie-container');
-            container.innerHTML = '';
+// Dohvatanje filmova po žanru (do 2000. godine)
+async function fetchMoviesByGenre(genreId) {
+    const response = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=${genreId}&primary_release_date.lte=2000-12-31`);
+    const data = await response.json();
+    currentMovies = data.results;
+    displayMovies(currentMovies);
+}
 
-            movies.forEach(movie => {
-                const movieCard = document.createElement('div');
-                movieCard.classList.add('movie-card');
+// Prikaz filmova
+function displayMovies(movies) {
+    const container = document.querySelector('.movie-container');
+    container.innerHTML = '';
 
-                const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
-                movieCard.innerHTML = `
-                    <img src="${posterPath}" alt="${movie.title}">
-                    <h3>${movie.title}</h3>
-                `;
+    if (movies.length === 0) {
+        container.innerHTML = '<p>No movies found.</p>';
+        return;
+    }
 
-                movieCard.addEventListener('click', () => showPopup(movie));
-                container.appendChild(movieCard);
-            });
-        }
+    movies.forEach(movie => {
+        const movieCard = document.createElement('div');
+        movieCard.classList.add('movie-card');
 
-        function showPopup(movie) {
-            const popup = document.querySelector('.popup');
-            const popupContent = document.querySelector('.popup-content');
+        const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
+        movieCard.innerHTML = `
+            <img src="${posterPath}" alt="${movie.title}">
+            <h3>${movie.title}</h3>
+        `;
 
-            const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
-            popupContent.innerHTML = `
-                <button class="close-btn" onclick="closePopup()">X</button>
-                <img src="${posterPath}" alt="${movie.title}">
-                <h2>${movie.title}</h2>
-                <p>${movie.overview || 'No description available.'}</p>
-                <p><strong>Release Date:</strong> ${movie.release_date}</p>
-                <p><strong>Rating:</strong> ${movie.vote_average}</p>
-               
-            `;
+        movieCard.addEventListener('click', () => showPopup(movie));
+        container.appendChild(movieCard);
+    });
+}
 
-            popup.classList.add('active');
-        }
+// Prikaz popup-a
+function showPopup(movie) {
+    const popup = document.querySelector('.popup');
+    const popupContent = document.querySelector('.popup-content');
 
-        function closePopup() {
-            const popup = document.querySelector('.popup');
-            popup.classList.remove('active');
-        }
+    const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
+    popupContent.innerHTML = `
+        <img src="${posterPath}" alt="${movie.title}">
+        <h2>${movie.title}</h2>
+        <p>${movie.overview || 'No description available.'}</p>
+        <p><strong>Release Date:</strong> ${movie.release_date}</p>
+        <p><strong>Rating:</strong> ${movie.vote_average}</p>
+        <button class="close-btn" onclick="closePopup()">Exit</button>
+    `;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchMoviesByYear(1930, 1970); // Prikaz starijih filmova od 1930. do 1970. godine
-        });
-        
-                function changeMovieList(option) {
-            alert(`You selected: ${option}`);
-            // Ovde možeš dodati funkcionalnost za promenu liste filmova
-        }
+    popup.classList.add('active');
 
-        function loadExternalPage(url) {
-            // Sakrij trenutni sadržaj i prikaži iframe za eksterni sadržaj
-            document.body.innerHTML = `
-                <button class="back-btn" onclick="window.location.reload()">Back</button>
-                <iframe src="${url}" allowfullscreen></iframe>
-            `;
-        }
-        
-        
+    // Postavi fokus na dugme za zatvaranje
+    const closeButton = popupContent.querySelector('.close-btn');
+    closeButton.focus();
+
+    // Slušalac za taster Escape
+    document.addEventListener('keydown', handleEscape);
+}
+
+// Zatvaranje popup-a
+function closePopup() {
+    const popup = document.querySelector('.popup');
+    popup.classList.remove('active');
+
+    // Ukloni slušaoca za taster Escape
+    document.removeEventListener('keydown', handleEscape);
+}
+
+// Obrada tastera Escape
+function handleEscape(event) {
+    if (event.key === 'Escape') {
+        closePopup();
+    }
+}
+
+// Dodavanje funkcionalnosti dugmadi
+document.addEventListener('DOMContentLoaded', () => {
+    // Prikaz starijih filmova
+    fetchMoviesByYear(1930, 2000);
+
+    // Žanrovi sa ograničenjem do 2000. godine
+    document.getElementById('genre-action').addEventListener('click', () => fetchMoviesByGenre(28)); // Action
+    document.getElementById('genre-comedy').addEventListener('click', () => fetchMoviesByGenre(35)); // Comedy
+    document.getElementById('genre-drama').addEventListener('click', () => fetchMoviesByGenre(18)); // Drama
+    document.getElementById('genre-scifi').addEventListener('click', () => fetchMoviesByGenre(878)); // Sci-Fi
+    document.getElementById('genre-horror').addEventListener('click', () => fetchMoviesByGenre(27)); // Horror
+    document.getElementById('genre-adventure').addEventListener('click', () => fetchMoviesByGenre(12)); // Adventure
+});
+
     </script>
 </head>
 <body>
+
     <header>
-        Movie
+        Movie Recommendations
     </header>
-    
-    <!-- Navigation Bar -->
- <nav>
-        <a href="javascript:void(0);" onclick="changeMovieList('oldMovies')">Old Movies</a>
-        <a href="javascript:void(0);" onclick="loadExternalPage('https://jelenasavic123.github.io/atv/horoskop.html')">Horoscope</a>
-        <a href="javascript:void(0);" onclick="loadExternalPage('https://jelenasavic123.github.io/atv/tvprogram.html')">Tv Program</a>
-    </nav>
-
-
     <nav>
-
-    </nav>
-
+    <button id="genre-action">Action</button>
+    <button id="genre-comedy">Comedy</button>
+    <button id="genre-drama">Drama</button>
+    <button id="genre-scifi">Sci-Fi</button>
+    <button id="genre-horror">Horror</button>
+    <button id="genre-adventure">Adventure</button>
+</nav>
     <div class="movie-container">
         <p>Loading movies...</p>
     </div>
-
     <div class="popup">
         <div class="popup-content"></div>
     </div>
+    
 </body>
 </html>
