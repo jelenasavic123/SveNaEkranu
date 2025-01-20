@@ -4,346 +4,397 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sve na Ekranu</title>
-      <style>
-    body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      overflow-x: hidden;
-      transition: background-color 0.3s ease;
-      width: 100%;
-      height: 100%;
-    }
-
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px 0;
-      background-color: #141414;
-      border-bottom: 2px solid #e50914;
-    }
-    
-    .logo-container img {
-      width: 150px;
-      height: auto;
-    }
-    
-    .section-title {
-      font-size: 24px;
-      text-align: center;
-      margin: 20px 0;
-      color: white;
-    }
-    
-    .content-container {
-      display: flex;
-      overflow-x: scroll;
-      padding: 20px;
-      gap: 15px;
-    }
-
-    .content-item {
-      min-width: 200px;
-      height: 300px;
-      background-color: #333;
-      border-radius: 10px;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .content-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .rating {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: white;
-      border-radius: 50%;
-      padding: 5px 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .year {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: white;
-      border-radius: 5px;
-      padding: 5px 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    #movie-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .modal-content {
-      background-color: #141414;
-      padding: 20px;
-      width: 80%;
-      max-width: 800px;
-      border-radius: 10px;
-      text-align: center;
-      position: relative;
-    }
-
-    #modal-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 30px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .iframe-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    #iframe-container iframe,
-    #media-iframe {
-      width: 95%;
-      height: auto;
-      max-width: 600px;
-      aspect-ratio: 16 / 9;
-      border: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-
-    @media screen and (max-width: 480px) {
-      #media-iframe {
-        width: 90%;
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow-x: hidden;
+        transition: background-color 0.3s ease;
       }
-    }
-
-    @media screen and (min-width: 768px) {
-      #media-iframe {
-        max-width: 700px;
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+        background-color: #141414;
+        border-bottom: 2px solid #e50914;
       }
-    }
-
-    .movie-item-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .movie-item {
-      flex: 1 1 calc(50% - 20px);
-      box-sizing: border-box;
-    }
-
-    @media (min-width: 768px) {
+      .logo-container img {
+        width: 150px;
+        height: auto;
+      }
+      .section-title {
+        font-size: 24px;
+        text-align: center;
+        margin: 20px 0;
+        color: white;
+      }
+      .content-container {
+        display: flex;
+        overflow-x: scroll;
+        padding: 20px;
+        gap: 15px;
+      }
+      .content-item {
+        min-width: 200px;
+        height: 300px;
+        background-color: #333;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .content-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .rating {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border-radius: 50%;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .year {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      #movie-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .modal-content {
+        background-color: #141414;
+        padding: 20px;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+      }
+      #modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+      }
+      /* Kontejner za iframe */
+      .iframe-container {
+        display: flex;
+        /* Koristi flexbox za poravnanje */
+        justify-content: center;
+        /* Horizontalo centriranje */
+        align-items: center;
+        /* Vertikalno centriranje */
+        width: 100%;
+        /* Širina kontejnera */
+        height: 100vh;
+        /* Visina celog ekrana */
+        margin: 0;
+        /* Uklanjanje margina */
+        padding: 0;
+        /* Uklanjanje paddinga */
+        box-sizing: border-box;
+        /* Uklanja nepotrebne dimenzijske anomalije */
+      }
+      /* Sam iframe */
+      #iframe-container iframe,
+      #media-iframe {
+        width: 95%;
+        /* Prilagodljiva širina */
+        height: auto;
+        /* Automatska visina */
+        max-width: 600px;
+        /* Maksimalna širina za veće ekrane */
+        aspect-ratio: 16 / 9;
+        /* Odnos stranica (opciono) */
+        border: none;
+        /* Bez okvira */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Lep vizuelni efekat */
+        border-radius: 10px;
+        /* Zaobljeni uglovi */
+      }
+      /* Medijski upiti za dodatne prilagodbe */
+      @media screen and (max-width: 480px) {
+        #media-iframe {
+          width: 90%;
+          /* Još manja širina za uske ekrane */
+          height: auto;
+          /* Automatska visina */
+        }
+      }
+      @media screen and (min-width: 768px) {
+        #media-iframe {
+          max-width: 700px;
+          /* Povećana širina za tablete */
+        }
+      }
+      .movie-item-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        /* razmak između filmova */
+        justify-content: center;
+      }
       .movie-item {
-        flex: 1 1 calc(33.33% - 20px);
+        flex: 1 1 calc(50% - 20px);
+        /* 50% širine minus razmak */
+        box-sizing: border-box;
+        /* Osigurava da padding ne utiče na ukupnu širinu */
       }
-    }
-
-    .movie-item {
-      width: 200px;
-      text-align: center;
-    }
-
-    header {
-      width: 95%;
-      background-color: #1c1c1c;
-      padding: 1px 2px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #fff;
-      border-radius: 0 0 20px 20px;
-      transition: background-color 0.3s ease;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-
-    header input[type="text"] {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      outline: none;
-      font-size: 14px;
-      width: 280px;
-      transition: border-color 0.3s ease;
-    }
-
-    header input[type="text"]:focus {
-      border-color: #007bff;
-    }
-
-    header select {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      outline: none;
-      font-size: 16px;
-      background-color: #222;
-      color: #ddd;
-      margin-left: 10px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    header select:hover {
-      background-color: #007bff;
-      color: #fff;
-    }
-
-    #movie-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 100px 20px 20px;
-      width: 100%;
-    }
-
-    .movie-item {
-      margin: 1px;
-      width: 100px;
-      text-align: center;
-      border-radius: 0px;
-      overflow: hidden;
-      background-color: #1f1f1f;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .movie-item img {
-      width: 95%;
-      height: auto;
-      transition: transform 0.3s ease;
-    }
-
-    .movie-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-    }
-
-    .movie-item h2,
-    .movie-item p {
-      margin: 10px 0;
-      color: #ddd;
-      transition: color 0.3s ease;
-    }
-
-    .movie-item:hover h2,
-    .movie-item:hover p {
-      color: #007bff;
-    }
-
-    #movie-modal {
-      display: none;
-      position: fixed;
-      top: 1;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      z-index: 1000;
-      overflow-y: auto;
-      box-sizing: border-box;
-      text-align: center;
-      transition: opacity 0.3s ease;
-    }
-
-    #movie-modal #close-modal {
-      position: absolute;
-      top: 40px;
-      right: 20px;
-      font-size: 60px;
-      cursor: pointer;
-      color: #920000;
-      transition: color 0.3s ease;
-    }
-
-    #searchInput {
-      width: 100%;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      margin-top: 10px;
-      margin-bottom: 0px;
-      box-sizing: border-box;
-    }
-
-    @media (max-width: 768px) {
-      select,
+      @media (min-width: 768px) {
+        .movie-item {
+          flex: 1 1 calc(33.33% - 20px);
+          /* Tri stavke u redu za veće ekrane */
+        }
+      }
+      .movie-item {
+        width: 200px;
+        /* ili koliko god želite širinu */
+        text-align: center;
+      }
+      header {
+        width: 95%;
+        background-color: #1c1c1c;
+        padding: 1px 2px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+        border-radius: 0 0 20px 20px;
+        /* Rounded corners */
+        transition: background-color 0.3s ease;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+      header input[type="text"] {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 14px;
+        width: 280px;
+        transition: border-color 0.3s ease;
+      }
+      header input[type="text"]:focus {
+        border-color: #007bff;
+      }
+      header select {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 16px;
+        background-color: #222;
+        color: #ddd;
+        margin-left: 10px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      header select:hover {
+        background-color: #007bff;
+        color: #fff;
+      }
+      #movie-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 100px 20px 20px;
+        width: 100%;
+      }
+      .movie-item {
+        margin: 1px;
+        width: 100px;
+        text-align: center;
+        border-radius: 0px;
+        overflow: hidden;
+        background-color: #1f1f1f;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .movie-item img {
+        width: 95%;
+        height: auto;
+        transition: transform 0.3s ease;
+      }
+      .movie-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      }
+      .movie-item h2,
+      .movie-item p {
+        margin: 10px 0;
+        color: #ddd;
+        transition: color 0.3s ease;
+      }
+      .movie-item:hover h2,
+      .movie-item:hover p {
+        color: #007bff;
+      }
+      #movie-modal {
+        display: none;
+        position: fixed;
+        top: 1;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        z-index: 1000;
+        overflow-y: auto;
+        box-sizing: border-box;
+        text-align: center;
+        transition: opacity 0.3s ease;
+      }
+      #movie-modal #close-modal {
+        position: absolute;
+        top: 40px;
+        right: 20px;
+        font-size: 60px;
+        cursor: pointer;
+        color: #920000;
+        transition: color 0.3s ease;
+      }
+      /* CSS za pretragu na mobilnim uređajima */
+      #searchInput {
+        width: 100%;
+        /* Puna širina za mobilne uređaje */
+        padding: 10px;
+        /* Dodaje padding za bolje korisničko iskustvo */
+        border-radius: 4px;
+        /* Zaokružuje ivice input polja */
+        border: 1px solid #ccc;
+        /* Granična boja i debljina */
+        font-size: 14px;
+        /* Podešava font veličinu za čitljivost */
+        margin-top: 10px;
+        /* Dodaje razmak između selektovanih dropdown-ova i input polja */
+        margin-bottom: 0px;
+        /* Dodaje razmak između inputa i narednih elemenata */
+        box-sizing: border-box;
+        /* Da padding i border ne budu uključeni u ukupnu širinu */
+      }
+      /* Medija query za mobilne uređaje */
+      @media (max-width: 768px) {
+        select,
+        input[type="text"] {
+          width: 100%;
+          /* Puna širina na mobilnim uređajima */
+          margin-bottom: 10px;
+          /* Razmak između elemenata */
+        }
+      }
+      /* CSS za select elemente na mobilnim i tablet uređajima */
+      select {
+        width: 100%;
+        /* Puna širina na mobilnim i tablet uređajima */
+        padding: 10px;
+        /* Povećava prostranost i olakšava unos */
+        font-size: 14px;
+        /* Veličina fonta za bolje čitanje */
+        margin-bottom: 10px;
+        /* Dodaje razmak između select elemenata */
+        border-radius: 4px;
+        /* Zaokruženje ivica za bolji estetski izgled */
+        border: 1px solid #ccc;
+        /* Granična boja i debljina */
+        box-sizing: border-box;
+        /* Uključuje padding i border u ukupnu širinu/visinu */
+      }
+      /* Medija query za tablete i mobilne uređaje */
+      @media (max-width: 768px) {
+        select {
+          width: 100%;
+          /* Puna širina na mobilnim uređajima */
+          margin-bottom: 1px;
+          /* Razmak između elemenata */
+        }
+      }
+      /* Header CSS - Poređivanje selektova horizontalno */
+      header {
+        display: flex;
+        justify-content: space-between;
+        /* Godine, Žanr i Hulu u jednom redu */
+        gap: 1px;
+        /* Razmak između selektova */
+        padding: 1px;
+      }
+      /* Prilagodba za mobilne uređaje */
+      @media (max-width: 768px) {
+        header select {
+          width: 100%;
+          /* Puna širina za selektove na mobilnim uređajima */
+          margin-bottom: 1px;
+          /* Dodatni razmak ispod svakog selekta */
+        }
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        /* Postavljamo flex-direction na column kako bi elementi išli jedan ispod drugog */
+        padding: 1px;
+      }
       input[type="text"] {
         width: 100%;
-        margin: 5px 0;
+        /* Puna širina za input polje pretrage */
+        margin-top: 0px;
+        /* Dodatni razmak između input polja i poslednjeg dropdown-a */
       }
-    }
-    
-    #search-input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  box-sizing: border-box;
-  background-color: #f5f5f5;
-}
-
-#search-input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-  </style>
+      #movie-modal img {
+        width: 100px;
+        border-radius: 10px;
+        margin: 2px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+      #close-modal {
+        cursor: pointer;
+        color: red;
+        font-size: 18px;
+      }
+    </style>
   </head>
   <body>
     <header>
-    
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <select id="year-select">
           <option value="">God</option>
@@ -412,10 +463,8 @@
           <option value="release_date.desc">Uskoro</option>
         </select>
       </div>
-      
+      <input type="text" id="search-input" placeholder="PRETRAZITE: Samo Filmove">
     </header>
-    <h1></h1>
-  <input type="text" id="search-input" placeholder="PRETRAZITE: Samo Filmove">
     <div id="movie-modal" style="display: none;">
       <div id="modal-content">
         <span id="close-modal">×</span>
@@ -426,7 +475,8 @@
         <iframe id="media-iframe" width="100%" height="400" frameborder="0" allowfullscreen></iframe>
         <div style="background-color: #141414; color: #fff; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
           <p style="font-size: 13px; line-height: 1.8; margin: 0;">
-            Obaveštenje:Ako se prevod ne pojavi kliknite na 👉CC  u desnom donjem uglu, zatim pretrazite prevod na Croatia, Bosna, Serbia.</p>
+            Obaveštenje:
+            Da biste uključili prevod, kliknite na ikonu 👉CC (titlovi) u desnom donjem uglu. Zatim izaberite jezik Srpski. Ako prevod nije dostupan ili je prazan, pokušajte sa jezicima Croatia ili Bosna.</p>
         </div>
       </div>
     </div>
