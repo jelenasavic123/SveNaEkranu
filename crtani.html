@@ -84,13 +84,13 @@
       #moviePopup {
         display: none;
         position: fixed;
-        top: 10%;
+        top: 1%;
         left: 10%;
         width: 80%;
         height: 80%;
         background-color: rgba(0, 0, 0, 0.9);
         border-radius: 15px;
-        padding: 20px;
+        padding: 10px;
         z-index: 1000;
         overflow-y: auto;
       }
@@ -130,8 +130,8 @@
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
         border: none;
-        padding: 7px 30px;
-        font-size: 15px;
+        padding: 5px 20px;
+        font-size: 13px;
         cursor: pointer;
         border-radius: 15px;
         transition: background-color 0.3s ease;
@@ -140,21 +140,25 @@
         background-color: rgba(0, 0, 0, 0.9);
       }
       .selectedLanguage {
-        background-color: red;
+        background-color: black;
       }
       .languageButton:focus {
         outline: 2px solid red;
         background-color: rgba(0, 0, 0, 0.9);
       }
+      #closeMenuButton:focus {
+        outline: 2px solid red;
+        background-color: darkred;
+      }
       #closeMenuButton {
-        background-color: red;
+        background-color: rgba(0, 0, 0, 0.9);
         color: white;
         border: none;
-        padding: 7px 20px;
-        font-size: 14px;
+        padding: 6px 20px;
+        font-size: 13px;
         cursor: pointer;
         border-radius: 5px;
-        margin-top: 20px;
+        margin-top: 1px;
       }
       /* Vertikalni Sidebar */
       .sidebar {
@@ -365,7 +369,7 @@
   const languageUrls = {
         sr: "https://vidsrc.xyz/embed/movie/{movieId}?ds_lang=sr",
         hr: "https://vidsrc.xyz/embed/movie/{movieId}?ds_lang=hr",
-        mk: "https://vidsrc.vip/embed/movie/{movieId}&ds_lang=hr",
+        mk: "https://vidsrc.vip/embed/movie/{movieId}&lang=sr",
     bs: "https://vidsrc.xyz/embed/movie?tmdb={movieId}&ds_lang=hr",
     sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
     en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
