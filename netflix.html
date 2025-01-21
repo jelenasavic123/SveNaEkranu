@@ -84,13 +84,13 @@
       #moviePopup {
         display: none;
         position: fixed;
-        top: 10%;
+        top: 1%;
         left: 10%;
         width: 80%;
         height: 80%;
         background-color: rgba(0, 0, 0, 0.9);
         border-radius: 15px;
-        padding: 20px;
+        padding: 10px;
         z-index: 1000;
         overflow-y: auto;
       }
@@ -130,8 +130,8 @@
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
         border: none;
-        padding: 7px 30px;
-        font-size: 15px;
+        padding: 5px 20px;
+        font-size: 13px;
         cursor: pointer;
         border-radius: 15px;
         transition: background-color 0.3s ease;
@@ -154,11 +154,11 @@
         background-color: rgba(0, 0, 0, 0.9);
         color: white;
         border: none;
-        padding: 7px 20px;
-        font-size: 14px;
+        padding: 6px 20px;
+        font-size: 13px;
         cursor: pointer;
         border-radius: 5px;
-        margin-top: 20px;
+        margin-top: 1px;
       }
       #closePopupButton:focus {
         outline: none;
@@ -274,7 +274,6 @@
           transform: translate(-50%, -60%);
         }
       }
-
       .logo {
         margin: 20px 0;
         text-align: center;
@@ -344,8 +343,6 @@
         bs: "https://vidsrc.vip/embed/movie?tmdb={movieId}&ds_lang=hr",
         sl: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200",
         en: "https://player.smashy.stream/movie/{movieId}?subLang=Serbian&btPosition=200"
-        
-        
       };
       function displayMovieInfo(movieId) {
         currentMovieId = movieId;
@@ -406,26 +403,25 @@
           })
           .catch(error => console.error('Error fetching genres:', error));
       }
-      
       // Generate year filter buttons dynamically
-    function generateYearFilters() {
-      const startYear = 2010;
-      const endYear = 2025;
-      for (let year = endYear; year >= startYear; year--) {
-        const button = document.createElement('button');
-        button.classList.add('filter-button');
-        button.dataset.id = year;
-        button.textContent = year;
-        button.onclick = () => {
-          selectedYear = year;
-          updateActiveFilter(yearFilters, year);
-          clearMovies();
-          currentPage = 1;
-          fetchMovies();
-        };
-        yearFilters.appendChild(button);
+      function generateYearFilters() {
+        const startYear = 2010;
+        const endYear = 2025;
+        for (let year = endYear; year >= startYear; year--) {
+          const button = document.createElement('button');
+          button.classList.add('filter-button');
+          button.dataset.id = year;
+          button.textContent = year;
+          button.onclick = () => {
+            selectedYear = year;
+            updateActiveFilter(yearFilters, year);
+            clearMovies();
+            currentPage = 1;
+            fetchMovies();
+          };
+          yearFilters.appendChild(button);
+        }
       }
-    }
       function updateActiveFilter(container, id) {
         const buttons = container.querySelectorAll('.filter-button');
         buttons.forEach(button => button.classList.remove('active'));
@@ -535,3 +531,5 @@
         saveToWatchLater(currentMovieId, movieTitle, moviePoster);
       });
     </script>
+  </body>
+</html>
