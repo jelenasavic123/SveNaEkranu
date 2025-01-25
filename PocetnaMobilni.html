@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streaming Options</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      background: linear-gradient(135deg, #141414, #1c1c1c);
+      color: white;
+      padding: 1rem;
+    }
+
+    .popup-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+
+    .popup-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      text-align: center;
+      text-decoration: none;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .popup-button img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .popup-button span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .popup-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .popup-button:hover img {
+      opacity: 0.5;
+    }
+
+    .slider-container {
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 2rem;
+    }
+
+    .slider-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .slider-title img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+    }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem 0;
+      scroll-behavior: smooth;
+    }
+
+    .slider::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .slider::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+    }
+
+    .slider-item {
+      min-width: 200px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .slider-item:hover {
+      transform: scale(1.05);
+    }
+
+    .slider-item img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    .slider-item h4 {
+      padding: 0.5rem;
+      text-align: center;
+    }
+    
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Poluprovidna tamna pozadina */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: #141414; /* Tamna pozadina sa Netflix stilom */
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  width: 90%; /* Manja širina za lep izgled */
+  max-width: 500px; /* Ograničavamo širinu da popup ne postane prevelik */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* Efekat senke za dubinu */
+  overflow: hidden; /* Sprečava da sadržaj izlazi iz popupa */
+}
+
+.popup-content h3 {
+  color: #fff; /* Tekst u beloj boji */
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.popup-content button {
+  margin: 10px;
+  padding: 15px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  background-color: #e50914; /* Netflix crvena */
+  color: white;
+  border-radius: 5px;
+  width: 100%; /* Dugmadi zauzimaju celu širinu popupa */
+  transition: background-color 0.3s ease;
+}
+
+.popup-content button:hover {
+  background-color: #b81b14; /* Tamnija crvena pri hoveru */
+}
+
+.popup-content button:focus {
+  outline: none; /* Uklanjanje fokusa */
+}
+
+.popup-content .close-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #e50914;
+  width: auto;
+  margin-top: 20px;
+  padding: 10px 20px;
+}
+
+.popup-content .close-btn:hover {
+  background-color: #e50914;
+  color: white;
+}
+
+.slider-item {
+  position: relative;
+  margin: 10px;
+}
+
+.movie-img {
+  width: 100%;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.movie-img:hover {
+  transform: scale(1.05); /* Efekat uvećanja na hover */
+}
+
+h4 {
+  text-align: center;
+  margin-top: 10px;
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Top Buttons -->
+  <div class="popup-container">
+    <a class="popup-button" href="https://www.netflix.com">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+      <span>NETFLIX<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="https://www.hulu.com">
+      <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+      <span>HULU<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="https://www.disneyplus.com">
+      <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+      <span>DISNEY+<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="https://www.primevideo.com">
+      <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+      <span>PRIME VIDEO<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="https://www.marvel.com/movies">
+      <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel">
+      <span>MARVEL<br>FILMOVI</span>
+    </a>
+    <a class="popup-button" href="https://www.marvel.com/movies">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Cineplexx.png" alt="Marvel">
+      <span>DOMACI<br>FILMOVI</span>
+    </a>
+    <a class="popup-button" href="https://www.marvel.com/movies">
+      <img src="https://www.shutterstock.com/image-vector/mickey-mouse-set-logo-disney-600nw-2279023159.jpg" alt="Marvel">
+      <span>CRTANI<br>FILMOVI</span>
+    </a>
+  </div>
+  <!-- Sliders -->
+  <div class="slider-container">
+    <div class="slider-title">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+      Netflix - Popularni Filmovi
+    </div>
+    <div class="slider" id="netflix-slider"></div>
+  </div>
+
+  <div class="slider-container">
+    <div class="slider-title">
+      <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+      Hulu - Najnoviji Filmovi
+    </div>
+    <div class="slider" id="hulu-slider"></div>
+  </div>
+
+  <div class="slider-container">
+    <div class="slider-title">
+      <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+      Disney+ - Trenutni Hitovi
+    </div>
+    <div class="slider" id="disney-slider"></div>
+  </div>
+
+  <div class="slider-container">
+    <div class="slider-title">
+      <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+      Prime Video - Popularni Filmovi
+    </div>
+    <div class="slider" id="prime-slider"></div>
+  </div>
+  
+  <div class="slider-container">
+    <div class="slider-title">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/HBO_Max_logo.svg" alt="HBO Max">
+      HBO Max - Popularni Filmovi
+    </div>
+    <div class="slider" id="hbo-slider"></div>
+  </div>
+<button class="close-btn" onclick="closePopup(${movie.id})">Zatvori</button>
+
+<script>
+
+  const apiKey = '2701858e9bccab54d4d0e4931420a739';
+
+  async function fetchMovies(endpoint) {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    console.log(data); // Log API response to inspect the results
+    return data.results || [data]; // In case of a single result like latest movie
+  }
+
+  async function createSlider(sliderId, endpoint) {
+    const slider = document.getElementById(sliderId);
+    const movies = await fetchMovies(endpoint);
+
+    movies.forEach(movie => {
+      const movieDiv = document.createElement('div');
+      movieDiv.classList.add('slider-item');
+
+      // Generišemo linkove za srpski i hrvatski jezik
+      const movieSrLink = `https://vidsrc.vip/embed/movie/${movie.id}&lang=sr`;
+      const movieHrLink = `https://vidsrc.vip/embed/movie/${movie.id}&lang=hr`;
+
+      movieDiv.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="movie-img" data-id="${movie.id}">
+        <h4>${movie.title}</h4>
+        <!-- Hidden popup -->
+        <div class="popup" id="popup-${movie.id}" style="display:none;">
+          <div class="popup-content">
+            <button onclick="openInBrowser('${movieSrLink}')">Gledaj na Srpskom</button>
+            <button onclick="openInBrowser('${movieHrLink}')">Gledaj na Hrvatskom</button>
+            <button onclick="closePopup(${movie.id})">Zatvori</button>
+          </div>
+        </div>
+      `;
+
+      slider.appendChild(movieDiv);
+    });
+  }
+
+  // Create sliders for each service with different filters
+  createSlider('netflix-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=8&with_genres=28`); // Netflix with Action Genre
+  createSlider('hulu-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=15&with_genres=35`); // Hulu with Comedy Genre
+  createSlider('disney-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=2739&with_genres=12`); // Disney+ with Adventure Genre
+  createSlider('prime-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=119&with_genres=10749`); // Prime Video with Romance Genre
+  createSlider('hbo-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=49&with_genres=18`); // HBO Max with Drama Genre
+
+  // Handling click on movie image to show the popup
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('movie-img')) {
+      const movieId = e.target.dataset.id;
+      showPopup(movieId);
+    }
+  });
+
+  // Show popup with language buttons
+  function showPopup(movieId) {
+    const popup = document.getElementById(`popup-${movieId}`);
+    popup.style.display = 'block';
+  }
+
+  // Close the popup
+  function closePopup(movieId) {
+    const popup = document.getElementById(`popup-${movieId}`);
+    popup.style.display = 'none';
+  }
+
+  // Open movie in browser (same window)
+  function openInBrowser(url) {
+    window.location.href = url; // Open in the same window
+  }
+  
+  function closePopup(movieId) {
+  const popup = document.getElementById('popup-' + movieId);
+  if (popup) {
+    popup.style.display = 'none';
+  }
+}
+
+</script>
+
+</body>
+</html>
