@@ -122,9 +122,7 @@
       transition: transform 0.3s ease;
     }
 
-    .slider-item:hover {
-      transform: scale(1.05);
-    }
+
 
     .slider-item img {
       width: 100%;
@@ -139,95 +137,88 @@
     
 .popup {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Poluprovidna tamna pozadina */
+  top: 50%; /* Pomeri na sredinu ekrana po vertikali */
+  left: 50%; /* Pomeri na sredinu ekrana po horizontali */
+  transform: translate(-50%, -50%); /* Pomeri nazad za 50% da centriras tačno u sredinu */
+ 
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Horizontalno centriranje */
+  align-items: center; /* Vertikalno centriranje */
   z-index: 1000;
 }
 
-.popup-content {
-  background-color: #141414; /* Tamna pozadina sa Netflix stilom */
-  padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  width: 90%; /* Manja širina za lep izgled */
-  max-width: 500px; /* Ograničavamo širinu da popup ne postane prevelik */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* Efekat senke za dubinu */
-  overflow: hidden; /* Sprečava da sadržaj izlazi iz popupa */
-}
 
-.popup-content h3 {
-  color: #fff; /* Tekst u beloj boji */
-  font-size: 24px;
-  margin-bottom: 20px;
+.popup-content {
+background-color: rgba(0, 0, 255, 0.7); /* Providna plava pozadina */
+  padding: 20px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.3); /* Providna bela pozadina */
+
+  text-align: center; /* Centralizuje tekst unutar sadržaja */
+  max-width: 90%; /* Da ne pređe širinu ekrana */
+  max-height: 90%; /* Da ne pređe visinu ekrana */
+  overflow-y: auto; /* Skrolovanje ako sadržaj prelazi visinu */
 }
 
 .popup-content button {
-  margin: 10px;
-  padding: 15px;
-  font-size: 18px;
+  margin: 8px;
+  padding: 10px;
+  font-size: 16px;
   cursor: pointer;
   border: none;
   background-color: #e50914; /* Netflix crvena */
   color: white;
   border-radius: 5px;
-  width: 100%; /* Dugmadi zauzimaju celu širinu popupa */
-  transition: background-color 0.3s ease;
+  width: calc(50% - 16px); /* Polovina širine sa malim razmakom */
+  transition: background-color 0.2s ease;
 }
 
 .popup-content button:hover {
-  background-color: #b81b14; /* Tamnija crvena pri hoveru */
+  background-color: #b20710; /* Tamnija nijansa crvene za hover efekat */
 }
 
-.popup-content button:focus {
-  outline: none; /* Uklanjanje fokusa */
-}
 
-.popup-content .close-btn {
-  background-color: transparent;
-  color: #fff;
-  border: 2px solid #e50914;
-  width: auto;
-  margin-top: 20px;
-  padding: 10px 20px;
-}
-
-.popup-content .close-btn:hover {
-  background-color: #e50914;
-  color: white;
-}
-
-.slider-item {
-  position: relative;
-  margin: 10px;
-}
-
-.movie-img {
-  width: 100%;
-  cursor: pointer;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-
-.movie-img:hover {
-  transform: scale(1.05); /* Efekat uvećanja na hover */
-}
-
-h4 {
-  text-align: center;
-  margin-top: 10px;
-  color: #fff;
-}
 
   </style>
 </head>
 <body>
-  
+
+
+  <!-- Top Buttons -->
+  <div class="popup-container">
+    <a class="popup-button" href="">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+      <span>NETFLIX<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="">
+      <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+      <span>HULU<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="">
+      <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+      <span>DISNEY+<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="">
+      <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+      <span>PRIME VIDEO<br>FILMOVI & SERIJE</span>
+    </a>
+
+    <a class="popup-button" href="">
+      <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel">
+      <span>MARVEL<br>FILMOVI</span>
+    </a>
+    <a class="popup-button" href="">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Cineplexx.png" alt="Marvel">
+      <span>DOMACI<br>FILMOVI</span>
+    </a>
+    <a class="popup-button" href="">
+      <img src="https://www.shutterstock.com/image-vector/mickey-mouse-set-logo-disney-600nw-2279023159.jpg" alt="Marvel">
+      <span>CRTANI<br>FILMOVI</span>
+    </a>
+  </div>
   <!-- Sliders -->
   <div class="slider-container">
     <div class="slider-title">
