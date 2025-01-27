@@ -119,70 +119,6 @@
       iframe {
         margin-top: 10px;
       }
-      /* Responsive styling za uređaje ispod 320px širine */
-      @media (max-width: 320px) {
-        header h1 {
-          font-size: 1.2rem;
-          /* Manje veličine fonta za naslov */
-        }
-        .filters {
-          flex-direction: column;
-          /* Ostavite kao kolonu */
-        }
-        .filter {
-          width: 100%;
-          /* Puna širina filtera */
-          margin-bottom: 5px;
-          /* Smanjite razmak između filtera */
-        }
-        /* Prikažite samo jedan element po redu */
-        #movie-list {
-          grid-template-columns: 1fr;
-          /* Jedan element po redu */
-        }
-        .movie-title {
-          font-size: 0.8rem;
-          /* Smanjite veličinu fonta za naslove filmova */
-        }
-        .movie-card {
-          margin-bottom: 15px;
-          /* Dodajte razmak između kartica */
-        }
-      }
-      @media (max-width: 480px) {
-        header h1 {
-          font-size: 1.2rem;
-        }
-        .movie {
-          padding: 10px;
-        }
-        .modal-content {
-          padding: 20px;
-          width: 90%;
-        }
-        .modal-content img {
-          width: 40%;
-        }
-        iframe {
-          height: 300px;
-        }
-        /* Ostavite samo dva reda i na manjim ekranima */
-        #movie-list {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .movie-title {
-          font-size: 0.8rem;
-        }
-      }
-      /* Modal adjustments for small screens */
-      @media (max-width: 320px) {
-        .modal-content {
-          width: 95%;
-        }
-        iframe {
-          height: 250px;
-        }
-      }
       /* Osnovni stil za filtere */
       .filters {
         display: flex;
@@ -205,38 +141,30 @@
         margin-right: 10px;
         /* Razmak između filtera */
       }
-      /* Stil za ekrane manji od 350px */
-      @media (max-width: 350px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
-      /* Stil za ekrane do 768px */
-      @media (max-width: 768px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
       .logo {
         margin: 5px 0;
         text-align: center;
       }
       .logo img {
         width: 80px;
+      }
+      /* Stil za fullscreen sliku */
+      #modal-poster:-webkit-full-screen {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+      }
+
+      #modal-poster:-moz-full-screen {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+      }
+
+      #modal-poster:fullscreen {
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
       }
     </style>
   </head>
@@ -255,7 +183,6 @@
       </div>
     </header>
     <main id="movie-list">
-
       <!-- Movies will be dynamically populated here -->
     </main>
     <div id="movie-modal">
@@ -268,125 +195,136 @@
         <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
       </div>
     </div>
+
     <script>
-  const apiKey = '2701858e9bccab54d4d0e4931420a739';
-  const apiUrl = 'https://api.themoviedb.org/3';
-  const genreSelect = document.getElementById('genre');
-  const yearSelect = document.getElementById('year');
-  const movieList = document.getElementById('movie-list');
-  let currentPage = 1; // Praćenje trenutne stranice
-  let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
+      const apiKey = '2701858e9bccab54d4d0e4931420a739';
+      const apiUrl = 'https://api.themoviedb.org/3';
+      const genreSelect = document.getElementById('genre');
+      const yearSelect = document.getElementById('year');
+      const movieList = document.getElementById('movie-list');
+      let currentPage = 1; // Praćenje trenutne stranice
+      let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
 
-  // Fetch genres and populate dropdown
-  async function fetchGenres() {
-    const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
-    const data = await response.json();
-    data.genres.forEach(genre => {
-      const option = document.createElement('option');
-      option.value = genre.id;
-      option.textContent = genre.name;
-      genreSelect.appendChild(option);
-    });
-  }
+      // Funkcija koja omogućava da slika ide u fullscreen
+      function toggleFullScreen(imgElement) {
+        if (imgElement.requestFullscreen) {
+          imgElement.requestFullscreen();
+        } else if (imgElement.mozRequestFullScreen) { // Firefox
+          imgElement.mozRequestFullScreen();
+        } else if (imgElement.webkitRequestFullscreen) { // Chrome, Safari i Opera
+          imgElement.webkitRequestFullscreen();
+        } else if (imgElement.msRequestFullscreen) { // Internet Explorer/Edge
+          imgElement.msRequestFullscreen();
+        }
+      }
 
-  // Populate year dropdown (from 2025 to 2015)
-  function populateYearSelect() {
-    for (let year = 2025; year >= 2015; year--) {
-      const option = document.createElement('option');
-      option.value = year;
-      option.textContent = year;
-      yearSelect.appendChild(option);
-    }
-  }
+      // Fetch genres and populate dropdown
+      async function fetchGenres() {
+        const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
+        const data = await response.json();
+        data.genres.forEach(genre => {
+          const option = document.createElement('option');
+          option.value = genre.id;
+          option.textContent = genre.name;
+          genreSelect.appendChild(option);
+        });
+      }
 
-  // Fetch and display movies based on selected genre or year
-  async function fetchMovies(genreId = '', year = '', append = false) {
-    if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
-    isLoading = true; // Postavi zastavicu da je učitavanje u toku
+      // Populate year dropdown (from 2025 to 2015)
+      function populateYearSelect() {
+        for (let year = 2025; year >= 2015; year--) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearSelect.appendChild(option);
+        }
+      }
 
-    let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=US`;
+      // Fetch and display movies based on selected genre or year
+      async function fetchMovies(genreId = '', year = '', append = false) {
+        if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
+        isLoading = true; // Postavi zastavicu da je učitavanje u toku
 
-    if (genreId) {
-      url += `&with_genres=${genreId}`;
-    }
-    if (year) {
-      url += `&primary_release_year=${year}`;
-    }
+        let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=US`;
 
-    const response = await fetch(url);
-    const data = await response.json();
+        if (genreId) {
+          url += `&with_genres=${genreId}`;
+        }
+        if (year) {
+          url += `&primary_release_year=${year}`;
+        }
 
-    if (!append) {
-      movieList.innerHTML = ''; // Očisti listu filmova ako nije "append"
-    }
+        const response = await fetch(url);
+        const data = await response.json();
 
-    data.results.forEach(movie => {
-      const movieItem = document.createElement('div');
-      movieItem.className = 'movie';
-      movieItem.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-        <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
-        <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
-        <div class="movie-title">${movie.title}</div>
-      `;
-      movieItem.onclick = () => showMovieDetails(movie.id);
-      movieList.appendChild(movieItem);
-    });
+        if (!append) {
+          movieList.innerHTML = ''; // Očisti listu filmova ako nije "append"
+        }
 
-    isLoading = false; // Oslobodi zastavicu nakon završetka učitavanja
-  }
+        data.results.forEach(movie => {
+          const movieItem = document.createElement('div');
+          movieItem.className = 'movie';
+          movieItem.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+            <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
+            <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
+            <div class="movie-title">${movie.title}</div>
+          `;
+          movieItem.onclick = () => showMovieDetails(movie.id);
+          movieList.appendChild(movieItem);
+        });
 
-  // Show movie details in modal
-  function showMovieDetails(movieId) {
-    fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
-      .then(response => response.json())
-      .then(details => {
-        const { title, release_date, overview, poster_path } = details;
-        document.getElementById('modal-title').textContent = title;
-        document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-        document.getElementById('modal-overview').textContent = overview;
-        document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-        document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}?ds_lang=sr`;
-        document.getElementById('movie-modal').style.display = 'flex';
-      })
-      .catch(error => console.error('Error fetching movie details:', error));
-  }
+        isLoading = false; // Oslobodi zastavicu nakon završetka učitavanja
+      }
 
-  // Close the modal
-  function closeModal() {
-    document.getElementById('movie-modal').style.display = 'none';
-  }
+      // Show movie details in modal
+      function showMovieDetails(movieId) {
+        fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+          .then(response => response.json())
+          .then(details => {
+            const { title, release_date, overview, poster_path } = details;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+            document.getElementById('modal-overview').textContent = overview;
+            const posterImg = document.getElementById('modal-poster');
+            posterImg.src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+            
+            // Dodajemo mogućnost fullscreen režima za poster
+            posterImg.onclick = function() {
+              toggleFullScreen(posterImg);
+            };
 
-  // Event listener za promenu žanra
-  genreSelect.addEventListener('change', () => {
-    const genreId = genreSelect.value;
-    currentPage = 1; // Resetuj na prvu stranicu
-    yearSelect.value = ''; // Resetuj odabranu godinu
-    fetchMovies(genreId, ''); // Fetch movies samo prema žanru
-  });
+            document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}?ds_lang=sr`;
+            document.getElementById('movie-modal').style.display = 'flex';
+          })
+          .catch(error => console.error('Error fetching movie details:', error));
+      }
 
-  // Event listener za promenu godine
-  yearSelect.addEventListener('change', () => {
-    const year = yearSelect.value;
-    currentPage = 1; // Resetuj na prvu stranicu
-    fetchMovies('', year); // Fetch movies samo prema godini
-  });
+      // Close the modal
+      function closeModal() {
+        document.getElementById('movie-modal').style.display = 'none';
+      }
 
-  // Infinite scroll event listener
-  window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-      currentPage++; // Povećaj broj trenutne stranice
-      const genreId = genreSelect.value;
-      const year = yearSelect.value;
-      fetchMovies(genreId, year, true); // Fetch next page and append results
-    }
-  });
+      // Event listener za promenu žanra
+      genreSelect.addEventListener('change', () => {
+        const genreId = genreSelect.value;
+        currentPage = 1; // Resetuj na prvu stranicu
+        yearSelect.value = ''; // Resetuj odabranu godinu
+        fetchMovies(genreId, ''); // Fetch movies samo prema žanru
+      });
 
-  // Initialize
-  populateYearSelect();
-  fetchGenres();
-  fetchMovies(); // Fetch popular movies on page load
-</script>
+      // Event listener za promenu godine
+      yearSelect.addEventListener('change', () => {
+        const year = yearSelect.value;
+        currentPage = 1; // Resetuj na prvu stranicu
+        fetchMovies('', year); // Fetch movies samo prema godini
+      });
+
+      // Initialize
+      populateYearSelect();
+      fetchGenres();
+      fetchMovies(); // Fetch popular movies on page load
+    </script>
 
   </body>
 </html>
