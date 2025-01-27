@@ -1,236 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Movies</title>
     <style>
-      /* Osnovni stilovi */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: Arial, sans-serif;
-        background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
-        color: white;
-      }
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+     /* Osnovni stilovi */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    
+    background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
+    color: white;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #000;
+}
+header h1 {
+    font-size: 2rem;
+}
+
+#movie-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Uvek dva reda */
+    gap: 20px;
+    padding: 20px;
+}
+.movie {
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+.movie img {
+    width: 100%;
+    height: auto;
+    border-bottom: 3px solid #444;
+}
+.movie-title {
+    font-size: 1rem;
+    padding: 10px;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.movie-year {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+.movie-rating {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ffcc00;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Modal styles */
+#movie-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background-color: #333;
+    padding: 30px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    text-align: center;
+}
+.modal-content img {
+    width: 20%;
+    height: auto;
+    border-radius: 10px;
+}
+.modal-content h2 {
+    color: white;
+    margin-top: 15px;
+}
+.modal-content p {
+    color: #ccc;
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    background: red;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+iframe {
+    margin-top: 10px;
+}
+
+/* Responsive styling za uređaje ispod 320px širine */
+@media (max-width: 320px) {
+    header h1 {
+        font-size: 1.2rem; /* Manje veličine fonta za naslov */
+    }
+
+    .filters {
+        flex-direction: column; /* Ostavite kao kolonu */
+    }
+
+    .filter {
+        width: 100%; /* Puna širina filtera */
+        margin-bottom: 5px; /* Smanjite razmak između filtera */
+    }
+
+    /* Prikažite samo jedan element po redu */
+    #movie-list {
+        grid-template-columns: 1fr; /* Jedan element po redu */
+    }
+
+    .movie-title {
+        font-size: 0.8rem; /* Smanjite veličinu fonta za naslove filmova */
+    }
+
+    .movie-card {
+        margin-bottom: 15px; /* Dodajte razmak između kartica */
+    }
+}
+
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    .movie {
         padding: 10px;
-        background-color: #000;
-      }
-      header h1 {
-        font-size: 1rem;
-      }
-      #movie-list {
-        display: grid;
+    }
+
+    .modal-content {
+        padding: 20px;
+        width: 90%;
+    }
+
+    .modal-content img {
+        width: 40%;
+    }
+
+    iframe {
+        height: 300px;
+    }
+
+    /* Ostavite samo dva reda i na manjim ekranima */
+    #movie-list {
         grid-template-columns: repeat(2, 1fr);
-        /* Uvek dva reda */
-        gap: 10px;
-        padding: 10px;
-      }
-      .movie {
-        background-color: #333;
-        border-radius: 10px;
-        overflow: hidden;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-      }
-      .movie img {
-        width: 100%;
-        height: auto;
-        border-bottom: 3px solid #444;
-      }
-      .movie-title {
-        font-size: 1rem;
-        padding: 10px;
-        position: absolute;
-        bottom: 10px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        color: #fff;
-        font-weight: bold;
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-      .movie-year {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        color: #fff;
-        font-size: 0.9rem;
-        font-weight: bold;
-      }
-      .movie-rating {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: #ffcc00;
-        font-size: 1rem;
-        font-weight: bold;
-      }
-      /* Modal styles */
-      #movie-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-      }
-      .modal-content {
-        background-color: #333;
-        padding: 30px;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 10px;
-        text-align: center;
-      }
-      .modal-content img {
-        width: 20%;
-        height: auto;
-        border-radius: 10px;
-      }
-      .modal-content h2 {
-        color: white;
-        margin-top: 15px;
-      }
-      .modal-content p {
-        color: #ccc;
-      }
-      .close-btn {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        color: white;
-        background: red;
-        padding: 10px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      iframe {
-        margin-top: 10px;
-      }
-      /* Responsive styling za uređaje ispod 320px širine */
-      @media (max-width: 320px) {
-        header h1 {
-          font-size: 1.2rem;
-          /* Manje veličine fonta za naslov */
-        }
-        .filters {
-          flex-direction: column;
-          /* Ostavite kao kolonu */
-        }
-        .filter {
-          width: 100%;
-          /* Puna širina filtera */
-          margin-bottom: 5px;
-          /* Smanjite razmak između filtera */
-        }
-        /* Prikažite samo jedan element po redu */
-        #movie-list {
-          grid-template-columns: 1fr;
-          /* Jedan element po redu */
-        }
-        .movie-title {
-          font-size: 0.8rem;
-          /* Smanjite veličinu fonta za naslove filmova */
-        }
-        .movie-card {
-          margin-bottom: 15px;
-          /* Dodajte razmak između kartica */
-        }
-      }
-      @media (max-width: 480px) {
-        header h1 {
-          font-size: 1.2rem;
-        }
-        .movie {
-          padding: 10px;
-        }
-        .modal-content {
-          padding: 20px;
-          width: 90%;
-        }
-        .modal-content img {
-          width: 40%;
-        }
-        iframe {
-          height: 300px;
-        }
-        /* Ostavite samo dva reda i na manjim ekranima */
-        #movie-list {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .movie-title {
-          font-size: 0.8rem;
-        }
-      }
-      /* Modal adjustments for small screens */
-      @media (max-width: 320px) {
-        .modal-content {
-          width: 95%;
-        }
-        iframe {
-          height: 250px;
-        }
-      }
-      /* Osnovni stil za filtere */
-      .filters {
-        display: flex;
-        justify-content: space-between;
-        /* Razmak između filtera */
-        width: 100%;
-        /* Da filteri zauzmu celu širinu */
-        flex-wrap: nowrap;
-        /* Sprečava prelamanje u novi red */
-      }
-      .filter {
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: 5px;
-        border: 1px solid #333;
-        background-color: #333;
-        color: white;
-        flex: 1;
-        /* Omogućava da filteri zauzmu jednaku širinu */
-        margin-right: 10px;
-        /* Razmak između filtera */
-      }
-      /* Stil za ekrane manji od 350px */
-      @media (max-width: 350px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
-      /* Stil za ekrane do 768px */
-      @media (max-width: 768px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
+    }
+
+    .movie-title {
+        font-size: 0.8rem;
+    }
+}
+
+/* Modal adjustments for small screens */
+@media (max-width: 320px) {
+    .modal-content {
+        width: 95%;
+    }
+
+    iframe {
+        height: 250px;
+    }
+}
+
+/* Osnovni stil za filtere */
+.filters {
+    display: flex;
+    justify-content: space-between; /* Razmak između filtera */
+    width: 100%; /* Da filteri zauzmu celu širinu */
+    flex-wrap: nowrap; /* Sprečava prelamanje u novi red */
+}
+
+.filter {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #333;
+    color: white;
+    flex: 1; /* Omogućava da filteri zauzmu jednaku širinu */
+    margin-right: 10px; /* Razmak između filtera */
+}
+
+/* Stil za ekrane manji od 350px */
+@media (max-width: 350px) {
+    .filters {
+        justify-content: space-between; /* Razmak između filtera */
+    }
+    
+    .filter {
+        flex: 1 1 45%; /* Omogućava da filteri zauzmu oko 45% širine */
+        margin-right: 5px; /* Manji razmak između filtera */
+    }
+}
+
+/* Stil za ekrane do 768px */
+@media (max-width: 768px) {
+    .filters {
+        justify-content: space-between; /* Razmak između filtera */
+    }
+    
+    .filter {
+        flex: 1 1 45%; /* Omogućava da filteri zauzmu oko 45% širine */
+        margin-right: 5px; /* Manji razmak između filtera */
+    }
+}
+
       .logo {
         margin: 5px 0;
         text-align: center;
@@ -238,145 +245,140 @@
       .logo img {
         width: 80px;
       }
+
     </style>
-  </head>
-  <body>
-    <div class="logo">
+</head>
+<body>
+<div class="logo">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
     </div>
     <header>
-      <div class="filters">
-        <select id="genre" class="filter">
-          <option value="">Svi Zanrovi</option>
-        </select>
-        <select id="year" class="filter">
-          <option value="">Sve Godine</option>
-        </select>
-      </div>
+      
+        <div class="filters">
+            <select id="genre" class="filter">
+                <option value="">Svi Zanrovi</option>
+            </select>
+            <select id="year" class="filter">
+                <option value="">Sve Godine</option>
+            </select>
+        </div>
     </header>
-    <main id="movie-list">
 
-      <!-- Movies will be dynamically populated here -->
+    <main id="movie-list">
+        <!-- Movies will be dynamically populated here -->
     </main>
+
     <div id="movie-modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">X</span>
-        <img id="modal-poster" src="" alt="Movie Poster">
-        <h2 id="modal-title"></h2>
-        <p id="modal-release-date"></p>
-        <p id="modal-overview"></p>
-        <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
-      </div>
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">X</span>
+            <img id="modal-poster" src="" alt="Movie Poster">
+            <h2 id="modal-title"></h2>
+            <p id="modal-release-date"></p>
+            <p id="modal-overview"></p>
+            <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
+        </div>
     </div>
+
     <script>
-      const apiKey = '2701858e9bccab54d4d0e4931420a739';
-      const apiUrl = 'https://api.themoviedb.org/3';
-      const genreSelect = document.getElementById('genre');
-      const yearSelect = document.getElementById('year');
-      const movieList = document.getElementById('movie-list');
-      let currentPage = 1; // Praćenje trenutne stranice
-      let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
-      // Fetch genres and populate dropdown
-      async function fetchGenres() {
-        const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
-        const data = await response.json();
-        data.genres.forEach(genre => {
-          const option = document.createElement('option');
-          option.value = genre.id;
-          option.textContent = genre.name;
-          genreSelect.appendChild(option);
+        const apiKey = '2701858e9bccab54d4d0e4931420a739';
+        const apiUrl = 'https://api.themoviedb.org/3';
+
+        const genreSelect = document.getElementById('genre');
+        const yearSelect = document.getElementById('year');
+        const movieList = document.getElementById('movie-list');
+
+        // Fetch genres and populate dropdown
+        async function fetchGenres() {
+            const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
+            const data = await response.json();
+            data.genres.forEach(genre => {
+                const option = document.createElement('option');
+                option.value = genre.id;
+                option.textContent = genre.name;
+                genreSelect.appendChild(option);
+            });
+        }
+
+        // Populate year dropdown (from 2025 to 2015)
+        function populateYearSelect() {
+            for (let year = 2025; year >= 2015; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        // Fetch and display movies based on selected genre and year, and filtered by Netflix availability
+        async function fetchMovies(genreId = '', year = '') {
+            let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=hr-HR&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=HR`; // '8' is Netflix, 'US' is for USA region, you can adjust based on region
+
+            if (genreId) {
+                url += `&with_genres=${genreId}`;
+            }
+            if (year) {
+                url += `&primary_release_year=${year}`;
+            }
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            movieList.innerHTML = '';
+            data.results.forEach(movie => {
+                const movieItem = document.createElement('div');
+                movieItem.className = 'movie';
+                movieItem.innerHTML = `
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
+                    <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
+                    <div class="movie-title">${movie.title}</div>
+                `;
+                movieItem.onclick = () => showMovieDetails(movie.id);
+                movieList.appendChild(movieItem);
+            });
+        }
+
+        // Show movie details in modal
+        function showMovieDetails(movieId) {
+            fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+                .then(response => response.json())
+                .then(details => {
+                    const { title, release_date, overview, poster_path } = details;
+                    document.getElementById('modal-title').textContent = title;
+                    document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+                    document.getElementById('modal-overview').textContent = overview;
+                    document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+                    
+                    // Add video iframe URL here
+                    document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}`;
+
+                    document.getElementById('movie-modal').style.display = 'flex';
+                })
+                .catch(error => console.error('Error fetching movie details:', error));
+        }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('movie-modal').style.display = 'none';
+        }
+
+        // Event listeners for filter changes
+        genreSelect.addEventListener('change', () => {
+            const genreId = genreSelect.value;
+            const year = yearSelect.value;
+            fetchMovies(genreId, year);  // Fetch filtered movies
         });
-      }
-      // Populate year dropdown (from 2025 to 2015)
-      function populateYearSelect() {
-        for (let year = 2025; year >= 2015; year--) {
-          const option = document.createElement('option');
-          option.value = year;
-          option.textContent = year;
-          yearSelect.appendChild(option);
-        }
-      }
-      // Fetch and display movies based on selected genre and year, and filtered by Netflix availability
-      async function fetchMovies(genreId = '', year = '', append = false) {
-        if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
-        isLoading = true; // Postavi zastavicu da označiš da je učitavanje u toku
-        let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=hr-HR&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=HR&page=${currentPage}`; // '8' je Netflix, 'HR' za Hrvatsku
-        if (genreId) {
-          url += `&with_genres=${genreId}`;
-        }
-        if (year) {
-          url += `&primary_release_year=${year}`;
-        }
-        const response = await fetch(url);
-        const data = await response.json();
-        if (!append) {
-          movieList.innerHTML = ''; // Očisti listu filmova ako nije "append"
-        }
-        data.results.forEach(movie => {
-          const movieItem = document.createElement('div');
-          movieItem.className = 'movie';
-          movieItem.innerHTML = `
-                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
-                <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
-                <div class="movie-title">${movie.title}</div>
-            `;
-          movieItem.onclick = () => showMovieDetails(movie.id);
-          movieList.appendChild(movieItem);
+
+        yearSelect.addEventListener('change', () => {
+            const genreId = genreSelect.value;
+            const year = yearSelect.value;
+            fetchMovies(genreId, year);  // Fetch filtered movies
         });
-        isLoading = false; // Oslobodi zastavicu nakon završetka učitavanja
-      }
-      // Show movie details in modal
-      function showMovieDetails(movieId) {
-        fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
-          .then(response => response.json())
-          .then(details => {
-            const {
-              title,
-              release_date,
-              overview,
-              poster_path
-            } = details;
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-            document.getElementById('modal-overview').textContent = overview;
-            document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-            // Add video iframe URL here
-            document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}?ds_lang=sr`;
-            document.getElementById('movie-modal').style.display = 'flex';
-          })
-          .catch(error => console.error('Error fetching movie details:', error));
-      }
-      // Close the modal
-      function closeModal() {
-        document.getElementById('movie-modal').style.display = 'none';
-      }
-      // Event listeners for filter changes
-      genreSelect.addEventListener('change', () => {
-        const genreId = genreSelect.value;
-        const year = yearSelect.value;
-        currentPage = 1; // Resetuj na prvu stranicu
-        fetchMovies(genreId, year); // Fetch filtered movies
-      });
-      yearSelect.addEventListener('change', () => {
-        const genreId = genreSelect.value;
-        const year = yearSelect.value;
-        currentPage = 1; // Resetuj na prvu stranicu
-        fetchMovies(genreId, year); // Fetch filtered movies
-      });
-      // Infinite scroll event listener
-      window.addEventListener('scroll', () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-          currentPage++; // Povećaj broj trenutne stranice
-          const genreId = genreSelect.value;
-          const year = yearSelect.value;
-          fetchMovies(genreId, year, true); // Fetch next page and append results
-        }
-      });
-      // Initialize
-      populateYearSelect();
-      fetchGenres();
-      fetchMovies(); // Fetch popular movies on page load (filtered by Netflix)
+
+        // Initialize
+        populateYearSelect();
+        fetchGenres();
+        fetchMovies();  // Fetch popular movies on page load (filtered by Netflix)
     </script>
-  </body>
+</body>
 </html>
