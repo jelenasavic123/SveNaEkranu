@@ -13,7 +13,6 @@
 }
 body {
     font-family: Arial, sans-serif;
-    
     background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
     color: white;
 }
@@ -21,18 +20,18 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     background-color: #000;
 }
 header h1 {
-    font-size: 2rem;
+    font-size: 1rem;
 }
 
 #movie-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Uvek dva reda */
-    gap: 20px;
-    padding: 20px;
+    gap: 10px;
+    padding: 10px;
 }
 .movie {
     background-color: #333;
@@ -110,8 +109,8 @@ header h1 {
 }
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     color: white;
     background: red;
     padding: 10px;
@@ -279,106 +278,130 @@ iframe {
         </div>
     </div>
 
-    <script>
-        const apiKey = '2701858e9bccab54d4d0e4931420a739';
-        const apiUrl = 'https://api.themoviedb.org/3';
+<script>
+    const apiKey = '2701858e9bccab54d4d0e4931420a739';
+    const apiUrl = 'https://api.themoviedb.org/3';
 
-        const genreSelect = document.getElementById('genre');
-        const yearSelect = document.getElementById('year');
-        const movieList = document.getElementById('movie-list');
+    const genreSelect = document.getElementById('genre');
+    const yearSelect = document.getElementById('year');
+    const movieList = document.getElementById('movie-list');
 
-        // Fetch genres and populate dropdown
-        async function fetchGenres() {
-            const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
-            const data = await response.json();
-            data.genres.forEach(genre => {
-                const option = document.createElement('option');
-                option.value = genre.id;
-                option.textContent = genre.name;
-                genreSelect.appendChild(option);
-            });
+    let currentPage = 1; // Praćenje trenutne stranice
+    let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
+
+    // Fetch genres and populate dropdown
+    async function fetchGenres() {
+        const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
+        const data = await response.json();
+        data.genres.forEach(genre => {
+            const option = document.createElement('option');
+            option.value = genre.id;
+            option.textContent = genre.name;
+            genreSelect.appendChild(option);
+        });
+    }
+
+    // Populate year dropdown (from 2025 to 2015)
+    function populateYearSelect() {
+        for (let year = 2025; year >= 2015; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+    }
+
+    // Fetch and display movies based on selected genre and year, and filtered by Netflix availability
+    async function fetchMovies(genreId = '', year = '', append = false) {
+        if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
+        isLoading = true; // Postavi zastavicu da označiš da je učitavanje u toku
+
+        let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=hr-HR&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=HR&page=${currentPage}`; // '8' je Netflix, 'HR' za Hrvatsku
+
+        if (genreId) {
+            url += `&with_genres=${genreId}`;
+        }
+        if (year) {
+            url += `&primary_release_year=${year}`;
         }
 
-        // Populate year dropdown (from 2025 to 2015)
-        function populateYearSelect() {
-            for (let year = 2025; year >= 2015; year--) {
-                const option = document.createElement('option');
-                option.value = year;
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            }
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!append) {
+            movieList.innerHTML = ''; // Očisti listu filmova ako nije "append"
         }
 
-        // Fetch and display movies based on selected genre and year, and filtered by Netflix availability
-        async function fetchMovies(genreId = '', year = '') {
-            let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=US`; // '8' is Netflix, 'US' is for USA region, you can adjust based on region
-
-            if (genreId) {
-                url += `&with_genres=${genreId}`;
-            }
-            if (year) {
-                url += `&primary_release_year=${year}`;
-            }
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            movieList.innerHTML = '';
-            data.results.forEach(movie => {
-                const movieItem = document.createElement('div');
-                movieItem.className = 'movie';
-                movieItem.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
-                    <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
-                    <div class="movie-title">${movie.title}</div>
-                `;
-                movieItem.onclick = () => showMovieDetails(movie.id);
-                movieList.appendChild(movieItem);
-            });
-        }
-
-        // Show movie details in modal
-        function showMovieDetails(movieId) {
-            fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=en-US`)
-                .then(response => response.json())
-                .then(details => {
-                    const { title, release_date, overview, poster_path } = details;
-                    document.getElementById('modal-title').textContent = title;
-                    document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
-                    document.getElementById('modal-overview').textContent = overview;
-                    document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-                    
-                    // Add video iframe URL here
-                    document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}`;
-
-                    document.getElementById('movie-modal').style.display = 'flex';
-                })
-                .catch(error => console.error('Error fetching movie details:', error));
-        }
-
-        // Close the modal
-        function closeModal() {
-            document.getElementById('movie-modal').style.display = 'none';
-        }
-
-        // Event listeners for filter changes
-        genreSelect.addEventListener('change', () => {
-            const genreId = genreSelect.value;
-            const year = yearSelect.value;
-            fetchMovies(genreId, year);  // Fetch filtered movies
+        data.results.forEach(movie => {
+            const movieItem = document.createElement('div');
+            movieItem.className = 'movie';
+            movieItem.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
+                <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
+                <div class="movie-title">${movie.title}</div>
+            `;
+            movieItem.onclick = () => showMovieDetails(movie.id);
+            movieList.appendChild(movieItem);
         });
 
-        yearSelect.addEventListener('change', () => {
+        isLoading = false; // Oslobodi zastavicu nakon završetka učitavanja
+    }
+
+    // Show movie details in modal
+    function showMovieDetails(movieId) {
+        fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+            .then(response => response.json())
+            .then(details => {
+                const { title, release_date, overview, poster_path } = details;
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+                document.getElementById('modal-overview').textContent = overview;
+                document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+                
+                // Add video iframe URL here
+                document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}`;
+
+                document.getElementById('movie-modal').style.display = 'flex';
+            })
+            .catch(error => console.error('Error fetching movie details:', error));
+    }
+
+    // Close the modal
+    function closeModal() {
+        document.getElementById('movie-modal').style.display = 'none';
+    }
+
+    // Event listeners for filter changes
+    genreSelect.addEventListener('change', () => {
+        const genreId = genreSelect.value;
+        const year = yearSelect.value;
+        currentPage = 1; // Resetuj na prvu stranicu
+        fetchMovies(genreId, year); // Fetch filtered movies
+    });
+
+    yearSelect.addEventListener('change', () => {
+        const genreId = genreSelect.value;
+        const year = yearSelect.value;
+        currentPage = 1; // Resetuj na prvu stranicu
+        fetchMovies(genreId, year); // Fetch filtered movies
+    });
+
+    // Infinite scroll event listener
+    window.addEventListener('scroll', () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+            currentPage++; // Povećaj broj trenutne stranice
             const genreId = genreSelect.value;
             const year = yearSelect.value;
-            fetchMovies(genreId, year);  // Fetch filtered movies
-        });
+            fetchMovies(genreId, year, true); // Fetch next page and append results
+        }
+    });
 
-        // Initialize
-        populateYearSelect();
-        fetchGenres();
-        fetchMovies();  // Fetch popular movies on page load (filtered by Netflix)
-    </script>
+    // Initialize
+    populateYearSelect();
+    fetchGenres();
+    fetchMovies(); // Fetch popular movies on page load (filtered by Netflix)
+</script>
+
 </body>
 </html>
