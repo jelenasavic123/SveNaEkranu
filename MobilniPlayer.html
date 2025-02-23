@@ -763,5 +763,14 @@
     document.getElementById("load-more-disneyplus").addEventListener("click", () => fetchMovies());
     document.getElementById("load-more-apple-tv").addEventListener("click", () => fetchMovies());
   </script>
+  <script>
+  document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  });
+  document.addEventListener('dblclick', function (e) {
+    e.preventDefault();
+  });
+</script>
+
   </body>
 </html>
