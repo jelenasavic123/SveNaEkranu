@@ -295,7 +295,25 @@
     Otvori meni
   </button>
   
+   
+   
+   <div class="slider-container">
+  <div class="slider-title">
+    <img src="https://i.ytimg.com/vi/MnasLz-bBxM/maxresdefault.jpg" alt="Trending This Week">
+    Najgledanije ove Nedelje
+  </div>
+  <div class="slider" id="this-week-slider"></div>
+</div>
+
    <!-- Sliders -->
+   <div class="slider-container">
+  <div class="slider-title">
+    <img src="https://c.saavncdn.com/editorial/charts_TrendingToday_134351_20230826113717_500x500.jpg" alt="Trending Today">
+    Najgledanije Danas
+  </div>
+  <div class="slider" id="trending-today-slider"></div>
+</div>
+
     <div class="slider-container">
       <div class="slider-title">
         <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
@@ -399,6 +417,8 @@
         });
       }
       // Create sliders for each service with different filters
+      createSlider('this-week-slider', `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&language=hr-HR`);
+      createSlider('trending-today-slider', `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=hr-HR`);
       createSlider('netflix-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=8&with_genres=28`); // Netflix with Action Genre
       createSlider('hulu-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=15&with_genres=35`); // Hulu with Comedy Genre
       createSlider('disney-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=2739&with_genres=12`); // Disney+ with Adventure Genre
