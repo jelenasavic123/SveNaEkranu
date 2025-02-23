@@ -148,70 +148,7 @@
       iframe {
         margin-top: 10px;
       }
-      /* Responsive styling za uređaje ispod 320px širine */
-      @media (max-width: 320px) {
-        header h1 {
-          font-size: 1.2rem;
-          /* Manje veličine fonta za naslov */
-        }
-        .filters {
-          flex-direction: column;
-          /* Ostavite kao kolonu */
-        }
-        .filter {
-          width: 100%;
-          /* Puna širina filtera */
-          margin-bottom: 5px;
-          /* Smanjite razmak između filtera */
-        }
-        /* Prikažite samo jedan element po redu */
-        #movie-list {
-          grid-template-columns: 1fr;
-          /* Jedan element po redu */
-        }
-        .movie-title {
-          font-size: 0.8rem;
-          /* Smanjite veličinu fonta za naslove filmova */
-        }
-        .movie-card {
-          margin-bottom: 15px;
-          /* Dodajte razmak između kartica */
-        }
-      }
-      @media (max-width: 480px) {
-        header h1 {
-          font-size: 1.2rem;
-        }
-        .movie {
-          padding: 10px;
-        }
-        .modal-content {
-          padding: 20px;
-          width: 90%;
-        }
-        .modal-content img {
-          width: 40%;
-        }
-        iframe {
-          height: 300px;
-        }
-        /* Ostavite samo dva reda i na manjim ekranima */
-        #movie-list {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .movie-title {
-          font-size: 0.8rem;
-        }
-      }
-      /* Modal adjustments for small screens */
-      @media (max-width: 320px) {
-        .modal-content {
-          width: 95%;
-        }
-        iframe {
-          height: 250px;
-        }
-      }
+    
       /* Osnovni stil za filtere */
       .filters {
         display: flex;
@@ -233,32 +170,6 @@
         /* Omogućava da filteri zauzmu jednaku širinu */
         margin-right: 10px;
         /* Razmak između filtera */
-      }
-      /* Stil za ekrane manji od 350px */
-      @media (max-width: 350px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
-      /* Stil za ekrane do 768px */
-      @media (max-width: 768px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
       }
       .logo {
         margin: 5px 0;
