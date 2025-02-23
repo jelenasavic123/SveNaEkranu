@@ -81,31 +81,60 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 80%;
         background-color: rgba(0, 0, 0, 0.8);
         justify-content: center;
         align-items: center;
       }
+      
+      #modal-release-date {
+  color: #ffcc00; /* Zlatna boja za tekst */
+  font-size: 1rem; /* Standardna veličina fonta */
+  background-color: #333; /* Tamna pozadina */
+  padding: 5px 10px; /* Dodatni padding za lepršaviji izgled */
+  border-radius: 5px; /* Zaobljeni ivice */
+  margin-top: 10px; /* Razmak sa prethodnim elementima */
+  text-align: center; /* Centriranje teksta */
+}
+
+#modal-overview {
+  display: -webkit-box;
+  -webkit-line-clamp: 10; /* Broj linija koje želite da prikažete */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
       .modal-content {
-        background-color: #333;
-        padding: 30px;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 10px;
-        text-align: center;
-      }
+  background: rgba(255, 255, 255, 0.2); /* Poluprozirna bela boja */
+  backdrop-filter: blur(15px); /* Zamagljuje pozadinu iza modala */
+  background-image: url('https://example.com/your-image.jpg'); /* Pozadinska slika */
+  background-size: cover;
+  background-position: center;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
       .modal-content img {
-        width: 20%;
+        width: 10%;
         height: auto;
         border-radius: 10px;
       }
       .modal-content h2 {
         color: white;
-        margin-top: 15px;
+        margin-top: 5px;
       }
       .modal-content p {
         color: #ccc;
       }
+      
+      
       .close-btn {
         position: absolute;
         top: 20px;
@@ -238,6 +267,8 @@
       .logo img {
         width: 80px;
       }
+      
+      
     </style>
   </head>
   <body>
@@ -268,6 +299,7 @@
         <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
       </div>
     </div>
+    
     <script>
   const apiKey = '2701858e9bccab54d4d0e4931420a739';
   const apiUrl = 'https://api.themoviedb.org/3';
@@ -298,6 +330,7 @@
       yearSelect.appendChild(option);
     }
   }
+  
 
   // Fetch and display movies based on selected genre or year
   async function fetchMovies(genreId = '', year = '', append = false) {
@@ -386,6 +419,8 @@
   populateYearSelect();
   fetchGenres();
   fetchMovies(); // Fetch popular movies on page load
+  
+  
 </script>
 
   </body>
