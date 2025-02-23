@@ -86,26 +86,55 @@
         justify-content: center;
         align-items: center;
       }
+      
+      #modal-release-date {
+  color: #ffcc00; /* Zlatna boja za tekst */
+  font-size: 1rem; /* Standardna veličina fonta */
+  background-color: #333; /* Tamna pozadina */
+  padding: 5px 10px; /* Dodatni padding za lepršaviji izgled */
+  border-radius: 5px; /* Zaobljeni ivice */
+  margin-top: 10px; /* Razmak sa prethodnim elementima */
+  text-align: center; /* Centriranje teksta */
+}
+
+#modal-overview {
+  display: -webkit-box;
+  -webkit-line-clamp: 8; /* Broj linija koje želite da prikažete */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
       .modal-content {
-        background-color: #333;
-        padding: 30px;
-        width: 80%;
-        max-width: 600px;
-        border-radius: 10px;
-        text-align: center;
-      }
+  background: rgba(255, 255, 255, 0.2); /* Poluprozirna bela boja */
+  backdrop-filter: blur(15px); /* Zamagljuje pozadinu iza modala */
+  background-image: url('https://example.com/your-image.jpg'); /* Pozadinska slika */
+  background-size: cover;
+  background-position: center;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
       .modal-content img {
-        width: 20%;
+        width: 10%;
         height: auto;
         border-radius: 10px;
       }
       .modal-content h2 {
         color: white;
-        margin-top: 15px;
+        margin-top: 5px;
       }
       .modal-content p {
         color: #ccc;
       }
+      
+      
       .close-btn {
         position: absolute;
         top: 20px;
@@ -119,70 +148,7 @@
       iframe {
         margin-top: 10px;
       }
-      /* Responsive styling za uređaje ispod 320px širine */
-      @media (max-width: 320px) {
-        header h1 {
-          font-size: 1.2rem;
-          /* Manje veličine fonta za naslov */
-        }
-        .filters {
-          flex-direction: column;
-          /* Ostavite kao kolonu */
-        }
-        .filter {
-          width: 100%;
-          /* Puna širina filtera */
-          margin-bottom: 5px;
-          /* Smanjite razmak između filtera */
-        }
-        /* Prikažite samo jedan element po redu */
-        #movie-list {
-          grid-template-columns: 1fr;
-          /* Jedan element po redu */
-        }
-        .movie-title {
-          font-size: 0.8rem;
-          /* Smanjite veličinu fonta za naslove filmova */
-        }
-        .movie-card {
-          margin-bottom: 15px;
-          /* Dodajte razmak između kartica */
-        }
-      }
-      @media (max-width: 480px) {
-        header h1 {
-          font-size: 1.2rem;
-        }
-        .movie {
-          padding: 10px;
-        }
-        .modal-content {
-          padding: 20px;
-          width: 90%;
-        }
-        .modal-content img {
-          width: 40%;
-        }
-        iframe {
-          height: 300px;
-        }
-        /* Ostavite samo dva reda i na manjim ekranima */
-        #movie-list {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .movie-title {
-          font-size: 0.8rem;
-        }
-      }
-      /* Modal adjustments for small screens */
-      @media (max-width: 320px) {
-        .modal-content {
-          width: 95%;
-        }
-        iframe {
-          height: 250px;
-        }
-      }
+    
       /* Osnovni stil za filtere */
       .filters {
         display: flex;
@@ -205,32 +171,6 @@
         margin-right: 10px;
         /* Razmak između filtera */
       }
-      /* Stil za ekrane manji od 350px */
-      @media (max-width: 350px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
-      /* Stil za ekrane do 768px */
-      @media (max-width: 768px) {
-        .filters {
-          justify-content: space-between;
-          /* Razmak između filtera */
-        }
-        .filter {
-          flex: 1 1 45%;
-          /* Omogućava da filteri zauzmu oko 45% širine */
-          margin-right: 5px;
-          /* Manji razmak između filtera */
-        }
-      }
       .logo {
         margin: 5px 0;
         text-align: center;
@@ -238,6 +178,8 @@
       .logo img {
         width: 80px;
       }
+      
+      
     </style>
   </head>
   <body>
@@ -268,6 +210,7 @@
         <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
       </div>
     </div>
+    
     <script>
   const apiKey = '2701858e9bccab54d4d0e4931420a739';
   const apiUrl = 'https://api.themoviedb.org/3';
@@ -298,14 +241,14 @@
       yearSelect.appendChild(option);
     }
   }
+  
 
   // Fetch and display movies based on selected genre or year
   async function fetchMovies(genreId = '', year = '', append = false) {
     if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
     isLoading = true; // Postavi zastavicu da je učitavanje u toku
 
-    let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=337&watch_region=US`;
-
+   let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=337&watch_region=US`;
 
     if (genreId) {
       url += `&with_genres=${genreId}`;
@@ -387,6 +330,8 @@
   populateYearSelect();
   fetchGenres();
   fetchMovies(); // Fetch popular movies on page load
+  
+  
 </script>
 
   </body>
