@@ -1,1 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Movies</title>
+    <style>
+      /* Osnovni stilovi */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/applepozadina.png') center center / cover no-repeat fixed;
+        color: white;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #000;
+      }
+      header h1 {
+        font-size: 1rem;
+      }
+      #movie-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        /* Uvek dva reda */
+        gap: 10px;
+        padding: 10px;
+      }
+      .movie {
+        background-color: #333;
+        border-radius: 10px;
+        overflow: hidden;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+      }
+      .movie img {
+        width: 100%;
+        height: auto;
+        border-bottom: 3px solid #444;
+      }
+      .movie-title {
+        font-size: 1rem;
+        padding: 10px;
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+      .movie-year {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+      .movie-rating {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #ffcc00;
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      /* Modal styles */
+      #movie-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #modal-release-date {
+  color: #ffcc00; /* Zlatna boja za tekst */
+  font-size: 1rem; /* Standardna veličina fonta */
+  background-color: #333; /* Tamna pozadina */
+  padding: 5px 10px; /* Dodatni padding za lepršaviji izgled */
+  border-radius: 5px; /* Zaobljeni ivice */
+  margin-top: 10px; /* Razmak sa prethodnim elementima */
+  text-align: center; /* Centriranje teksta */
+}
 
+#modal-overview {
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* Broj linija koje želite da prikažete */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+      .modal-content {
+  background: rgba(255, 255, 255, 0.2); /* Poluprozirna bela boja */
+  backdrop-filter: blur(15px); /* Zamagljuje pozadinu iza modala */
+  background-image: url('https://example.com/your-image.jpg'); /* Pozadinska slika */
+  background-size: cover;
+  background-position: center;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+      .modal-content img {
+        width: 10%;
+        height: auto;
+        border-radius: 10px;
+      }
+      .modal-content h2 {
+        color: white;
+        margin-top: 5px;
+      }
+      .modal-content p {
+        color: #ccc;
+      }
+      
+      
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: white;
+        background: red;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      iframe {
+        margin-top: 10px;
+      }
+    
+      /* Osnovni stil za filtere */
+      .filters {
+        display: flex;
+        justify-content: space-between;
+        /* Razmak između filtera */
+        width: 100%;
+        /* Da filteri zauzmu celu širinu */
+        flex-wrap: nowrap;
+        /* Sprečava prelamanje u novi red */
+      }
+      .filter {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #333;
+        background-color: #333;
+        color: white;
+        flex: 1;
+        /* Omogućava da filteri zauzmu jednaku širinu */
+        margin-right: 10px;
+        /* Razmak između filtera */
+      }
+      .logo {
+        margin: 5px 0;
+        text-align: center;
+      }
+      .logo img {
+        width: 80px;
+      }
+      
+        /* Osnovni stil za konteiner dugmadi */
+  .filters {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  /* Stil za svako dugme */
+  .filters button {
+    background-color: #4CAF50; /* Zelena pozadina */
+    color: white; /* Bela boja teksta */
+    border: none; /* Bez ivica */
+    padding: 10px 20px; /* Prostor oko teksta */
+    margin: 10px; /* Razmak između dugmadi */
+    font-size: 16px; /* Veličina fonta */
+    cursor: pointer; /* Kursor se menja u ruku kada je iznad dugmeta */
+    transition: background-color 0.3s ease; /* Efekat prelaza prilikom promena boje */
+    border-radius: 5px; /* Zaobljeni ivice dugmadi */
+  }
+
+  /* Stil kada je dugme u fokusu (kada se na njega klikne) */
+  .filters button:focus {
+    outline: none; /* Uklanja standardnu ivicu fokusa */
+  }
+
+  /* Stil kada je dugme prebačeno mišem (hover efekat) */
+  .filters button:hover {
+    background-color: #45a049; /* Tamnija nijansa zelene */
+  }
+
+  /* Stil kada je dugme kliknuto (active efekat) */
+  .filters button:active {
+    background-color: #388e3c; /* Još tamnija nijansa zelene */
+  }
+      
+    </style>
+  </head>
+  <body>
+  
+<div class="filters">
+  <!-- Decade Filter Buttons -->
+  <button id="90s-button">90-tih Crtaci</button>
+  <button id="2000s-button">2000-te Crtaci</button>
+  <button id="2010s-button">2010-te Crtaci</button>
+  <button id="2020s-button">2020-te Crtaci</button>
+
+
+<div id="movie-list"></div>
+
+      <!-- Movies will be dynamically populated here -->
+    </main>
+    <div id="movie-modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">X</span>
+        <img id="modal-poster" src="" alt="Movie Poster">
+        <h2 id="modal-title"></h2>
+        <p id="modal-release-date"></p>
+        <p id="modal-overview"></p>
+        <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
+      </div>
+    </div>
+    
+
+
+    <div class="logo">
+      <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2019/03/apple-tv-plus-logo-slice.jpg" alt="Netflix Logo">
+    </div>
+    <header>
+      <div class="filters">
+        <select id="genre" class="filter">
+          <option value="">Svi Zanrovi</option>
+        </select>
+        <select id="year" class="filter">
+          <option value="">Sve Godine</option>
+        </select>
+      </div>
+    </header>
+    <main id="movie-list">
+    
+    
+
+      <!-- Movies will be dynamically populated here -->
+    </main>
+    <div id="movie-modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">X</span>
+        <img id="modal-poster" src="" alt="Movie Poster">
+        <h2 id="modal-title"></h2>
+        <p id="modal-release-date"></p>
+        <p id="modal-overview"></p>
+        <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
+      </div>
+    </div>
+    
+ <script>
+  const apiKey = '2701858e9bccab54d4d0e4931420a739';
+  const apiUrl = 'https://api.themoviedb.org/3';
+  const genreSelect = document.getElementById('genre');
+  const yearSelect = document.getElementById('year');
+  const movieList = document.getElementById('movie-list');
+  let currentPage = 1; // Praćenje trenutne stranice
+  let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
+  let selectedDecade = null; // Sprečava resetovanje selektovane decenije
+  let selectedCategory = null; // Sprečava resetovanje selektovane kategorije
+
+  // Fetch genres and populate dropdown
+  async function fetchGenres() {
+    const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
+    const data = await response.json();
+    data.genres.forEach(genre => {
+      const option = document.createElement('option');
+      option.value = genre.id;
+      option.textContent = genre.name;
+      genreSelect.appendChild(option);
+    });
+  }
+
+  // Populate year dropdown (from 2025 to 2015)
+  function populateYearSelect() {
+    for (let year = 2025; year >= 2015; year--) {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
+  }
+
+  // Filter movies by decade
+  function filterByDecade(startYear, endYear) {
+    selectedDecade = { start: startYear, end: endYear }; // Set selected decade
+    currentPage = 1; // Resetuj na prvu stranicu
+    movieList.innerHTML = ''; // Očisti listu filmova pre nego što učitaš nove
+    fetchMovies('', '', false); // Fetch movies prema deceniji
+  }
+
+  // Filter movies by category
+  function filterByCategory(category) {
+    selectedCategory = category; // Set selected category
+    currentPage = 1; // Resetuj na prvu stranicu
+    movieList.innerHTML = ''; // Očisti listu filmova pre nego što učitaš nove
+    fetchMovies('', '', false); // Fetch movies prema kategoriji
+  }
+
+  // Fetch and display movies based on selected genre, year, or category
+  async function fetchMovies(genreId = '', year = '', append = false) {
+    if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
+    isLoading = true; // Postavi zastavicu da je učitavanje u toku
+
+    let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=hr-HR&page=${currentPage}&with_genres=16`; // Žanr 16 je za animirane filmove
+
+    if (genreId) {
+      url += `&with_genres=${genreId}`;
+    }
+    if (year) {
+      url += `&primary_release_year=${year}`;
+    }
+    if (selectedDecade) {
+      // Filtriraj prema deceniji ako je selektovana
+      url += `&primary_release_date.gte=${selectedDecade.start}-01-01&primary_release_date.lte=${selectedDecade.end}-12-31`;
+    }
+    if (selectedCategory) {
+      // Dodaj specifične kategorije crtaca
+      url += `&with_keywords=${selectedCategory}`;
+    }
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!append) {
+      movieList.innerHTML = ''; // Očisti listu filmova ako nije "append"
+    }
+
+    data.results.forEach(movie => {
+      const movieItem = document.createElement('div');
+      movieItem.className = 'movie';
+      movieItem.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+        <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
+        <div class="movie-rating">${movie.vote_average ? movie.vote_average : 'N/A'}</div>
+        <div class="movie-title">${movie.title}</div>
+      `;
+      movieItem.onclick = () => showMovieDetails(movie.id);
+      movieList.appendChild(movieItem);
+    });
+
+    isLoading = false; // Oslobodi zastavicu nakon završetka učitavanja
+  }
+
+  // Show movie details in modal
+  function showMovieDetails(movieId) {
+    fetch(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=hr-HR`)
+      .then(response => response.json())
+      .then(details => {
+        const { title, release_date, overview, poster_path } = details;
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-release-date').textContent = `Release Date: ${release_date}`;
+        document.getElementById('modal-overview').textContent = overview;
+        document.getElementById('modal-poster').src = `https://image.tmdb.org/t/p/w500${poster_path}`;
+        document.getElementById('media-iframe').src = `https://vidsrc.xyz/embed/movie/${movieId}?ds_lang=sr`;
+        document.getElementById('movie-modal').style.display = 'flex';
+      })
+      .catch(error => console.error('Error fetching movie details:', error));
+  }
+
+  // Close the modal
+  function closeModal() {
+    document.getElementById('movie-modal').style.display = 'none';
+  }
+
+  // Event listener za promenu žanra
+  genreSelect.addEventListener('change', () => {
+    const genreId = genreSelect.value;
+    currentPage = 1; // Resetuj na prvu stranicu
+    movieList.innerHTML = ''; // Očisti listu filmova
+    selectedDecade = null; // Očisti selektovanu deceniju
+    selectedCategory = null; // Očisti selektovanu kategoriju
+    fetchMovies(genreId, '', false); // Fetch movies samo prema žanru
+  });
+
+  // Event listener za promenu godine
+  yearSelect.addEventListener('change', () => {
+    const year = yearSelect.value;
+    currentPage = 1; // Resetuj na prvu stranicu
+    movieList.innerHTML = ''; // Očisti listu filmova
+    fetchMovies('', year, false); // Fetch movies samo prema godini
+  });
+
+  // Infinite scroll event listener
+  window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+      currentPage++; // Povećaj broj trenutne stranice
+      const genreId = genreSelect.value;
+      const year = yearSelect.value;
+      fetchMovies(genreId, year, true); // Fetch next page and append results
+    }
+  });
+
+  // Initialize
+  populateYearSelect();
+  fetchGenres();
+  fetchMovies(); // Fetch popular movies on page load
+
+  // Event listeners for decade buttons
+  document.getElementById('90s-button').addEventListener('click', () => filterByDecade(1990, 1999));
+  document.getElementById('2000s-button').addEventListener('click', () => filterByDecade(2000, 2009));
+  document.getElementById('2010s-button').addEventListener('click', () => filterByDecade(2010, 2019));
+  document.getElementById('2020s-button').addEventListener('click', () => filterByDecade(2020, 2029));
+
+  // Event listeners for category buttons
+  document.getElementById('new-cartoons-button').addEventListener('click', () => filterByCategory('new'));
+  document.getElementById('popular-cartoons-button').addEventListener('click', () => filterByCategory('popular'));
+  document.getElementById('classic-cartoons-button').addEventListener('click', () => filterByCategory('classic'));
+  document.getElementById('modern-cartoons-button').addEventListener('click', () => filterByCategory('modern'));
+  document.getElementById('retro-cartoons-button').addEventListener('click', () => filterByCategory('retro'));
+  document.getElementById('snow-white-cartoons-button').addEventListener('click', () => filterByCategory('snow-white'));
+  document.getElementById('tinker-bell-cartoons-button').addEventListener('click', () => filterByCategory('tinker-bell'));
+  document.getElementById('spongebob-cartoons-button').addEventListener('click', () => filterByCategory('spongebob'));
+</script>
+
+  </body>
+</html>
