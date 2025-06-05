@@ -317,11 +317,190 @@
   line-height: 1.2em;
 }
 
+
+    /* Moderno dugme za otvaranje menija sa tekstom i ikonom */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 18px;
+      color: white;
+      background-color: #ffcc00;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1001;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .menu-btn i {
+      font-size: 20px;
+    }
+
+    .menu-btn:hover {
+      background-color: #e6b800;
+      transform: scale(1.1);
+    }
+
+    .menu-btn.open {
+      transform: rotate(180deg);
+    }
+
+    /* Meni */
+    .menu {
+      position: fixed;
+      top: 0;
+      right: -70%;
+      width: 70%;
+      max-width: 400px;
+      height: 100%;
+      background-color: #111;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.7);
+      transition: right 0.5s ease;
+      z-index: 1000;
+      padding: 60px 20px;
+      overflow-y: auto;
+    }
+
+    /* Flexbox za raspored dugmadi u meniju */
+    .menu .popup-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .menu .popup-button {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
+      gap: 10px;
+      padding: 10px;
+      transition: all 0.3s ease;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .menu .popup-button img {
+      width: 40px;
+      height: auto;
+    }
+
+    .menu .popup-button span {
+      font-size: 14px;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .menu .popup-button:hover {
+      background-color: #333;
+      padding-left: 15px;
+    }
+
+    /* Hero sekcija */
+    .hero {
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #ccc;
+    }
+
+    /* Zatvaranje fokusa dugmeta */
+    .menu-btn:focus {
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .menu {
+        width: 80%;
+        right: -80%;
+      }
+
+      .menu .popup-button {
+        font-size: 16px;
+      }
+
+      .menu .popup-button img {
+        width: 35px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu {
+        width: 90%;
+        right: -90%;
+      }
+
+      .menu .popup-button {
+        font-size: 14px;
+      }
+
+      .menu .popup-button img {
+        width: 30px;
+      }
+    }
+
 </style>
 
   </head>
   <body>
     <h1>Pretraga Filmova</h1>
+    
+     <!-- Moderno dugme za otvaranje menija sa tekstom i ikonom -->
+  <button class="menu-btn" onclick="toggleMenu()">
+    <i class="fas fa-chevron-right"></i> <!-- Ikona za desnu strelicu -->
+    Otvori meni
+  </button>
+  
+   
+  
+<!-- Meni -->
+  <div id="menu" class="menu">
+    <div class="popup-container">
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/netflix-mobilni.html">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+        <span>NETFLIX<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/hulu-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+        <span>HULU<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/disney-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+        <span>DISNEY+<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/apple-mobilni.html">
+        <img src="https://jelenasavic123.github.io/SveNaEkranu/slike/apple+.jpg" alt="Apple TV+">
+        <span>APPLE TV+<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/prime-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+        <span>PRIME VIDEO<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/marvel-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel">
+        <span>MARVEL<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/crtani-mobilni.html">
+        <img src="https://www.shutterstock.com/image-vector/mickey-mouse-set-logo-disney-600nw-2279023159.jpg" alt="Crtani Filmovi">
+        <span>CRTANI<br>FILMOVI</span>
+      </a>
+    </div>
+  </div>
 
     <!-- Pretraga sa tastaturom i ikona za govornu pretragu -->
     <div class="search-container">
@@ -501,12 +680,20 @@
     </script>
       <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7GR6B68FX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      const menuBtn = document.querySelector('.menu-btn');
 
-  gtag('config', 'G-E7GR6B68FX');
-</script>
+      const currentRight = menu.style.right;
+      if (currentRight === '0px') {
+        menu.style.right = `-${menu.offsetWidth}px`; // Sakrij meni
+        menuBtn.classList.remove('open');
+      } else {
+        menu.style.right = '0'; // Otvori meni
+        menuBtn.classList.add('open');
+      }
+    }
+  </script>
   </body>
 </html>
