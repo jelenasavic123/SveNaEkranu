@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Movies</title>
-    <style>
+   <style>
       /* Osnovni stilovi */
       * {
         margin: 0;
@@ -75,18 +75,23 @@
         font-weight: bold;
       }
       /* Modal styles */
-      #movie-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-      }
-      
+#movie-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+#media-iframe {
+  width: 100%;
+  height: 100%;
+}
+ 
       #modal-release-date {
   color: #ffcc00; /* Zlatna boja za tekst */
   font-size: 1rem; /* Standardna veličina fonta */
@@ -106,20 +111,27 @@
 }
 
 
-      .modal-content {
-  background: rgba(255, 255, 255, 0.2); /* Poluprozirna bela boja */
-  backdrop-filter: blur(15px); /* Zamagljuje pozadinu iza modala */
-  background-image: url('https://example.com/your-image.jpg'); /* Pozadinska slika */
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  background-image: url('https://example.com/your-image.jpg'); /* Prilagodi URL ako koristiš sliku */
   background-size: cover;
   background-position: center;
-  padding: 30px;
-  width: 90%;
-  max-width: 600px;
-  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
   text-align: center;
   color: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
 }
+
 
       .modal-content img {
         width: 10%;
@@ -207,7 +219,8 @@
         <h2 id="modal-title"></h2>
         <p id="modal-release-date"></p>
         <p id="modal-overview"></p>
-        <iframe id="media-iframe" width="100%" height="400px" frameborder="0"></iframe>
+        <iframe id="media-iframe" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
+
       </div>
     </div>
     
