@@ -75,18 +75,23 @@
         font-weight: bold;
       }
       /* Modal styles */
-      #movie-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-      }
-      
+#movie-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+#media-iframe {
+  width: 100%;
+  height: 100%;
+}
+ 
       #modal-release-date {
   color: #ffcc00; /* Zlatna boja za tekst */
   font-size: 1rem; /* Standardna veličina fonta */
@@ -99,27 +104,34 @@
 
 #modal-overview {
   display: -webkit-box;
-  -webkit-line-clamp: 5; /* Broj linija koje želite da prikažete */
+  -webkit-line-clamp: 8; /* Broj linija koje želite da prikažete */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 
-      .modal-content {
-  background: rgba(255, 255, 255, 0.2); /* Poluprozirna bela boja */
-  backdrop-filter: blur(15px); /* Zamagljuje pozadinu iza modala */
-  background-image: url('https://example.com/your-image.jpg'); /* Pozadinska slika */
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  background-image: url('https://example.com/your-image.jpg'); /* Prilagodi URL ako koristiš sliku */
   background-size: cover;
   background-position: center;
-  padding: 30px;
-  width: 90%;
-  max-width: 600px;
-  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
   text-align: center;
   color: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
 }
+
 
       .modal-content img {
         width: 10%;
@@ -148,6 +160,37 @@
       iframe {
         margin-top: 10px;
       }
+    
+      /* Osnovni stil za filtere */
+      .filters {
+        display: flex;
+        justify-content: space-between;
+        /* Razmak između filtera */
+        width: 100%;
+        /* Da filteri zauzmu celu širinu */
+        flex-wrap: nowrap;
+        /* Sprečava prelamanje u novi red */
+      }
+      .filter {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #333;
+        background-color: #333;
+        color: white;
+        flex: 1;
+        /* Omogućava da filteri zauzmu jednaku širinu */
+        margin-right: 10px;
+        /* Razmak između filtera */
+      }
+      .logo {
+        margin: 5px 0;
+        text-align: center;
+      }
+      .logo img {
+        width: 80px;
+      }
+      
     
       /* Osnovni stil za filtere */
       .filters {
