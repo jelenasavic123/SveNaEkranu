@@ -393,11 +393,13 @@ label {
         const data = await response.json();
         displaySeries(data.results);
 
-        if (data.page < data.total_pages) {
+        // Check if more pages are available for "Load More" button visibility
+        if (currentPage < data.total_pages) {
             loadMoreButton.style.display = 'block';
         } else {
             loadMoreButton.style.display = 'none';
         }
+
         document.getElementById('loading').style.display = 'none';
     }
 
@@ -421,7 +423,6 @@ label {
     }
 
     function displaySeries(series) {
-        seriesList.innerHTML = ''; // Clear previous results
         series.forEach(seriesItem => {
             const card = document.createElement('div');
             card.classList.add('series-card');
@@ -442,45 +443,45 @@ label {
         fetchSeasons();
         popup.style.display = 'flex';
     }
-async function fetchSeasons() {
-    const url = `${baseUrl}tv/${currentSeriesId}?api_key=${apiKey}&language=hr-HR`;
-    const response = await fetch(url);
-    const data = await response.json();
 
-    // Filtriramo sezone da uklonimo bilo koju sezonu sa brojem 0
-    const filteredSeasons = data.seasons.filter(season => season.season_number > 0);
+    async function fetchSeasons() {
+        const url = `${baseUrl}tv/${currentSeriesId}?api_key=${apiKey}&language=hr-HR`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-    // Ako postoje filtrirane sezone, prikazujemo ih
-    if (filteredSeasons.length > 0) {
-        displaySeasons(filteredSeasons);
+        // Filtriramo sezone da uklonimo bilo koju sezonu sa brojem 0
+        const filteredSeasons = data.seasons.filter(season => season.season_number > 0);
 
-        // Automatski postavljamo sezonu na prvu sezonu ako postoji
-        currentSeason = filteredSeasons[0].season_number;
-        fetchEpisodes(); // Učitavamo epizode za prvu sezonu
-    } else {
-        // Ako nema sezona, prikaži obaveštenje korisnicima
-        seasonsContainer.innerHTML = "<p>Ova serija nema dostupne sezone.</p>";
+        // Ako postoje filtrirane sezone, prikazujemo ih
+        if (filteredSeasons.length > 0) {
+            displaySeasons(filteredSeasons);
+
+            // Automatski postavljamo sezonu na prvu sezonu ako postoji
+            currentSeason = filteredSeasons[0].season_number;
+            fetchEpisodes(); // Učitavamo epizode za prvu sezonu
+        } else {
+            // Ako nema sezona, prikaži obaveštenje korisnicima
+            seasonsContainer.innerHTML = "<p>Ova serija nema dostupne sezone.</p>";
+        }
     }
-}
 
-function displaySeasons(seasons) {
-    seasonsContainer.innerHTML = ''; // Očisti prethodne dugmadi
-    let maxSeasons = Math.min(seasons.length, 20); // Prikazuje maksimalno 20 sezona
+    function displaySeasons(seasons) {
+        seasonsContainer.innerHTML = ''; // Očisti prethodne dugmadi
+        let maxSeasons = Math.min(seasons.length, 20); // Prikazuje maksimalno 20 sezona
 
-    // Prolazi kroz sve sezone i prikazuje dugmadi
-    for (let i = 0; i < maxSeasons; i++) {
-        const season = seasons[i];
-        const button = document.createElement('button');
-        button.classList.add('season-button');
-        button.textContent = `Sezona ${season.season_number}`;
-        button.addEventListener('click', () => {
-            currentSeason = season.season_number;
-            fetchEpisodes();
-        });
-        seasonsContainer.appendChild(button);
+        // Prolazi kroz sve sezone i prikazuje dugmadi
+        for (let i = 0; i < maxSeasons; i++) {
+            const season = seasons[i];
+            const button = document.createElement('button');
+            button.classList.add('season-button');
+            button.textContent = `Sezona ${season.season_number}`;
+            button.addEventListener('click', () => {
+                currentSeason = season.season_number;
+                fetchEpisodes();
+            });
+            seasonsContainer.appendChild(button);
+        }
     }
-}
-
 
     async function fetchEpisodes() {
         const url = `${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=hr-HR`;
@@ -534,8 +535,6 @@ function displaySeasons(seasons) {
         fetchSeries();
     });
 
-    fetchSeries();
-
     async function loadGenres() {
         const url = `${baseUrl}genre/tv/list?api_key=${apiKey}&language=en-EN`;
         const response = await fetch(url);
@@ -553,6 +552,7 @@ function displaySeasons(seasons) {
 
     loadGenres();
 </script>
+
 
 
 
