@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Serije - TMDB</title>
-    <style>
-        /* Global Styles */
-      /* Global Styles */
+<style>
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
     background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
     color: white;
+    margin: 0;
+    padding: 0;
 }
 
 h2, h3 {
@@ -23,14 +24,44 @@ a {
     color: inherit;
 }
 
-/* Main Content */
+/* Logo */
+.logo {
+    margin: 5px 0;
+    text-align: center;
+}
+.logo img {
+    width: 80px;
+}
+
+/* Search Input */
+.search-container {
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+#search-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: 1px solid #444;
+    background-color: #222;
+    color: white;
+}
+
+/* Series List */
 #series-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    gap: 15px;
+    padding: 10px;
+    margin-top: 20px;
 }
 
+/* Series Card */
 .series-card {
     position: relative;
     cursor: pointer;
@@ -39,13 +70,11 @@ a {
     background-color: #222;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .series-card img {
     width: 100%;
-    height: 300px; /* Adjusted to maintain a normal thumbnail format */
-    object-fit: cover; /* Ensures the image fills the box without stretching */
+    height: 300px;
+    object-fit: cover;
 }
-
 .series-card h3 {
     position: absolute;
     bottom: 10px;
@@ -53,18 +82,9 @@ a {
     font-size: 18px;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
-
 .series-card:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-}
-
-/* Loading Spinner */
-#loading {
-    text-align: center;
-    color: #fff;
-    font-size: 20px;
-    margin-top: 20px;
 }
 
 /* Popup */
@@ -80,7 +100,6 @@ a {
     align-items: center;
     z-index: 9999;
 }
-
 .popup-content {
     background-color: #1f1f1f;
     padding: 20px;
@@ -91,7 +110,6 @@ a {
     max-height: 80%;
     position: relative;
 }
-
 .close {
     position: absolute;
     top: 10px;
@@ -112,7 +130,6 @@ a {
     justify-content: center;
     margin-top: 20px;
 }
-
 .season-button {
     padding: 12px 20px;
     background-color: #e50914;
@@ -123,18 +140,15 @@ a {
     font-size: 16px;
     transition: background-color 0.3s;
 }
-
 .season-button:hover {
     background-color: #b20710;
 }
-
 .episode-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 10px;
     margin-top: 20px;
 }
-
 .episode-button {
     padding: 10px;
     background-color: #333;
@@ -145,29 +159,11 @@ a {
     font-size: 14px;
     transition: background-color 0.3s;
 }
-
 .episode-button:hover {
     background-color: #e50914;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .series-card {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .season-button {
-        font-size: 14px;
-        padding: 10px 15px;
-    }
-
-    .episode-button {
-        font-size: 12px;
-        padding: 8px;
-    }
-}
-
+/* Filters */
 .filters {
     display: flex;
     justify-content: space-between;
@@ -176,19 +172,16 @@ a {
     gap: 10px;
     margin-bottom: 20px;
 }
-
 .filter-group {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
-
 label {
     margin-bottom: 5px;
     font-weight: bold;
     color: white;
 }
-
 .filter-input {
     padding: 10px;
     font-size: 1rem;
@@ -198,28 +191,20 @@ label {
     color: white;
 }
 
-/* Loading Text Style */
+/* Loading Spinner */
 #loading {
     text-align: center;
     font-size: 18px;
     color: #007bff;
     margin: 20px 0;
     font-weight: bold;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
-/* Series List Styling */
-#series-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    margin-top: 20px;
-    padding: 10px;
-}
-
-/* Load More Button Styling */
+/* Load More Button */
 #load-more {
-    display: inline-block;
+    display: none;
+    text-align: center;
     background-color: #28a745;
     color: white;
     padding: 10px 20px;
@@ -227,74 +212,32 @@ label {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    margin: 20px auto;
+    margin: 30px auto 0 auto;
     transition: background-color 0.3s;
 }
-
 #load-more:hover {
     background-color: #218838;
 }
 
-/* Ensure the "Load More" button is centered */
-#load-more {
-    text-align: center;
-    margin-top: 30px;
-    display: none; /* Hidden by default */
-}
-
-.logo {
-    margin: 5px 0;
-    text-align: center;
-}
-
-.logo img {
-    width: 80px;
-}
-
-#series-list {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    padding: 10px;
-}
-
-
-/* Popup optimizacija za mobilne uređaje */
+/* Responsive */
 @media (max-width: 768px) {
-    .popup-content {
-        max-height: 90vh;
-        overflow-y: auto;
-        padding: 15px;
-        border-radius: 10px;
-    }
-
-    #series-title {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    #series-overview {
-        font-size: 15px;
-        line-height: 1.5;
-        margin-bottom: 20px;
-    }
-
-    .season-list {
-        display: flex;
-        flex-wrap: wrap;
+    #series-list {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
-        justify-content: center;
+    }
+
+    .series-card img {
+        height: 250px;
     }
 
     .season-button {
+        font-size: 14px;
+        padding: 10px 15px;
         flex: 1 1 45%;
-        padding: 10px;
-        font-size: 15px;
     }
 
     .episode-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Dve epizode po redu */
-        gap: 10px;
+        grid-template-columns: 1fr 1fr;
     }
 
     .episode-button {
@@ -307,14 +250,44 @@ label {
         top: 5px;
         right: 10px;
     }
+
+#search-input {
+    font-size: 14px;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-  </style>
+@media (max-width: 600px) {
+    #search-input {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+
+</style>
+
 </head>
 <body>
     <div class="logo">
       <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
     </div>
+    
+<div class="filters" style="margin-top: 10px;">
+  <div class="filter-group" style="flex: 1;">
+    <label for="search-input">Pretraga serija:</label>
+    <input
+      type="text"
+      id="search-input"
+      class="filter-input"
+      placeholder="Unesite naziv serije..."
+      oninput="searchSeries(this.value)"
+    />
+  </div>
+</div>
+
+
+
     <div class="filters">
         <div class="filter-group">
             <label for="genre-select">Žanr:</label>
@@ -397,11 +370,15 @@ label {
     let currentSeason = 1;
     let currentSeriesId = null;
 
+    // Automatically select the drama genre (ID 18)
+    genreSelect.value = '18'; // Drama genre ID
+    fetchSeries();
+
     async function fetchSeries() {
         const selectedGenre = genreSelect.value;
         const selectedYear = yearSelect.value;
 
-        let url = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=RS`;
+        let url = `${baseUrl}discover/tv?api_key=${apiKey}&language=hr-HR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=HR`;
 
         if (selectedGenre) {
             url += `&with_genres=${selectedGenre}`;
@@ -424,7 +401,27 @@ label {
         document.getElementById('loading').style.display = 'none';
     }
 
+    async function searchSeries(query) {
+        if (!query || query.trim().length < 2) {
+            seriesList.innerHTML = '';
+            currentPage = 1;
+            fetchSeries(); // prikaži standardne rezultate ako je prazno
+            return;
+        }
+
+        document.getElementById('loading').style.display = 'block';
+
+        const url = `${baseUrl}search/tv?api_key=${apiKey}&language=sr&query=${encodeURIComponent(query)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        seriesList.innerHTML = ''; // očisti prethodne rezultate
+
+        displaySeries(data.results); // koristi istu funkciju kao i kod filtriranja
+        document.getElementById('loading').style.display = 'none';
+    }
+
     function displaySeries(series) {
+        seriesList.innerHTML = ''; // Clear previous results
         series.forEach(seriesItem => {
             const card = document.createElement('div');
             card.classList.add('series-card');
@@ -445,27 +442,45 @@ label {
         fetchSeasons();
         popup.style.display = 'flex';
     }
+async function fetchSeasons() {
+    const url = `${baseUrl}tv/${currentSeriesId}?api_key=${apiKey}&language=hr-HR`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-    async function fetchSeasons() {
-        const url = `${baseUrl}tv/${currentSeriesId}?api_key=${apiKey}&language=hr-HR`;
-        const response = await fetch(url);
-        const data = await response.json();
-        displaySeasons(data.seasons);
+    // Filtriramo sezone da uklonimo bilo koju sezonu sa brojem 0
+    const filteredSeasons = data.seasons.filter(season => season.season_number > 0);
+
+    // Ako postoje filtrirane sezone, prikazujemo ih
+    if (filteredSeasons.length > 0) {
+        displaySeasons(filteredSeasons);
+
+        // Automatski postavljamo sezonu na prvu sezonu ako postoji
+        currentSeason = filteredSeasons[0].season_number;
+        fetchEpisodes(); // Učitavamo epizode za prvu sezonu
+    } else {
+        // Ako nema sezona, prikaži obaveštenje korisnicima
+        seasonsContainer.innerHTML = "<p>Ova serija nema dostupne sezone.</p>";
     }
+}
 
-    function displaySeasons(seasons) {
-        seasonsContainer.innerHTML = '';
-        seasons.forEach(season => {
-            const button = document.createElement('button');
-            button.classList.add('season-button');
-            button.textContent = `Sezona ${season.season_number}`;
-            button.addEventListener('click', () => {
-                currentSeason = season.season_number;
-                fetchEpisodes();
-            });
-            seasonsContainer.appendChild(button);
+function displaySeasons(seasons) {
+    seasonsContainer.innerHTML = ''; // Očisti prethodne dugmadi
+    let maxSeasons = Math.min(seasons.length, 20); // Prikazuje maksimalno 20 sezona
+
+    // Prolazi kroz sve sezone i prikazuje dugmadi
+    for (let i = 0; i < maxSeasons; i++) {
+        const season = seasons[i];
+        const button = document.createElement('button');
+        button.classList.add('season-button');
+        button.textContent = `Sezona ${season.season_number}`;
+        button.addEventListener('click', () => {
+            currentSeason = season.season_number;
+            fetchEpisodes();
         });
+        seasonsContainer.appendChild(button);
     }
+}
+
 
     async function fetchEpisodes() {
         const url = `${baseUrl}tv/${currentSeriesId}/season/${currentSeason}?api_key=${apiKey}&language=hr-HR`;
@@ -487,9 +502,9 @@ label {
     }
 
     function openEpisode(episode) {
-    const tmdbId = currentSeriesId;
-    window.location.href = `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${currentSeason}&episode=${episode.episode_number}&ds_lang=rs`;
-}
+        const tmdbId = currentSeriesId;
+        window.location.href = `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${currentSeason}&episode=${episode.episode_number}&ds_lang=rs`;
+    }
 
     function scrollToEpisodes() {
         const section = document.getElementById("episodes-section");
@@ -538,6 +553,7 @@ label {
 
     loadGenres();
 </script>
+
 
 
 
