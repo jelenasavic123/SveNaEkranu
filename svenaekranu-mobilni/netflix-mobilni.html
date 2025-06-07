@@ -260,7 +260,8 @@
     if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
     isLoading = true; // Postavi zastavicu da je učitavanje u toku
 
-   let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=RS`;
+  let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&with_watch_providers=8&watch_region=RS&page=${currentPage}`;
+
 
     if (genreId) {
       url += `&with_genres=${genreId}`;
