@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Movie Slider Menu</title>
+  <!-- Dodajte Font Awesome za ikone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #141414;
+      color: #fff;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Moderno dugme za otvaranje menija sa tekstom i ikonom */
+    .menu-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 18px;
+      color: white;
+      background-color: #ffcc00;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1001;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .menu-btn i {
+      font-size: 20px;
+    }
+
+    .menu-btn:hover {
+      background-color: #e6b800;
+      transform: scale(1.1);
+    }
+
+    .menu-btn.open {
+      transform: rotate(180deg);
+    }
+
+    /* Meni */
+    .menu {
+      position: fixed;
+      top: 0;
+      right: -70%;
+      width: 70%;
+      max-width: 600px;
+      height: 100%;
+      background-color: #111;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.7);
+      transition: right 0.5s ease;
+      z-index: 1000;
+      padding: 60px 20px;
+      overflow-y: auto;
+    }
+
+    /* Flexbox za raspored dugmadi u meniju */
+    .menu .popup-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .menu .popup-button {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
+      gap: 10px;
+      padding: 10px;
+      transition: all 0.3s ease;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .menu .popup-button img {
+      width: 40px;
+      height: auto;
+    }
+
+    .menu .popup-button span {
+      font-size: 14px;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+
+    .menu .popup-button:hover {
+      background-color: #333;
+      padding-left: 15px;
+    }
+
+    /* Hero sekcija */
+    .hero {
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #ccc;
+    }
+
+    /* Zatvaranje fokusa dugmeta */
+    .menu-btn:focus {
+      outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .menu {
+        width: 80%;
+        right: -80%;
+      }
+
+      .menu .popup-button {
+        font-size: 16px;
+      }
+
+      .menu .popup-button img {
+        width: 35px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu {
+        width: 90%;
+        right: -90%;
+      }
+
+      .menu .popup-button {
+        font-size: 14px;
+      }
+
+      .menu .popup-button img {
+        width: 30px;
+      }
+    }
+
+      .popup-button {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      .popup-button span {
+        position: relative;
+        z-index: 1;
+      }
+      .popup-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.6);
+      }
+      .popup-button:hover img {
+        opacity: 0.5;
+      }
+      .slider-container {
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 2rem;
+      }
+      .slider-title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+      .slider-title img {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+      }
+      .slider {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        padding: 1rem 0;
+        scroll-behavior: smooth;
+      }
+      .slider::-webkit-scrollbar {
+        height: 10px;
+      }
+      .slider::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
+      }
+      .slider-item img {
+  width: 150px;
+  height: auto;
+  object-fit: cover;
+}
+
+
+/* Smanjivanje slika u slider-title */
+.slider-title img {
+  width: 40px; /* Smanjiti širinu na 40px */
+  height: 40px; /* Smanjiti visinu na 40px */
+  border-radius: 8px;
+}
+      .popup {
+        position: fixed;
+        top: 50%;
+        /* Pomeri na sredinu ekrana po vertikali */
+        left: 50%;
+        /* Pomeri na sredinu ekrana po horizontali */
+        transform: translate(-50%, -50%);
+        /* Pomeri nazad za 50% da centriras tačno u sredinu */
+        display: flex;
+        justify-content: center;
+        /* Horizontalno centriranje */
+        align-items: center;
+        /* Vertikalno centriranje */
+        z-index: 1000;
+      }
+      .popup-content {
+        background-color: rgba(0, 0, 255, 0.7);
+        /* Providna plava pozadina */
+        padding: 20px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.3);
+        /* Providna bela pozadina */
+        text-align: center;
+        /* Centralizuje tekst unutar sadržaja */
+        max-width: 90%;
+        /* Da ne pređe širinu ekrana */
+        max-height: 90%;
+        /* Da ne pređe visinu ekrana */
+        overflow-y: auto;
+        /* Skrolovanje ako sadržaj prelazi visinu */
+      }
+.popup-content button {
+  margin: 8px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #e50914; /* Netflix crvena */
+  color: white;
+  border-radius: 5px;
+  width: 100%; /* Dugme zauzima 100% širine roditeljskog elementa */
+  box-sizing: border-box; /* Padding je uključeno u širinu dugmeta */
+  transition: background-color 0.2s ease;
+}
+
+.popup-content button:hover {
+  background-color: #b20710; /* Tamnija nijansa crvene za hover efekat */
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Moderno dugme za otvaranje menija sa tekstom i ikonom -->
+  <button class="menu-btn" onclick="toggleMenu()">
+    <i class="fas fa-chevron-right"></i> <!-- Ikona za desnu strelicu -->
+    Otvori meni
+  </button>
+  
+   
+   
+   <div class="slider-container">
+  <div class="slider-title">
+    <img src="https://i.ytimg.com/vi/MnasLz-bBxM/maxresdefault.jpg" alt="Trending This Week">
+    Najgledanije ove Nedelje
+  </div>
+  <div class="slider" id="this-week-slider"></div>
+</div>
+
+   <!-- Sliders -->
+   <div class="slider-container">
+  <div class="slider-title">
+    <img src="https://c.saavncdn.com/editorial/charts_TrendingToday_134351_20230826113717_500x500.jpg" alt="Trending Today">
+    Najgledanije Danas
+  </div>
+  <div class="slider" id="trending-today-slider"></div>
+</div>
+
+    <div class="slider-container">
+      <div class="slider-title">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+        Popularno
+      </div>
+      <div class="slider" id="netflix-slider"></div>
+    </div>
+    <div class="slider-container">
+      <div class="slider-title">
+        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+        Popularno
+      </div>
+      <div class="slider" id="hulu-slider"></div>
+    </div>
+    <div class="slider-container">
+      <div class="slider-title">
+        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+        Popularno
+      </div>
+      <div class="slider" id="disney-slider"></div>
+    </div>
+    <div class="slider-container">
+      <div class="slider-title">
+        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+        Popularno
+      </div>
+      <div class="slider" id="prime-slider"></div>
+    </div>
+    <div class="slider-container">
+      <div class="slider-title">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max">
+        Popularno
+      </div>
+      <div class="slider" id="hbo-slider"></div>
+    </div>
+
+<!-- Meni -->
+  <div id="menu" class="menu">
+    <div class="popup-container">
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/netflix-mobilni.html">
+        <img src="https://i.ytimg.com/vi/MnasLz-bBxM/maxresdefault.jpg" alt="Netflix">
+        <span>Najgledaniji<br>Filmovi</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/netflix-mobilni.html">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+        <span>NETFLIX<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/Netflix-serije.html">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+        <span>NETFLIX<br>Serije</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/hulu-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+        <span>HULU<br>FILMOVI</span>
+      </a>
+            <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/Hulu-serije.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/hulu.svg" alt="Hulu">
+        <span>HULU<br>Serije</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/disney-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+        <span>DISNEY+<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/Disney-serije.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/disney-wbackground.svg" alt="Disney+">
+        <span>DISNEY+<br>Serije</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/apple-mobilni.html">
+        <img src="https://jelenasavic123.github.io/SveNaEkranu/slike/apple+.jpg" alt="Apple TV+">
+        <span>APPLE TV+<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/prime-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+        <span>PRIME VIDEO<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/Prime-serije.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/amazon-prime-video-1.svg" alt="Prime Video">
+        <span>PRIME <br>Serije</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/marvel-mobilni.html">
+        <img src="https://cdn.worldvectorlogo.com/logos/marvel.svg" alt="Marvel">
+        <span>MARVEL<br>FILMOVI</span>
+      </a>
+      <a class="popup-button" href="https://jelenasavic123.github.io/SveNaEkranu/svenaekranu-mobilni/crtani-mobilni.html">
+        <img src="https://www.shutterstock.com/image-vector/mickey-mouse-set-logo-disney-600nw-2279023159.jpg" alt="Crtani Filmovi">
+        <span>CRTANI<br>FILMOVI</span>
+      </a>
+    </div>
+  </div>
+  <script>
+      const apiKey = '2701858e9bccab54d4d0e4931420a739';
+      async function fetchMovies(endpoint) {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        console.log(data); // Log API response to inspect the results
+        return data.results || [data]; // In case of a single result like latest movie
+      }
+      async function createSlider(sliderId, endpoint) {
+        const slider = document.getElementById(sliderId);
+        const movies = await fetchMovies(endpoint);
+        movies.forEach(movie => {
+          const movieDiv = document.createElement('div');
+          movieDiv.classList.add('slider-item');
+          // Generišemo linkove za srpski i hrvatski jezik
+          const movieSrLink = `https://vidsrc.xyz/embed/movie/${movie.id}?ds_lang=sr`;
+          const movieHrLink = `https://vidsrc.xyz/embed/movie/${movie.id}?ds_lang=hr`;
+          movieDiv.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="movie-img" data-id="${movie.id}">
+        <h4>${movie.title}</h4>
+
+        <!-- Hidden popup -->
+        <div class="popup" id="popup-${movie.id}" style="display:none;">
+          <div class="popup-content">
+            <button onclick="openInBrowser('${movieSrLink}')">Gledaj na Srpskom</button>
+            <button onclick="openInBrowser('${movieHrLink}')">Gledaj na Hrvatskom</button>
+            <button onclick="closePopup(${movie.id})">Zatvori</button>
+          </div>
+        </div>
+      `;
+          slider.appendChild(movieDiv);
+        });
+      }
+      // Create sliders for each service with different filters
+      createSlider('this-week-slider', `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&language=hr-HR`);
+      createSlider('trending-today-slider', `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=hr-HR`);
+      createSlider('netflix-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=8&with_genres=28`); // Netflix with Action Genre
+      createSlider('hulu-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=15&with_genres=35`); // Hulu with Comedy Genre
+      createSlider('disney-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=2739&with_genres=12`); // Disney+ with Adventure Genre
+      createSlider('prime-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=119&with_genres=10749`); // Prime Video with Romance Genre
+      createSlider('hbo-slider', `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_networks=49&with_genres=18`); // HBO Max with Drama Genre
+      // Handling click on movie image to show the popup
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('movie-img')) {
+          const movieId = e.target.dataset.id;
+          showPopup(movieId);
+        }
+      });
+      // Show popup with language buttons
+      function showPopup(movieId) {
+        const popup = document.getElementById(`popup-${movieId}`);
+        popup.style.display = 'block';
+      }
+      // Close the popup
+      function closePopup(movieId) {
+        const popup = document.getElementById(`popup-${movieId}`);
+        popup.style.display = 'none';
+      }
+      // Open movie in browser (same window)
+      function openInBrowser(url) {
+        window.location.href = url; // Open in the same window
+      }
+      function closePopup(movieId) {
+        const popup = document.getElementById('popup-' + movieId);
+        if (popup) {
+          popup.style.display = 'none';
+        }
+      }
+    </script>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      const menuBtn = document.querySelector('.menu-btn');
+
+      const currentRight = menu.style.right;
+      if (currentRight === '0px') {
+        menu.style.right = `-${menu.offsetWidth}px`; // Sakrij meni
+        menuBtn.classList.remove('open');
+      } else {
+        menu.style.right = '0'; // Otvori meni
+        menuBtn.classList.add('open');
+      }
+    }
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E7GR6B68FX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E7GR6B68FX');
+</script>
+</body>
+</html>
