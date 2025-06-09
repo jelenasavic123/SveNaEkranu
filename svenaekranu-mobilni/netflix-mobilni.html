@@ -13,7 +13,7 @@
       }
       body {
         font-family: Arial, sans-serif;
-        background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
+         background: url('https://jelenasavic123.github.io/SveNaEkranu/slike/pozadina.jpg') center center / cover no-repeat fixed;
         color: white;
       }
       header {
@@ -196,7 +196,7 @@
   </head>
   <body>
     <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
     </div>
     <header>
       <div class="filters">
@@ -220,10 +220,11 @@
         <p id="modal-release-date"></p>
         <p id="modal-overview"></p>
         <iframe id="media-iframe" width="100%" height="400px" frameborder="0" allowfullscreen></iframe>
+
       </div>
     </div>
     
- <script>
+    <script>
   const apiKey = '2701858e9bccab54d4d0e4931420a739';
   const apiUrl = 'https://api.themoviedb.org/3';
   const genreSelect = document.getElementById('genre');
@@ -232,15 +233,41 @@
   let currentPage = 1; // Praćenje trenutne stranice
   let isLoading = false; // Sprečavanje više istovremenih poziva API-ju
 
-  // Fetch and display trending movies in 2024
-  async function fetchTrendingMovies(year = '2024', append = false) {
+  // Fetch genres and populate dropdown
+  async function fetchGenres() {
+    const response = await fetch(`${apiUrl}/genre/movie/list?api_key=${apiKey}`);
+    const data = await response.json();
+    data.genres.forEach(genre => {
+      const option = document.createElement('option');
+      option.value = genre.id;
+      option.textContent = genre.name;
+      genreSelect.appendChild(option);
+    });
+  }
+
+  // Populate year dropdown (from 2025 to 2015)
+  function populateYearSelect() {
+    for (let year = 2025; year >= 2015; year--) {
+      const option = document.createElement('option');
+      option.value = year;
+      option.textContent = year;
+      yearSelect.appendChild(option);
+    }
+  }
+  
+
+  // Fetch and display movies based on selected genre or year
+  async function fetchMovies(genreId = '', year = '', append = false) {
     if (isLoading) return; // Ako se već učitava, nemoj opet pozivati API
     isLoading = true; // Postavi zastavicu da je učitavanje u toku
 
-    let url = `${apiUrl}/trending/movie/day?api_key=${apiKey}&language=en-US&page=${currentPage}`;
+   let url = `${apiUrl}/discover/movie?api_key=${apiKey}&language=hr-HR&sort_by=popularity.desc&include_adult=false&include_video=false&watch_region=HR&with_watch_providers=8&page=${currentPage}`;
 
+    if (genreId) {
+      url += `&with_genres=${genreId}`;
+    }
     if (year) {
-      url += `&primary_release_year=${year}`; // Dodaj godinu za filtriranje trendova
+      url += `&primary_release_year=${year}`;
     }
 
     const response = await fetch(url);
@@ -287,17 +314,47 @@
     document.getElementById('movie-modal').style.display = 'none';
   }
 
+  // Event listener za promenu žanra
+  genreSelect.addEventListener('change', () => {
+    const genreId = genreSelect.value;
+    currentPage = 1; // Resetuj na prvu stranicu
+    yearSelect.value = ''; // Resetuj odabranu godinu
+    fetchMovies(genreId, ''); // Fetch movies samo prema žanru
+  });
+
+  // Event listener za promenu godine
+  yearSelect.addEventListener('change', () => {
+    const year = yearSelect.value;
+    currentPage = 1; // Resetuj na prvu stranicu
+    fetchMovies('', year); // Fetch movies samo prema godini
+  });
+
   // Infinite scroll event listener
   window.addEventListener('scroll', () => {
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
       currentPage++; // Povećaj broj trenutne stranice
-      fetchTrendingMovies('2024', true); // Fetch next page and append results
+      const genreId = genreSelect.value;
+      const year = yearSelect.value;
+      fetchMovies(genreId, year, true); // Fetch next page and append results
     }
   });
 
   // Initialize
-  fetchTrendingMovies('2024'); // Fetch trending movies in 2024 when the page loads
+  populateYearSelect();
+  fetchGenres();
+  fetchMovies(); // Fetch popular movies on page load
   
+  
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E7GR6B68FX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-E7GR6B68FX');
 </script>
 
   </body>
