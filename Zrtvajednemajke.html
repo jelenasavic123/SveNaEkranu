@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Netflix Player</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #141414;
+      color: #fff;
+      margin: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+    }
+
+    #videoWrapper {
+      width: 100%;
+      max-width: 800px;
+      position: relative;
+      padding-top: 56.25%;
+      background-color: #000;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(229, 9, 20, 0.15);
+      border: 1.5px solid rgba(229, 9, 20, 0.4);
+      margin: 0 auto 20px auto;
+    }
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+      background-color: black;
+    }
+
+    #loadingSpinner {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 5px solid rgba(229, 9, 20, 0.3);
+      border-top: 5px solid #e50914;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      display: none;
+      z-index: 10;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    #bufferedBarContainer {
+      width: 720px;
+      max-width: 100%;
+      height: 6px;
+      background-color: #333;
+      border-radius: 4px;
+      margin: 8px auto 4px auto;
+      overflow: hidden;
+    }
+
+    #bufferedBar {
+      height: 100%;
+      background: linear-gradient(90deg, #e50914, #f40612);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+
+    #loadingText {
+      color: #e50914;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 20px;
+      height: 18px;
+    }
+
+    #episodeButtons {
+      margin-top: 0;
+      display: flex;
+      flex-wrap: wrap;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+      justify-content: center;
+    }
+
+    #episodeButtons::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    #episodeButtons::-webkit-scrollbar-thumb {
+      background: #e50914;
+      border-radius: 4px;
+    }
+
+    #episodeButtons::-webkit-scrollbar-track {
+      background: #222;
+    }
+
+    #episodeButtons button {
+      background-color: #333;
+      border: none;
+      color: #eee;
+      padding: 10px 18px;
+      margin: 5px;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      min-width: 120px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+
+    #episodeButtons button:hover {
+      background-color: #e50914;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(229, 9, 20, 0.7);
+    }
+
+    #episodeButtons button.active {
+      background-color: #e50914;
+      color: white;
+      box-shadow: 0 6px 12px rgba(229, 9, 20, 0.9);
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 600px) {
+      #episodeButtons button {
+        padding: 6px 12px;
+        font-size: 14px;
+        min-width: 100px;
+        margin: 3px;
+      }
+
+      #videoWrapper {
+        max-width: 100%;
+        padding-top: 56.25%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="videoWrapper">
+    <div id="loadingSpinner"></div>
+    <video id="videoPlayer" controls controlsList="nodownload" poster="https://www.themoviedb.org/t/p/w1280/q0rSlfWaK31IrrmUoB7nzCSu3PW.jpg">
+      <source id="videoSource" src="" type="video/mp4">
+      Vaš browser ne podržava video tag.
+    </video>
+  </div>
+
+  <div id="episodeButtons"></div>
+
+  <div id="bufferedBarContainer">
+    <div id="bufferedBar"></div>
+  </div>
+
+  <script>
+    const episodeButtons = document.getElementById("episodeButtons");
+    const videoPlayer = document.getElementById("videoPlayer");
+    const videoSource = document.getElementById("videoSource");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const bufferedBar = document.getElementById("bufferedBar");
+
+    const firebaseURL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/serije.json";
+
+    async function loadEpisodes() {
+      try {
+        const res = await fetch(firebaseURL);
+        const data = await res.json();
+
+        if (!data || !data[0]) return alert("Nema serija!");
+
+        const serija = data[0];
+
+        serija.epizode.forEach((ep, index) => {
+          const btn = document.createElement("button");
+          btn.textContent = ep.epizoda || `Epizoda ${index + 1}`;
+          btn.dataset.videoSrc = ep.video_src;
+
+          btn.addEventListener("click", () => {
+            document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            videoSource.src = ep.video_src;
+            videoPlayer.load();
+            videoPlayer.play();
+          });
+
+          episodeButtons.appendChild(btn);
+        });
+
+        // Auto-start prva epizoda
+        if (serija.epizode.length > 0) {
+          videoSource.src = serija.epizode[0].video_src;
+          videoPlayer.load();
+        }
+      } catch (err) {
+        alert("Greška pri učitavanju serije.");
+        console.error(err);
+      }
+    }
+
+    videoPlayer.addEventListener("progress", () => {
+      if (videoPlayer.buffered.length > 0) {
+        const bufferedEnd = videoPlayer.buffered.end(videoPlayer.buffered.length - 1);
+        const duration = videoPlayer.duration;
+        if (duration > 0) {
+          const percent = (bufferedEnd / duration) * 100;
+          bufferedBar.style.width = `${percent}%`;
+        }
+      }
+    });
+
+    videoPlayer.addEventListener("waiting", () => {
+      loadingSpinner.style.display = "block";
+    });
+
+    videoPlayer.addEventListener("playing", () => {
+      loadingSpinner.style.display = "none";
+    });
+
+    loadEpisodes();
+  </script>
+</body>
+</html>
