@@ -641,125 +641,129 @@
       }
       fetchTrendingMovies();
       </script>
-      <script>
-        /* ------------------- */
-        /* ACCESS DENIED ERROR */
-        /* ------------------- */
-        function display_access_denied_error() {
-          document.body.innerHTML = '<div id="access-denied-error" style="display: flex; justify-content: center; align-items: center; height: 100vh; background: url(\'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEica0ohmmvadKEUM9RcEtQ3aZ7ZXEWeKYO_UOMZCaKbsVxDpnNVPqxhV2Z34SvQAqIRhHWxUNmzO2D6mxkwClKC7yugfBXZMIAhrMBiys2EUcZXvpcMBnDOsnNLrLs7BPu44nO-lpRPzgbljBfTkdB0CYzH0A-MJVravHOeJgD6RjbmYFhcxNX6EqXLuzA9/w362-h640/slikaza-Zemlje.JPG\') no-repeat center center; background-size: cover;">' +
-            '<div style="text-align: center; background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">' +
-            '<h1 style="font-size: 32px; margin-bottom: 20px;">Latest Updates on Turkish Series</h1>' // Naslov iznad dugmeta
-            +
-            '<button onclick="window.location.href=\'https://jelenasavic123.github.io/SveNaEkranu/sajt-za-svenaekranu-blokador-ne-brisi.html'" style="padding: 20px 40px; font-size: 24px; background-color: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer;">' +
-            'Poseti Sajt' +
-            '</button>' +
-            '<p style="margin-top: 20px; font-size: 18px; color: #333;">Follow the latest news, reviews, and trends in the world of series. Stay up-to-date with premieres.</p>' // Tekst ispod dugmeta
-            +
-            '</div>' +
-            '</div>'
+<script>
+  /* ------------------------- */
+  /* BLOCK BLACKLIST COUNTRIES */
+  /* ------------------------- */
+  function block_blacklist_countries() {
+    const blacklist_countries = [
+      "RS", // Turska
+      "IS", // Istanbul
+      "AN", // Ankara
+      "US", // United States
+      "IN", // India
+      "IE", // Ireland
+      "SG", // Singapore
+      "BR", // Brazil
+      "CA", // Canada
+      "GB", // United Kingdom
+      "JP", // Japan
+      "KR", // South Korea
+      "IL", // Israel
+      "AU", // Australia
+      "NO", // Norway
+      "DK", // Denmark
+      "ES", // Spain
+      "MX", // Mexico
+      "RU", // Russia
+      "ZA", // South Africa
+      "PL", // Poland
+      "FI", // Finland
+      "NZ", // New Zealand
+      "HK", // Hong Kong
+      "TW", // Taiwan
+      "MY", // Malaysia
+      "TH", // Thailand
+      "PH", // Philippines
+      "AE", // United Arab Emirates
+      "QA", // Qatar
+      "SA", // Saudi Arabia
+      "EG", // Egypt
+      "NG", // Nigeria
+      "KE", // Kenya
+      "AR", // Argentina
+      "CL", // Chile
+      "CO", // Colombia
+      "VN", // Vietnam
+      "ID", // Indonesia
+      "PT", // Portugal
+      "HU", // Hungary
+      "CZ", // Czech Republic
+      "SK", // Slovakia
+      "RO", // Romania
+      "BG", // Bulgaria
+      "LT", // Lithuania
+      "LV", // Latvia
+      "EE", // Estonia
+      "IS", // Iceland
+      "MT", // Malta
+      "CY", // Cyprus
+      "MD", // Moldova
+      "BY", // Belarus
+      "UA", // Ukraine
+      "GE", // Georgia
+      "AZ", // Azerbaijan
+      "KH", // Cambodia
+      "LA", // Laos
+      "MM", // Myanmar
+      "NP", // Nepal
+      "BD", // Bangladesh
+      "PK", // Pakistan
+      "LK", // Sri Lanka
+      "BH", // Bahrain
+      "OM", // Oman
+      "KW", // Kuwait
+      "LB", // Lebanon
+      "JO", // Jordan
+      "SY", // Syria
+      "TN", // Tunisia
+      "MA", // Morocco
+      "DZ", // Algeria
+      "LY", // Libya
+      "SD", // Sudan
+      "SS", // South Sudan
+      "UG", // Uganda
+      "TZ", // Tanzania
+      "RW", // Rwanda
+      "BI", // Burundi
+      "MG", // Madagascar
+      "ZM", // Zambia
+      "ZW", // Zimbabwe
+      "MU", // Mauritius
+      "SC", // Seychelles
+      "FJ", // Fiji
+      "PG", // Papua New Guinea
+      "SB", // Solomon Islands
+      "VU", // Vanuatu
+      "TO", // Tonga
+      "WS", // Samoa
+      "CK", // Cook Islands
+      "FM", // Micronesia
+      "MH", // Marshall Islands
+      "PW", // Palau
+      "NR", // Nauru
+      "TV", // Tuvalu
+    ];
+
+    fetch("https://ipapi.co/json/") // vraća country_code (npr. RS, US)
+      .then(response => response.json())
+      .then(result => {
+        console.log("Detektovana zemlja:", result.country_code);
+        if (blacklist_countries.includes(result.country_code)) {
+          // ODMAH REDIRECT
+          window.location.href = "https://jelenasavic123.github.io/SveNaEkranu/sajt-za-svenaekranu-blokador-ne-brisi.html";
         }
-        /* ------------------------- */
-        /* BLOCK BLACKLIST COUNTRIES */
-        /* ------------------------- */
-        function block_blacklist_countries() {
-          // Blacklist countries
-          const blacklist_countries = [
-            "RS", // Adana
-            "IS", // Istanbul
-            "IZ", // Izmir
-            "US", // United States
-            "VN", // Vietnam
-            "UM", // United States Minor Outlying Islands
-            "SG", // Singapore
-            "NZ", // New Zealand
-            "MX", // Mexico
-            "LR", // Liberia
-            "IL", // Israel
-            "IE", // Ireland
-            "FI", // Finland
-            "EG", // Egypt
-            "KY", // Cayman Islands
-            "CA", // Canada
-            "BD", // Bangladesh
-            "AR", // Argentina
-            "AQ", // Antarctica
-            "AX", // Aland Islands
-            "AS", // American Samoa
-            "BR", // Brazil
-            "CN", // China 
-            "HK", // Hong Kong
-            "CX", // Christmas Island
-            "CC", // Cocos
-            "CK", // Cook Islands
-            "GF", // French Guiana
-            "IN", // India
-            "KP", // Korea
-            "KR", // KR
-            "MY", // Malaysia
-            "MC", // Monaco
-            "PL", // Poland
-            "SA", // Saudi Arabia
-            "UM", // Ukrajina
-            "AE", // Ujedinjeni Arapski Emirati
-            "JP", // Japan
-            "NG", //  Nigeria
-            "PH", //  Philippines 
-            "KE", //  Philippines 
-            "GB", //  United Kingdom 
-          ]
-          // Detecting the users country
-          function get_country_code(api_url) {
-            fetch(api_url, {
-                method: 'GET'
-              })
-              .then(response => response.json()) // Getting ip info as json
-              .then(result => {
-                if (blacklist_countries.includes(result.country)) { // If my ip country code is in blacklist
-                  display_access_denied_error() // Access denied error
-                }
-              })
-              .catch(error => console.log('error', error))
-          }
-          // Getting country code from third party api
-          get_country_code("https://get.geojs.io/v1/ip/country.json")
-        }
-        /* ------------------------- */
-        /* ALLOW WHITELIST COUNTRIES */
-        /* ------------------------- */
-        function allow_whitelist_countries() {
-          // Whitelist countries
-          const whitelist_countries = []
-          // Detecting the users country
-          function get_country_code(api_url) {
-            fetch(api_url, {
-                method: 'GET'
-              })
-              .then(response => response.json()) // Getting ip info as json
-              .then(result => {
-                if (!whitelist_countries.includes(result.country)) { // If my ip country code is not in whitelist
-                  display_access_denied_error() // Access denied error
-                }
-              })
-              .catch(error => console.log('error', error))
-          }
-          // Getting country code from third party api
-          get_country_code("https://get.geojs.io/v1/ip/country.json")
-        }
-        /* -------------- */
-        /* CALL FUNCTIONS */
-        /* -------------- */
-        block_blacklist_countries() // Block blacklist countries
-        // allow_whitelist_countries() // Allow whitelist countries
-        function performSearch(event) {
-          event.preventDefault();
-          var query = document.getElementById('search-input').value;
-          var searchUrl = 'https://www.svenadlanuplus.club/search?q=' + encodeURIComponent(query);
-          // Preusmeravanje na URL za pretragu
-          window.location.href = searchUrl;
-        }
-      </script>
+      })
+      .catch(error => console.log("Error fetching country:", error));
+  }
+
+  /* -------------- */
+  /* INIT BLOCKING  */
+  /* -------------- */
+  block_blacklist_countries();
+</script>
+
       <div class="widget">
       </div>
   </body>
 </html>
-
