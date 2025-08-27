@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mssovie Recommendations</title>
+<title>Movie Recommendations</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -48,7 +48,7 @@
         background: #1e1e1e;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.7);
         cursor: pointer;
         transition: transform 0.2s;
     }
@@ -68,13 +68,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.9);
+        background: rgba(0,0,0,0.9);
         display: flex;
         justify-content: center;
         align-items: center;
         visibility: hidden;
         opacity: 0;
         transition: visibility 0.3s, opacity 0.3s;
+        padding: 10px;
+        box-sizing: border-box;
     }
     .popup.active {
         visibility: visible;
@@ -84,14 +86,18 @@
         background: #222;
         padding: 20px;
         border-radius: 10px;
-        max-width: 600px;
         width: 90%;
+        max-width: 1000px;
+        max-height: 90%;
         text-align: center;
         color: #fff;
+        overflow-y: auto;
         position: relative;
     }
     .popup-content img {
-        max-width: 150px;
+        max-width: 80%;
+        max-height: 50vh;
+        object-fit: contain;
         margin-bottom: 20px;
         border-radius: 8px;
     }
@@ -121,23 +127,6 @@
     }
     .more-info-btn:hover {
         background: #b20710;
-    }
-    iframe {
-        width: 100%;
-        height: 100vh;
-        border: none;
-    }
-    .back-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        padding: 10px 15px;
-        background-color: #E50914;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
     }
     :focus {
         outline: 3px solid #E50914;
@@ -194,11 +183,9 @@ function displayMovies(movies) {
         movieCard.addEventListener('click', () => showPopup(movie));
         container.appendChild(movieCard);
 
-        // Fokus na prvi poster
         if(i === 0) movieCard.focus();
     });
 
-    // Navigacija linkovi
     const navLinks = document.querySelectorAll('nav a');
     navLinks.forEach(link => link.setAttribute('tabindex', '0'));
 }
@@ -207,7 +194,6 @@ function displayMovies(movies) {
 function showPopup(movie) {
     const popup = document.querySelector('.popup');
     const popupContent = document.querySelector('.popup-content');
-
     lastFocusedElement = document.activeElement;
 
     const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'placeholder.jpg';
@@ -222,7 +208,6 @@ function showPopup(movie) {
     `;
     popup.classList.add('active');
 
-    // Fokus odmah na X dugmetu
     const closeBtn = popupContent.querySelector('.close-btn');
     if(closeBtn) closeBtn.focus();
 }
@@ -231,8 +216,6 @@ function showPopup(movie) {
 function closePopup() {
     const popup = document.querySelector('.popup');
     popup.classList.remove('active');
-
-    // Vrati fokus na prethodni poster
     if(lastFocusedElement) lastFocusedElement.focus();
 }
 
@@ -254,7 +237,6 @@ document.addEventListener('keydown', function(e) {
     const popup = document.querySelector('.popup');
     let focusable;
 
-    // Ako je popup otvoren, fokus samo unutar popup-a
     if(popup.classList.contains('active')) {
         focusable = [...popup.querySelectorAll('[tabindex="0"]')];
     } else {
@@ -294,11 +276,9 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Pokreni aplikaciju
 document.addEventListener('DOMContentLoaded', () => {
     fetchMoviesByYear(1930, 1970);
 });
 </script>
-
 </body>
 </html>
