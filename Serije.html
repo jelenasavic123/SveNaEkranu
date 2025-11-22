@@ -7,11 +7,10 @@ Stranica je u izradi radovi ce trajati do 18:00h nakon toga sve serije bice ispr
 <title>Serije Player sa TMDb</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #141414; color: #fff; margin: 20px; }
-h1 { text-align: center; margin-bottom: 20px; }
-
+h1 { text-align: center; margin-bottom: 20px;
 /* Search Box */
 .search-box { max-width: 600px; margin: 0 auto 10px; position: relative; }
-.search-box input { width: 100%; padding: 10px 15px; border-radius: 6px; border: none; font-size: 1em; background: #fff; color: #fff; }
+.search-box input { width: 100%; padding: 10px 15px; border-radius: 6px; border: none; font-size: 1em; background: #fff; color: #000; }
 .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #222; max-height: 300px; overflow-y: auto; border-radius: 6px; z-index: 20; display: none; }
 .search-item { display: flex; padding: 8px; cursor: pointer; align-items: center; border-bottom: 1px solid #333; transition: 0.2s; }
 .search-item img { width: 60px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 10px; }
@@ -94,7 +93,7 @@ video {
 
 <!-- Dropdown Menu -->
 <div class="dropdown">
-  <div class="dropdown-toggle"><span>Izaberite seriju...</span> ▼</div>
+  <div class="dropdown-toggle"><span>KLIKNI ovde da Izaberite seriju...</span> ▼</div>
   <div class="dropdown-menu" id="dropdownMenu"></div>
 </div>
 
