@@ -158,7 +158,7 @@ async function loadSeries() {
 
       return {
         name,
-        epizode: data[name].epizode,
+        epizode: data[name],
         poster
       };
     }));
@@ -212,10 +212,25 @@ async function selectSeries(name){
 
   const res = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}.json?_=${Date.now()}`);
   const data = await res.json();
-  if(!data || !data.epizode) return;
+  if(!data) return;
 
-  const epArray = Object.values(data.epizode).filter(link => link);
+  let epArray = [];
+
+  // Ako je niz
+  if(Array.isArray(data)){
+    epArray = data.filter(link => link);
+  } 
+  // Ako je objekat
+  else if(typeof data === 'object'){
+    epArray = Object.values(data).filter(link => link);
+  }
+
   episodeButtons.innerHTML = "";
+  if(epArray.length === 0){
+    episodeButtons.innerHTML = "<p>Nema epizoda za ovu seriju.</p>";
+    return;
+  }
+
   epArray.forEach((videoLink, i) => {
     const btn = document.createElement("button");
     btn.textContent = `Epizoda ${i+1}`;
@@ -232,13 +247,11 @@ async function selectSeries(name){
     episodeButtons.appendChild(btn);
   });
 
-  if(epArray.length>0){
-    currentVideoSrc = epArray[0];
-    videoSource.src = currentVideoSrc;
-    videoPlayer.load();
-    const firstBtn = episodeButtons.querySelector("button");
-    if(firstBtn) firstBtn.classList.add("active");
-  }
+  // Automatski pokreni prvu epizodu
+  currentVideoSrc = epArray[0];
+  videoSource.src = currentVideoSrc;
+  videoPlayer.load();
+  episodeButtons.querySelector("button").classList.add("active");
 
   // Show TMDb info
   try{
@@ -268,7 +281,7 @@ setInterval(loadSeries, 60*60*1000);
 
 loadSeries();
 </script>
-    <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -279,4 +292,3 @@ loadSeries();
 </script>
 </body>
 </html>
-
