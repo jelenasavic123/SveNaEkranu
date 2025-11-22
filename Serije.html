@@ -2,7 +2,7 @@
 <html lang="sr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Serije Player sa TMDb</title>
 <style>
 body { font-family: 'Segoe UI', sans-serif; background: #141414; color: #fff; margin: 20px; }
@@ -79,11 +79,13 @@ video {
 #seriesInfo img { width: 150px; height: 225px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
 #seriesInfo strong { display: block; font-size: 1.2em; margin-bottom: 5px; }
 #seriesInfo small { display: block; font-size: 0.9em; color: #ccc; margin-bottom: 10px; }
+#refreshBtn { font-size: 0.7em; margin-top: 5px; background: #333; color: #ccc; border: none; border-radius: 3px; padding: 3px 6px; cursor: pointer; }
+#refreshBtn:hover { background: #e50914; color: #fff; }
 </style>
 </head>
 <body>
 
-<h1>▼KLIKNITE MENI ZA LISTU SERIJA▼</h1>
+<h1>▼ KLIKNITE MENI ZA LISTU SERIJA ▼</h1>
 
 <!-- Search -->
 <div class="search-box">
@@ -91,7 +93,7 @@ video {
   <div class="search-results" id="searchResults"></div>
 </div>
 
-<!-- Dropdown Menu -->
+<!-- Dropdown -->
 <div class="dropdown">
   <div class="dropdown-toggle"><span>Izaberite seriju...</span> ▼</div>
   <div class="dropdown-menu" id="dropdownMenu"></div>
@@ -104,6 +106,9 @@ video {
     <source id="videoSource" src="" type="application/x-mpegURL">
   </video>
 </div>
+
+<!-- Refresh -->
+<div style="text-align:center;"><button id="refreshBtn">Osveži listu serija</button></div>
 
 <div id="episodeButtons"></div>
 <div id="seriesInfo"></div>
@@ -122,6 +127,7 @@ const searchResults = document.getElementById("searchResults");
 const dropdownToggle = document.querySelector('.dropdown-toggle');
 const dropdownMenu = document.getElementById("dropdownMenu");
 const dropdownSpan = dropdownToggle.querySelector('span');
+const refreshBtn = document.getElementById("refreshBtn");
 
 let allSeries = [];
 let currentVideoSrc = "";
@@ -131,66 +137,59 @@ dropdownToggle.addEventListener('click', () => {
   dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
 });
 
-// --- Load Series from Firebase + TMDb ---
+// --- Fetch Series + TMDb Poster ---
 async function loadSeries() {
   try {
     const res = await fetch(`${firebaseBaseURL}/.json?_=${Date.now()}`);
     const data = await res.json();
-    if (!data) return;
+    if(!data) return;
 
-    const seriesArray = await Promise.all(
-      Object.keys(data).map(async (name) => {
-        try {
-          const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
-          const tmdbData = await tmdbRes.json();
-          if (tmdbData.results && tmdbData.results.length > 0) {
-            const show = tmdbData.results[0];
-            return {
-              name,
-              poster: `https://image.tmdb.org/t/p/w200${show.poster_path}`,
-              year: show.first_air_date?.split("-")[0] || "0"
-            };
-          } else {
-            return { name, poster: "", year: "0" };
-          }
-        } catch(err) {
-          console.error(err);
-          return { name, poster: "", year: "0" };
+    const seriesNames = Object.keys(data);
+
+    allSeries = await Promise.all(seriesNames.map(async name => {
+      let poster = "https://via.placeholder.com/100x150?text=Serija";
+      try {
+        const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
+        const tmdbData = await tmdbRes.json();
+        if(tmdbData.results && tmdbData.results.length>0 && tmdbData.results[0].poster_path){
+          poster = `https://image.tmdb.org/t/p/w200${tmdbData.results[0].poster_path}`;
         }
-      })
-    );
+      } catch(e){ console.error(e); }
 
-    // Sort by year descending
-    seriesArray.sort((a,b) => parseInt(b.year) - parseInt(a.year));
-    allSeries = seriesArray;
+      return {
+        name,
+        epizode: data[name].epizode,
+        poster
+      };
+    }));
 
     renderDropdown(allSeries);
 
-  } catch(err) { console.error(err); }
+  } catch(err){ console.error(err); }
 }
 
 // --- Render Dropdown ---
-function renderDropdown(seriesList) {
+function renderDropdown(seriesList){
   dropdownMenu.innerHTML = "";
   seriesList.forEach(series => {
     const div = document.createElement("div");
     div.className = "dropdown-item";
-    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong><small>${series.year}</small></div>`;
+    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong></div>`;
     div.addEventListener("click", () => selectSeries(series.name));
     dropdownMenu.appendChild(div);
   });
 }
 
-// --- Search Autocomplete ---
+// --- Search ---
 searchInput.addEventListener('input', () => {
   const term = searchInput.value.toLowerCase();
   const filtered = allSeries.filter(s => s.name.toLowerCase().includes(term));
   renderSearchResults(filtered);
 });
 
-function renderSearchResults(list) {
+function renderSearchResults(list){
   searchResults.innerHTML = "";
-  if(list.length === 0 || searchInput.value.trim() === "") {
+  if(list.length === 0 || searchInput.value.trim() === ""){
     searchResults.style.display = "none";
     return;
   }
@@ -198,14 +197,14 @@ function renderSearchResults(list) {
   list.forEach(series => {
     const div = document.createElement("div");
     div.className = "search-item";
-    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong><small>${series.year}</small></div>`;
+    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong></div>`;
     div.addEventListener("click", () => selectSeries(series.name));
     searchResults.appendChild(div);
   });
 }
 
 // --- Select Series ---
-async function selectSeries(name) {
+async function selectSeries(name){
   searchResults.style.display = "none";
   dropdownMenu.style.display = "none";
   searchInput.value = name;
@@ -213,23 +212,22 @@ async function selectSeries(name) {
 
   const res = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}.json?_=${Date.now()}`);
   const data = await res.json();
-  if (!data || !data.epizode) return;
+  if(!data || !data.epizode) return;
 
   const epArray = Object.values(data.epizode).filter(link => link);
-
   episodeButtons.innerHTML = "";
   epArray.forEach((videoLink, i) => {
     const btn = document.createElement("button");
-    btn.textContent = `Epizoda ${i + 1}`;
+    btn.textContent = `Epizoda ${i+1}`;
     btn.dataset.videoSrc = videoLink;
     btn.addEventListener("click", () => {
-      document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#episodeButtons button").forEach(b=>b.classList.remove("active"));
       btn.classList.add("active");
       currentVideoSrc = videoLink;
       videoSource.src = videoLink;
       videoPlayer.load();
       if(videoLink) videoPlayer.play();
-      window.scrollTo({ top: videoPlayer.offsetTop - 20, behavior: 'smooth' });
+      window.scrollTo({ top: videoPlayer.offsetTop-20, behavior:'smooth'});
     });
     episodeButtons.appendChild(btn);
   });
@@ -242,8 +240,8 @@ async function selectSeries(name) {
     if(firstBtn) firstBtn.classList.add("active");
   }
 
-  // TMDb info
-  try {
+  // Show TMDb info
+  try{
     const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
     const tmdbData = await tmdbRes.json();
     if(tmdbData.results && tmdbData.results.length>0){
@@ -254,29 +252,21 @@ async function selectSeries(name) {
         <small>${show.first_air_date?.split("-")[0] || ""} • Žanrovi: ${show.genre_ids?.join(", ") || "Nema"}</small>
         <p>${show.overview || "Nema opisa."}</p>
       `;
-    }else{
-      seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
-    }
-  }catch(err){
-    console.error(err);
-    seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
-  }
+    } else { seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`; }
+  } catch(e){ console.error(e); seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`; }
 }
 
+// Loading spinner
 videoPlayer.addEventListener("waiting", ()=>loadingSpinner.style.display="block");
 videoPlayer.addEventListener("playing", ()=>loadingSpinner.style.display="none");
 
-loadSeries();
-</script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+// Refresh button
+refreshBtn.addEventListener("click", loadSeries);
 
-  gtag('config', 'G-T61FEM3203');
+// Auto refresh every 1h
+setInterval(loadSeries, 60*60*1000);
+
+loadSeries();
 </script>
 </body>
 </html>
-
