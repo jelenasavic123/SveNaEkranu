@@ -20,9 +20,9 @@ h1 { text-align: center; margin-bottom: 20px; }
 .dropdown-item div small { display: block; font-size: 0.8em; color: #ccc; }
 
 #videoWrapper { 
-    max-width: 600px; /* smanjeno sa 800px na 600px */
+    max-width: 600px;
     position: relative; 
-    padding-top: 56.25%; /* 16:9 omjer */
+    padding-top: 56.25%;
     background: #000; 
     border-radius: 10px; 
     margin: auto; 
@@ -45,8 +45,8 @@ video {
     border: 5px solid rgba(229, 9, 20, 0.3); 
     border-top: 5px solid #e50914; 
     border-radius: 50%; 
-    width: 40px; /* smanjeno sa 50px */
-    height: 40px; /* smanjeno sa 50px */
+    width: 40px;
+    height: 40px;
     animation: spin 1s linear infinite; 
     display: none; 
 }
@@ -54,7 +54,6 @@ video {
     0% { transform: translate(-50%, -50%) rotate(0deg);} 
     100% { transform: translate(-50%, -50%) rotate(360deg);} 
 }
-
 
 #episodeButtons { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
 #episodeButtons button { background: #333; border: none; color: #eee; padding: 12px 18px; margin: 5px; border-radius: 5px; font-weight: 600; cursor: pointer; transition: 0.3s; }
@@ -107,7 +106,7 @@ dropdownToggle.addEventListener('click', () => {
   dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
 });
 
-// --- Učitaj serije sa Firebase ---
+// --- Učitaj serije sa Firebase i sortiraj po godinama ---
 async function loadSeries() {
   try {
     const res = await fetch(`${firebaseBaseURL}/.json?_=${Date.now()}`);
@@ -116,28 +115,40 @@ async function loadSeries() {
 
     dropdownMenu.innerHTML = "";
 
-    for (const name of Object.keys(data)) {
+    const seriesArray = await Promise.all(
+      Object.keys(data).map(async (name) => {
+        try {
+          const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
+          const tmdbData = await tmdbRes.json();
+          if (tmdbData.results && tmdbData.results.length > 0) {
+            const show = tmdbData.results[0];
+            return {
+              name,
+              poster: `https://image.tmdb.org/t/p/w200${show.poster_path}`,
+              year: show.first_air_date?.split("-")[0] || "0"
+            };
+          } else {
+            return { name, poster: "", year: "0" };
+          }
+        } catch(err) {
+          console.error(err);
+          return { name, poster: "", year: "0" };
+        }
+      })
+    );
+
+    // Sortiraj po godini (najnovije prvo)
+    seriesArray.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+
+    // Kreiraj dropdown stavke
+    for (const series of seriesArray) {
       const div = document.createElement("div");
       div.className = "dropdown-item";
-      div.innerHTML = `<img src="" alt="${name}"><div><strong>${name}</strong><small>Godina</small></div>`;
-      div.addEventListener("click", () => selectSeries(name, div));
+      div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong><small>${series.year}</small></div>`;
+      div.addEventListener("click", () => selectSeries(series.name, div));
       dropdownMenu.appendChild(div);
-
-      fetchTMDbInfo(name, div);
     }
-  } catch(err) { console.error(err); }
-}
 
-// --- Dohvat TMDb podataka ---
-async function fetchTMDbInfo(title, divElement) {
-  try {
-    const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(title)}&language=sr`);
-    const data = await res.json();
-    if (data.results && data.results.length > 0) {
-      const show = data.results[0];
-      divElement.querySelector("img").src = `https://image.tmdb.org/t/p/w200${show.poster_path}`;
-      divElement.querySelector("small").textContent = `${show.first_air_date?.split("-")[0] || ""}`;
-    }
   } catch(err) { console.error(err); }
 }
 
@@ -150,13 +161,12 @@ async function selectSeries(name, divElement) {
   const data = await res.json();
   if (!data || !data.epizode) return;
 
-  // Normalizuj epizode: preskoči null i numeriši samo stvarne epizode
-  const epArray = Object.values(data.epizode).filter(link => link); 
+  const epArray = Object.values(data.epizode).filter(link => link);
 
   episodeButtons.innerHTML = "";
   epArray.forEach((videoLink, i) => {
     const btn = document.createElement("button");
-    btn.textContent = `Epizoda ${i + 1}`; // prva stvarna epizoda = 1
+    btn.textContent = `Epizoda ${i + 1}`;
     btn.dataset.videoSrc = videoLink;
     btn.addEventListener("click", () => {
       document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
@@ -165,11 +175,12 @@ async function selectSeries(name, divElement) {
       videoSource.src = videoLink;
       videoPlayer.load();
       if(videoLink) videoPlayer.play();
+      // Scroll do playera
+      window.scrollTo({ top: videoPlayer.offsetTop - 20, behavior: 'smooth' });
     });
     episodeButtons.appendChild(btn);
   });
 
-  // Postavi prvu stvarnu epizodu (ako postoji)
   if (epArray.length > 0) {
     currentVideoSrc = epArray[0];
     videoSource.src = currentVideoSrc;
@@ -182,17 +193,22 @@ async function selectSeries(name, divElement) {
   }
 
   // Info o seriji
-  const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
-  const tmdbData = await tmdbRes.json();
-  if (tmdbData.results && tmdbData.results.length > 0) {
-    const show = tmdbData.results[0];
-    seriesInfo.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w200${show.poster_path}" alt="${name}">
-      <strong>${show.name}</strong>
-      <small>${show.first_air_date?.split("-")[0] || ""} • Žanrovi: ${show.genre_ids?.join(", ") || "Nema"}</small>
-      <p>${show.overview || "Nema opisa."}</p>
-    `;
-  } else {
+  try {
+    const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
+    const tmdbData = await tmdbRes.json();
+    if (tmdbData.results && tmdbData.results.length > 0) {
+      const show = tmdbData.results[0];
+      seriesInfo.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w200${show.poster_path}" alt="${name}">
+        <strong>${show.name}</strong>
+        <small>${show.first_air_date?.split("-")[0] || ""} • Žanrovi: ${show.genre_ids?.join(", ") || "Nema"}</small>
+        <p>${show.overview || "Nema opisa."}</p>
+      `;
+    } else {
+      seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
+    }
+  } catch(err) {
+    console.error(err);
     seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
   }
 }
@@ -202,15 +218,5 @@ videoPlayer.addEventListener("playing", () => loadingSpinner.style.display = "no
 
 loadSeries();
 </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-T61FEM3203');
-</script>
 </body>
 </html>
-
