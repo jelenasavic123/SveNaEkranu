@@ -102,24 +102,28 @@ function openSeries(card){
 
     const episodeList = document.getElementById("episodeList");
     episodeList.innerHTML='';
-    const episodes = JSON.parse(card.dataset.episodes);
-    for(let ep in episodes){
-        if(ep === "poslednje_azuriranje") continue;
+
+    const episodesRaw = JSON.parse(card.dataset.episodes); 
+    // filtriramo null i numerišemo epizode od 1
+    const episodes = episodesRaw.filter(ep => ep !== null);
+
+    episodes.forEach((url, index) => {
         let btn = document.createElement("button");
         btn.className = "episode-btn";
-        btn.textContent = "Epizoda " + ep;
-        btn.dataset.url = episodes[ep];
+        btn.textContent = "Epizoda " + (index + 1);
+        btn.dataset.url = url;
         btn.dataset.seriesKey = card.dataset.series;
-        btn.dataset.ep = ep;
-        btn.onclick = ()=>playEpisode(btn);
+        btn.dataset.epIndex = index;
+        btn.onclick = () => playEpisode(btn);
         episodeList.appendChild(btn);
-    }
+    });
 
     document.getElementById("seriesTitle").textContent = card.dataset.title;
     document.getElementById("seriesOverview").textContent = card.dataset.overview;
     document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
+    // automatski klik na prvu validnu epizodu
     const firstBtn = episodeList.querySelector(".episode-btn");
     if(firstBtn) firstBtn.click();
 }
@@ -127,51 +131,30 @@ function openSeries(card){
 async function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
+
     const video = document.getElementById("video");
-    let attempt = 0;
+    if(hls) hls.destroy();
 
-    async function loadVideo(){
-        if(hls) hls.destroy();
+    try{
+        let url = btn.dataset.url;
+        // dodaj timestamp da izbaci keš
+        url += "?t=" + new Date().getTime();
 
-        try {
-            // Uvek dohvatiti najnoviji link sa Firebase
-            const episodesData = await fetch(FIREBASE_URL).then(r=>r.json());
-            const seriesKey = btn.dataset.seriesKey;
-            const ep = btn.dataset.ep;
-            let url = episodesData[seriesKey][ep];
-
-            // Dodaj timestamp da forsira refresh i izbaci keš
-            url += "?t=" + new Date().getTime();
-            console.log("Učitavam epizodu:", ep, url);
-
-            if(Hls.isSupported()){
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, ()=>video.play());
-                hls.on(Hls.Events.ERROR, function(event,data){
-                    if(data.fatal){
-                        attempt++;
-                        console.warn(`HLS greška, pokušaj ${attempt}...`);
-                        if(attempt <= MAX_RETRY){
-                            setTimeout(loadVideo, RETRY_DELAY);
-                        } else alert("Video se ne može učitati.");
-                    }
-                });
-            } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-                video.src = url;
-                video.play().catch(()=>{
-                    attempt++;
-                    if(attempt <= MAX_RETRY){
-                        setTimeout(loadVideo, RETRY_DELAY);
-                    } else alert("Video se ne može učitati.");
-                });
-            }
-        } catch(e){
-            console.error(e);
-            alert("Došlo je do greške prilikom učitavanja epizode.");
+        if(Hls.isSupported()){
+            hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, ()=>video.play());
+        } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+            video.src = url;
+            video.play().catch(e => console.error("Greška pri reprodukciji:", e));
         }
+    } catch(e){
+        console.error(e);
+        alert("Došlo je do greške pri učitavanju epizode.");
     }
+}
+
 
     loadVideo();
 }
@@ -188,3 +171,4 @@ loadSeries();
 </script>
 </body>
 </html>
+
