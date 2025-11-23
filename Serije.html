@@ -32,47 +32,28 @@ h1 { text-align: center; margin-bottom: 20px; }
 .dropdown-item div small { display: block; font-size: 0.8em; color: #ccc; }
 
 /* Video Player */
-/* VIDEO PLAYER WRAPPER */
-/* VIDEO PLAYER WRAPPER */
 #videoWrapper { 
-    width: 90%;              /* mobilni – zauzima skoro ceo ekran */
-    max-width: 600px;        /* desktop – idealna veličina playera */
+    width: 90%;              
+    max-width: 600px;        
     position: relative;
-    padding-top: 56.25%;     /* 16:9 format */
+    padding-top: 56.25%;     
     background: #000;
     border-radius: 10px;
     margin: 0 auto 15px;
-    overflow: hidden;        /* sprečava da video "štrči" */
+    overflow: hidden;        
 }
-
-/* VIDEO – 100% širine unutar wrappera */
 #videoWrapper video {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;              /* video uvek tačno odgovara wrapperu */
-    height: 100%;             /* čuva format jer wrapper diktira 16:9 */
-    object-fit: cover;        /* puni okvir bez praznina */
+    width: 100%;              
+    height: 100%;             
+    object-fit: cover;        
     border-radius: 10px;
     background: black;
 }
 
-/* LOADING */
-#loadingSpinner { 
-    position: absolute; 
-    left: 50%; 
-    top: 50%; 
-    transform: translate(-50%, -50%); 
-    border: 5px solid rgba(229, 9, 20, 0.3); 
-    border-top: 5px solid #e50914; 
-    border-radius: 50%; 
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite; 
-    display: none; 
-}
-
-
+/* Loading Spinner */
 #loadingSpinner { 
     position: absolute; 
     left: 50%; 
@@ -164,9 +145,9 @@ async function loadSeries() {
   try {
     const res = await fetch(`${firebaseBaseURL}/.json?_=${Date.now()}`);
     const data = await res.json();
-    if(!data) return;
+    if(!data || !data.serije) return;
 
-    const seriesNames = Object.keys(data);
+    const seriesNames = Object.keys(data.serije);
 
     allSeries = await Promise.all(seriesNames.map(async name => {
       let poster = "https://via.placeholder.com/100x150?text=Serija";
@@ -180,7 +161,7 @@ async function loadSeries() {
 
       return {
         name,
-        epizode: data[name],
+        epizode: data.serije[name],
         poster
       };
     }));
@@ -225,40 +206,33 @@ function renderSearchResults(list){
   });
 }
 
-// SELECT SERIES (Firebase fresh fetch)
+// SELECT SERIES
 async function selectSeries(name){
   searchResults.style.display = "none";
   dropdownMenu.style.display = "none";
   searchInput.value = name;
   dropdownSpan.textContent = name;
 
-  const res = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}.json?_=${Date.now()}`);
+  const res = await fetch(`${firebaseBaseURL}/serije/${encodeURIComponent(name)}.json?_=${Date.now()}`);
   const data = await res.json();
   if(!data) return;
 
-  let epArray = [];
-
-  if (Array.isArray(data)) {
-    epArray = data.filter(link => link);
-  } else if (typeof data === 'object') {
-    epArray = Object.values(data).filter(link => link);
-  }
+  // Pravi niz epizoda sa ključevima iz Firebase
+  let epArray = Object.entries(data)
+    .filter(([key, link]) => link && typeof link === 'string')
+    .sort(([a], [b]) => parseInt(a) - parseInt(b));
 
   episodeButtons.innerHTML = "";
-  if (epArray.length === 0) {
-    episodeButtons.innerHTML = "<p>Nema epizoda za ovu seriju.</p>";
-    return;
-  }
 
-  epArray.forEach((videoLink, i) => {
+  epArray.forEach(([key, videoLink]) => {
     const btn = document.createElement("button");
-    btn.textContent = `Epizoda ${i+1}`;
+    btn.textContent = `Epizoda ${key}`;
 
     btn.addEventListener("click", async () => {
       document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
-      const freshRes = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}/${i}.json?_=${Date.now()}`);
+      const freshRes = await fetch(`${firebaseBaseURL}/serije/${encodeURIComponent(name)}/${key}.json?_=${Date.now()}`);
       const freshUrl = await freshRes.json();
 
       videoSource.src = freshUrl;
@@ -270,13 +244,11 @@ async function selectSeries(name){
     episodeButtons.appendChild(btn);
   });
 
-  // Auto play first (fresh)
-  const firstEpisodeRes = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}/0.json?_=${Date.now()}`);
-  const firstUrl = await firstEpisodeRes.json();
-
-  episodeButtons.querySelector("button").classList.add("active");
+  // Load first episode (bez autoplay)
+  const [firstKey, firstUrl] = epArray[0];
   videoSource.src = firstUrl;
   videoPlayer.load();
+  episodeButtons.querySelector("button").classList.add("active");
 
   // TMDb info
   try {
@@ -307,20 +279,14 @@ setInterval(loadSeries, 60*60*1000);
 
 loadSeries();
 </script>
-    <!-- Google tag (gtag.js) -->
+
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-T61FEM3203');
 </script>
 </body>
 </html>
-
-
-
-
-
-
