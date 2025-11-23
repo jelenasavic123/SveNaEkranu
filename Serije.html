@@ -6,27 +6,167 @@
 <title>Serije Player</title>
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
-body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#fff; }
-#seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
-.series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:0.3s; background:#1a1a1a; }
-.series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,0.6); }
-.series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; }
-.series-title { padding:6px; font-size:0.9em; font-weight:bold; text-transform:uppercase; }
+/* Body i Grid */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #141414;
+    color: #fff;
+}
 
-#videoWrapper { display:none; flex-direction:column; justify-content:flex-start; width:100%; height:100vh; background:#000; overflow-y:auto; }
-#playerContainer { position:relative; width:100%; max-height:50vh; background:black; }
-.video-js { width:100%; height:100%; border-radius:8px; }
+#seriesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    justify-items: center;
+}
 
-.back-btn { margin:10px 15px; padding:8px 16px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; color:#fff; transition:0.3s; }
-.back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
+/* Kartice serija */
+.series-card {
+    width: 140px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: 0.3s;
+    background: #1a1a1a;
+}
 
-#seriesTitle { text-align:center; font-size:1.5em; font-weight:bold; margin:10px 0; }
-#episodeList { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; padding:10px; }
-.episode-btn { background:#222; color:#fff; border:1px solid #555; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:14px; }
-.episode-btn.active { background:#ff3d00; border-color:#ff3d00; }
+.series-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+}
 
-#seriesMeta { text-align:center; padding:15px; }
-#seriesMeta img { max-width:120px; border-radius:8px; margin-top:10px; }
+.series-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 2px solid #333;
+}
+
+.series-title {
+    padding: 6px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Video Wrapper i Player */
+#videoWrapper {
+    display: none;
+    flex-direction: column;
+    width: 90%;        /* 90% širine ekrana */
+    max-width: 90%;
+    margin: 20px auto; /* centriranje */
+    background: #000;
+    overflow: visible; /* epizode ispod */
+    padding-bottom: 20px;
+}
+
+#playerContainer {
+    position: relative;
+    width: 100%;
+    max-width: 100%;  /* ne širi više od wrappera */
+    height: auto;     /* visina automatski po proporciji */
+    background: black;
+    margin: 0 auto;
+}
+
+.video-js {
+    display: block;
+    width: 100%;       /* prati širinu container-a */
+    height: auto;      /* proporcionalno visina */
+    border-radius: 8px;
+    max-height: 60vh;  /* da player ne pređe ekran */
+}
+
+/* Dugmad nazad */
+.back-btn {
+    margin: 10px auto;
+    padding: 8px 16px;
+    background: #222;
+    border: 1px solid #555;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    transition: 0.3s;
+    display: block;
+}
+
+.back-btn:hover {
+    background: #ff3d00;
+    border-color: #ff3d00;
+}
+
+/* Naslov serije */
+#seriesTitle {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Lista epizoda */
+#episodeList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+    background: #141414; /* epizode ispod playera */
+    z-index: 1;
+}
+
+.episode-btn {
+    background: #222;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.episode-btn.active {
+    background: #ff3d00;
+    border-color: #ff3d00;
+}
+
+/* Meta podaci serije */
+#seriesMeta {
+    text-align: center;
+    padding: 15px;
+}
+
+#seriesMeta img {
+    max-width: 120px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Responsive prilagodbe */
+@media (max-width: 768px) {
+    #videoWrapper {
+        width: 95%;
+        max-width: 95%;
+    }
+
+    #playerContainer {
+        max-height: 40vh; /* player manji na mobilnim uređajima */
+    }
+
+    .series-card img {
+        height: 180px;
+    }
+
+    .episode-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -54,8 +194,6 @@ body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
 let player;
-const MAX_RETRY = 5;
-const RETRY_DELAY = 2000;
 
 async function fetchPoster(seriesName){
     try{
@@ -72,7 +210,7 @@ async function fetchPoster(seriesName){
             };
         }
         return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
-    } catch(e){console.error(e); return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
+    } catch(e){ console.error(e); return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
 }
 
 async function loadSeries(){
@@ -135,8 +273,9 @@ async function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
-    // scroll to top
-    document.getElementById("videoWrapper").scrollTo({ top:0, behavior:'smooth' });
+    // Skroluj wrapper playera na vrh ekrana
+    const videoWrapper = document.getElementById("videoWrapper");
+    videoWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     let attempt = 0;
 
@@ -177,5 +316,6 @@ function closeVideo(){
 
 loadSeries();
 </script>
+
 </body>
 </html>
