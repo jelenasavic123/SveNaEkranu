@@ -3,318 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serije Player sa TMDb</title>
+<title>Serije Player</title>
 <style>
-body { font-family: 'Segoe UI', sans-serif; background: #141414; color: #fff; margin: 20px; }
-h1 { text-align: center; margin-bottom: 20px; }
-
-/* Search Box */
-.search-box { max-width: 600px; margin: 0 auto 10px; position: relative; }
-.search-box input { width: 100%; padding: 10px 15px; border-radius: 6px; border: none; font-size: 1em; background: #fff; color: #000; }
-.search-results { position: absolute; top: 100%; left: 0; right: 0; background: #222; max-height: 300px; overflow-y: auto; border-radius: 6px; z-index: 20; display: none; }
-.search-item { display: flex; padding: 8px; cursor: pointer; align-items: center; border-bottom: 1px solid #333; transition: 0.2s; }
-.search-item img { width: 60px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 10px; }
-.search-item:hover { background: #e50914; }
-.search-item div { text-align: left; }
-.search-item div strong { display: block; font-size: 1em; }
-.search-item div small { display: block; font-size: 0.8em; color: #ccc; }
-
-/* Dropdown */
-.dropdown { position: relative; max-width: 600px; margin: 0 auto 20px; }
-.dropdown-toggle { background: #333; padding: 12px 20px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.dropdown-toggle span { font-weight: bold; font-size: 1em; }
-.dropdown-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: #222; max-height: 300px; overflow-y: auto; border-radius: 6px; margin-top: 5px; z-index: 10; }
-.dropdown-item { display: flex; padding: 8px; cursor: pointer; align-items: center; transition: 0.2s; border-bottom: 1px solid #333; }
-.dropdown-item img { width: 60px; height: 90px; object-fit: cover; border-radius: 4px; margin-right: 10px; }
-.dropdown-item:hover { background: #e50914; }
-.dropdown-item div { text-align: left; }
-.dropdown-item div strong { display: block; font-size: 1em; }
-.dropdown-item div small { display: block; font-size: 0.8em; color: #ccc; }
-
-/* Video Player */
-#videoWrapper {
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    background: #000;
-    border-radius: 10px;
-    margin: 0 auto 15px;
-    overflow: hidden;
-}
-
-#videoWrapper video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-    background: black;
-}
-
-/* Loading Spinner */
-#loadingSpinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border: 5px solid rgba(229, 9, 20, 0.3);
-    border-top: 5px solid #e50914;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    display: none;
-}
-
-/* Spinner animation */
-@keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Spin animacija */
-@keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Responsive za jako male ekrane */
-@media (max-width: 480px) {
-    #videoWrapper {
-        width: 100%;
-        padding-top: 56.25%;
-    }
-}
-
-@keyframes spin { 
-    0% { transform: translate(-50%, -50%) rotate(0deg);} 
-    100% { transform: translate(-50%, -50%) rotate(360deg);} 
-}
-
-/* Episodes */
-#episodeButtons { display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 15px; }
-#episodeButtons button { background: #333; border: none; color: #eee; padding: 12px 18px; margin: 5px; border-radius: 5px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-#episodeButtons button:hover { background: #e50914; color: white; transform: scale(1.05); }
-#episodeButtons button.active { background: #e50914; color: white; transform: scale(1.1); }
-
-/* Series info */
-#seriesInfo { max-width: 800px; margin: auto; font-size: 1em; text-align: center; background: #222; padding: 15px; border-radius: 8px; }
-#seriesInfo img { width: 150px; height: 225px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
-#seriesInfo strong { display: block; font-size: 1.2em; margin-bottom: 5px; }
-#seriesInfo small { display: block; font-size: 0.9em; color: #ccc; margin-bottom: 10px; }
-#refreshBtn { font-size: 0.7em; margin-top: 5px; background: #333; color: #ccc; border: none; border-radius: 3px; padding: 3px 6px; cursor: pointer; }
-#refreshBtn:hover { background: #e50914; color: #fff; }
+body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#fff; }
+h1 { text-align:center; padding:10px 0; }
+.series-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
+.series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:0.3s; background:#1a1a1a; }
+.series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,0.6); }
+.series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; }
+.series-title { padding:6px; font-size:0.9em; font-weight:bold; text-transform:uppercase; }
+#videoWrapper { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:999; flex-direction:column; justify-content:flex-start; }
+#playerContainer { position:relative; width:100%; height:50vh; background:black; }
+#video { width:100%; height:100%; background:black; }
+.back-btn { margin:8px; padding:8px 16px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; transition:0.3s; color:#fff; }
+.back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
+#episodeList { display:flex; flex-wrap:wrap; gap:8px; padding:15px; }
+.episode-btn { background:#222; color:#fff; border:1px solid #555; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:14px; }
+.episode-btn.active { background:#ff3d00; border-color:#ff3d00; }
+#seriesMeta { text-align:center; padding:10px; }
+#seriesMeta img { max-width:120px; border-radius:8px; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<div style="background-color: #141414; color: #e50914; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
-    <p style="font-size: 12px; line-height: 1.8; margin: 0;">🔔Stranica je u izradi uskoro ce sve serije biti dostupne</p>
-</div>
-<h1>▼ KLIKNITE MENI ZA LISTU SERIJA ▼</h1>
+<h1>Popularne serije</h1>
+<div id="seriesGrid" class="series-grid"></div>
 
-<!-- Search -->
-<div class="search-box">
-  <input type="text" id="searchInput" placeholder="Pretraži serije...">
-  <div class="search-results" id="searchResults"></div>
-</div>
-
-<!-- Dropdown -->
-<div class="dropdown">
-  <div class="dropdown-toggle"><span>Izaberite seriju...</span> ▼</div>
-  <div class="dropdown-menu" id="dropdownMenu"></div>
-</div>
-
-<!-- Video Player -->
-<div id="videoWrapper">
-  <div id="loadingSpinner"></div>
-  <video id="videoPlayer" controls>
-    <source id="videoSource" src="" type="application/x-mpegURL">
-  </video>
+<div id="videoWrapper" style="display:flex;">
+    <div id="playerContainer">
+        <video id="video" controls autoplay></video>
+    </div>
+    <button class="back-btn" onclick="closeVideo()">⬅ Nazad</button>
+    <div id="episodeList"></div>
+    <div id="seriesMeta">
+        <h2 id="seriesTitle"></h2>
+        <p id="seriesOverview"></p>
+        <p id="seriesInfo"></p>
+        <img id="seriesPoster" src="" alt="">
+    </div>
 </div>
 
-<!-- Refresh -->
-<div style="text-align:center;"><button id="refreshBtn">Osveži listu serija</button></div>
-
-<div id="episodeButtons"></div>
-<div id="seriesInfo"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
-const firebaseBaseURL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com";
-const tmdbApiKey = "2701858e9bccab54d4d0e4931420a739";
+const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/serije.json";
+const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
+let hls;
 
-const videoPlayer = document.getElementById("videoPlayer");
-const videoSource = document.getElementById("videoSource");
-const loadingSpinner = document.getElementById("loadingSpinner");
-const seriesInfo = document.getElementById("seriesInfo");
-const episodeButtons = document.getElementById("episodeButtons");
-const searchInput = document.getElementById("searchInput");
-const searchResults = document.getElementById("searchResults");
-const dropdownToggle = document.querySelector('.dropdown-toggle');
-const dropdownMenu = document.getElementById("dropdownMenu");
-const dropdownSpan = dropdownToggle.querySelector('span');
-const refreshBtn = document.getElementById("refreshBtn");
-
-let allSeries = [];
-
-// Toggle dropdown
-dropdownToggle.addEventListener('click', () => {
-  dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-});
-
-// Fetch Series + TMDb Poster
-async function loadSeries() {
-  try {
-    const res = await fetch(`${firebaseBaseURL}/.json?_=${Date.now()}`);
-    const data = await res.json();
-    if(!data || !data.serije) return;
-
-    const seriesNames = Object.keys(data.serije);
-
-    allSeries = await Promise.all(seriesNames.map(async name => {
-      let poster = "https://via.placeholder.com/100x150?text=Serija";
-      try {
-        const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
-        const tmdbData = await tmdbRes.json();
-        if(tmdbData.results && tmdbData.results.length>0 && tmdbData.results[0].poster_path){
-          poster = `https://image.tmdb.org/t/p/w200${tmdbData.results[0].poster_path}`;
+async function fetchPoster(seriesName){
+    try{
+        let query = encodeURIComponent(seriesName.replace(/-/g,' '));
+        let res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_API_KEY}&query=${query}`);
+        let data = await res.json();
+        if(data.results && data.results[0]){
+            return {
+                poster: data.results[0].poster_path ? `https://image.tmdb.org/t/p/w500${data.results[0].poster_path}` : '',
+                overview: data.results[0].overview || '',
+                name: data.results[0].name || seriesName,
+                first_air_date: data.results[0].first_air_date || '',
+                genres: (data.results[0].genre_ids || []).join(', ')
+            };
         }
-      } catch(e){}
-
-      return {
-        name,
-        epizode: data.serije[name],
-        poster
-      };
-    }));
-
-    renderDropdown(allSeries);
-
-  } catch(err){ console.error(err); }
+        return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+    } catch(e){console.error(e); return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
 }
 
-// Render Dropdown
-function renderDropdown(seriesList){
-  dropdownMenu.innerHTML = "";
-  seriesList.forEach(series => {
-    const div = document.createElement("div");
-    div.className = "dropdown-item";
-    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong></div>`;
-    div.addEventListener("click", () => selectSeries(series.name));
-    dropdownMenu.appendChild(div);
-  });
-}
-
-// Search
-searchInput.addEventListener('input', () => {
-  const term = searchInput.value.toLowerCase();
-  const filtered = allSeries.filter(s => s.name.toLowerCase().includes(term));
-  renderSearchResults(filtered);
-});
-
-function renderSearchResults(list){
-  searchResults.innerHTML = "";
-  if(list.length === 0 || searchInput.value.trim() === ""){
-    searchResults.style.display = "none";
-    return;
-  }
-  searchResults.style.display = "block";
-  list.forEach(series => {
-    const div = document.createElement("div");
-    div.className = "search-item";
-    div.innerHTML = `<img src="${series.poster}" alt="${series.name}"><div><strong>${series.name}</strong></div>`;
-    div.addEventListener("click", () => selectSeries(series.name));
-    searchResults.appendChild(div);
-  });
-}
-
-// SELECT SERIES
-async function selectSeries(name){
-  searchResults.style.display = "none";
-  dropdownMenu.style.display = "none";
-  searchInput.value = name;
-  dropdownSpan.textContent = name;
-
-  const res = await fetch(`${firebaseBaseURL}/serije/${encodeURIComponent(name)}.json?_=${Date.now()}`);
-  const data = await res.json();
-  if(!data) return;
-
-  // Pravi niz epizoda sa ključevima iz Firebase
-  let epArray = Object.entries(data)
-    .filter(([key, link]) => link && typeof link === 'string')
-    .sort(([a], [b]) => parseInt(a) - parseInt(b));
-
-  episodeButtons.innerHTML = "";
-
-  epArray.forEach(([key, videoLink]) => {
-    const btn = document.createElement("button");
-    btn.textContent = `Epizoda ${key}`;
-
-    btn.addEventListener("click", async () => {
-      document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const freshRes = await fetch(`${firebaseBaseURL}/serije/${encodeURIComponent(name)}/${key}.json?_=${Date.now()}`);
-      const freshUrl = await freshRes.json();
-
-      videoSource.src = freshUrl;
-      videoPlayer.load();
-      videoPlayer.play();
-      window.scrollTo({ top: videoPlayer.offsetTop - 20, behavior: 'smooth' });
-    });
-
-    episodeButtons.appendChild(btn);
-  });
-
-  // Load first episode (bez autoplay)
-  const [firstKey, firstUrl] = epArray[0];
-  videoSource.src = firstUrl;
-  videoPlayer.load();
-  episodeButtons.querySelector("button").classList.add("active");
-
-  // TMDb info
-  try {
-    const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
-    const tmdbData = await tmdbRes.json();
-    if (tmdbData.results && tmdbData.results.length > 0) {
-      const show = tmdbData.results[0];
-      seriesInfo.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w200${show.poster_path}" alt="${name}">
-        <strong>${show.name}</strong>
-        <small>${show.first_air_date?.split("-")[0] || ""}</small>
-        <p>${show.overview || "Nema opisa."}</p>
-      `;
-    } else {
-      seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
+async function loadSeries(){
+    const res = await fetch(FIREBASE_URL);
+    const data = await res.json();
+    const grid = document.getElementById("seriesGrid");
+    grid.innerHTML = '';
+    for(let key in data){
+        let posterData = await fetchPoster(key);
+        let card = document.createElement("div");
+        card.className = "series-card";
+        card.dataset.series = key;
+        card.dataset.episodes = JSON.stringify(data[key]);
+        card.dataset.poster = posterData.poster;
+        card.dataset.overview = posterData.overview;
+        card.dataset.airdate = posterData.first_air_date;
+        card.dataset.genres = posterData.genres;
+        card.dataset.title = posterData.name;
+        card.innerHTML = `<img src="${posterData.poster}" alt="${key}"><div class="series-title">${posterData.name}</div>`;
+        card.onclick = ()=>openSeries(card);
+        grid.appendChild(card);
     }
-  } catch(e){
-    seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
-  }
 }
 
-// Spinner
-videoPlayer.addEventListener("waiting", ()=>loadingSpinner.style.display="block");
-videoPlayer.addEventListener("playing", ()=>loadingSpinner.style.display="none");
+function openSeries(card){
+    document.getElementById("seriesGrid").style.display='none';
+    const wrapper = document.getElementById("videoWrapper");
+    wrapper.style.display='flex';
+    const episodeList = document.getElementById("episodeList");
+    episodeList.innerHTML='';
+    const episodes = JSON.parse(card.dataset.episodes);
+    for(let ep in episodes){
+        if(ep === "poslednje_azuriranje") continue;
+        let btn = document.createElement("button");
+        btn.className = "episode-btn";
+        btn.textContent = "Ep " + ep;
+        btn.dataset.url = episodes[ep];
+        btn.onclick = ()=>playEpisode(btn, btn.dataset.url);
+        episodeList.appendChild(btn);
+    }
+    document.getElementById("seriesTitle").textContent = card.dataset.title;
+    document.getElementById("seriesOverview").textContent = card.dataset.overview;
+    document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
+    document.getElementById("seriesPoster").src = card.dataset.poster;
+    // automatski pokreni prvu epizodu
+    const firstBtn = episodeList.querySelector(".episode-btn");
+    if(firstBtn) firstBtn.click();
+}
 
-refreshBtn.addEventListener("click", loadSeries);
-setInterval(loadSeries, 60*60*1000);
+function playEpisode(btn,url){
+    document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const video = document.getElementById("video");
+    if(hls){ hls.destroy(); }
+    if(Hls.isSupported()){
+        hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=>video.play());
+    } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+        video.src = url;
+        video.play();
+    }
+}
 
+function closeVideo(){
+    const wrapper = document.getElementById("videoWrapper");
+    wrapper.style.display='none';
+    document.getElementById("seriesGrid").style.display='grid';
+    if(hls) hls.destroy();
+}
 loadSeries();
-</script>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-T61FEM3203');
 </script>
 </body>
 </html>
-
-
-
