@@ -283,13 +283,7 @@ async function playEpisode(btn){
     // Scroll do vrha playera
     document.getElementById("videoWrapper").scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    // Uništi postojeći HLS ako postoji
-    if(player && player.hls){
-        player.hls.destroy();
-        player.hls = null;
-    }
-
-    let attempt = 0; // restartuj attempt svaki put
+    let attempt = 0;
 
     async function loadVideo(){
         try {
@@ -299,6 +293,17 @@ async function playEpisode(btn){
             let url = episodesData[seriesKey][ep];
             if(!url) return;
             url += "?t=" + new Date().getTime();
+
+            // Potpuno resetuj player pre novog load-a
+            if(player){
+                if(player.hls){
+                    player.hls.destroy();
+                    player.hls = null;
+                }
+                player.reset();
+            } else {
+                player = videojs('video', { autoplay:true, controls:true, fluid:true });
+            }
 
             if(Hls.isSupported()){
                 let hls = new Hls();
@@ -351,6 +356,7 @@ function closeVideo(){
 // Pokreni inicijalno
 loadSeries();
 </script>
+
 
 
 
