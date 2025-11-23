@@ -130,14 +130,13 @@ const dropdownSpan = dropdownToggle.querySelector('span');
 const refreshBtn = document.getElementById("refreshBtn");
 
 let allSeries = [];
-let currentVideoSrc = "";
 
 // Toggle dropdown
 dropdownToggle.addEventListener('click', () => {
   dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
 });
 
-// --- Fetch Series + TMDb Poster ---
+// Fetch Series + TMDb Poster
 async function loadSeries() {
   try {
     const res = await fetch(`${firebaseBaseURL}/.json?_=${Date.now()}`);
@@ -154,7 +153,7 @@ async function loadSeries() {
         if(tmdbData.results && tmdbData.results.length>0 && tmdbData.results[0].poster_path){
           poster = `https://image.tmdb.org/t/p/w200${tmdbData.results[0].poster_path}`;
         }
-      } catch(e){ console.error(e); }
+      } catch(e){}
 
       return {
         name,
@@ -168,7 +167,7 @@ async function loadSeries() {
   } catch(err){ console.error(err); }
 }
 
-// --- Render Dropdown ---
+// Render Dropdown
 function renderDropdown(seriesList){
   dropdownMenu.innerHTML = "";
   seriesList.forEach(series => {
@@ -180,7 +179,7 @@ function renderDropdown(seriesList){
   });
 }
 
-// --- Search ---
+// Search
 searchInput.addEventListener('input', () => {
   const term = searchInput.value.toLowerCase();
   const filtered = allSeries.filter(s => s.name.toLowerCase().includes(term));
@@ -203,7 +202,7 @@ function renderSearchResults(list){
   });
 }
 
-// --- Select Series ---
+// SELECT SERIES (Firebase fresh fetch)
 async function selectSeries(name){
   searchResults.style.display = "none";
   dropdownMenu.style.display = "none";
@@ -216,17 +215,14 @@ async function selectSeries(name){
 
   let epArray = [];
 
-  // Ako je niz
-  if(Array.isArray(data)){
+  if (Array.isArray(data)) {
     epArray = data.filter(link => link);
-  } 
-  // Ako je objekat
-  else if(typeof data === 'object'){
+  } else if (typeof data === 'object') {
     epArray = Object.values(data).filter(link => link);
   }
 
   episodeButtons.innerHTML = "";
-  if(epArray.length === 0){
+  if (epArray.length === 0) {
     episodeButtons.innerHTML = "<p>Nema epizoda za ovu seriju.</p>";
     return;
   }
@@ -234,61 +230,59 @@ async function selectSeries(name){
   epArray.forEach((videoLink, i) => {
     const btn = document.createElement("button");
     btn.textContent = `Epizoda ${i+1}`;
-    btn.dataset.videoSrc = videoLink;
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#episodeButtons button").forEach(b=>b.classList.remove("active"));
+
+    btn.addEventListener("click", async () => {
+      document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      currentVideoSrc = videoLink;
-      videoSource.src = videoLink;
+
+      const freshRes = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}/${i}.json?_=${Date.now()}`);
+      const freshUrl = await freshRes.json();
+
+      videoSource.src = freshUrl;
       videoPlayer.load();
-      if(videoLink) videoPlayer.play();
-      window.scrollTo({ top: videoPlayer.offsetTop-20, behavior:'smooth'});
+      videoPlayer.play();
+      window.scrollTo({ top: videoPlayer.offsetTop - 20, behavior: 'smooth' });
     });
+
     episodeButtons.appendChild(btn);
   });
 
-  // Automatski pokreni prvu epizodu
-  currentVideoSrc = epArray[0];
-  videoSource.src = currentVideoSrc;
-  videoPlayer.load();
-  episodeButtons.querySelector("button").classList.add("active");
+  // Auto play first (fresh)
+  const firstEpisodeRes = await fetch(`${firebaseBaseURL}/${encodeURIComponent(name)}/0.json?_=${Date.now()}`);
+  const firstUrl = await firstEpisodeRes.json();
 
-  // Show TMDb info
-  try{
+  episodeButtons.querySelector("button").classList.add("active");
+  videoSource.src = firstUrl;
+  videoPlayer.load();
+
+  // TMDb info
+  try {
     const tmdbRes = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${tmdbApiKey}&query=${encodeURIComponent(name)}&language=sr`);
     const tmdbData = await tmdbRes.json();
-    if(tmdbData.results && tmdbData.results.length>0){
+    if (tmdbData.results && tmdbData.results.length > 0) {
       const show = tmdbData.results[0];
       seriesInfo.innerHTML = `
         <img src="https://image.tmdb.org/t/p/w200${show.poster_path}" alt="${name}">
         <strong>${show.name}</strong>
-        <small>${show.first_air_date?.split("-")[0] || ""} • Žanrovi: ${show.genre_ids?.join(", ") || "Nema"}</small>
+        <small>${show.first_air_date?.split("-")[0] || ""}</small>
         <p>${show.overview || "Nema opisa."}</p>
       `;
-    } else { seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`; }
-  } catch(e){ console.error(e); seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`; }
+    } else {
+      seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
+    }
+  } catch(e){
+    seriesInfo.innerHTML = `<p>Nema podataka o seriji.</p>`;
+  }
 }
 
-// Loading spinner
+// Spinner
 videoPlayer.addEventListener("waiting", ()=>loadingSpinner.style.display="block");
 videoPlayer.addEventListener("playing", ()=>loadingSpinner.style.display="none");
 
-// Refresh button
 refreshBtn.addEventListener("click", loadSeries);
-
-// Auto refresh every 1h
 setInterval(loadSeries, 60*60*1000);
 
 loadSeries();
-</script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-T61FEM3203');
 </script>
 </body>
 </html>
