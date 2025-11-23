@@ -276,13 +276,20 @@ function openSeries(card){
 }
 
 async function playEpisode(btn){
+    // ukloni aktivnu klasu sa svih dugmadi
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
     // Scroll do vrha playera
     document.getElementById("videoWrapper").scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    let attempt = 0;
+    // Uništi postojeći HLS ako postoji
+    if(player && player.hls){
+        player.hls.destroy();
+        player.hls = null;
+    }
+
+    let attempt = 0; // restartuj attempt svaki put
 
     async function loadVideo(){
         try {
@@ -294,7 +301,6 @@ async function playEpisode(btn){
             url += "?t=" + new Date().getTime();
 
             if(Hls.isSupported()){
-                if(player.hls) { player.hls.destroy(); player.hls = null; }
                 let hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(player.tech().el());
@@ -304,6 +310,8 @@ async function playEpisode(btn){
                     if(attempt < MAX_RETRY){
                         attempt++;
                         console.log(`Retrying video... Attempt ${attempt}`);
+                        hls.destroy();
+                        player.hls = null;
                         setTimeout(loadVideo, RETRY_DELAY);
                     }
                 });
@@ -343,6 +351,7 @@ function closeVideo(){
 // Pokreni inicijalno
 loadSeries();
 </script>
+
 
 
 </body>
