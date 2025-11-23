@@ -33,26 +33,45 @@ h1 { text-align: center; margin-bottom: 20px; }
 
 /* Video Player */
 /* VIDEO PLAYER WRAPPER */
+/* VIDEO PLAYER WRAPPER */
 #videoWrapper { 
-    max-width: 400px;
+    width: 90%;              /* mobilni – zauzima skoro ceo ekran */
+    max-width: 600px;        /* desktop – idealna veličina playera */
     position: relative;
-    padding-top: 56.25%;     /* 16:9 odnos */
+    padding-top: 56.25%;     /* 16:9 format */
     background: #000;
     border-radius: 10px;
     margin: 0 auto 15px;
+    overflow: hidden;        /* sprečava da video "štrči" */
 }
 
-/* VIDEO – širina 80%, visina automatska */
+/* VIDEO – 100% širine unutar wrappera */
 #videoWrapper video {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%;             /* željena širina */
-    height: auto;           /* čuva format videa */
-    transform: translate(-50%, -50%);
-    border-radius: 8px;
+    top: 0;
+    left: 0;
+    width: 100%;              /* video uvek tačno odgovara wrapperu */
+    height: 100%;             /* čuva format jer wrapper diktira 16:9 */
+    object-fit: cover;        /* puni okvir bez praznina */
+    border-radius: 10px;
     background: black;
 }
+
+/* LOADING */
+#loadingSpinner { 
+    position: absolute; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%); 
+    border: 5px solid rgba(229, 9, 20, 0.3); 
+    border-top: 5px solid #e50914; 
+    border-radius: 50%; 
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite; 
+    display: none; 
+}
+
 
 #loadingSpinner { 
     position: absolute; 
@@ -299,6 +318,7 @@ loadSeries();
 </script>
 </body>
 </html>
+
 
 
 
