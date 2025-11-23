@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Serije Player</title>
+<link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
 body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#fff; }
 #seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
@@ -14,7 +15,7 @@ body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#
 
 #videoWrapper { display:none; flex-direction:column; justify-content:flex-start; width:100%; height:100vh; background:#000; overflow-y:auto; }
 #playerContainer { position:relative; width:100%; max-height:50vh; background:black; }
-#video { width:100%; height:100%; background:black; }
+.video-js { width:100%; height:100%; border-radius:8px; }
 
 .back-btn { margin:10px 15px; padding:8px 16px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; color:#fff; transition:0.3s; }
 .back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
@@ -35,7 +36,7 @@ body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#
 
 <div id="videoWrapper">
     <div id="playerContainer">
-        <video id="video" controls autoplay></video>
+        <video-js id="video" class="video-js vjs-default-skin" controls autoplay></video-js>
     </div>
     <button class="back-btn" onclick="closeVideo()">⬅ Nazad</button>
     <div id="seriesTitle"></div>
@@ -48,10 +49,11 @@ body { margin:0; font-family:'Segoe UI', sans-serif; background:#141414; color:#
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
 <script>
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
-let hls;
+let player;
 const MAX_RETRY = 5;
 const RETRY_DELAY = 2000;
 
@@ -105,7 +107,7 @@ function openSeries(card){
     const episodes = JSON.parse(card.dataset.episodes);
     for(let i=1;i<episodes.length;i++){ // ignorisati prvi null element
         let url = episodes[i];
-        if(!url) continue; // dodatna provera
+        if(!url) continue;
         let btn = document.createElement("button");
         btn.className = "episode-btn";
         btn.textContent = "Epizoda " + i;
@@ -121,6 +123,10 @@ function openSeries(card){
     document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
+    if(!player) {
+        player = videojs('video', { autoplay:true, controls:true, fluid:true });
+    }
+
     const firstBtn = episodeList.querySelector(".episode-btn");
     if(firstBtn) firstBtn.click();
 }
@@ -128,47 +134,34 @@ function openSeries(card){
 async function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-    const video = document.getElementById("video");
+
+    // scroll to top
+    document.getElementById("videoWrapper").scrollTo({ top:0, behavior:'smooth' });
+
     let attempt = 0;
 
     async function loadVideo(){
-        if(hls) hls.destroy();
-
         try {
             const episodesData = await fetch(FIREBASE_URL).then(r=>r.json());
             const seriesKey = btn.dataset.seriesKey;
             const ep = btn.dataset.ep;
             let url = episodesData[seriesKey][ep];
-
+            if(!url) return;
             url += "?t=" + new Date().getTime();
-            console.log("Učitavam epizodu:", ep, url);
 
             if(Hls.isSupported()){
-                hls = new Hls();
+                if(player.hls) { player.hls.destroy(); player.hls = null; }
+                let hls = new Hls();
                 hls.loadSource(url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, ()=>video.play());
-                hls.on(Hls.Events.ERROR, function(event,data){
-                    if(data.fatal){
-                        attempt++;
-                        console.warn(`HLS greška, pokušaj ${attempt}...`);
-                        if(attempt <= MAX_RETRY){
-                            setTimeout(loadVideo, RETRY_DELAY);
-                        } else alert("Video se ne može učitati.");
-                    }
-                });
-            } else if(video.canPlayType('application/vnd.apple.mpegurl')){
-                video.src = url;
-                video.play().catch(()=>{
-                    attempt++;
-                    if(attempt <= MAX_RETRY){
-                        setTimeout(loadVideo, RETRY_DELAY);
-                    } else alert("Video se ne može učitati.");
-                });
+                hls.attachMedia(player.tech().el());
+                hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
+                player.hls = hls;
+            } else if(player.tech().el().canPlayType('application/vnd.apple.mpegurl')){
+                player.src({ src:url, type:'application/x-mpegURL' });
+                player.play().catch(()=>{});
             }
         } catch(e){
             console.error(e);
-            alert("Došlo je do greške prilikom učitavanja epizode.");
         }
     }
 
@@ -179,7 +172,7 @@ function closeVideo(){
     const wrapper = document.getElementById("videoWrapper");
     wrapper.style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
-    if(hls) hls.destroy();
+    if(player && player.hls) { player.hls.destroy(); player.hls = null; }
 }
 
 loadSeries();
