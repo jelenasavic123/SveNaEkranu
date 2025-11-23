@@ -193,6 +193,9 @@ body {
 <script>
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
+const MAX_RETRY = 5;
+const RETRY_DELAY = 2000;
+
 let player;
 
 async function fetchPoster(seriesName){
@@ -210,7 +213,10 @@ async function fetchPoster(seriesName){
             };
         }
         return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
-    } catch(e){ console.error(e); return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
+    } catch(e){
+        console.error(e);
+        return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+    }
 }
 
 async function loadSeries(){
@@ -273,9 +279,8 @@ async function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
-    // Skroluj wrapper playera na vrh ekrana
-    const videoWrapper = document.getElementById("videoWrapper");
-    videoWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Scroll do vrha playera
+    document.getElementById("videoWrapper").scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     let attempt = 0;
 
@@ -293,14 +298,35 @@ async function playEpisode(btn){
                 let hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(player.tech().el());
+
+                hls.on(Hls.Events.ERROR, function(event, data){
+                    console.error("HLS error", data);
+                    if(attempt < MAX_RETRY){
+                        attempt++;
+                        console.log(`Retrying video... Attempt ${attempt}`);
+                        setTimeout(loadVideo, RETRY_DELAY);
+                    }
+                });
+
                 hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
                 player.hls = hls;
             } else if(player.tech().el().canPlayType('application/vnd.apple.mpegurl')){
                 player.src({ src:url, type:'application/x-mpegURL' });
-                player.play().catch(()=>{});
+                player.play().catch(()=>{
+                    if(attempt < MAX_RETRY){
+                        attempt++;
+                        console.log(`Retrying video... Attempt ${attempt}`);
+                        setTimeout(loadVideo, RETRY_DELAY);
+                    }
+                });
             }
         } catch(e){
             console.error(e);
+            if(attempt < MAX_RETRY){
+                attempt++;
+                console.log(`Retrying video... Attempt ${attempt}`);
+                setTimeout(loadVideo, RETRY_DELAY);
+            }
         }
     }
 
@@ -314,8 +340,10 @@ function closeVideo(){
     if(player && player.hls) { player.hls.destroy(); player.hls = null; }
 }
 
+// Pokreni inicijalno
 loadSeries();
 </script>
+
 
 </body>
 </html>
