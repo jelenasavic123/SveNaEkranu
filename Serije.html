@@ -49,67 +49,61 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
 <script>
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
-const MAX_RETRY = 5;
-const RETRY_DELAY = 2000;
+const MAX_RETRY = 3;
+const RETRY_DELAY = 1500;
 const LIST_REFRESH_INTERVAL = 60*60*1000; // 1h
 
 let player;
+let hls;
 
-/* TMDB POSTER */
+/* TMDB POSTER KEŠ */
 async function fetchPoster(seriesName){
+    const cacheKey = "poster_" + seriesName;
+    const cached = localStorage.getItem(cacheKey);
+    if(cached) return JSON.parse(cached);
+
     try{
         let query = encodeURIComponent(seriesName.replace(/-/g,' '));
         let res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_API_KEY}&language=sr&query=${query}`);
         let data = await res.json();
+        let posterData = {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+
         if(data.results && data.results[0]){
-            return {
-                poster: data.results[0].poster_path?`https://image.tmdb.org/t/p/w500${data.results[0].poster_path}`:'',
+            posterData = {
+                poster: data.results[0].poster_path?`https://image.tmdb.org/t/p/w185${data.results[0].poster_path}`:'',
                 overview: data.results[0].overview||'',
                 name: data.results[0].name||seriesName,
                 first_air_date: data.results[0].first_air_date||'',
                 genres: (data.results[0].genre_ids||[]).join(', ')
             };
         }
-        return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+        localStorage.setItem(cacheKey, JSON.stringify(posterData));
+        return posterData;
     } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
 }
 
-/* UCITAVANJE LISTE PO POTREBI */
+/* UCITAVANJE LISTE */
 async function getSeriesList() {
     const now = Date.now();
     const cached = localStorage.getItem('seriesList');
     const lastFetch = localStorage.getItem('seriesListTime') || 0;
 
-    if(cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) {
-        // provera da li se Firebase list promenila
-        try {
-            const res = await fetch(FIREBASE_URL);
-            const data = await res.json();
-            const cachedData = JSON.parse(cached);
+    if(cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) return JSON.parse(cached);
 
-            // jednostavna provera da li se keys razlikuju
-            const cachedKeys = Object.keys(cachedData).join(',');
-            const newKeys = Object.keys(data).join(',');
-            if(cachedKeys === newKeys) return cachedData; // koristi keš
-            else {
-                localStorage.setItem('seriesList', JSON.stringify(data));
-                localStorage.setItem('seriesListTime', now);
-                return data;
-            }
-        } catch(e){
-            return JSON.parse(cached); // fallback na keš ako Firebase nije dostupan
-        }
+    try{
+        const res = await fetch(FIREBASE_URL);
+        const data = await res.json();
+        localStorage.setItem('seriesList', JSON.stringify(data));
+        localStorage.setItem('seriesListTime', now);
+        return data;
+    } catch(e){
+        return cached ? JSON.parse(cached) : {};
     }
-
-    // povlačenje nove liste
-    const res = await fetch(FIREBASE_URL);
-    const data = await res.json();
-    localStorage.setItem('seriesList', JSON.stringify(data));
-    localStorage.setItem('seriesListTime', now);
-    return data;
 }
 
 /* UCITAVANJE SERIJA */
@@ -120,23 +114,22 @@ async function loadSeries(){
 
     for(let key in data){
         let series = data[key];
-        let posterData = await fetchPoster(key);
+        fetchPoster(key).then(posterData=>{
+            let card = document.createElement("div");
+            card.className = "series-card";
+            card.dataset.series = key;
+            card.dataset.episodes = JSON.stringify(series.episodes);
+            card.dataset.localName = series.localName;
+            card.dataset.poster = posterData.poster;
+            card.dataset.overview = posterData.overview;
+            card.dataset.airdate = posterData.first_air_date;
+            card.dataset.genres = posterData.genres;
+            card.dataset.title = posterData.name;
 
-        let card = document.createElement("div");
-        card.className = "series-card";
-
-        card.dataset.series = key;
-        card.dataset.episodes = JSON.stringify(series.episodes);
-        card.dataset.localName = series.localName;
-        card.dataset.poster = posterData.poster;
-        card.dataset.overview = posterData.overview;
-        card.dataset.airdate = posterData.first_air_date;
-        card.dataset.genres = posterData.genres;
-        card.dataset.title = posterData.name;
-
-        card.innerHTML = `<img src="${posterData.poster}"><div class="series-title">${series.localName}</div>`;
-        card.onclick = ()=>openSeries(card);
-        grid.appendChild(card);
+            card.innerHTML = `<img src="${posterData.poster}"><div class="series-title">${series.localName}</div>`;
+            card.onclick = ()=>openSeries(card);
+            grid.appendChild(card);
+        });
     }
 }
 
@@ -167,7 +160,9 @@ function openSeries(card){
     document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
-    if(!player) player = videojs('video',{autoplay:true,controls:true,fluid:true});
+    if(!player) {
+        player = videojs('video',{autoplay:true,controls:true,fluid:true});
+    }
 
     const firstBtn = episodeList.querySelector(".episode-btn");
     if(firstBtn) firstBtn.click();
@@ -181,23 +176,22 @@ async function playEpisode(btn){
     let attempt=0;
     async function loadVideo(){
         try{
-            let url=btn.dataset.url+"?t="+new Date().getTime();
-            if(player){
-                if(player.hls){player.hls.destroy();player.hls=null;}
-                player.reset();
-            }
+            let url = btn.dataset.url;
 
             if(Hls.isSupported()){
-                let hls=new Hls();
+                if(!hls) hls = new Hls();
+                hls.destroy();
+                hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(player.tech().el());
-                hls.on(Hls.Events.ERROR, function(){
-                    if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); hls.destroy(); }
-                });
                 hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
-                player.hls=hls;
-            } else { player.src({src:url,type:'application/x-mpegURL'}); player.play(); }
-        } catch(e){ if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); } }
+            } else {
+                player.src({src:url,type:'application/x-mpegURL'});
+                player.play();
+            }
+        } catch(e){
+            if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); }
+        }
     }
     loadVideo();
 }
@@ -206,12 +200,14 @@ async function playEpisode(btn){
 function closeVideo(){
     document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
-    if(player && player.hls){player.hls.destroy();player.hls=null;}
+    if(hls){ hls.destroy(); hls=null; }
+    if(player){ player.pause(); player.currentTime(0); }
 }
 
 /* Pokretanje */
 loadSeries();
 </script>
+
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
