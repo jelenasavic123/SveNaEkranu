@@ -201,6 +201,7 @@ const RETRY_DELAY = 2000;
 
 let player;
 
+/* TMDB POSTER */
 async function fetchPoster(seriesName){
     try{
         let query = encodeURIComponent(seriesName.replace(/-/g,' '));
@@ -217,33 +218,44 @@ async function fetchPoster(seriesName){
         }
         return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
     } catch(e){
-        console.error(e);
         return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
     }
 }
 
+/* UCITAVANJE SERIJA */
 async function loadSeries(){
     const res = await fetch(FIREBASE_URL);
     const data = await res.json();
     const grid = document.getElementById("seriesGrid");
     grid.innerHTML = '';
+
     for(let key in data){
+        let series = data[key];
         let posterData = await fetchPoster(key);
+
         let card = document.createElement("div");
         card.className = "series-card";
+
         card.dataset.series = key;
-        card.dataset.episodes = JSON.stringify(data[key]);
+        card.dataset.episodes = JSON.stringify(series.episodes);
+        card.dataset.localName = series.localName;
         card.dataset.poster = posterData.poster;
         card.dataset.overview = posterData.overview;
         card.dataset.airdate = posterData.first_air_date;
         card.dataset.genres = posterData.genres;
         card.dataset.title = posterData.name;
-        card.innerHTML = `<img src="${posterData.poster}" alt="${key}"><div class="series-title">${posterData.name}</div>`;
+
+        card.innerHTML = `
+            <img src="${posterData.poster}">
+            <div class="series-title">${series.localName}</div>
+        `;
+
         card.onclick = ()=>openSeries(card);
         grid.appendChild(card);
     }
 }
 
+/* OTVARANJE SERIJE */
 function openSeries(card){
     document.getElementById("seriesGrid").style.display='none';
     const wrapper = document.getElementById("videoWrapper");
@@ -251,21 +263,22 @@ function openSeries(card){
 
     const episodeList = document.getElementById("episodeList");
     episodeList.innerHTML='';
+
     const episodes = JSON.parse(card.dataset.episodes);
-    for(let i=1;i<episodes.length;i++){ // ignorisati prvi null element
-        let url = episodes[i];
-        if(!url) continue;
+
+    episodes.forEach((url, index)=>{
+        if(!url) return;
         let btn = document.createElement("button");
         btn.className = "episode-btn";
-        btn.textContent = "Epizoda " + i;
+        btn.textContent = "Epizoda " + (index + 1);
         btn.dataset.url = url;
         btn.dataset.seriesKey = card.dataset.series;
-        btn.dataset.ep = i;
+        btn.dataset.ep = index;
         btn.onclick = ()=>playEpisode(btn);
         episodeList.appendChild(btn);
-    }
+    });
 
-    document.getElementById("seriesTitle").textContent = card.dataset.title;
+    document.getElementById("seriesTitle").textContent = card.dataset.localName;
     document.getElementById("seriesOverview").textContent = card.dataset.overview;
     document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
     document.getElementById("seriesPoster").src = card.dataset.poster;
@@ -278,34 +291,23 @@ function openSeries(card){
     if(firstBtn) firstBtn.click();
 }
 
+/* PUŠTANJE EPIZODE */
 async function playEpisode(btn){
-    // ukloni aktivnu klasu sa svih dugmadi
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
-
-    // Scroll do vrha playera
-    document.getElementById("videoWrapper").scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     let attempt = 0;
 
     async function loadVideo(){
         try {
-            const episodesData = await fetch(FIREBASE_URL).then(r=>r.json());
-            const seriesKey = btn.dataset.seriesKey;
-            const ep = btn.dataset.ep;
-            let url = episodesData[seriesKey][ep];
-            if(!url) return;
-            url += "?t=" + new Date().getTime();
+            let url = btn.dataset.url + "?t=" + new Date().getTime();
 
-            // Potpuno resetuj player pre novog load-a
             if(player){
                 if(player.hls){
                     player.hls.destroy();
                     player.hls = null;
                 }
                 player.reset();
-            } else {
-                player = videojs('video', { autoplay:true, controls:true, fluid:true });
             }
 
             if(Hls.isSupported()){
@@ -313,34 +315,24 @@ async function playEpisode(btn){
                 hls.loadSource(url);
                 hls.attachMedia(player.tech().el());
 
-                hls.on(Hls.Events.ERROR, function(event, data){
-                    console.error("HLS error", data);
+                hls.on(Hls.Events.ERROR, function(){
                     if(attempt < MAX_RETRY){
                         attempt++;
-                        console.log(`Retrying video... Attempt ${attempt}`);
-                        hls.destroy();
-                        player.hls = null;
                         setTimeout(loadVideo, RETRY_DELAY);
+                        hls.destroy();
                     }
                 });
 
                 hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
                 player.hls = hls;
-            } else if(player.tech().el().canPlayType('application/vnd.apple.mpegurl')){
+
+            } else {
                 player.src({ src:url, type:'application/x-mpegURL' });
-                player.play().catch(()=>{
-                    if(attempt < MAX_RETRY){
-                        attempt++;
-                        console.log(`Retrying video... Attempt ${attempt}`);
-                        setTimeout(loadVideo, RETRY_DELAY);
-                    }
-                });
+                player.play();
             }
         } catch(e){
-            console.error(e);
             if(attempt < MAX_RETRY){
                 attempt++;
-                console.log(`Retrying video... Attempt ${attempt}`);
                 setTimeout(loadVideo, RETRY_DELAY);
             }
         }
@@ -349,16 +341,16 @@ async function playEpisode(btn){
     loadVideo();
 }
 
+/* ZATVARANJE PLAYERA */
 function closeVideo(){
-    const wrapper = document.getElementById("videoWrapper");
-    wrapper.style.display='none';
+    document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
     if(player && player.hls) { player.hls.destroy(); player.hls = null; }
 }
 
-// Pokreni inicijalno
 loadSeries();
 </script>
+
 
 
 <!-- Google tag (gtag.js) -->
@@ -373,6 +365,5 @@ loadSeries();
 
 </body>
 </html>
-
 
 
