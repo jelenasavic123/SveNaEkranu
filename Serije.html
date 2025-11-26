@@ -49,13 +49,9 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
 <script>
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
-const MAX_RETRY = 3;
-const RETRY_DELAY = 1500;
 const LIST_REFRESH_INTERVAL = 60*60*1000; // 1h
 
 let player;
@@ -169,31 +165,25 @@ function openSeries(card){
 }
 
 /* PUŠTANJE EPIZODE */
-async function playEpisode(btn){
+function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
-    let attempt=0;
-    async function loadVideo(){
-        try{
-            let url = btn.dataset.url;
+    let url = btn.dataset.url;
 
-            if(Hls.isSupported()){
-                if(!hls) hls = new Hls();
-                hls.destroy();
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(player.tech().el());
-                hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
-            } else {
-                player.src({src:url,type:'application/x-mpegURL'});
-                player.play();
-            }
-        } catch(e){
-            if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); }
+    if(Hls.isSupported()){
+        if(!hls){
+            hls = new Hls();
+            hls.attachMedia(player.tech().el());
+        } else {
+            hls.stopLoad();
         }
+        hls.loadSource(url);
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
+    } else {
+        player.src({src:url,type:'application/x-mpegURL'});
+        player.play();
     }
-    loadVideo();
 }
 
 /* ZATVARANJE PLAYERA */
@@ -207,6 +197,7 @@ function closeVideo(){
 /* Pokretanje */
 loadSeries();
 </script>
+
 
 
 <!-- Google tag (gtag.js) -->
