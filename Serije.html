@@ -1,6 +1,3 @@
-
-<div style="font:11px arial; color:gray; text-align:center" class="OPP-linkBack"><a style="text-decoration:none;" href="https://www.easypolls.net">online polls</a></div> <script type='text/javascript' src='https://vote.easypolls.net/em.js' data-id='6926ec2191cff80062fdf4d5' data-width="300px" data-height="300px"></script>
-</div>
 <!DOCTYPE html>
 <html lang="sr">
 <head>
@@ -9,170 +6,29 @@
 <title>Serije Player</title>
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
-/* Body i Grid */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #141414;
-    color: #fff;
-}
-
-#seriesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    padding: 15px;
-    justify-items: center;
-}
-
-/* Kartice serija */
-.series-card {
-    width: 140px;
-    cursor: pointer;
-    text-align: center;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: 0.3s;
-    background: #1a1a1a;
-}
-
-.series-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-}
-
-.series-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-bottom: 2px solid #333;
-}
-
-.series-title {
-    padding: 6px;
-    font-size: 0.9em;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-/* Video Wrapper i Player */
-#videoWrapper {
-    display: none;
-    flex-direction: column;
-    width: 90%;        /* 90% širine ekrana */
-    max-width: 90%;
-    margin: 20px auto; /* centriranje */
-    background: #000;
-    overflow: visible; /* epizode ispod */
-    padding-bottom: 20px;
-}
-
-#playerContainer {
-    position: relative;
-    width: 100%;
-    max-width: 100%;  /* ne širi više od wrappera */
-    height: auto;     /* visina automatski po proporciji */
-    background: black;
-    margin: 0 auto;
-}
-
-.video-js {
-    display: block;
-    width: 100%;       /* prati širinu container-a */
-    height: auto;      /* proporcionalno visina */
-    border-radius: 8px;
-    max-height: 60vh;  /* da player ne pređe ekran */
-}
-
-/* Dugmad nazad */
-.back-btn {
-    margin: 10px auto;
-    padding: 8px 16px;
-    background: #222;
-    border: 1px solid #555;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #fff;
-    transition: 0.3s;
-    display: block;
-}
-
-.back-btn:hover {
-    background: #ff3d00;
-    border-color: #ff3d00;
-}
-
-/* Naslov serije */
-#seriesTitle {
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 10px 0;
-}
-
-/* Lista epizoda */
-#episodeList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    padding: 10px;
-    background: #141414; /* epizode ispod playera */
-    z-index: 1;
-}
-
-.episode-btn {
-    background: #222;
-    color: #fff;
-    border: 1px solid #555;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.episode-btn.active {
-    background: #ff3d00;
-    border-color: #ff3d00;
-}
-
-/* Meta podaci serije */
-#seriesMeta {
-    text-align: center;
-    padding: 15px;
-}
-
-#seriesMeta img {
-    max-width: 120px;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-/* Responsive prilagodbe */
-@media (max-width: 768px) {
-    #videoWrapper {
-        width: 95%;
-        max-width: 95%;
-    }
-
-    #playerContainer {
-        max-height: 40vh; /* player manji na mobilnim uređajima */
-    }
-
-    .series-card img {
-        height: 180px;
-    }
-
-    .episode-btn {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-}
-
+body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#fff; }
+#seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
+.series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:.3s; background:#1a1a1a; }
+.series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,.6); }
+.series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; }
+.series-title { padding:6px; font-size:.9em; font-weight:bold; text-transform:uppercase; }
+#videoWrapper { display:none; flex-direction:column; width:90%; max-width:90%; margin:20px auto; background:#000; padding-bottom:20px; }
+#playerContainer { position:relative; width:100%; max-width:100%; height:auto; background:black; margin:0 auto; }
+.video-js { display:block; width:100%; height:auto; border-radius:8px; max-height:60vh; }
+.back-btn { margin:10px auto; padding:8px 16px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; color:#fff; transition:.3s; display:block; }
+.back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
+#seriesTitle { text-align:center; font-size:1.5em; font-weight:bold; margin:10px 0; }
+#episodeList { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; padding:10px; background:#141414; z-index:1; }
+.episode-btn { background:#222; color:#fff; border:1px solid #555; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:14px; }
+.episode-btn.active { background:#ff3d00; border-color:#ff3d00; }
+#seriesMeta { text-align:center; padding:15px; }
+#seriesMeta img { max-width:120px; border-radius:8px; margin-top:10px; }
+@media(max-width:768px){#videoWrapper{width:95%; max-width:95%;} .series-card img{height:180px;} .episode-btn{padding:6px 12px; font-size:13px;} #playerContainer{max-height:40vh;}}
 </style>
 </head>
 <body>
+<div style="font:11px arial; color:gray; text-align:center" class="OPP-linkBack"><a style="text-decoration:none;" href="https://www.easypolls.net">online polls</a></div> <script type='text/javascript' src='https://vote.easypolls.net/em.js' data-id='6926ec2191cff80062fdf4d5' data-width="300px" data-height="300px"></script>
+</div>
 
 <h1 style="text-align:center;">Popularne serije</h1>
 <div id="seriesGrid"></div>
@@ -198,6 +54,7 @@ const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
 const MAX_RETRY = 5;
 const RETRY_DELAY = 2000;
+const LIST_REFRESH_INTERVAL = 60*60*1000; // 1h
 
 let player;
 
@@ -209,25 +66,57 @@ async function fetchPoster(seriesName){
         let data = await res.json();
         if(data.results && data.results[0]){
             return {
-                poster: data.results[0].poster_path ? `https://image.tmdb.org/t/p/w500${data.results[0].poster_path}` : '',
-                overview: data.results[0].overview || '',
-                name: data.results[0].name || seriesName,
-                first_air_date: data.results[0].first_air_date || '',
-                genres: (data.results[0].genre_ids || []).join(', ')
+                poster: data.results[0].poster_path?`https://image.tmdb.org/t/p/w500${data.results[0].poster_path}`:'',
+                overview: data.results[0].overview||'',
+                name: data.results[0].name||seriesName,
+                first_air_date: data.results[0].first_air_date||'',
+                genres: (data.results[0].genre_ids||[]).join(', ')
             };
         }
         return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
-    } catch(e){
-        return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+    } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
+}
+
+/* UCITAVANJE LISTE PO POTREBI */
+async function getSeriesList() {
+    const now = Date.now();
+    const cached = localStorage.getItem('seriesList');
+    const lastFetch = localStorage.getItem('seriesListTime') || 0;
+
+    if(cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) {
+        // provera da li se Firebase list promenila
+        try {
+            const res = await fetch(FIREBASE_URL);
+            const data = await res.json();
+            const cachedData = JSON.parse(cached);
+
+            // jednostavna provera da li se keys razlikuju
+            const cachedKeys = Object.keys(cachedData).join(',');
+            const newKeys = Object.keys(data).join(',');
+            if(cachedKeys === newKeys) return cachedData; // koristi keš
+            else {
+                localStorage.setItem('seriesList', JSON.stringify(data));
+                localStorage.setItem('seriesListTime', now);
+                return data;
+            }
+        } catch(e){
+            return JSON.parse(cached); // fallback na keš ako Firebase nije dostupan
+        }
     }
+
+    // povlačenje nove liste
+    const res = await fetch(FIREBASE_URL);
+    const data = await res.json();
+    localStorage.setItem('seriesList', JSON.stringify(data));
+    localStorage.setItem('seriesListTime', now);
+    return data;
 }
 
 /* UCITAVANJE SERIJA */
 async function loadSeries(){
-    const res = await fetch(FIREBASE_URL);
-    const data = await res.json();
+    const data = await getSeriesList();
     const grid = document.getElementById("seriesGrid");
-    grid.innerHTML = '';
+    grid.innerHTML='';
 
     for(let key in data){
         let series = data[key];
@@ -245,11 +134,7 @@ async function loadSeries(){
         card.dataset.genres = posterData.genres;
         card.dataset.title = posterData.name;
 
-        card.innerHTML = `
-            <img src="${posterData.poster}">
-            <div class="series-title">${series.localName}</div>
-        `;
-
+        card.innerHTML = `<img src="${posterData.poster}"><div class="series-title">${series.localName}</div>`;
         card.onclick = ()=>openSeries(card);
         grid.appendChild(card);
     }
@@ -265,16 +150,15 @@ function openSeries(card){
     episodeList.innerHTML='';
 
     const episodes = JSON.parse(card.dataset.episodes);
-
-    episodes.forEach((url, index)=>{
+    episodes.forEach((url,index)=>{
         if(!url) return;
         let btn = document.createElement("button");
-        btn.className = "episode-btn";
-        btn.textContent = "Epizoda " + (index + 1);
-        btn.dataset.url = url;
-        btn.dataset.seriesKey = card.dataset.series;
-        btn.dataset.ep = index;
-        btn.onclick = ()=>playEpisode(btn);
+        btn.className="episode-btn";
+        btn.textContent="Epizoda "+(index+1);
+        btn.dataset.url=url;
+        btn.dataset.seriesKey=card.dataset.series;
+        btn.dataset.ep=index;
+        btn.onclick=()=>playEpisode(btn);
         episodeList.appendChild(btn);
     });
 
@@ -283,9 +167,7 @@ function openSeries(card){
     document.getElementById("seriesInfo").textContent = `Žanr: ${card.dataset.genres} | Godina: ${card.dataset.airdate}`;
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
-    if(!player) {
-        player = videojs('video', { autoplay:true, controls:true, fluid:true });
-    }
+    if(!player) player = videojs('video',{autoplay:true,controls:true,fluid:true});
 
     const firstBtn = episodeList.querySelector(".episode-btn");
     if(firstBtn) firstBtn.click();
@@ -296,48 +178,27 @@ async function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
-    let attempt = 0;
-
+    let attempt=0;
     async function loadVideo(){
-        try {
-            let url = btn.dataset.url + "?t=" + new Date().getTime();
-
+        try{
+            let url=btn.dataset.url+"?t="+new Date().getTime();
             if(player){
-                if(player.hls){
-                    player.hls.destroy();
-                    player.hls = null;
-                }
+                if(player.hls){player.hls.destroy();player.hls=null;}
                 player.reset();
             }
 
             if(Hls.isSupported()){
-                let hls = new Hls();
+                let hls=new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(player.tech().el());
-
                 hls.on(Hls.Events.ERROR, function(){
-                    if(attempt < MAX_RETRY){
-                        attempt++;
-                        setTimeout(loadVideo, RETRY_DELAY);
-                        hls.destroy();
-                    }
+                    if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); hls.destroy(); }
                 });
-
                 hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
-                player.hls = hls;
-
-            } else {
-                player.src({ src:url, type:'application/x-mpegURL' });
-                player.play();
-            }
-        } catch(e){
-            if(attempt < MAX_RETRY){
-                attempt++;
-                setTimeout(loadVideo, RETRY_DELAY);
-            }
-        }
+                player.hls=hls;
+            } else { player.src({src:url,type:'application/x-mpegURL'}); player.play(); }
+        } catch(e){ if(attempt<MAX_RETRY){ attempt++; setTimeout(loadVideo,RETRY_DELAY); } }
     }
-
     loadVideo();
 }
 
@@ -345,13 +206,12 @@ async function playEpisode(btn){
 function closeVideo(){
     document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
-    if(player && player.hls) { player.hls.destroy(); player.hls = null; }
+    if(player && player.hls){player.hls.destroy();player.hls=null;}
 }
 
+/* Pokretanje */
 loadSeries();
 </script>
-
-
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
@@ -363,7 +223,6 @@ loadSeries();
   gtag('config', 'G-T61FEM3203');
 </script>
 
+
 </body>
 </html>
-
-
