@@ -28,17 +28,16 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 </head>
 <body>
     
-            <div style="font:11px arial; color:gray; text-align:center" class="OPP-linkBack"><a style="text-decoration:none;" href="https://www.easypolls.net">online polls</a></div>
-            <script type='text/javascript' src='https://vote.easypolls.net/em.js' data-id='6926ec2191cff80062fdf4d5' data-width="300px" data-height="300px"></script>
-        
+<div style="font:11px arial; color:gray; text-align:center" class="OPP-linkBack">
+    <a style="text-decoration:none;" href="https://www.easypolls.net">online polls</a>
+</div>
+<script type='text/javascript' src='https://vote.easypolls.net/em.js' data-id='6926ec2191cff80062fdf4d5' data-width="300px" data-height="300px"></script>
+
 <div id="seriesGrid"></div>
 
 <div id="videoWrapper">
     <div id="playerContainer">
-
-        <!-- AUTOPLAY UKLONJEN -->
         <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
-
     </div>
     <button class="back-btn" onclick="closeVideo()">⬅ Nazad</button>
     <div id="seriesTitle"></div>
@@ -85,24 +84,41 @@ async function fetchPoster(seriesName){
     } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
 }
 
+// ------------------ NOVO: proverava da li se lista promenila ------------------
 async function getSeriesList() {
     const now = Date.now();
     const cached = localStorage.getItem('seriesList');
     const lastFetch = localStorage.getItem('seriesListTime') || 0;
 
-    if(cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) return JSON.parse(cached);
+    // Ako je lista u cache-u i nije prošao interval, koristi cache
+    if (cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) {
+        return JSON.parse(cached);
+    }
 
-    try{
+    try {
         const res = await fetch(FIREBASE_URL);
         const data = await res.json();
-        localStorage.setItem('seriesList', JSON.stringify(data));
-        localStorage.setItem('seriesListTime', now);
+
+        const cachedData = cached ? JSON.parse(cached) : null;
+        const isDifferent = JSON.stringify(data) !== JSON.stringify(cachedData);
+
+        if (isDifferent) {
+            localStorage.setItem('seriesList', JSON.stringify(data));
+            localStorage.setItem('seriesListTime', now);
+            console.log("Lista je promenjena → učitana nova lista sa Firebase-a.");
+        } else {
+            console.log("Lista ista → koristi se postojeća cache lista.");
+        }
+
         return data;
-    } catch(e){
+
+    } catch(e) {
+        console.warn("Ne mogu da dohvatim Firebase, koristi se cache.");
         return cached ? JSON.parse(cached) : {};
     }
 }
 
+// ------------------ LOAD SERIES ------------------
 async function loadSeries(){
     const data = await getSeriesList();
     const grid = document.getElementById("seriesGrid");
@@ -129,7 +145,7 @@ async function loadSeries(){
     }
 }
 
-/* OTVARANJE SERIJE */
+// ------------------ OTVARANJE SERIJE ------------------
 function openSeries(card){
     document.getElementById("seriesGrid").style.display='none';
     const wrapper = document.getElementById("videoWrapper");
@@ -159,16 +175,11 @@ function openSeries(card){
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
     if(!player) {
-
-        /* AUTOPLAY ISKLJUČEN */
         player = videojs('video',{autoplay:false,controls:true,fluid:true});
-
     }
-
-    /* AUTOMATSKO PUŠTANJE PRVE EPIZODE — UKLONJENO */
 }
 
-/* PUŠTANJE EPIZODE */
+// ------------------ PUŠTANJE EPIZODE ------------------
 function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
@@ -192,6 +203,7 @@ function playEpisode(btn){
     document.getElementById("videoWrapper").scrollIntoView({behavior:'smooth', block:'start'});
 }
 
+// ------------------ ZATVARANJE VIDEO WRAPPER ------------------
 function closeVideo(){
     document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
@@ -199,15 +211,16 @@ function closeVideo(){
     if(player){ player.pause(); player.currentTime(0); }
 }
 
+// ------------------ INIT ------------------
 loadSeries();
 </script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-T61FEM3203');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-T61FEM3203');
 </script>
 
 </body>
