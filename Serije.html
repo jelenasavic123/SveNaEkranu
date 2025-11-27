@@ -35,7 +35,10 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 
 <div id="videoWrapper">
     <div id="playerContainer">
-        <video-js id="video" class="video-js vjs-default-skin" controls autoplay></video-js>
+
+        <!-- AUTOPLAY UKLONJEN -->
+        <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
+
     </div>
     <button class="back-btn" onclick="closeVideo()">⬅ Nazad</button>
     <div id="seriesTitle"></div>
@@ -57,7 +60,6 @@ const LIST_REFRESH_INTERVAL = 60*60*1000; // 1h
 let player;
 let hls;
 
-/* TMDB POSTER KEŠ */
 async function fetchPoster(seriesName){
     const cacheKey = "poster_" + seriesName;
     const cached = localStorage.getItem(cacheKey);
@@ -83,7 +85,6 @@ async function fetchPoster(seriesName){
     } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
 }
 
-/* UCITAVANJE LISTE */
 async function getSeriesList() {
     const now = Date.now();
     const cached = localStorage.getItem('seriesList');
@@ -102,7 +103,6 @@ async function getSeriesList() {
     }
 }
 
-/* UCITAVANJE SERIJA */
 async function loadSeries(){
     const data = await getSeriesList();
     const grid = document.getElementById("seriesGrid");
@@ -135,7 +135,6 @@ function openSeries(card){
     const wrapper = document.getElementById("videoWrapper");
     wrapper.style.display='flex';
 
-    // Scroll na vrh stranice
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const episodeList = document.getElementById("episodeList");
@@ -160,11 +159,13 @@ function openSeries(card){
     document.getElementById("seriesPoster").src = card.dataset.poster;
 
     if(!player) {
-        player = videojs('video',{autoplay:true,controls:true,fluid:true});
+
+        /* AUTOPLAY ISKLJUČEN */
+        player = videojs('video',{autoplay:false,controls:true,fluid:true});
+
     }
 
-    const firstBtn = episodeList.querySelector(".episode-btn");
-    if(firstBtn) firstBtn.click();
+    /* AUTOMATSKO PUŠTANJE PRVE EPIZODE — UKLONJENO */
 }
 
 /* PUŠTANJE EPIZODE */
@@ -188,11 +189,9 @@ function playEpisode(btn){
         player.play();
     }
 
-    // Scroll na player kada klikneš epizodu
     document.getElementById("videoWrapper").scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-/* ZATVARANJE PLAYERA */
 function closeVideo(){
     document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
@@ -200,22 +199,16 @@ function closeVideo(){
     if(player){ player.pause(); player.currentTime(0); }
 }
 
-/* Pokretanje */
 loadSeries();
 </script>
 
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-T61FEM3203');
 </script>
 
 </body>
 </html>
-
-
-
