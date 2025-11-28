@@ -92,7 +92,7 @@ let player;
 let hls;
 
 // RUČNO ODOBRENE SERIJE
-const ALLOWED_SERIES = ["Arafta", "Zerhun", "Tasacak Bu Deniz", "Aska Mahkum", "Kizilcik Serbeti"];
+const ALLOWED_SERIES = [ "Zerhun", "Tasacak Bu Deniz", "Veliaht", "Aska Mahkum"];
 
 // Fetch poster TMDB
 async function fetchPoster(seriesName){
@@ -248,4 +248,5 @@ if(!player) player = videojs('video',{autoplay:false,controls:true,fluid:true});
 </script>
 </body>
 </html>
+
 
