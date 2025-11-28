@@ -7,6 +7,9 @@
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
 body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#fff; }
+#filterBar{display:flex;gap:10px;padding:15px;justify-content:center;flex-wrap:wrap;}
+.filter-btn{background:#222;color:#fff;border:1px solid #555;padding:8px 16px;border-radius:6px;cursor:pointer;transition:.3s;}
+.filter-btn:hover,.filter-btn.active{background:#ff3d00;border-color:#ff3d00;}
 #seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
 .series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:.3s; background:#1a1a1a; }
 .series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,.6); }
@@ -27,6 +30,15 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 </style>
 </head>
 <body>
+
+<!-- FILTER BAR -->
+<div id="filterBar">
+    <button class="filter-btn" data-filter="all">SVE</button>
+
+    <button class="filter-btn" data-filter="year_2025">2025</button>
+    <button class="filter-btn" data-filter="year_2024">2024</button>
+</div>
+
 <div id="seriesGrid"></div>
 
 <div id="videoWrapper">
@@ -45,6 +57,7 @@ body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#f
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
+
 <script>
 const FIREBASE_URL = "https://jsonserije-4d79b-default-rtdb.firebaseio.com/.json";
 const TMDB_API_KEY = "2701858e9bccab54d4d0e4931420a739";
@@ -53,6 +66,7 @@ const LIST_REFRESH_INTERVAL = 60*60*1000; // 1h
 let player;
 let hls;
 
+// FETCH POSTER FROM TMDB WITH CACHE
 async function fetchPoster(seriesName){
     const cacheKey = "poster_" + seriesName;
     const cached = localStorage.getItem(cacheKey);
@@ -62,7 +76,7 @@ async function fetchPoster(seriesName){
         let query = encodeURIComponent(seriesName.replace(/-/g,' '));
         let res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_API_KEY}&language=sr&query=${query}`);
         let data = await res.json();
-        let posterData = {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''};
+        let posterData = {poster:'',overview:'',name:seriesName,first_air_date:'',genres:'',popularity:0};
 
         if(data.results && data.results[0]){
             posterData = {
@@ -70,21 +84,21 @@ async function fetchPoster(seriesName){
                 overview: data.results[0].overview||'',
                 name: data.results[0].name||seriesName,
                 first_air_date: data.results[0].first_air_date||'',
-                genres: (data.results[0].genre_ids||[]).join(', ')
+                genres: (data.results[0].genre_ids||[]).join(','),
+                popularity: data.results[0].popularity || 0
             };
         }
         localStorage.setItem(cacheKey, JSON.stringify(posterData));
         return posterData;
-    } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:''}; }
+    } catch(e){ return {poster:'',overview:'',name:seriesName,first_air_date:'',genres:'',popularity:0}; }
 }
 
-// ------------------ NOVO: proverava da li se lista promenila ------------------
+// FETCH SERIES LIST WITH CACHE
 async function getSeriesList() {
     const now = Date.now();
     const cached = localStorage.getItem('seriesList');
     const lastFetch = localStorage.getItem('seriesListTime') || 0;
 
-    // Ako je lista u cache-u i nije prošao interval, koristi cache
     if (cached && (now - lastFetch < LIST_REFRESH_INTERVAL)) {
         return JSON.parse(cached);
     }
@@ -92,27 +106,22 @@ async function getSeriesList() {
     try {
         const res = await fetch(FIREBASE_URL);
         const data = await res.json();
-
         const cachedData = cached ? JSON.parse(cached) : null;
         const isDifferent = JSON.stringify(data) !== JSON.stringify(cachedData);
 
         if (isDifferent) {
             localStorage.setItem('seriesList', JSON.stringify(data));
             localStorage.setItem('seriesListTime', now);
-            console.log("Lista je promenjena → učitana nova lista sa Firebase-a.");
-        } else {
-            console.log("Lista ista → koristi se postojeća cache lista.");
         }
 
         return data;
 
     } catch(e) {
-        console.warn("Ne mogu da dohvatim Firebase, koristi se cache.");
         return cached ? JSON.parse(cached) : {};
     }
 }
 
-// ------------------ LOAD SERIES ------------------
+// LOAD SERIES GRID
 async function loadSeries(){
     const data = await getSeriesList();
     const grid = document.getElementById("seriesGrid");
@@ -131,37 +140,43 @@ async function loadSeries(){
             card.dataset.airdate = posterData.first_air_date;
             card.dataset.genres = posterData.genres;
             card.dataset.title = posterData.name;
+            card.dataset.popularity = posterData.popularity;
 
-            card.innerHTML = `<img src="${posterData.poster}"><div class="series-title">${series.localName}</div>`;
+            card.innerHTML = `<img src="${posterData.poster}" loading="lazy"><div class="series-title">${series.localName}</div>`;
             card.onclick = ()=>openSeries(card);
             grid.appendChild(card);
         });
     }
+
+    setupFilters();
 }
 
-// ------------------ OTVARANJE SERIJE ------------------
+// OPEN SERIES
 function openSeries(card){
     document.getElementById("seriesGrid").style.display='none';
+    const filterBar = document.getElementById("filterBar");
+    if(filterBar) filterBar.style.display='none';
     const wrapper = document.getElementById("videoWrapper");
     wrapper.style.display='flex';
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const episodeList = document.getElementById("episodeList");
     episodeList.innerHTML='';
 
     const episodes = JSON.parse(card.dataset.episodes);
-    episodes.forEach((url,index)=>{
-        if(!url) return;
-        let btn = document.createElement("button");
-        btn.className="episode-btn";
-        btn.textContent="Epizoda "+(index+1);
-        btn.dataset.url=url;
-        btn.dataset.seriesKey=card.dataset.series;
-        btn.dataset.ep=index;
-        btn.onclick=()=>playEpisode(btn);
-        episodeList.appendChild(btn);
-    });
+episodeList.innerHTML = '';
+
+for(let i = episodes.length - 1; i >= 0; i--){
+    let url = episodes[i];
+    if(!url) continue;
+    let btn = document.createElement("button");
+    btn.className = "episode-btn";
+    btn.textContent = "Epizoda " + (episodes.length - i); // dugme 1 = poslednji u listi
+    btn.dataset.url = url; // URL je uvek tačan
+    btn.onclick = () => playEpisode(btn);
+    episodeList.appendChild(btn);
+}
+
 
     document.getElementById("seriesTitle").textContent = card.dataset.localName;
     document.getElementById("seriesOverview").textContent = card.dataset.overview;
@@ -173,41 +188,75 @@ function openSeries(card){
     }
 }
 
-// ------------------ PUŠTANJE EPIZODE ------------------
+// PLAY EPISODE
 function playEpisode(btn){
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
 
     let url = btn.dataset.url;
 
+    // Reset HLS i player
+    if(hls){
+        hls.destroy();
+        hls = null;
+    }
+    player.pause();
+    player.src({ src: '', type: 'application/x-mpegURL' });
+    player.currentTime(0);
+
+    // Start new episode
     if(Hls.isSupported()){
-        if(!hls){
-            hls = new Hls();
-            hls.attachMedia(player.tech().el());
-        } else {
-            hls.stopLoad();
-        }
+        hls = new Hls();
+        hls.attachMedia(player.tech().el());
         hls.loadSource(url);
-        hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
+        hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
     } else {
-        player.src({src:url,type:'application/x-mpegURL'});
+        player.src({ src: url, type: 'application/x-mpegURL' });
         player.play();
     }
 
     document.getElementById("videoWrapper").scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-// ------------------ ZATVARANJE VIDEO WRAPPER ------------------
+// CLOSE VIDEO WRAPPER
 function closeVideo(){
     document.getElementById("videoWrapper").style.display='none';
     document.getElementById("seriesGrid").style.display='grid';
+    const filterBar = document.getElementById("filterBar");
+    if(filterBar) filterBar.style.display='flex';
     if(hls){ hls.destroy(); hls=null; }
     if(player){ player.pause(); player.currentTime(0); }
 }
 
-// ------------------ INIT ------------------
+// FILTERS
+function setupFilters(){
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            const filter = btn.dataset.filter;
+            filterSeries(filter);
+        });
+    });
+}
+
+function filterSeries(filter){
+    const cards = document.querySelectorAll('.series-card');
+    cards.forEach(card=>{
+        let show = false;
+        if(filter==='all') show = true;
+        if(filter==='popular' && parseFloat(card.dataset.popularity)>=10) show = true;
+        if(filter.startsWith('genre_') && card.dataset.genres.includes(filter.replace('genre_',''))) show = true;
+        if(filter.startsWith('year_') && card.dataset.airdate.startsWith(filter.replace('year_',''))) show = true;
+        card.style.display = show ? 'block' : 'none';
+    });
+}
+
+// INIT
 loadSeries();
 </script>
+
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
@@ -219,8 +268,3 @@ gtag('config', 'G-T61FEM3203');
 
 </body>
 </html>
-
-
-
-
-
