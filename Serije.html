@@ -160,11 +160,15 @@
     <button class="back-btn" onclick="closeVideo()" style="margin:10px auto;">⬅ Nazad</button>
     <div id="episodeList"></div>
     <div id="seriesMeta">
+    <div style="background-color: #141414; color: #e50914; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
+    <p style="font-size: 12px; line-height: 1.8; margin: 0;">Ako video ne ucita kliknite ponovi na istu epizodu</p>
+</div>
         <p id="seriesOverview"></p>
         <p id="seriesInfo"></p>
         <img id="seriesPoster" src="placeholder.jpg" alt="">
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
@@ -371,5 +375,4 @@ function filterSeries(filter){
 </script>
 </body>
 </html>
-
 
