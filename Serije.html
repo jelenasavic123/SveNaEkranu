@@ -1,174 +1,66 @@
-
-
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Serije Player — Turske Serije</title>
-
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
-  body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#fff; }
-
-  #filterBar{display:flex;gap:10px;padding:15px;justify-content:center;flex-wrap:wrap;}
-  .filter-btn{background:#222;color:#fff;border:1px solid #555;padding:8px 16px;border-radius:6px;cursor:pointer;transition:.3s;}
-  .filter-btn:hover,.filter-btn.active{background:#ff3d00;border-color:#ff3d00;}
-
-  #seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
-  .series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:.3s; background:#1a1a1a; }
-  .series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,.06); }
-  .series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; background:#222; }
-  .series-title { padding:6px; font-size:.9em; font-weight:bold; text-transform:uppercase; }
-
-  #videoWrapper { display:none; flex-direction:column; width:90%; max-width:1200px; margin:20px auto; background:#000; padding-bottom:20px; border-radius:10px; }
-  
-  #playerContainer { 
-    position: relative; 
-    width: 100%; 
-    height: 0; 
-    padding-bottom: 56.25%; /* 16:9 ratio */
-    background: black; 
-    border-radius: 8px; 
-    overflow: hidden; 
-    box-shadow: 0 0 15px rgba(255, 61, 0, 0.2);
-  }
-
-  .video-js { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    border-radius: 8px; 
-    box-shadow: none; 
-  }
-
-  #playerControls {
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin:10px 0;
-  }
-
-  .back-btn { 
-    margin:0;
-    padding:10px 22px; 
-    background:#222; 
-    border:1px solid #555; 
-    border-radius:6px; 
-    cursor:pointer; 
-    font-size:14px; 
-    color:#fff; 
-    transition:.3s; 
-  }
-  .back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
-
-  #seriesTitle { text-align:center; font-size:1.8em; font-weight:bold; margin:10px 0; }
-
-  #episodeList {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-    padding:15px;
-    background: rgba(30,30,30,0.9);
-    border-radius:10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  }
-  .episode-btn {
-    background: #1e1e1e;
-    color:#fff;
-    border:1px solid #555;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:14px;
-    transition:0.3s;
-    box-shadow:0 2px 5px rgba(0,0,0,0.3);
-  }
-  .episode-btn:hover { background:#ff3d00; border-color:#ff3d00; transform: scale(1.05); }
-  .episode-btn.active { background:#ff3d00; border-color:#ff3d00; color:#fff; box-shadow:0 4px 12px rgba(255,61,0,0.6); }
-
-  #seriesMeta { text-align:center; padding:15px; }
-  #seriesMeta img { max-width:160px; border-radius:8px; margin-top:10px; }
-
-  /* Responsive design */
-  @media (min-width:1200px) {
-    #videoWrapper { width:95%; }
-    #seriesTitle { font-size:2em; }
-  }
-  @media (max-width:992px) {
-    #videoWrapper { width:95%; }
-    #seriesTitle { font-size:1.6em; }
-    #episodeList { padding:12px; gap:8px; }
-    .episode-btn { padding:8px 14px; font-size:13px; }
-  }
-  @media (max-width:768px) {
-    #videoWrapper{width:95%; max-width:95%;} 
-    .series-card img{height:180px;} 
-    .episode-btn{padding:6px 12px; font-size:13px;} 
-    #playerContainer{padding-bottom:56.25%;} 
-    #seriesTitle { font-size:1.4em; }
-  }
-  
-  #playerControls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-#playerControls .back-btn {
-  padding: 6px 12px;
-  font-size: 12px;
-  border-radius: 6px;
-  border: 1px solid #555;
-  background: #222;
-  color: #fff;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#playerControls .back-btn:hover {
-  background: #ff3d00;
-  border-color: #ff3d00;
-}
-
+body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#fff; }
+#filterBar{display:flex;gap:10px;padding:15px;justify-content:center;flex-wrap:wrap;}
+.filter-btn{background:#222;color:#fff;border:1px solid #555;padding:8px 16px;border-radius:6px;cursor:pointer;transition:.3s;}
+.filter-btn:hover,.filter-btn.active{background:#ff3d00;border-color:#ff3d00;}
+#seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
+.series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:.3s; background:#1a1a1a; }
+.series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,.06); }
+.series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; background:#222; }
+.series-title { padding:6px; font-size:.9em; font-weight:bold; text-transform:uppercase; }
+#videoWrapper { display:none; flex-direction:column; width:90%; max-width:1200px; margin:20px auto; background:#000; padding-bottom:20px; border-radius:10px; }
+#playerContainer { position: relative; width: 100%; height: 0; padding-bottom: 56.25%; background: black; border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(255, 61, 0, 0.2); }
+.video-js { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px; }
+#playerControls { display:flex; justify-content:center; gap:15px; margin:10px 0; }
+.back-btn { margin:0; padding:10px 22px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; color:#fff; transition:.3s; }
+.back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
+#seriesTitle { text-align:center; font-size:1.8em; font-weight:bold; margin:10px 0; }
+#episodeList { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; padding:15px; background: rgba(30,30,30,0.9); border-radius:10px; box-shadow: 0 0 15px rgba(0,0,0,0.5); max-height:400px; overflow-y:auto; }
+.episode-btn { background: #1e1e1e; color:#fff; border:1px solid #555; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:14px; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.3); }
+.episode-btn:hover { background:#ff3d00; border-color:#ff3d00; transform: scale(1.05); }
+.episode-btn.active { background:#ff3d00; border-color:#ff3d00; color:#fff; box-shadow:0 4px 12px rgba(255,61,0,0.6); }
+#seriesMeta { text-align:center; padding:15px; }
+#seriesMeta img { max-width:160px; border-radius:8px; margin-top:10px; }
+@media (max-width:992px) { #episodeList { padding:12px; gap:8px; } .episode-btn { padding:8px 14px; font-size:13px; } }
+@media (max-width:768px) { .series-card img{height:180px;} .episode-btn{padding:6px 12px; font-size:13px;} #seriesTitle { font-size:1.4em; } }
 </style>
 </head>
 <body>
 
 <div id="filterBar">
-    <button class="filter-btn" data-filter="all">SVE</button>
-    <button class="filter-btn" data-filter="year_2025">2025</button>
-    <button class="filter-btn" data-filter="year_2024">2024</button>
+  <button class="filter-btn" data-filter="all">SVE</button>
+  <button class="filter-btn" data-filter="year_2025">2025</button>
+  <button class="filter-btn" data-filter="year_2024">2024</button>
 </div>
 
 <div id="seriesGrid"></div>
 <div id="seriesTitle"></div>
 <div id="videoWrapper">
-    <div id="playerContainer">
-        <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
-    </div>
-
-    <div id="playerControls">
-        <button class="back-btn" onclick="seekBack()">⏪ -15s</button>
-        <button class="back-btn" onclick="seekForward()">⏩ +15s</button>
-    </div>
-
-    <button class="back-btn" onclick="closeVideo()" style="margin:10px auto;">⬅ Nazad</button>
-    <div id="episodeList"></div>
-    <div id="seriesMeta">
+  <div id="playerContainer">
+    <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
+  </div>
+  <div id="playerControls">
+    <button class="back-btn" onclick="seekBack()">⏪ -15s</button>
+    <button class="back-btn" onclick="seekForward()">⏩ +15s</button>
+  </div>
+  <button class="back-btn" onclick="closeVideo()" style="margin:10px auto;">⬅ Nazad</button>
+  <div id="episodeList"></div>
+  <div id="seriesMeta">
     <div style="background-color: #141414; color: #e50914; padding: 5px; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; max-width: 600px; margin: 1px auto; border: 2px solid #e50914; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);">
-    <p style="font-size: 12px; line-height: 1.8; margin: 0;">Ako video ne ucita kliknite ponovi na istu epizodu</p>
-</div>
-        <p id="seriesOverview"></p>
-        <p id="seriesInfo"></p>
-        <img id="seriesPoster" src="placeholder.jpg" alt="">
+      <p style="font-size: 12px; line-height: 1.8; margin: 0;">Ako video ne ucita kliknite ponovi na istu epizodu</p>
     </div>
+    <p id="seriesOverview"></p>
+    <p id="seriesInfo"></p>
+    <img id="seriesPoster" src="placeholder.jpg" alt="">
+  </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
@@ -179,200 +71,191 @@ const LIST_REFRESH_INTERVAL = 60*60*1000;
 const POSTER_CACHE_DAYS = 7;
 
 let player=null, hls=null;
+
 function now(){ return Date.now(); }
 
+// --- Poster TMDB ---
 async function fetchPosterTmdb(seriesName){
-    if(!seriesName) return "placeholder.jpg";
-    const keyName = `poster_${seriesName}`;
-    const keyTime = `${keyName}_time`;
-    const cached = localStorage.getItem(keyName);
-    const cachedTime = parseInt(localStorage.getItem(keyTime)||"0");
-    if(cached && now()-cachedTime < POSTER_CACHE_DAYS*24*3600*1000) return cached;
-    try{
-        const query = encodeURIComponent(seriesName);
-        const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&language=tr&query=${query}`);
-        const data = await res.json();
-        let poster = "placeholder.jpg";
-        if(data?.results?.length){
-            const path = data.results[0].poster_path;
-            if(path) poster = `https://image.tmdb.org/t/p/w300${path}`;
-        }
-        localStorage.setItem(keyName, poster);
-        localStorage.setItem(keyTime, String(now()));
-        return poster;
-    }catch(e){ return "placeholder.jpg"; }
+  if(!seriesName) return "placeholder.jpg";
+  const keyName = `poster_${seriesName}`;
+  const keyTime = `${keyName}_time`;
+  const cached = localStorage.getItem(keyName);
+  const cachedTime = parseInt(localStorage.getItem(keyTime)||"0");
+  if(cached && now()-cachedTime < POSTER_CACHE_DAYS*24*3600*1000) return cached;
+  try{
+    const res = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${TMDB_KEY}&language=tr&query=${encodeURIComponent(seriesName)}`);
+    const data = await res.json();
+    let poster = "placeholder.jpg";
+    if(data?.results?.length){
+      const path = data.results[0].poster_path;
+      if(path) poster = `https://image.tmdb.org/t/p/w300${path}`;
+    }
+    localStorage.setItem(keyName, poster);
+    localStorage.setItem(keyTime, String(now()));
+    return poster;
+  }catch(e){ return "placeholder.jpg"; }
 }
 
+// --- Lista serija ---
 async function loadSeriesList(){
-    const cacheKey="seriesList_small", cacheTimeKey="seriesList_small_time";
-    const cached = localStorage.getItem(cacheKey), cachedTime=parseInt(localStorage.getItem(cacheTimeKey)||"0");
-    if(cached && now()-cachedTime<LIST_REFRESH_INTERVAL) return JSON.parse(cached);
-    try{
-        const res=await fetch(`${FIREBASE_BASE}.json`);
-        const data=await res.json();
-        const out={};
-        for(const key in data){
-            if(!data.hasOwnProperty(key)) continue;
-            const val = data[key];
-            out[key]={ lastUpdated: val.lastUpdated||0, localName: val.localName||key, year: val.year||"" };
-        }
-        localStorage.setItem(cacheKey, JSON.stringify(out));
-        localStorage.setItem(cacheTimeKey, String(now()));
-        return out;
-    }catch(e){ return cached?JSON.parse(cached):{}; }
+  const cacheKey="seriesList_small", cacheTimeKey="seriesList_small_time";
+  const cached = localStorage.getItem(cacheKey), cachedTime=parseInt(localStorage.getItem(cacheTimeKey)||"0");
+  if(cached && now()-cachedTime<LIST_REFRESH_INTERVAL) return JSON.parse(cached);
+  try{
+    const res=await fetch(`${FIREBASE_BASE}.json`);
+    const data=await res.json();
+    const out={};
+    for(const key in data){
+      if(!data.hasOwnProperty(key)) continue;
+      const val = data[key];
+      out[key]={ lastUpdated: val.lastUpdated||0, localName: val.localName||key, year: val.year||"" };
+    }
+    localStorage.setItem(cacheKey, JSON.stringify(out));
+    localStorage.setItem(cacheTimeKey, String(now()));
+    return out;
+  }catch(e){ return cached?JSON.parse(cached):{}; }
 }
 
+// --- Fetch serije (epizode) ---
 async function fetchSeriesFromFirebase(seriesName){
-    const encoded = encodeURIComponent(seriesName);
-    try{
-        const res = await fetch(`${FIREBASE_BASE}/${encoded}.json`);
-        if(res.ok){
-            const j = await res.json();
-            if(j?.episodes){
-                return {
-                    episodes: j.episodes,
-                    localName: j.localName||seriesName,
-                    seriesName: seriesName,
-                    raw: j,
-                    lastUpdated: j.lastUpdated || now()
-                };
-            }
-            return { episodes:[], localName:seriesName, seriesName:seriesName, raw:j, lastUpdated: now() };
-        }
-    }catch(e){ console.log("❌ Greška fetch-a:", seriesName, e); }
-    return { episodes:[], localName:seriesName, seriesName:seriesName, raw:null, lastUpdated: now() };
+  try{
+    const res = await fetch(`${FIREBASE_BASE}/${encodeURIComponent(seriesName)}.json`);
+    if(res.ok){
+      const j = await res.json();
+      let episodes = [];
+      if(j?.episodes){
+        episodes = Array.isArray(j.episodes) ? j.episodes : Object.values(j.episodes);
+      }
+      return { episodes, localName: j.localName||seriesName, seriesName, raw:j, lastUpdated:j.lastUpdated||now() };
+    }
+  }catch(e){ console.log("❌ Greška fetch-a:", seriesName, e); }
+  return { episodes:[], localName:seriesName, seriesName, raw:null, lastUpdated:now() };
 }
 
+// --- Keširanje po lastUpdated ---
 async function getSeries(seriesName, serverLastUpdated){
-    const cacheDataKey = `seriesdata_${seriesName}`;
-    const cacheTimeKey = `series_lastUpdated_${seriesName}`;
-    const serverTime = String(serverLastUpdated||0);
-    const savedData = localStorage.getItem(cacheDataKey);
-    const savedTime = localStorage.getItem(cacheTimeKey);
-    if(savedData && savedTime===serverTime){
-        const parsed = JSON.parse(savedData);
-        if(parsed.episodes && parsed.episodes.length>0) return parsed;
-    }
-    const fresh = await fetchSeriesFromFirebase(seriesName);
-    localStorage.setItem(cacheDataKey, JSON.stringify(fresh));
-    localStorage.setItem(cacheTimeKey, String(fresh.lastUpdated||now()));
-    return fresh;
+  const cacheDataKey = `seriesdata_${seriesName}`;
+  const cacheTimeKey = `series_lastUpdated_${seriesName}`;
+  const serverTime = String(serverLastUpdated||0);
+  const savedData = localStorage.getItem(cacheDataKey);
+  const savedTime = localStorage.getItem(cacheTimeKey);
+  if(savedData && savedTime===serverTime){
+    const parsed = JSON.parse(savedData);
+    if(parsed.episodes && parsed.episodes.length>0) return parsed;
+  }
+  const fresh = await fetchSeriesFromFirebase(seriesName);
+  localStorage.setItem(cacheDataKey, JSON.stringify(fresh));
+  localStorage.setItem(cacheTimeKey, String(fresh.lastUpdated||now()));
+  return fresh;
 }
 
+// --- Load grid ---
 async function loadSeriesGrid(){
-    const data = await loadSeriesList();
-    const grid = document.getElementById("seriesGrid");
-    grid.innerHTML="";
-    const names = Object.keys(data).sort((a,b)=> (data[b].lastUpdated||0)-(data[a].lastUpdated||0));
-    for(const name of names){
-        const meta = data[name];
-        const card=document.createElement("div");
-        card.className="series-card";
-        card.dataset.series=name;
-        card.dataset.lastUpdated=meta.lastUpdated||0;
-        card.dataset.localName=meta.localName||name;
-        card.dataset.year=meta.year||"";
-        card.innerHTML=`<img src="placeholder.jpg" loading="lazy"><div class="series-title">${meta.localName||name}</div>`;
-        card.onclick=()=>openSeries(card);
-        grid.appendChild(card);
-        fetchPosterTmdb(name).then(url=>{ card.querySelector("img").src=url; });
-    }
-    setupFilters();
+  const data = await loadSeriesList();
+  const grid = document.getElementById("seriesGrid");
+  grid.innerHTML="";
+  const names = Object.keys(data).sort((a,b)=> (data[b].lastUpdated||0)-(data[a].lastUpdated||0));
+  for(const name of names){
+    const meta = data[name];
+    const card=document.createElement("div");
+    card.className="series-card";
+    card.dataset.series=name;
+    card.dataset.lastUpdated=meta.lastUpdated||0;
+    card.dataset.localName=meta.localName||name;
+    card.dataset.year=meta.year||"";
+    card.innerHTML=`<img src="placeholder.jpg" loading="lazy"><div class="series-title">${meta.localName||name}</div>`;
+    card.onclick=()=>openSeries(card);
+    grid.appendChild(card);
+    fetchPosterTmdb(name).then(url=>{ card.querySelector("img").src=url; });
+  }
+  setupFilters();
 }
 
+// --- Open serija ---
 async function openSeries(card){
-    const seriesName=card.dataset.series;
-    const serverLastUpdated=card.dataset.lastUpdated||0;
-    card.style.opacity="0.6";
-    const seriesData = await getSeries(seriesName, serverLastUpdated);
-    card.style.opacity="";
-    const episodeList = document.getElementById("episodeList"); 
-    episodeList.innerHTML="";
-    const episodes = seriesData.episodes||[];
-    for(let i=episodes.length-1;i>=0;i--){
-        const url = episodes[i]; 
-        if(!url) continue;
-        const btn = document.createElement("button"); 
-        btn.className="episode-btn";
-        btn.textContent="Epizoda "+(episodes.length-i);
-        btn.dataset.url=url; 
-        btn.onclick=()=>playEpisode(btn);
-        episodeList.appendChild(btn);
-    }
-    document.getElementById("seriesGrid").style.display='none';
-    document.getElementById("filterBar").style.display='none';
-    document.getElementById("videoWrapper").style.display='flex';
-    window.scrollTo({ top:0, behavior:'smooth' });
-    document.getElementById("seriesTitle").textContent=seriesData.localName||seriesName;
-    document.getElementById("seriesOverview").textContent=(seriesData.raw?.overview)||"";
-    document.getElementById("seriesInfo").textContent=`Serija: ${seriesData.seriesName||seriesName}`;
-    const posterEl=document.getElementById("seriesPoster");
-    const cardImg=card.querySelector("img");
-    posterEl.src=cardImg?.src||"placeholder.jpg";
-    if(!player) player = videojs('video',{autoplay:false,controls:true,fluid:true});
+  const seriesName=card.dataset.series;
+  const serverLastUpdated=card.dataset.lastUpdated||0;
+  card.style.opacity="0.6";
+  const seriesData = await getSeries(seriesName, serverLastUpdated);
+  card.style.opacity="";
+  const episodeList = document.getElementById("episodeList");
+  episodeList.innerHTML="";
+  const episodes = seriesData.episodes||[];
+  for(let i=episodes.length-1;i>=0;i--){
+    const url = episodes[i]; if(!url) continue;
+    const btn=document.createElement("button");
+    btn.className="episode-btn";
+    btn.textContent="Epizoda "+(episodes.length-i);
+    btn.dataset.url=url;
+    btn.onclick=()=>playEpisode(btn);
+    episodeList.appendChild(btn);
+  }
+  document.getElementById("seriesGrid").style.display='none';
+  document.getElementById("filterBar").style.display='none';
+  document.getElementById("videoWrapper").style.display='flex';
+  window.scrollTo({ top:0, behavior:'smooth' });
+  document.getElementById("seriesTitle").textContent=seriesData.localName||seriesName;
+  document.getElementById("seriesOverview").textContent=(seriesData.raw?.overview)||"";
+  document.getElementById("seriesInfo").textContent=`Serija: ${seriesData.seriesName||seriesName}`;
+  const posterEl=document.getElementById("seriesPoster");
+  posterEl.src=card.querySelector("img")?.src||"placeholder.jpg";
+  if(!player) player=videojs('video',{autoplay:false,controls:true,fluid:true});
 }
 
+// --- Play epizoda ---
 function playEpisode(btn){
-    document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const url=btn.dataset.url; if(!url) return;
-    if(hls){ try{hls.destroy();}catch(e){} hls=null; }
-    if(!player) player=videojs('video',{autoplay:false,controls:true,fluid:true});
-    try{ player.pause(); player.src({ src:'', type:'application/x-mpegURL' }); player.currentTime(0); }catch(e){}
-    if(Hls.isSupported()){
-        hls=new Hls(); hls.attachMedia(player.tech().el()); hls.loadSource(url);
-        hls.on(Hls.Events.MANIFEST_PARSED,()=>player.play());
-    } else { player.src({ src:url, type:'application/x-mpegURL'}); player.play(); }
-    document.getElementById("videoWrapper").scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  const url=btn.dataset.url; if(!url) return;
+  if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
+  if(!player) player=videojs('video',{autoplay:false,controls:true,fluid:true});
+  try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0); }catch(e){}
+  if(Hls.isSupported()){
+    hls=new Hls(); hls.attachMedia(player.tech().el()); hls.loadSource(url);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>player.play());
+  } else { player.src({src:url, type:'application/x-mpegURL'}); player.play(); }
+  document.getElementById("videoWrapper").scrollIntoView({behavior:'smooth', block:'start'});
 }
 
+// --- Close video ---
 function closeVideo(){
-    document.getElementById("videoWrapper").style.display='none';
-    document.getElementById("seriesGrid").style.display='grid';
-    document.getElementById("filterBar").style.display='flex';
-    if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
-    if(player){ try{player.pause();player.currentTime(0);}catch(e){} }
+  document.getElementById("videoWrapper").style.display='none';
+  document.getElementById("seriesGrid").style.display='grid';
+  document.getElementById("filterBar").style.display='flex';
+  if(hls){ try{hls.destroy();}catch(e){} hls=null; }
+  if(player){ try{player.pause();player.currentTime(0);}catch(e){} }
 }
 
-// SEEK kontrole
-function seekBack() { if(player){ player.currentTime(Math.max(0, player.currentTime()-15)); } }
-function seekForward() { if(player){ player.currentTime(player.currentTime()+15); } }
+// --- Seek ---
+function seekBack(){ if(player) player.currentTime(Math.max(0, player.currentTime()-15)); }
+function seekForward(){ if(player) player.currentTime(player.currentTime()+15); }
 
-// Filters
+// --- Filters ---
 function setupFilters(){
-    document.querySelectorAll('.filter-btn').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
-            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-            btn.classList.add('active');
-            filterSeries(btn.dataset.filter);
-        });
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      filterSeries(btn.dataset.filter);
     });
+  });
 }
 
 function filterSeries(filter){
-    document.querySelectorAll('.series-card').forEach(card=>{
-        let show=false;
-        if(filter==='all') show=true;
-        if(filter.startsWith('year_') && card.dataset.year) show=card.dataset.year===filter.replace('year_','');
-        card.style.display=show?'block':'none';
-    });
+  document.querySelectorAll('.series-card').forEach(card=>{
+    let show=false;
+    if(filter==='all') show=true;
+    if(filter.startsWith('year_') && card.dataset.year) show=card.dataset.year===filter.replace('year_','');
+    card.style.display=show?'block':'none';
+  });
 }
 
-// Init
+// --- Init ---
 (async function init(){ 
-    await loadSeriesGrid(); 
-    setInterval(async()=>{ await loadSeriesGrid(); }, LIST_REFRESH_INTERVAL); 
+  await loadSeriesGrid(); 
+  setInterval(async()=>{ await loadSeriesGrid(); }, LIST_REFRESH_INTERVAL); 
 })();
 </script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-T61FEM3203');
-</script>
 </body>
 </html>
-
