@@ -67,18 +67,18 @@ body {
 }
 
 /* Tab panel */
-#tabPanel {
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%;
-  height:100%;
-  background:#141414;
-  z-index:100;
-  display:flex;
-  flex-direction:column;
+#tabPanel { 
+  display:none; 
+  position:fixed; 
+  top:0; left:0; 
+  width:100%; 
+  height:100%; 
+  background:#141414; 
+  z-index:100; 
+  flex-direction:column; 
+  /* align-items:center;  <-- ukloni ovo */
+  overflow-y:auto; 
   padding:10px;
-  overflow:hidden; /* ceo panel ne skroluje */
 }
 
 #tabHeader { 
@@ -94,17 +94,16 @@ body {
   text-align:center; 
 }
 
-/* Player sticky */
-#playerContainer {
-  width:100%;
-  max-width:1200px;
-  aspect-ratio:16/9;
-  background:black;
-  border-radius:8px;
-  overflow:hidden;
+/* Player */
+#playerContainer { 
+  width:90%; 
+  max-width:1200px; 
+  aspect-ratio:16/9; 
+  background:black; 
+  border-radius:8px; 
+  overflow:hidden; 
   margin-bottom:10px;
-  box-shadow:0 0 40px rgba(255,0,0,0.5);
-  flex-shrink:0; /* ne smanjuje se player */
+  box-shadow:0 0 40px rgba(255,0,0,0.5); 
 }
 
 .video-js { 
@@ -137,14 +136,16 @@ body {
 }
 
 /* Episode buttons */
-#episodeList {
-  flex:1; /* zauzima preostali prostor */
-  overflow-y:auto; /* samo epizode skroluju */
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  justify-content:center;
-  padding-bottom:20px;
+/* Episode buttons */
+#episodeList { 
+  width:90%; 
+  display:flex; 
+  flex-wrap:wrap; 
+  gap:8px; 
+  justify-content:center; 
+  padding-bottom:20px; 
+  margin-top:15px;  /* razmak od playera */
+  /* uklonjen max-height i overflow da se sve epizode vide */
 }
 
 .episode-btn { 
