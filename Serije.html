@@ -6,6 +6,7 @@
 <title>Serije Player — Sve Serije</title>
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
+/* Osnovno */
 body { 
   margin:0; 
   font-family:'Segoe UI',sans-serif; 
@@ -13,12 +14,13 @@ body {
   color:#fff; 
 }
 
+/* Grids */
 #seriesGrid, #newEpisodesGrid, #favoritesGrid { 
   display:grid; 
   grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); 
   gap:15px; 
   padding:15px; 
-  justify-items:center; 
+  justify-items:center;
 }
 
 .series-card { 
@@ -29,7 +31,7 @@ body {
   overflow:hidden; 
   transition:.3s; 
   background:#1a1a1a; 
-  position:relative; 
+  position:relative;
 }
 
 .series-card:hover { 
@@ -95,15 +97,14 @@ body {
 /* Player */
 #playerContainer { 
   width:90%; 
-  max-width:1200px; /* povećano sa 1000px na 1200px */
+  max-width:1200px; 
   aspect-ratio:16/9; 
   background:black; 
   border-radius:8px; 
   overflow:hidden; 
   margin-bottom:10px;
-  box-shadow:0 0 40px rgba(255,0,0,0.5); /* jači crveni neon efekat */
+  box-shadow:0 0 40px rgba(255,0,0,0.5); 
 }
-
 
 .video-js { 
   width:100%; 
@@ -142,6 +143,8 @@ body {
   gap:8px; 
   justify-content:center; 
   padding-bottom:20px; 
+  max-height:300px;      /* Skrol ako ima mnogo epizoda */
+  overflow-y:auto; 
 }
 
 .episode-btn { 
@@ -211,17 +214,18 @@ body {
   box-shadow:0 0 5px rgba(229,9,20,0.5); 
   outline:none; 
 }
-  
-  #controlButtons {
+
+/* Kontrolna dugmad */
+#controlButtons {
   display: flex;
-  justify-content: center; /* centrirana dugmad */
-  gap: 12px; /* razmak između dugmadi */
-  margin: 12px 0; /* malo prostora odozgo i odozdo */
-  flex-wrap: wrap; /* za manje ekrane da prelome u novi red */
+  justify-content: center; 
+  gap: 12px; 
+  margin: 12px 0; 
+  flex-wrap: wrap; 
 }
 
 .control-btn {
-  background: #ff3d00; /* neon crvena osnova */
+  background: #ff3d00; 
   color: #fff;
   border: none;
   padding: 10px 18px;
@@ -230,17 +234,16 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(255,61,0,0.4); /* blagi neon efekat */
+  box-shadow: 0 0 10px rgba(255,61,0,0.4); 
 }
 
 .control-btn:hover {
-  background: #ff1a00; /* tamnija crvena pri hoveru */
-  box-shadow: 0 0 20px rgba(255,0,0,0.6); /* jači neon efekt */
-  transform: scale(1.05); /* blago uvećanje na hover */
+  background: #ff1a00; 
+  box-shadow: 0 0 20px rgba(255,0,0,0.6); 
+  transform: scale(1.05); 
 }
-
-
 </style>
+
 </head>
 <body>
 
@@ -456,15 +459,6 @@ function filterSeries(){
 
 // Init
 (async function init(){ await loadSeriesList(); renderAllSeries(); })();
-</script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-T61FEM3203');
 </script>
 </body>
 </html>
