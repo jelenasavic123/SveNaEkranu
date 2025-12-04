@@ -292,14 +292,15 @@ function openTab(name){
 
   const epList = document.getElementById("episodeList");
   epList.innerHTML = "";
-  s.episodes.forEach((url,i)=>{
-    const btn = document.createElement("button");
-    btn.className="episode-btn";
-    btn.textContent="Epizoda "+(i+1);
-    btn.dataset.url = url;
-    btn.onclick = ()=>playEpisode(btn);
-    epList.appendChild(btn);
-  });
+[...s.episodes].reverse().forEach((url,i)=>{
+  const btn = document.createElement("button");
+  btn.className="episode-btn";
+  btn.textContent="Epizoda "+(i+1);
+  btn.dataset.url = url;
+  btn.onclick = ()=>playEpisode(btn);
+  epList.appendChild(btn);
+});
+
 
   window.scrollTo({ top:0, behavior:'smooth' });
 }
