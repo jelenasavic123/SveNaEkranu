@@ -68,7 +68,7 @@
 
       /* Tab panel */
       #tabPanel {
-        position:relative; /* nije fixed */
+        position:relative;
         width:100%;
         min-height:100vh;
         background:#141414;
@@ -76,8 +76,8 @@
         display:flex;
         flex-direction:column;
         align-items:center;
+        display:none; /* pocetno skriven */
       }
-
 
       #tabHeader {
         width:90%;
@@ -93,15 +93,15 @@
       }
 
       /* Player */
-#playerContainer {
-  width:90%;
-  max-width:1200px;
-  aspect-ratio:16/9;
-  background:black;
-  border-radius:8px;
-  overflow:hidden;
-  margin:20px auto 10px auto; /* razmak od headera i dugmadi */
-}
+      #playerContainer {
+        width:90%;
+        max-width:1200px;
+        aspect-ratio:16/9;
+        background:black;
+        border-radius:8px;
+        overflow:hidden;
+        margin:20px auto 10px auto;
+      }
 
       .video-js {
         width:100%;
@@ -110,13 +110,13 @@
       }
 
       /* Dugmad iznad epizoda */
-#tabButtons {
-  width:90%;
-  max-width:1200px;
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:15px;
-}
+      #tabButtons {
+        width:90%;
+        max-width:1200px;
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:15px;
+      }
 
       #favoriteBtn, #backBtn {
         background:#ff3d00;
@@ -134,17 +134,17 @@
       }
 
       /* Episode buttons */
-#episodeList {
-  width:90%;
-  max-width:1200px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  justify-content:center;
-  margin-bottom:20px; /* razmak ispod epizoda */
-  position:relative;  /* važno da ostane u toku dokumenta */
-  overflow:visible;   /* ne koristi scroll */
-}
+      #episodeList {
+        width:90%;
+        max-width:1200px;
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        justify-content:center;
+        margin-bottom:20px;
+        position:relative;
+        overflow:visible;
+      }
 
       .episode-btn {
         background:#1e1e1e;
@@ -254,13 +254,9 @@
         />
       </div>
       <div id="controlButtons">
-        <button class="control-btn" onclick="renderAllSeries()">
-          Sve serije
-        </button>
+        <button class="control-btn" onclick="renderAllSeries()">Sve serije</button>
         <button class="control-btn" onclick="showNewEpisodes()">🆕 Nove</button>
-        <button class="control-btn" onclick="showFavorites()">
-          ⭐ Favoriti
-        </button>
+        <button class="control-btn" onclick="showFavorites()">⭐ Favoriti</button>
       </div>
     </div>
 
@@ -268,29 +264,16 @@
     <div id="newEpisodesGrid" style="display:none;"></div>
     <div id="favoritesGrid" style="display:none;"></div>
 
-    <!-- HTML -->
     <div id="tabPanel">
-      <div id="tabHeader">
-        <h2 id="tabTitle"></h2>
-      </div>
-
+      <div id="tabHeader"><h2 id="tabTitle"></h2></div>
       <div id="playerContainer">
-        <video-js
-          id="video"
-          class="video-js vjs-default-skin"
-          controls
-        ></video-js>
+        <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
       </div>
-
       <div id="tabButtons">
         <button id="backBtn" onclick="closeTab()">⬅ Nazad</button>
-        <button id="favoriteBtn" onclick="toggleFavorite()">
-          Dodaj u favorite
-        </button>
+        <button id="favoriteBtn" onclick="toggleFavorite()">Dodaj u favorite</button>
       </div>
-
       <div id="episodeList"></div>
-      <!-- sve epizode će biti prikazane odmah -->
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -299,7 +282,6 @@
       const FIREBASE_URL = "https://spring-firefly-83f9.balevasanja.workers.dev/";
       let seriesData = {}, player=null, hls=null, currentSeries=null;
 
-      // Load series list
       async function loadSeriesList(){
         const cached = localStorage.getItem("seriesList");
         const cachedTime = localStorage.getItem("seriesListLastUpdated")||0;
@@ -320,7 +302,6 @@
         }
       }
 
-      // Render grids
       function renderGrid(containerId, seriesList){
         const grid = document.getElementById(containerId);
         grid.innerHTML="";
@@ -335,15 +316,23 @@
         }
       }
 
-      // Sve serije
+      function closeTabIfOpen(){
+        const tabPanel = document.getElementById("tabPanel");
+        if(tabPanel.style.display==="flex"){
+          tabPanel.style.display="none";
+          if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
+          if(player){ try{player.pause(); player.currentTime(0);}catch(e){} }
+        }
+      }
+
       function renderAllSeries(){
+        closeTabIfOpen();
         document.getElementById("seriesGrid").style.display="grid";
         document.getElementById("newEpisodesGrid").style.display="none";
         document.getElementById("favoritesGrid").style.display="none";
         renderGrid("seriesGrid", Object.keys(seriesData));
       }
 
-      // Nove epizode
       function getNewEpisodes(s){
         const seen = JSON.parse(localStorage.getItem("seenEpisodes")||'{}');
         for(let i=s.episodes.length-1;i>=0;i--){
@@ -353,6 +342,7 @@
       }
 
       function showNewEpisodes(){
+        closeTabIfOpen();
         const grid = document.getElementById("newEpisodesGrid");
         grid.innerHTML="";
         let count=0;
@@ -369,12 +359,12 @@
           count++;
         }
         document.getElementById("seriesGrid").style.display="none";
-        document.getElementById("newEpisodesGrid").style.display="grid";
+        grid.style.display="grid";
         document.getElementById("favoritesGrid").style.display="none";
       }
 
-      // Favoriti
       function showFavorites(){
+        closeTabIfOpen();
         const favKeys = JSON.parse(localStorage.getItem("favorites")||'[]');
         renderGrid("favoritesGrid", favKeys);
         document.getElementById("seriesGrid").style.display="none";
@@ -382,7 +372,6 @@
         document.getElementById("favoritesGrid").style.display="grid";
       }
 
-      // Open tab
       function openTab(name){
         const s = seriesData[name];
         if(!s) return;
@@ -393,11 +382,9 @@
         document.getElementById("tabPanel").style.display="flex";
         document.getElementById("tabTitle").textContent = s.localName;
 
-        // favorite button text
         const favs = JSON.parse(localStorage.getItem("favorites")||'[]');
         document.getElementById("favoriteBtn").textContent = favs.includes(name) ? "Ukloni iz favorite" : "Dodaj u favorite";
 
-        // episodes
         const epList = document.getElementById("episodeList");
         epList.innerHTML="";
         const episodes = [...s.episodes].reverse();
@@ -413,12 +400,10 @@
         window.scrollTo({top:0, behavior:'smooth'});
       }
 
-      // Toggle favorite
       function toggleFavorite(){
         const favs = JSON.parse(localStorage.getItem("favorites")||'[]');
         if(favs.includes(currentSeries)){
-          const idx = favs.indexOf(currentSeries);
-          favs.splice(idx,1);
+          favs.splice(favs.indexOf(currentSeries),1);
           document.getElementById("favoriteBtn").textContent = "Dodaj u favorite";
         }else{
           favs.push(currentSeries);
@@ -427,15 +412,11 @@
         localStorage.setItem("favorites", JSON.stringify(favs));
       }
 
-      // Close tab
       function closeTab(){
-        document.getElementById("tabPanel").style.display="none";
+        closeTabIfOpen();
         renderAllSeries();
-        if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
-        if(player){ try{player.pause(); player.currentTime(0);}catch(e){} }
       }
 
-      // Play episode
       function playEpisode(btn){
         document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
         btn.classList.add("active");
@@ -457,7 +438,6 @@
         else{ player.src({src:url, type:'application/x-mpegURL'}); player.play(); }
       }
 
-      // Search
       function filterSeries(){
         const search=document.getElementById("searchBox").value.toLowerCase();
         ["seriesGrid","newEpisodesGrid","favoritesGrid"].forEach(id=>{
@@ -468,7 +448,6 @@
         });
       }
 
-      // Init
       (async function init(){ await loadSeriesList(); renderAllSeries(); })();
     </script>
   </body>
