@@ -6,116 +6,241 @@
 <title>Serije Player — Turske Serije</title>
 <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
 <style>
-body { margin:0; font-family:'Segoe UI',sans-serif; background:#141414; color:#fff; }
-#seriesGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:15px; padding:15px; justify-items:center; }
-.series-card { width:140px; cursor:pointer; text-align:center; border-radius:10px; overflow:hidden; transition:.3s; background:#1a1a1a; }
-.series-card:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(255,255,255,.06); }
-.series-card img { width:100%; height:200px; object-fit:cover; border-bottom:2px solid #333; background:#222; }
-.series-title { padding:6px; font-size:.9em; font-weight:bold; text-transform:uppercase; }
-#videoWrapper { display:none; flex-direction:column; width:90%; max-width:1200px; margin:20px auto; background:#000; padding-bottom:20px; border-radius:10px; }
-#playerContainer { position: relative; width: 100%; height: 0; padding-bottom: 56.25%; background: black; border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(255, 61, 0, 0.2); }
-.video-js { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 8px; }
-.back-btn { margin:10px auto; padding:10px 22px; background:#222; border:1px solid #555; border-radius:6px; cursor:pointer; font-size:14px; color:#fff; transition:.3s; display:block; }
-.back-btn:hover { background:#ff3d00; border-color:#ff3d00; }
-#seriesTitle { text-align:center; font-size:1.8em; font-weight:bold; margin:10px 0; }
-#episodeList { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; padding:15px; background: rgba(30,30,30,0.9); border-radius:10px; box-shadow: 0 0 15px rgba(0,0,0,0.5); max-height:400px; overflow-y:auto; }
-.episode-btn { background: #1e1e1e; color:#fff; border:1px solid #555; padding:10px 18px; border-radius:8px; cursor:pointer; font-size:14px; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.3); margin:2px; }
-.episode-btn:hover { background:#ff3d00; border-color:#ff3d00; transform: scale(1.05); }
-.episode-btn.active { background:#ff3d00; border-color:#ff3d00; color:#fff; box-shadow:0 4px 12px rgba(255,61,0,0.6); }
+body { 
+  margin:0; 
+  font-family:'Segoe UI',sans-serif; 
+  background:#141414; 
+  color:#fff; 
+}
+
+#seriesGrid { 
+  display:grid; 
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); 
+  gap:15px; 
+  padding:15px; 
+  justify-items:center; 
+}
+
+.series-card { 
+  width:140px; 
+  cursor:pointer; 
+  text-align:center; 
+  border-radius:10px; 
+  overflow:hidden; 
+  transition:.3s; 
+  background:#1a1a1a; 
+}
+
+.series-card:hover { 
+  transform:scale(1.05); 
+  box-shadow:0 0 20px rgba(255,255,255,.06); 
+}
+
+.series-card img { 
+  width:100%; 
+  height:200px; 
+  object-fit:cover; 
+  border-bottom:2px solid #333; 
+  background:#222; 
+}
+
+.series-title { 
+  padding:6px; 
+  font-size:.9em; 
+  font-weight:bold; 
+  text-transform:uppercase; 
+}
+
+/* Panel za “fake tab” epizoda */
+#tabPanel {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: #141414;
+  z-index: 100;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+#tabHeader {
+  display:flex; 
+  align-items:center; 
+  padding:12px 15px; 
+  background:#1a1a1a; 
+  border-bottom:1px solid #333;
+}
+
+#tabHeader h2 { 
+  margin:0; 
+  font-size:1.2em; /* smanjeno sa 1.6em */
+  flex:1; 
+  text-align:center; /* centriranje */
+}
+
+#tabHeader button {
+  background:#222; 
+  color:#fff; 
+  border:none; 
+  padding:8px 14px; 
+  border-radius:6px; 
+  cursor:pointer; 
+  transition:.3s;
+}
+
+#tabHeader button:hover { 
+  background:#ff3d00; 
+}
+
+#episodeList { 
+  display:flex; 
+  flex-wrap:wrap; 
+  gap:10px; 
+  justify-content:center; 
+  padding:15px; 
+}
+
+/* Epizode manje */
+.episode-btn { 
+  background: #1e1e1e; 
+  color:#fff; 
+  border:1px solid #555; 
+  padding:6px 12px; /* smanjeno sa 10px 18px */
+  border-radius:6px; 
+  cursor:pointer; 
+  font-size:12px; /* smanjeno sa 14px */
+  transition:0.3s; 
+  box-shadow:0 2px 5px rgba(0,0,0,0.3); 
+  margin:2px; 
+}
+
+.episode-btn:hover { 
+  background:#ff3d00; 
+  border-color:#ff3d00; 
+  transform: scale(1.05); 
+}
+
+.episode-btn.active { 
+  background:#ff3d00; 
+  border-color:#ff3d00; 
+  color:#fff; 
+  box-shadow:0 4px 12px rgba(255,61,0,0.6); 
+}
+
+/* Player */
+#playerContainer { 
+  position: relative; 
+  width: 90%; 
+  max-width: 1000px; 
+  margin:10px auto; 
+  height:0; 
+  padding-bottom:56.25%; 
+  background:black; 
+  border-radius:8px; 
+  overflow:hidden; 
+  box-shadow: 0 0 15px rgba(255,61,0,0.2);
+}
+
+.video-js { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  border-radius:8px; 
+}
 
 /* Dugmad 15s */
 .vjs-back15-button, .vjs-forward15-button {
-  color: #fff;
-  font-size: 14px;
-  line-height: 1;
-  padding: 4px 6px;
-  margin: 0 2px;
-  cursor: pointer;
-  background: rgba(0,0,0,0.4);
-  border-radius: 4px;
-  text-align: center;
+  color: #fff; 
+  font-size:14px; 
+  line-height:1; 
+  padding:4px 6px; 
+  margin:0 2px; 
+  cursor:pointer; 
+  background: rgba(0,0,0,0.4); 
+  border-radius:4px; 
+  text-align:center;
 }
-.vjs-back15-button:hover, .vjs-forward15-button:hover {
-  background: rgba(255,61,0,0.8);
+
+.vjs-back15-button:hover, .vjs-forward15-button:hover { 
+  background: rgba(255,61,0,0.8); 
 }
-  
-/* Netflix-style header */
+
+/* Netflix-style search bar */
 #searchBar {
-  width: 100%;
-  padding: 12px 0;
-  background: #141414;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  display: flex;
-  justify-content: center;
+  width: 100%; 
+  padding: 12px 0; 
+  background: #141414; 
+  position: sticky; 
+  top: 0; 
+  z-index:50; 
+  display:flex; 
+  justify-content:center;
 }
 
-/* Sadržaj pretrage */
-#searchContainer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 95%;            /* odmak od ivica ekrana */
-  max-width: 480px;      /* polje uže i lepše */
+#searchContainer { 
+  display:flex; 
+  align-items:center; 
+  gap:8px; 
+  width:95%; 
+  max-width:480px; 
 }
 
-/* Ikonica */
-#searchIcon {
-  font-size: 20px;
-  color: #ccc;
+#searchIcon { 
+  font-size:20px; 
+  color:#ccc; 
 }
 
-/* Svetlo polje, jasno vidljivo */
 #searchBox {
-  flex: 1;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: #f5f5f5;
-  border: 1px solid #ccc;
-  color: #000;
-  font-size: 16px;
-  transition: 0.3s;
+  flex:1; 
+  padding:10px 14px; 
+  border-radius:10px; 
+  background:#f5f5f5; 
+  border:1px solid #ccc; 
+  color:#000; 
+  font-size:16px; 
+  transition:.3s;
 }
 
-#searchBox::placeholder {
-  color: #666;
+#searchBox::placeholder { 
+  color:#666; 
 }
 
-#searchBox:focus {
-  border-color: #e50914;
-  box-shadow: 0 0 5px rgba(229, 9, 20, 0.5);
-  outline: none;
+#searchBox:focus { 
+  border-color:#e50914; 
+  box-shadow:0 0 5px rgba(229,9,20,0.5); 
+  outline:none; 
 }
-
 </style>
+
 </head>
 <body>
   
 <div id="searchBar">
   <div id="searchContainer">
     <span id="searchIcon"></span>
-    <input 
-      type="text" 
-      id="searchBox" 
-      placeholder="🔍Pretraži serije…" 
-      oninput="filterSeries()">
+    <input type="text" id="searchBox" placeholder="🔍Pretraži serije…" oninput="filterSeries()">
   </div>
 </div>
 
 <div id="seriesGrid"></div>
 
-<div id="videoWrapper">
+<!-- Fake tab panel -->
+<div id="tabPanel">
+  <div id="tabHeader">
+    <h2 id="tabTitle"></h2>
+  </div>
   <div id="playerContainer">
     <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
   </div>
-  <div id="seriesTitle"></div>
+     <button onclick="closeTab()">⬅ Nazad</button>
   <div id="episodeList"></div>
-  <button class="back-btn" onclick="closeVideo()">⬅ Nazad</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
+<!-- ostatak koda ostaje isti -->
 <script>
 const FIREBASE_URL = "https://spring-firefly-83f9.balevasanja.workers.dev/";
 let seriesData = {}, player = null, hls = null;
@@ -151,18 +276,20 @@ function renderGrid(){
     const card = document.createElement("div");
     card.className="series-card";
     card.innerHTML = `<img src="${s.poster}" loading="lazy"><div class="series-title">${s.localName}</div>`;
-    card.onclick = ()=>openSeries(key);
+    card.onclick = ()=>openTab(key);
     grid.appendChild(card);
   }
 }
 
-// --- Open series ---
-function openSeries(name){
+// --- Open fake tab ---
+function openTab(name){
   const s = seriesData[name];
   if(!s) return;
+
   document.getElementById("seriesGrid").style.display="none";
-  document.getElementById("videoWrapper").style.display="flex";
-  document.getElementById("seriesTitle").textContent = s.localName;
+  document.getElementById("tabPanel").style.display="flex";
+  document.getElementById("tabTitle").textContent = s.localName;
+
   const epList = document.getElementById("episodeList");
   epList.innerHTML = "";
   s.episodes.forEach((url,i)=>{
@@ -173,7 +300,16 @@ function openSeries(name){
     btn.onclick = ()=>playEpisode(btn);
     epList.appendChild(btn);
   });
+
   window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// --- Close tab ---
+function closeTab(){
+  document.getElementById("tabPanel").style.display="none";
+  document.getElementById("seriesGrid").style.display="grid";
+  if(hls){ try{hls.destroy();}catch(e){} hls=null; }
+  if(player){ try{player.pause();player.currentTime(0);}catch(e){} }
 }
 
 // --- Play episode ---
@@ -181,6 +317,10 @@ function playEpisode(btn){
   document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
   const url = btn.dataset.url;
+
+  // Pomeri player gore
+  document.getElementById("playerContainer").scrollIntoView({ behavior: "smooth", block: "start" });
+
   if(hls){ try{hls.destroy();}catch(e){} hls=null; }
 
   if(!player){
@@ -189,20 +329,11 @@ function playEpisode(btn){
     const Button = videojs.getComponent("Button");
 
     class Back15Button extends Button {
-      constructor(player, options) {
-        super(player, options);
-        this.addClass("vjs-back15-button");
-        this.el().innerHTML = "⏪ 15s";
-      }
+      constructor(player, options) { super(player, options); this.addClass("vjs-back15-button"); this.el().innerHTML = "⏪ 15s"; }
       handleClick() { player.currentTime(Math.max(0, player.currentTime() - 15)); }
     }
-
     class Forward15Button extends Button {
-      constructor(player, options) {
-        super(player, options);
-        this.addClass("vjs-forward15-button");
-        this.el().innerHTML = "15s ⏩";
-      }
+      constructor(player, options) { super(player, options); this.addClass("vjs-forward15-button"); this.el().innerHTML = "15s ⏩"; }
       handleClick() { player.currentTime(player.currentTime() + 15); }
     }
 
@@ -224,22 +355,14 @@ function playEpisode(btn){
   }
 }
 
+// --- Search ---
 function filterSeries() {
   const search = document.getElementById("searchBox").value.toLowerCase();
   const cards = document.querySelectorAll(".series-card");
-
   cards.forEach(card => {
     const title = card.querySelector(".series-title").textContent.toLowerCase();
     card.style.display = title.includes(search) ? "block" : "none";
   });
-}
-  
-// --- Close video ---
-function closeVideo(){
-  document.getElementById("videoWrapper").style.display="none";
-  document.getElementById("seriesGrid").style.display="grid";
-  if(hls){ try{hls.destroy();}catch(e){} hls=null; }
-  if(player){ try{player.pause();player.currentTime(0);}catch(e){} }
 }
 
 // --- Init ---
@@ -248,7 +371,7 @@ function closeVideo(){
   renderGrid();
 })();
 </script>
-    <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
