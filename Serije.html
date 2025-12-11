@@ -620,14 +620,23 @@ window.onload = function() {
     }
 
 function playEpisode(btn){
+    // Obeleži aktivnu epizodu
     document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
     btn.classList.add("active");
     const url = btn.dataset.url;
     document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
 
-    if(hls){ try{hls.destroy();}catch(e){} hls=null; }
+    // Uništi prethodni HLS ako postoji
+    if(hls){ try{ hls.destroy(); }catch(e){} hls=null; }
 
-    if(!player){
+    // Ako je player već inicijalizovan, resetuj ga
+    if(player){
+        try{
+            player.pause();
+            player.reset();  // Očisti prethodni media state
+        }catch(e){}
+    } else {
+        // Prva inicijalizacija playera
         player = videojs('video',{autoplay:false, controls:true, fluid:true});
 
         // --- Dugmad 15s ---
@@ -639,9 +648,7 @@ function playEpisode(btn){
                 this.addClass("vjs-back15-button");
                 this.el().innerHTML = "⏪ 15s";
             }
-            handleClick(){
-                player.currentTime(Math.max(0, player.currentTime() - 15));
-            }
+            handleClick(){ player.currentTime(Math.max(0, player.currentTime() - 15)); }
         }
 
         class Forward15Button extends Button {
@@ -650,9 +657,7 @@ function playEpisode(btn){
                 this.addClass("vjs-forward15-button");
                 this.el().innerHTML = "15s ⏩";
             }
-            handleClick(){
-                player.currentTime(player.currentTime() + 15);
-            }
+            handleClick(){ player.currentTime(player.currentTime() + 15); }
         }
 
         const cb = player.getChild('controlBar');
@@ -661,8 +666,7 @@ function playEpisode(btn){
         cb.addChild(new Forward15Button(player), {}, idx+1);
     }
 
-    try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0);}catch(e){}
-
+    // Pokreni epizodu
     if(Hls.isSupported() && url.endsWith(".m3u8")){
         hls = new Hls();
         hls.attachMedia(player.tech().el_);
@@ -681,3 +685,4 @@ function playEpisode(btn){
 
 </body>
 </html>
+
