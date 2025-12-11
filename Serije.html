@@ -620,72 +620,42 @@ window.onload = function() {
     }
 
 function playEpisode(btn){
-    // Obeleži aktivnu epizodu
-    document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const url = btn.dataset.url;
-    document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
-
-    // Uništi prethodni HLS ako postoji
-    if(hls){ try{ hls.destroy(); }catch(e){} hls=null; }
-
-    // Ako je player već inicijalizovan, resetuj ga
-    if(player){
-        try{
-            player.pause();
-            player.reset();  // Očisti prethodni media state
-        }catch(e){}
-    } else {
-        // Prva inicijalizacija playera
-        player = videojs('video',{autoplay:false, controls:true, fluid:true});
-
-        // --- Dugmad 15s ---
-        const Button = videojs.getComponent("Button");
-
-        class Back15Button extends Button {
-            constructor(player, options){
-                super(player, options);
-                this.addClass("vjs-back15-button");
-                this.el().innerHTML = "⏪ 15s";
-            }
-            handleClick(){ player.currentTime(Math.max(0, player.currentTime() - 15)); }
+        document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const url = btn.dataset.url;
+        document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
+        if(hls){ try{hls.destroy();}catch(e){} hls=null; }
+        if(!player){
+          player = videojs('video',{autoplay:false, controls:true, fluid:true});
+          const Button = videojs.getComponent("Button");
+          class Back15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-back15-button");this.el().innerHTML="⏪ 15s";} handleClick(){player.currentTime(Math.max(0,player.currentTime()-15));} }
+          class Forward15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-forward15-button");this.el().innerHTML="15s ⏩";} handleClick(){player.currentTime(player.currentTime()+15);} }
+          const cb = player.getChild('controlBar');
+          const idx = cb.children().findIndex(c=>c.name_==='fullscreenToggle');
+          cb.addChild(new Back15Button(player),{},idx);
+          cb.addChild(new Forward15Button(player),{},idx+1);
         }
+        try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0);}catch(e){}
+        if(Hls.isSupported()){ hls=new Hls(); hls.attachMedia(player.tech().el()); hls.loadSource(url); hls.on(Hls.Events.MANIFEST_PARSED,()=>player.play()); }
+        else{ player.src({src:url, type:'application/x-mpegURL'}); player.play(); }
+      }
 
-        class Forward15Button extends Button {
-            constructor(player, options){
-                super(player, options);
-                this.addClass("vjs-forward15-button");
-                this.el().innerHTML = "15s ⏩";
-            }
-            handleClick(){ player.currentTime(player.currentTime() + 15); }
-        }
-
-        const cb = player.getChild('controlBar');
-        const idx = cb.children().findIndex(c => c.name_ === 'fullscreenToggle');
-        cb.addChild(new Back15Button(player), {}, idx);
-        cb.addChild(new Forward15Button(player), {}, idx+1);
-    }
-
-    // Pokreni epizodu
-    if(Hls.isSupported() && url.endsWith(".m3u8")){
-        hls = new Hls();
-        // PRVO attachMedia, tek onda loadSource
-        hls.attachMedia(player.tech().el_);
-        hls.on(Hls.Events.MEDIA_ATTACHED, ()=>{
-            hls.loadSource(url);
-            hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
+      function filterSeries(){
+        const search=document.getElementById("searchBox").value.toLowerCase();
+        ["seriesGrid","newEpisodesGrid","favoritesGrid"].forEach(id=>{
+          document.querySelectorAll("#"+id+" .series-card").forEach(card=>{
+            const title = card.querySelector(".series-title").textContent.toLowerCase();
+            card.style.display = title.includes(search)?"block":"none";
+          });
         });
-    } else {
-        player.src({src:url, type:'video/mp4'});
-        player.play();
-    }
-}
+      }
 
+      (async function init(){ await loadSeriesList(); renderAllSeries(); })();
 
     loadSeriesList();
 }
 </script>
- <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -696,4 +666,3 @@ function playEpisode(btn){
 </script>
 </body>
 </html>
-
