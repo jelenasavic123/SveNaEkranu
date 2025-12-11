@@ -1,466 +1,683 @@
-STRANICA JE JOS UVEK U IZRADI AKO IMATE PROBLEMA SA GLEDANEM POKUSAJTE KASNIJE.<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Serije Player — Sve Serije</title>
-    <link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
-    <style>
-      /* Osnovno */
-      body {
-        margin:0;
-        font-family:'Segoe UI',sans-serif;
-        background:#141414;
-        color:#fff;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serije Player — Turske Serije</title>
+<link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
+<style>
+/* --- Body i osnovni stilovi --- */
+body { 
+  margin:0; 
+  font-family:'Segoe UI',sans-serif; 
+  background:#141414; 
+  color:#fff; 
+}
 
-      /* Grids */
-      #seriesGrid, #newEpisodesGrid, #favoritesGrid {
-        display:grid;
-        grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-        gap:15px;
-        padding:15px;
-        justify-items:center;
-      }
+/* --- Search bar --- */
+#searchBar {
+  width: 100%; 
+  padding: 12px 0; 
+  background: #141414; 
+  position: sticky; 
+  top: 0; 
+  z-index: 500; 
+  display: flex; 
+  justify-content: center;
+}
 
-      .series-card {
-        width:140px;
-        cursor:pointer;
-        text-align:center;
-        border-radius:10px;
-        overflow:hidden;
-        transition:.3s;
-        background:#1a1a1a;
-        position:relative;
-      }
+#searchContainer { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  width: 95%; 
+  max-width: 480px; 
+}
 
-      .series-card:hover {
-        transform:scale(1.05);
-        box-shadow:0 0 20px rgba(255,255,255,.06);
-      }
+#searchIcon { 
+  font-size: 20px; 
+  color: #ccc; 
+}
 
-      .series-card img {
-        width:100%;
-        height:200px;
-        object-fit:cover;
-        border-bottom:2px solid #333;
-        background:#222;
-      }
+#searchBox {
+  flex: 1; 
+  padding: 10px 14px; 
+  border-radius: 10px; 
+  background: #f5f5f5; 
+  border: 1px solid #ccc; 
+  color: #000; 
+  font-size: 16px; 
+  transition: 0.3s;
+}
 
-      .series-title {
-        padding:6px;
-        font-size:.9em;
-        font-weight:bold;
-        text-transform:uppercase;
-      }
+#searchBox::placeholder { 
+  color: #666; 
+}
 
-      .new-ep-label {
-        position:absolute;
-        top:8px;
-        right:8px;
-        background:#ff3d00;
-        color:#fff;
-        font-size:12px;
-        font-weight:bold;
-        padding:2px 5px;
-        border-radius:4px;
-      }
+#searchBox:focus { 
+  border-color: #e50914; 
+  box-shadow: 0 0 5px rgba(229,9,20,0.5); 
+  outline: none; 
+}
 
-      /* Tab panel */
-      #tabPanel {
-        position:relative;
-        width:100%;
-        min-height:100vh;
-        background:#141414;
-        padding:10px;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        display:none; /* pocetno skriven */
-      }
+/* --- Filter redovi i dugmad --- */
+.filter-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    position: relative;
+}
 
-      #tabHeader {
-        width:90%;
-        display:flex;
-        justify-content:center;
-        margin-bottom:10px;
-      }
+.filter-btn {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
 
-      #tabHeader h2 {
-        margin:0;
-        font-size:1.2em;
-        text-align:center;
-      }
+.filter-btn:hover {
+    background: #b20710;
+}
 
-      /* Player */
-      #playerContainer {
-        width:90%;
-        max-width:1200px;
-        aspect-ratio:16/9;
-        background:black;
-        border-radius:8px;
-        overflow:hidden;
-        margin:20px auto 10px auto;
-      }
+/* --- Dropdown --- */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 10000;
+}
 
-      .video-js {
-        width:100%;
-        height:100%;
-        border-radius:8px;
-      }
+.dropdown-btn {
+  background: #333 !important;
+  color: #fff !important;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+  white-space: nowrap;
+}
 
-      /* Dugmad iznad epizoda */
-      #tabButtons {
-        width:90%;
-        max-width:1200px;
-        display:flex;
-        justify-content:space-between;
-        margin-bottom:15px;
-      }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; 
+  left: 0;
+  background: #222 !important;
+  min-width: 180px;
+  border-radius: 6px;
+  padding: 8px 0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  z-index: 10000 !important;
+}
 
-      #favoriteBtn, #backBtn {
-        background:#ff3d00;
-        color:#fff;
-        border:none;
-        padding:8px 12px;
-        border-radius:6px;
-        font-weight:bold;
-        cursor:pointer;
-        transition:.3s;
-      }
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: #fff !important;
+  cursor: pointer;
+}
 
-      #favoriteBtn:hover, #backBtn:hover {
-        background:#ff1a00;
-      }
+.dropdown-content button:hover {
+  background: #333 !important;
+}
 
-      /* Episode buttons */
-      #episodeList {
-        width:90%;
-        max-width:1200px;
-        display:flex;
-        flex-wrap:wrap;
-        gap:8px;
-        justify-content:center;
-        margin-bottom:20px;
-        position:relative;
-        overflow:visible;
-      }
+.dropdown.active .dropdown-content {
+  display: block !important;
+}
 
-      .episode-btn {
-        background:#1e1e1e;
-        color:#fff;
-        border:1px solid #555;
-        padding:6px 12px;
-        border-radius:6px;
-        cursor:pointer;
-        font-size:12px;
-        transition:0.3s;
-        margin:2px;
-      }
+/* --- Grid sa serijama --- */
+.series-grid, #seriesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+    justify-items: center;
+    overflow: visible;
+}
 
-      .episode-btn:hover {
-        background:#ff3d00;
-        border-color:#ff3d00;
-        transform: scale(1.05);
-      }
+.series-card {
+    background: #181818;
+    border-radius: 8px;
+    overflow: hidden;
+    color: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    padding-bottom: 10px;
+    position: relative;
+}
 
-      .episode-btn.active {
-        background:#ff3d00;
-        border-color:#ff3d00;
-        color:#fff;
-        box-shadow:0 4px 12px rgba(255,61,0,0.6);
-      }
+.series-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
 
-      /* Search bar */
-      #searchBar {
-        width:100%;
-        padding:12px 0;
-        background:#141414;
-        position:sticky;
-        top:0;
-        z-index:50;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:10px;
-      }
+.series-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
 
-      #searchContainer {
-        display:flex;
-        align-items:center;
-        gap:8px;
-        width:95%;
-        max-width:480px;
-      }
+.series-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 8px 10px 0 10px;
+}
 
-      #searchBox {
-        flex:1;
-        padding:10px 14px;
-        border-radius:10px;
-        background:#f5f5f5;
-        border:1px solid #ccc;
-        color:#000;
-        font-size:16px;
-        transition:.3s;
-      }
+.series-info {
+    padding: 0 10px;
+    font-size: 13.5px;
+    opacity: 0.8;
+}
 
-      #searchBox::placeholder {
-        color:#666;
-      }
+/* --- Favoriti zvezdica --- */
+.favorite-icon {
+    font-size: 22px;
+    color: #fff;
+    float: right;
+    margin: 6px 10px 0 0;
+    cursor: pointer;
+    transition: 0.2s ease;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 
-      #searchBox:focus {
-        border-color:#e50914;
-        box-shadow:0 0 5px rgba(229,9,20,0.5);
-        outline:none;
-      }
+.favorite-icon.active {
+    color: gold;
+}
 
-      /* Kontrolna dugmad */
-      #controlButtons {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin: 12px 0;
-        flex-wrap: wrap;
-      }
+/* --- Player panel --- */
+#tabPanel {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: #141414;
+  z-index: 500;
+  flex-direction: column;
+  overflow-y: auto;
+}
 
-      .control-btn {
-        background: #ff3d00;
-        color: #fff;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 14px;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(255,61,0,0.4);
-      }
+#tabHeader {
+  display:flex; 
+  align-items:center; 
+  padding:12px 15px; 
+  background:#1a1a1a; 
+  border-bottom:1px solid #333;
+}
 
-      .control-btn:hover {
-        background: #ff1a00;
-        box-shadow: 0 0 20px rgba(255,0,0,0.6);
-        transform: scale(1.05);
-      }
-    </style>
-  </head>
-  <body>
-    <div id="searchBar">
-      <div id="searchContainer">
-        <input
-          type="text"
-          id="searchBox"
-          placeholder="🔍Pretraži serije…"
-          oninput="filterSeries()"
-        />
-      </div>
-      <div id="controlButtons">
-        <button class="control-btn" onclick="renderAllSeries()">Sve serije</button>
-        <button class="control-btn" onclick="showNewEpisodes()">🆕 Nove</button>
-        <button class="control-btn" onclick="showFavorites()">⭐ Favoriti</button>
-      </div>
+#tabHeader h2 { 
+  margin:0; 
+  font-size:1.2em;
+  flex:1; 
+  text-align:center;
+}
+
+#tabHeader button {
+  background:#222; 
+  color:#fff; 
+  border:none; 
+  padding:8px 14px; 
+  border-radius:6px; 
+  cursor:pointer; 
+  transition:.3s;
+}
+
+#tabHeader button:hover { 
+  background:#ff3d00; 
+}
+
+#episodeList { 
+  display:flex; 
+  flex-wrap:wrap; 
+  gap:10px; 
+  justify-content:center; 
+  padding:15px; 
+}
+
+.episode-btn { 
+  background: #1e1e1e; 
+  color:#fff; 
+  border:1px solid #555; 
+  padding:6px 12px; 
+  border-radius:6px; 
+  cursor:pointer; 
+  font-size:12px; 
+  transition:0.3s; 
+  box-shadow:0 2px 5px rgba(0,0,0,0.3); 
+  margin:2px; 
+}
+
+.episode-btn:hover { 
+  background:#ff3d00; 
+  border-color:#ff3d00; 
+  transform: scale(1.05); 
+}
+
+.episode-btn.active { 
+  background:#ff3d00; 
+  border-color:#ff3d00; 
+  color:#fff; 
+  box-shadow:0 4px 12px rgba(255,61,0,0.6); 
+}
+
+/* --- Video player --- */
+#playerContainer { 
+  position: relative; 
+  width: 90%; 
+  max-width: 1000px; 
+  margin: 10px auto; 
+  height:0; 
+  padding-bottom:56.25%; 
+  background:black; 
+  border-radius:8px; 
+  overflow:hidden; 
+  box-shadow: 0 0 15px rgba(255,61,0,0.2);
+}
+
+.video-js { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  border-radius:8px; 
+}
+
+/* --- Dugmad 15s --- */
+.vjs-back15-button, .vjs-forward15-button {
+  color: #fff; 
+  font-size:14px; 
+  line-height:1; 
+  padding:4px 6px; 
+  margin:0 2px; 
+  cursor:pointer; 
+  background: rgba(0,0,0,0.4); 
+  border-radius:4px; 
+  text-align:center;
+}
+
+.vjs-back15-button:hover, .vjs-forward15-button:hover { 
+  background: rgba(255,61,0,0.8); 
+}
+
+
+/* --- Dugmad ispod playera --- */
+#tabButtons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;      /* veći razmak da se dugmad razlikuju */
+  margin: 10px 0; /* razmak od playera i epizoda */
+}
+
+#tabButtons button {
+  padding: 8px 14px;   /* manja dugmad */
+  border-radius: 6px;
+  font-size: 14px;     /* manji font */
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: 0.2s ease;
+}
+
+/* Nazad dugme - crvena */
+#tabButtons button#backBtn {
+  background: #e50914;
+  color: #fff;
+}
+
+#tabButtons button#backBtn:hover {
+  background: #b20710;
+}
+
+/* Favorite dugme - drugačija boja */
+#tabButtons button#favoriteBtn {
+  background: #991A00;
+  color: #fff;
+}
+
+#tabButtons button#favoriteBtn:hover {
+  background: #555;
+}
+
+</style>
+</head>
+<body>
+
+<!-- SEARCH BAR -->
+<div id="searchBar">
+  <div id="searchContainer">
+    <span id="searchIcon">🔍</span>
+    <input type="text" id="searchBox" placeholder="Pretraži serije…">
+  </div>
+</div>
+
+<!-- FILTERI – RED 1 -->
+<div class="filter-row">
+    <button class="filter-btn" data-filter="all">Sve serije</button>
+    <button class="filter-btn" data-filter="popularno">Popularno</button>
+    <button class="filter-btn" data-filter="preporuka">Preporuka</button>
+    <button class="filter-btn" data-filter="favoriti">Favoriti</button>
+</div>
+
+<!-- FILTERI – RED 2 -->
+<div class="filter-row">
+    <div class="dropdown">
+        <button class="dropdown-btn">Žanrovi ▼</button>
+        <div class="dropdown-content" id="genreDropdown"></div>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-btn">Godine ▼</button>
+        <div class="dropdown-content" id="yearDropdown"></div>
+    </div>
+</div>
+
+<!-- GRID SERIJA -->
+<div id="seriesContainer" class="series-grid"></div>
+
+<!-- TAB PANEL -->
+<div id="tabPanel">
+  <div id="tabHeader">
+    <h2 id="tabTitle"></h2>
+  </div>
+
+  <!-- KONTEJNER PLAYER + EPIZODE -->
+  <div id="playerWrapper" style="
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* manji razmak između playera i epizoda */
+  ">
+
+    <!-- PLAYER -->
+    <div id="playerContainer" style="position:relative; width:100%; padding-bottom:56.25%; background:black; border-radius:8px; overflow:hidden;">
+      <video-js id="video" class="video-js vjs-default-skin" controls style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:8px;"></video-js>
+    </div>
+    
+<!-- DUGMAD -->
+<div id="tabButtons">
+  <button onclick="closeTab()">⬅ Nazad</button>
+  <button id="favoriteBtn" onclick="toggleCurrentFavorite()">Dodaj u favorite</button>
+</div>
+
+    <!-- EPIZODE -->
+    <div id="episodeList" style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 6px; /* manji razmak između dugmadi */
+        justify-items: center;
+    ">
+      <!-- Dinamički se ubacuju epizode -->
     </div>
 
-    <div id="seriesGrid"></div>
-    <div id="newEpisodesGrid" style="display:none;"></div>
-    <div id="favoritesGrid" style="display:none;"></div>
 
-    <div id="tabPanel">
-      <div id="tabHeader"><h2 id="tabTitle"></h2></div>
-      <div id="playerContainer">
-        <video-js id="video" class="video-js vjs-default-skin" controls></video-js>
-      </div>
-      <div id="tabButtons">
-        <button id="backBtn" onclick="closeTab()">⬅ Nazad</button>
-        <button id="favoriteBtn" onclick="toggleFavorite()">Dodaj u favorite</button>
-      </div>
-      <div id="episodeList"></div>
-    </div>
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
-    <script>
-      const FIREBASE_URL = "https://spring-firefly-83f9.balevasanja.workers.dev/";
-      let seriesData = {}, player=null, hls=null, currentSeries=null;
 
-      async function loadSeriesList(){
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
+<script>
+const FIREBASE_URL = "https://spring-firefly-83f9.balevasanja.workers.dev/";
+let seriesData = {}, player = null, hls = null, currentSeries = null;
+
+// --- FAVORITI ---
+function isFavorite(key){
+    const favs = JSON.parse(localStorage.getItem("favorites")||"[]");
+    return favs.includes(key);
+}
+function toggleFavorite(e,key){
+    e.stopPropagation();
+    let favs = JSON.parse(localStorage.getItem("favorites")||"[]");
+    if(favs.includes(key)) favs = favs.filter(k=>k!==key);
+    else favs.push(key);
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    renderGrid(Object.keys(seriesData));
+}
+function toggleCurrentFavorite(){
+    if(!currentSeries) return;
+    let favs = JSON.parse(localStorage.getItem("favorites")||"[]");
+    const btn = document.getElementById("favoriteBtn");
+    if(favs.includes(currentSeries)){
+        favs = favs.filter(k=>k!==currentSeries);
+        btn.textContent = "Dodaj u favorite";
+    } else {
+        favs.push(currentSeries);
+        btn.textContent = "Ukloni iz favorite";
+    }
+    localStorage.setItem("favorites", JSON.stringify(favs));
+    renderGrid(Object.keys(seriesData));
+}
+
+window.onload = function() {
+
+    // --- Load series list ---
+    async function loadSeriesList() {
         const cached = localStorage.getItem("seriesList");
-        const cachedTime = localStorage.getItem("seriesListLastUpdated")||0;
-        try{
-          const res = await fetch(FIREBASE_URL);
-          const data = await res.json();
-          let maxLast = Math.max(...Object.values(data).map(s=>s.lastUpdated||0));
-          if(cached && cachedTime==maxLast) seriesData = JSON.parse(cached);
-          else {
-            seriesData = data;
-            localStorage.setItem("seriesList", JSON.stringify(data));
-            localStorage.setItem("seriesListLastUpdated", maxLast);
-          }
-        }catch(e){
-          if(cached) seriesData = JSON.parse(cached);
-          else seriesData = {};
-          console.log("Greška fetch:", e);
+        const cachedTime = localStorage.getItem("seriesListLastUpdated") || 0;
+        try {
+            const res = await fetch(FIREBASE_URL);
+            const data = await res.json();
+            let maxLast = Math.max(...Object.values(data).map(s=>s.lastUpdated||0));
+            if(cached && cachedTime == maxLast){
+                seriesData = JSON.parse(cached);
+            } else {
+                seriesData = data;
+                localStorage.setItem("seriesList", JSON.stringify(data));
+                localStorage.setItem("seriesListLastUpdated", maxLast);
+            }
+            generateDropdowns();
+            renderGrid(Object.keys(seriesData));
+        } catch(e){
+            if(cached) seriesData = JSON.parse(cached);
+            else seriesData = {};
+            console.log("Greška fetch:", e);
         }
-      }
+    }
 
-      function renderGrid(containerId, seriesList){
-        const grid = document.getElementById(containerId);
+    // --- GENERISANJE KARTICA ---
+    function renderGrid(keys){
+        const grid = document.getElementById("seriesContainer");
         grid.innerHTML="";
-        for(const key of seriesList){
-          const s = seriesData[key];
-          if(!s) continue;
-          const card = document.createElement("div");
-          card.className="series-card";
-          card.innerHTML=`<img src="${s.poster}" loading="lazy"><div class="series-title">${s.localName}</div>`;
-          card.onclick = ()=>openTab(key);
-          grid.appendChild(card);
+        keys.forEach(key => {
+            const s = seriesData[key];
+            if(!s) return;
+            const card = document.createElement("div");
+            card.className = "series-card";
+            card.innerHTML = `
+                <img src="${s.poster}" loading="lazy">
+                <div class="series-title">${s.localName}</div>
+                <div class="series-info">${s.zanr} • ${s.godina}</div>
+                <span class="favorite-icon ${isFavorite(key) ? "active" : ""}" onclick="toggleFavorite(event,'${key}')">★</span>
+            `;
+            card.onclick = ()=>openTab(key);
+            grid.appendChild(card);
+        });
+    }
+
+    // --- GENERISANJE DROPDOWN-A ---
+    function generateDropdowns(){
+        const genreSet = new Set(Object.values(seriesData).map(s=>s.zanr));
+        const genreDropdown = document.getElementById("genreDropdown");
+        genreDropdown.innerHTML="";
+        genreSet.forEach(g=>{
+            const btn = document.createElement("button");
+            btn.textContent = g;
+            btn.addEventListener("click", ()=>{ filterBy("genre", g); genreDropdown.parentElement.classList.remove("active"); });
+            genreDropdown.appendChild(btn);
+        });
+
+        const yearDropdown = document.getElementById("yearDropdown");
+        yearDropdown.innerHTML="";
+        for(let y=2026; y>=2015; y--){
+            const btn = document.createElement("button");
+            btn.textContent = y;
+            btn.addEventListener("click", ()=>{ filterBy("year", y.toString()); yearDropdown.parentElement.classList.remove("active"); });
+            yearDropdown.appendChild(btn);
         }
-      }
+    }
 
-      function closeTabIfOpen(){
-        const tabPanel = document.getElementById("tabPanel");
-        if(tabPanel.style.display==="flex"){
-          tabPanel.style.display="none";
-          if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
-          if(player){ try{player.pause(); player.currentTime(0);}catch(e){} }
-        }
-      }
+    // --- FILTER DUGMAD ---
+    document.querySelectorAll(".filter-btn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+            const f = btn.dataset.filter;
+            if(f=="all") renderGrid(Object.keys(seriesData));
+            else if(f=="popularno") filterBy("tag","Popularno");
+            else if(f=="preporuka") filterBy("tag","Preporuka");
+            else if(f=="favoriti") {
+                const favs = JSON.parse(localStorage.getItem("favorites")||"[]");
+                renderGrid(favs);
+            }
+        });
+    });
 
-      function renderAllSeries(){
-        closeTabIfOpen();
-        document.getElementById("seriesGrid").style.display="grid";
-        document.getElementById("newEpisodesGrid").style.display="none";
-        document.getElementById("favoritesGrid").style.display="none";
-        renderGrid("seriesGrid", Object.keys(seriesData));
-      }
+    // --- DROPDOWN TOGGLE ---
+    document.querySelectorAll(".dropdown-btn").forEach(btn=>{
+        btn.addEventListener("click", e=>{
+            const parent = btn.parentElement;
+            const isActive = parent.classList.contains("active");
+            document.querySelectorAll(".dropdown").forEach(d=>d.classList.remove("active"));
+            if(!isActive) parent.classList.add("active");
+            e.stopPropagation();
+        });
+    });
+    document.body.addEventListener("click", ()=>{ document.querySelectorAll(".dropdown").forEach(d=>d.classList.remove("active")); });
 
-      function getNewEpisodes(s){
-        const seen = JSON.parse(localStorage.getItem("seenEpisodes")||'{}');
-        for(let i=s.episodes.length-1;i>=0;i--){
-          if(!seen[s.episodes[i]]) return {url:s.episodes[i], number:i+1};
-        }
-        return null;
-      }
+    // --- FILTER BY ---
+    function filterBy(type,value){
+        const filtered = Object.keys(seriesData).filter(key=>{
+            const s = seriesData[key];
+            if(type=="tag") return s.tag===value;
+            if(type=="genre") return s.zanr===value;
+            if(type=="year") return s.godina.toString()===value;
+        });
+        renderGrid(filtered);
+    }
 
-      function showNewEpisodes(){
-        closeTabIfOpen();
-        const grid = document.getElementById("newEpisodesGrid");
-        grid.innerHTML="";
-        let count=0;
-        for(const key in seriesData){
-          if(count>=10) break;
-          const s = seriesData[key];
-          const latest = getNewEpisodes(s);
-          if(!latest) continue;
-          const card = document.createElement("div");
-          card.className="series-card";
-          card.innerHTML=`<img src="${s.poster}" loading="lazy"><div class="new-ep-label">${latest.number} Epz</div><div class="series-title">${s.localName}</div>`;
-          card.onclick = ()=>openTab(key);
-          grid.appendChild(card);
-          count++;
-        }
-        document.getElementById("seriesGrid").style.display="none";
-        grid.style.display="grid";
-        document.getElementById("favoritesGrid").style.display="none";
-      }
+    // --- SEARCH ---
+    document.getElementById("searchBox").addEventListener("input", e=>{
+        const val = e.target.value.toLowerCase();
+        const filtered = Object.keys(seriesData).filter(k=>seriesData[k].localName.toLowerCase().includes(val));
+        renderGrid(filtered);
+    });
 
-      function showFavorites(){
-        closeTabIfOpen();
-        const favKeys = JSON.parse(localStorage.getItem("favorites")||'[]');
-        renderGrid("favoritesGrid", favKeys);
-        document.getElementById("seriesGrid").style.display="none";
-        document.getElementById("newEpisodesGrid").style.display="none";
-        document.getElementById("favoritesGrid").style.display="grid";
-      }
-
-      function openTab(name){
+    // --- PLAYER ---
+    window.openTab = function(name){
         const s = seriesData[name];
         if(!s) return;
-        currentSeries=name;
-        document.getElementById("seriesGrid").style.display="none";
-        document.getElementById("newEpisodesGrid").style.display="none";
-        document.getElementById("favoritesGrid").style.display="none";
+        currentSeries = name;
+
+        // Sakrij sve filtere i search bar
+        document.getElementById("seriesContainer").style.display="none";
+        document.getElementById("searchBar").style.display="none";
+        document.querySelectorAll(".filter-row").forEach(f => f.style.display="none");
+
         document.getElementById("tabPanel").style.display="flex";
         document.getElementById("tabTitle").textContent = s.localName;
 
+        // Osveži dugme favorita
         const favs = JSON.parse(localStorage.getItem("favorites")||'[]');
         document.getElementById("favoriteBtn").textContent = favs.includes(name) ? "Ukloni iz favorite" : "Dodaj u favorite";
 
         const epList = document.getElementById("episodeList");
         epList.innerHTML="";
-        const episodes = [...s.episodes].reverse();
-        episodes.forEach((url,i)=>{
-          const btn = document.createElement("button");
-          btn.className="episode-btn";
-          btn.textContent="Epizoda "+(i+1);
-          btn.dataset.url=url;
-          btn.onclick=()=>playEpisode(btn);
-          epList.appendChild(btn);
+        [...s.episodes].reverse().forEach((url,i)=>{
+            const btn=document.createElement("button");
+            btn.className="episode-btn";
+            btn.textContent="Epizoda "+(i+1);
+            btn.dataset.url=url;
+            btn.onclick=()=>playEpisode(btn);
+            epList.appendChild(btn);
         });
 
-        window.scrollTo({top:0, behavior:'smooth'});
-      }
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
 
-      function toggleFavorite(){
-        const favs = JSON.parse(localStorage.getItem("favorites")||'[]');
-        if(favs.includes(currentSeries)){
-          favs.splice(favs.indexOf(currentSeries),1);
-          document.getElementById("favoriteBtn").textContent = "Dodaj u favorite";
-        }else{
-          favs.push(currentSeries);
-          document.getElementById("favoriteBtn").textContent = "Ukloni iz favorite";
+    window.closeTab = function(){
+        document.getElementById("tabPanel").style.display="none";
+
+        // Ponovo prikaži grid, filtere i search bar
+        document.getElementById("seriesContainer").style.display="grid";
+        document.getElementById("searchBar").style.display="flex";
+        document.querySelectorAll(".filter-row").forEach(f => f.style.display="flex");
+
+        if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
+        if(player){ try{player.pause(); player.currentTime(0);}catch(e){} }
+    }
+
+function playEpisode(btn){
+    document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const url = btn.dataset.url;
+    document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
+
+    if(hls){ try{hls.destroy();}catch(e){} hls=null; }
+
+    if(!player){
+        player = videojs('video',{autoplay:false, controls:true, fluid:true});
+
+        // --- Dugmad 15s ---
+        const Button = videojs.getComponent("Button");
+
+        class Back15Button extends Button {
+            constructor(player, options){
+                super(player, options);
+                this.addClass("vjs-back15-button");
+                this.el().innerHTML = "⏪ 15s";
+            }
+            handleClick(){
+                player.currentTime(Math.max(0, player.currentTime() - 15));
+            }
         }
-        localStorage.setItem("favorites", JSON.stringify(favs));
-      }
 
-      function closeTab(){
-        closeTabIfOpen();
-        renderAllSeries();
-      }
-
-      function playEpisode(btn){
-        document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        const url = btn.dataset.url;
-        document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
-        if(hls){ try{hls.destroy();}catch(e){} hls=null; }
-        if(!player){
-          player = videojs('video',{autoplay:false, controls:true, fluid:true});
-          const Button = videojs.getComponent("Button");
-          class Back15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-back15-button");this.el().innerHTML="⏪ 15s";} handleClick(){player.currentTime(Math.max(0,player.currentTime()-15));} }
-          class Forward15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-forward15-button");this.el().innerHTML="15s ⏩";} handleClick(){player.currentTime(player.currentTime()+15);} }
-          const cb = player.getChild('controlBar');
-          const idx = cb.children().findIndex(c=>c.name_==='fullscreenToggle');
-          cb.addChild(new Back15Button(player),{},idx);
-          cb.addChild(new Forward15Button(player),{},idx+1);
+        class Forward15Button extends Button {
+            constructor(player, options){
+                super(player, options);
+                this.addClass("vjs-forward15-button");
+                this.el().innerHTML = "15s ⏩";
+            }
+            handleClick(){
+                player.currentTime(player.currentTime() + 15);
+            }
         }
-        try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0);}catch(e){}
-        if(Hls.isSupported()){ hls=new Hls(); hls.attachMedia(player.tech().el()); hls.loadSource(url); hls.on(Hls.Events.MANIFEST_PARSED,()=>player.play()); }
-        else{ player.src({src:url, type:'application/x-mpegURL'}); player.play(); }
-      }
 
-      function filterSeries(){
-        const search=document.getElementById("searchBox").value.toLowerCase();
-        ["seriesGrid","newEpisodesGrid","favoritesGrid"].forEach(id=>{
-          document.querySelectorAll("#"+id+" .series-card").forEach(card=>{
-            const title = card.querySelector(".series-title").textContent.toLowerCase();
-            card.style.display = title.includes(search)?"block":"none";
-          });
-        });
-      }
+        const cb = player.getChild('controlBar');
+        const idx = cb.children().findIndex(c => c.name_ === 'fullscreenToggle');
+        cb.addChild(new Back15Button(player), {}, idx);
+        cb.addChild(new Forward15Button(player), {}, idx+1);
+    }
 
-      (async function init(){ await loadSeriesList(); renderAllSeries(); })();
-    </script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0);}catch(e){}
 
-  gtag('config', 'G-T61FEM3203');
+    if(Hls.isSupported() && url.endsWith(".m3u8")){
+        hls = new Hls();
+        hls.attachMedia(player.tech().el_);
+        hls.loadSource(url);
+        hls.on(Hls.Events.MANIFEST_PARSED, ()=>player.play());
+    } else {
+        player.src({src:url, type:'video/mp4'});
+        player.play();
+    }
+}
+
+
+    loadSeriesList();
+}
 </script>
-  </body>
+
+</body>
 </html>
-
-
-
