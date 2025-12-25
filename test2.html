@@ -368,6 +368,10 @@
         font-size: 18px;
         margin-top: 20px;
       }
+      
+      #popup {
+  display: none !important; /* popup se ne vidi */
+}
     </style>
   </head>
   <body>
@@ -644,6 +648,11 @@
         window.location.href = videoUrl;
       }
       fetchTrendingMovies();
+      
+      window.onload = function() {
+  document.getElementById('content').style.display = 'block';
+};
+
       </script>
 
       <div class="widget">
