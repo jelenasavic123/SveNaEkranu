@@ -3,669 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Serije Player — Turske Serije</title>
-<link href="https://vjs.zencdn.net/8.13.0/video-js.css" rel="stylesheet" />
+<title>Obaveštenje</title>
 <style>
-/* --- Body i osnovni stilovi --- */
-body { 
-  margin:0; 
-  font-family:'Segoe UI',sans-serif; 
-  background:#141414; 
-  color:#fff; 
-}
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20px;
+    }
 
-/* --- Search bar --- */
-#searchBar {
-  width: 100%; 
-  padding: 12px 0; 
-  background: #141414; 
-  position: sticky; 
-  top: 0; 
-  z-index: 500; 
-  display: flex; 
-  justify-content: center;
-}
+    .box {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        max-width: 400px;
+    }
 
-#searchContainer { 
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
-  width: 95%; 
-  max-width: 480px; 
-}
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
 
-#searchIcon { 
-  font-size: 20px; 
-  color: #ccc; 
-}
+    p {
+        font-size: 1.1em;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
 
-#searchBox {
-  flex: 1; 
-  padding: 10px 14px; 
-  border-radius: 10px; 
-  background: #f5f5f5; 
-  border: 1px solid #ccc; 
-  color: #000; 
-  font-size: 16px; 
-  transition: 0.3s;
-}
+    a {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #4CAF50;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s;
+    }
 
-#searchBox::placeholder { 
-  color: #666; 
-}
-
-#searchBox:focus { 
-  border-color: #e50914; 
-  box-shadow: 0 0 5px rgba(229,9,20,0.5); 
-  outline: none; 
-}
-
-/* --- Filter redovi i dugmad --- */
-.filter-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    position: relative;
-}
-
-.filter-btn {
-    background: #e50914;
-    color: #fff;
-    border: none;
-    padding: 9px 11px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.filter-btn:hover {
-    background: #b20710;
-}
-
-/* --- Dropdown --- */
-.dropdown {
-  position: relative;
-  display: inline-block;
-  z-index: 10000;
-}
-
-.dropdown-btn {
-  background: #333 !important;
-  color: #fff !important;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s ease;
-  white-space: nowrap;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  top: 100%; 
-  left: 0;
-  background: #222 !important;
-  min-width: 180px;
-  border-radius: 6px;
-  padding: 8px 0;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-  z-index: 10000 !important;
-}
-
-.dropdown-content button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px 16px;
-  background: none;
-  border: none;
-  color: #fff !important;
-  cursor: pointer;
-}
-
-.dropdown-content button:hover {
-  background: #333 !important;
-}
-
-.dropdown.active .dropdown-content {
-  display: block !important;
-}
-
-/* --- Grid sa serijama --- */
-.series-grid, #seriesContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-    justify-items: center;
-    overflow: visible;
-}
-
-.series-card {
-    background: #181818;
-    border-radius: 8px;
-    overflow: hidden;
-    color: #fff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    padding-bottom: 10px;
-    position: relative;
-}
-
-.series-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-.series-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
-
-.series-title {
-    font-size: 16px;
-    font-weight: 600;
-    padding: 8px 10px 0 10px;
-}
-
-.series-info {
-    padding: 0 10px;
-    font-size: 13.5px;
-    opacity: 0.8;
-}
-
-/* --- Favoriti zvezdica --- */
-.favorite-icon {
-    font-size: 22px;
-    color: #fff;
-    float: right;
-    margin: 6px 10px 0 0;
-    cursor: pointer;
-    transition: 0.2s ease;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.favorite-icon.active {
-    color: gold;
-}
-
-/* --- Player panel --- */
-#tabPanel {
-  display: none;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: #141414;
-  z-index: 500;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-#tabHeader {
-  display:flex; 
-  align-items:center; 
-  padding:12px 15px; 
-  background:#1a1a1a; 
-  border-bottom:1px solid #333;
-}
-
-#tabHeader h2 { 
-  margin:0; 
-  font-size:1.2em;
-  flex:1; 
-  text-align:center;
-}
-
-#tabHeader button {
-  background:#222; 
-  color:#fff; 
-  border:none; 
-  padding:8px 14px; 
-  border-radius:6px; 
-  cursor:pointer; 
-  transition:.3s;
-}
-
-#tabHeader button:hover { 
-  background:#ff3d00; 
-}
-
-#episodeList { 
-  display:flex; 
-  flex-wrap:wrap; 
-  gap:10px; 
-  justify-content:center; 
-  padding:15px; 
-}
-
-.episode-btn { 
-  background: #1e1e1e; 
-  color:#fff; 
-  border:1px solid #555; 
-  padding:6px 12px; 
-  border-radius:6px; 
-  cursor:pointer; 
-  font-size:12px; 
-  transition:0.3s; 
-  box-shadow:0 2px 5px rgba(0,0,0,0.3); 
-  margin:2px; 
-}
-
-.episode-btn:hover { 
-  background:#ff3d00; 
-  border-color:#ff3d00; 
-  transform: scale(1.05); 
-}
-
-.episode-btn.active { 
-  background:#ff3d00; 
-  border-color:#ff3d00; 
-  color:#fff; 
-  box-shadow:0 4px 12px rgba(255,61,0,0.6); 
-}
-
-/* --- Video player --- */
-#playerContainer { 
-  position: relative; 
-  width: 90%; 
-  max-width: 1000px; 
-  margin: 10px auto; 
-  height:0; 
-  padding-bottom:56.25%; 
-  background:black; 
-  border-radius:8px; 
-  overflow:hidden; 
-  box-shadow: 0 0 15px rgba(255,61,0,0.2);
-}
-
-.video-js { 
-  position: absolute; 
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  height: 100%; 
-  border-radius:8px; 
-}
-
-/* --- Dugmad 15s --- */
-.vjs-back15-button, .vjs-forward15-button {
-  color: #fff; 
-  font-size:14px; 
-  line-height:1; 
-  padding:4px 6px; 
-  margin:0 2px; 
-  cursor:pointer; 
-  background: rgba(0,0,0,0.4); 
-  border-radius:4px; 
-  text-align:center;
-}
-
-.vjs-back15-button:hover, .vjs-forward15-button:hover { 
-  background: rgba(255,61,0,0.8); 
-}
-
-
-/* --- Dugmad ispod playera --- */
-#tabButtons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;      /* veći razmak da se dugmad razlikuju */
-  margin: 10px 0; /* razmak od playera i epizoda */
-}
-
-#tabButtons button {
-  padding: 8px 14px;   /* manja dugmad */
-  border-radius: 6px;
-  font-size: 14px;     /* manji font */
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: 0.2s ease;
-}
-
-/* Nazad dugme - crvena */
-#tabButtons button#backBtn {
-  background: #e50914;
-  color: #fff;
-}
-
-#tabButtons button#backBtn:hover {
-  background: #b20710;
-}
-
-/* Favorite dugme - drugačija boja */
-#tabButtons button#favoriteBtn {
-  background: #991A00;
-  color: #fff;
-}
-
-#tabButtons button#favoriteBtn:hover {
-  background: #555;
-}
-
+    a:hover {
+        background-color: #45a049;
+    }
 </style>
 </head>
 <body>
-
-<!-- SEARCH BAR -->
-<div id="searchBar">
-  <div id="searchContainer">
-    <span id="searchIcon">🔍</span>
-    <input type="text" id="searchBox" placeholder="Pretraži serije…">
-  </div>
-</div>
-
-<!-- FILTERI – RED 1 -->
-<div class="filter-row">
-    <button class="filter-btn" data-filter="all">Sve serije</button>
-    <button class="filter-btn" data-filter="popularno">Popularno</button>
-    <button class="filter-btn" data-filter="preporuka">Preporuka</button>
-    <button class="filter-btn" data-filter="favoriti">Favoriti</button>
-</div>
-
-<!-- FILTERI – RED 2 -->
-<div class="filter-row">
-    <div class="dropdown">
-        <button class="dropdown-btn">Žanrovi ▼</button>
-        <div class="dropdown-content" id="genreDropdown"></div>
-    </div>
-    <div class="dropdown">
-        <button class="dropdown-btn">Godine ▼</button>
-        <div class="dropdown-content" id="yearDropdown"></div>
-    </div>
-</div>
-
-<!-- GRID SERIJA -->
-<div id="seriesContainer" class="series-grid"></div>
-
-<!-- TAB PANEL -->
-<div id="tabPanel">
-  <div id="tabHeader">
-    <h2 id="tabTitle"></h2>
-  </div>
-
-  <!-- KONTEJNER PLAYER + EPIZODE -->
-  <div id="playerWrapper" style="
-      width: 90%;
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px; /* manji razmak između playera i epizoda */
-  ">
-
-    <!-- PLAYER -->
-    <div id="playerContainer" style="position:relative; width:100%; padding-bottom:56.25%; background:black; border-radius:8px; overflow:hidden;">
-      <video-js id="video" class="video-js vjs-default-skin" controls style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:8px;"></video-js>
-    </div>
-    
-<!-- DUGMAD -->
-<div id="tabButtons">
-  <button onclick="closeTab()">⬅ Nazad</button>
-  <button id="favoriteBtn" onclick="toggleCurrentFavorite()">Dodaj u favorite</button>
-</div>
-
-    <!-- EPIZODE -->
-    <div id="episodeList" style="
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 6px; /* manji razmak između dugmadi */
-        justify-items: center;
-    ">
-      <!-- Dinamički se ubacuju epizode -->
+    <div class="box">
+        <h1>Obaveštenje</h1>
+        <p>
+            Dragi posetioci,<br>
+            Sajt više nije ovde.<br>
+            Sve serije i sadržaj sada možete pratiti na novoj adresi:
+        </p>
+        <a href="https://www.sveNaDlanu.online">➡ Posetite novi sajt</a>
+        <p style="margin-top:15px; font-size:0.9em; color:#666;">
+            Bićete automatski preusmereni za nekoliko sekundi.
+        </p>
     </div>
 
-
-  </div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://vjs.zencdn.net/8.13.0/video.min.js"></script>
-<script>
-const FIREBASE_URL = "https://spring-firefly-83f9.balevasanja.workers.dev/";
-let seriesData = {}, player = null, hls = null, currentSeries = null;
-
-// --- FAVORITI ---
-function isFavorite(key){
-    const favs = JSON.parse(localStorage.getItem("favorites")||"[]");
-    return favs.includes(key);
-}
-function toggleFavorite(e,key){
-    e.stopPropagation();
-    let favs = JSON.parse(localStorage.getItem("favorites")||"[]");
-    if(favs.includes(key)) favs = favs.filter(k=>k!==key);
-    else favs.push(key);
-    localStorage.setItem("favorites", JSON.stringify(favs));
-    renderGrid(Object.keys(seriesData));
-}
-function toggleCurrentFavorite(){
-    if(!currentSeries) return;
-    let favs = JSON.parse(localStorage.getItem("favorites")||"[]");
-    const btn = document.getElementById("favoriteBtn");
-    if(favs.includes(currentSeries)){
-        favs = favs.filter(k=>k!==currentSeries);
-        btn.textContent = "Dodaj u favorite";
-    } else {
-        favs.push(currentSeries);
-        btn.textContent = "Ukloni iz favorite";
-    }
-    localStorage.setItem("favorites", JSON.stringify(favs));
-    renderGrid(Object.keys(seriesData));
-}
-
-window.onload = function() {
-
-    // --- Load series list ---
-    async function loadSeriesList() {
-        const cached = localStorage.getItem("seriesList");
-        const cachedTime = localStorage.getItem("seriesListLastUpdated") || 0;
-        try {
-            const res = await fetch(FIREBASE_URL);
-            const data = await res.json();
-            let maxLast = Math.max(...Object.values(data).map(s=>s.lastUpdated||0));
-            if(cached && cachedTime == maxLast){
-                seriesData = JSON.parse(cached);
-            } else {
-                seriesData = data;
-                localStorage.setItem("seriesList", JSON.stringify(data));
-                localStorage.setItem("seriesListLastUpdated", maxLast);
-            }
-            generateDropdowns();
-            renderGrid(Object.keys(seriesData));
-        } catch(e){
-            if(cached) seriesData = JSON.parse(cached);
-            else seriesData = {};
-            console.log("Greška fetch:", e);
-        }
-    }
-
-    // --- GENERISANJE KARTICA ---
-    function renderGrid(keys){
-        const grid = document.getElementById("seriesContainer");
-        grid.innerHTML="";
-        keys.forEach(key => {
-            const s = seriesData[key];
-            if(!s) return;
-            const card = document.createElement("div");
-            card.className = "series-card";
-            card.innerHTML = `
-                <img src="${s.poster}" loading="lazy">
-                <div class="series-title">${s.localName}</div>
-                <div class="series-info">${s.zanr} • ${s.godina}</div>
-                <span class="favorite-icon ${isFavorite(key) ? "active" : ""}" onclick="toggleFavorite(event,'${key}')">★</span>
-            `;
-            card.onclick = ()=>openTab(key);
-            grid.appendChild(card);
-        });
-    }
-
-    // --- GENERISANJE DROPDOWN-A ---
-    function generateDropdowns(){
-        const genreSet = new Set(Object.values(seriesData).map(s=>s.zanr));
-        const genreDropdown = document.getElementById("genreDropdown");
-        genreDropdown.innerHTML="";
-        genreSet.forEach(g=>{
-            const btn = document.createElement("button");
-            btn.textContent = g;
-            btn.addEventListener("click", ()=>{ filterBy("genre", g); genreDropdown.parentElement.classList.remove("active"); });
-            genreDropdown.appendChild(btn);
-        });
-
-        const yearDropdown = document.getElementById("yearDropdown");
-        yearDropdown.innerHTML="";
-        for(let y=2026; y>=2015; y--){
-            const btn = document.createElement("button");
-            btn.textContent = y;
-            btn.addEventListener("click", ()=>{ filterBy("year", y.toString()); yearDropdown.parentElement.classList.remove("active"); });
-            yearDropdown.appendChild(btn);
-        }
-    }
-
-    // --- FILTER DUGMAD ---
-    document.querySelectorAll(".filter-btn").forEach(btn=>{
-        btn.addEventListener("click", ()=>{
-            const f = btn.dataset.filter;
-            if(f=="all") renderGrid(Object.keys(seriesData));
-            else if(f=="popularno") filterBy("tag","Popularno");
-            else if(f=="preporuka") filterBy("tag","Preporuka");
-            else if(f=="favoriti") {
-                const favs = JSON.parse(localStorage.getItem("favorites")||"[]");
-                renderGrid(favs);
-            }
-        });
-    });
-
-    // --- DROPDOWN TOGGLE ---
-    document.querySelectorAll(".dropdown-btn").forEach(btn=>{
-        btn.addEventListener("click", e=>{
-            const parent = btn.parentElement;
-            const isActive = parent.classList.contains("active");
-            document.querySelectorAll(".dropdown").forEach(d=>d.classList.remove("active"));
-            if(!isActive) parent.classList.add("active");
-            e.stopPropagation();
-        });
-    });
-    document.body.addEventListener("click", ()=>{ document.querySelectorAll(".dropdown").forEach(d=>d.classList.remove("active")); });
-
-    // --- FILTER BY ---
-    function filterBy(type,value){
-        const filtered = Object.keys(seriesData).filter(key=>{
-            const s = seriesData[key];
-            if(type=="tag") return s.tag===value;
-            if(type=="genre") return s.zanr===value;
-            if(type=="year") return s.godina.toString()===value;
-        });
-        renderGrid(filtered);
-    }
-
-    // --- SEARCH ---
-    document.getElementById("searchBox").addEventListener("input", e=>{
-        const val = e.target.value.toLowerCase();
-        const filtered = Object.keys(seriesData).filter(k=>seriesData[k].localName.toLowerCase().includes(val));
-        renderGrid(filtered);
-    });
-
-    // --- PLAYER ---
-    window.openTab = function(name){
-        const s = seriesData[name];
-        if(!s) return;
-        currentSeries = name;
-
-        // Sakrij sve filtere i search bar
-        document.getElementById("seriesContainer").style.display="none";
-        document.getElementById("searchBar").style.display="none";
-        document.querySelectorAll(".filter-row").forEach(f => f.style.display="none");
-
-        document.getElementById("tabPanel").style.display="flex";
-        document.getElementById("tabTitle").textContent = s.localName;
-
-        // Osveži dugme favorita
-        const favs = JSON.parse(localStorage.getItem("favorites")||'[]');
-        document.getElementById("favoriteBtn").textContent = favs.includes(name) ? "Ukloni iz favorite" : "Dodaj u favorite";
-
-        const epList = document.getElementById("episodeList");
-        epList.innerHTML="";
-        [...s.episodes].reverse().forEach((url,i)=>{
-            const btn=document.createElement("button");
-            btn.className="episode-btn";
-            btn.textContent="Epizoda "+(i+1);
-            btn.dataset.url=url;
-            btn.onclick=()=>playEpisode(btn);
-            epList.appendChild(btn);
-        });
-
-        window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    window.closeTab = function(){
-        document.getElementById("tabPanel").style.display="none";
-
-        // Ponovo prikaži grid, filtere i search bar
-        document.getElementById("seriesContainer").style.display="grid";
-        document.getElementById("searchBar").style.display="flex";
-        document.querySelectorAll(".filter-row").forEach(f => f.style.display="flex");
-
-        if(hls){ try{hls.destroy(); }catch(e){} hls=null; }
-        if(player){ try{player.pause(); player.currentTime(0);}catch(e){} }
-    }
-
-function playEpisode(btn){
-        document.querySelectorAll(".episode-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        const url = btn.dataset.url;
-        document.getElementById("playerContainer").scrollIntoView({behavior:"smooth", block:"start"});
-        if(hls){ try{hls.destroy();}catch(e){} hls=null; }
-        if(!player){
-          player = videojs('video',{autoplay:false, controls:true, fluid:true});
-          const Button = videojs.getComponent("Button");
-          class Back15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-back15-button");this.el().innerHTML="⏪ 15s";} handleClick(){player.currentTime(Math.max(0,player.currentTime()-15));} }
-          class Forward15Button extends Button { constructor(p,o){super(p,o);this.addClass("vjs-forward15-button");this.el().innerHTML="15s ⏩";} handleClick(){player.currentTime(player.currentTime()+15);} }
-          const cb = player.getChild('controlBar');
-          const idx = cb.children().findIndex(c=>c.name_==='fullscreenToggle');
-          cb.addChild(new Back15Button(player),{},idx);
-          cb.addChild(new Forward15Button(player),{},idx+1);
-        }
-        try{ player.pause(); player.src({src:'', type:'application/x-mpegURL'}); player.currentTime(0);}catch(e){}
-        if(Hls.isSupported()){ hls=new Hls(); hls.attachMedia(player.tech().el()); hls.loadSource(url); hls.on(Hls.Events.MANIFEST_PARSED,()=>player.play()); }
-        else{ player.src({src:url, type:'application/x-mpegURL'}); player.play(); }
-      }
-
-      function filterSeries(){
-        const search=document.getElementById("searchBox").value.toLowerCase();
-        ["seriesGrid","newEpisodesGrid","favoritesGrid"].forEach(id=>{
-          document.querySelectorAll("#"+id+" .series-card").forEach(card=>{
-            const title = card.querySelector(".series-title").textContent.toLowerCase();
-            card.style.display = title.includes(search)?"block":"none";
-          });
-        });
-      }
-
-      (async function init(){ await loadSeriesList(); renderAllSeries(); })();
-
-    loadSeriesList();
-}
-</script>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T61FEM3203"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-T61FEM3203');
-</script>
+    <script>
+        setTimeout(function() {
+            window.location.href = "https://www.sveNaDlanu.online";
+        }, 8000);
+    </script>
 </body>
 </html>
-
-
-
