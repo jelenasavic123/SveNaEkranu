@@ -370,9 +370,6 @@
         margin-top: 20px;
       }
       
-      #popup {
-  display: none !important; /* popup se ne vidi */
-}
     </style>
   </head>
   <body>
@@ -657,6 +654,19 @@
   document.getElementById('content').style.display = 'block';
 };
 
+window.onload = function() {
+    const nickname = localStorage.getItem('nickname');
+    const expirationDate = localStorage.getItem('expirationDate');
+    if (!nickname || !expirationDate) {
+        // Ako korisnik nije prijavljen, prikazivanje popupa
+        document.getElementById('popup').style.display = 'flex';
+    } else {
+        // Ako je korisnik prijavljen, otvori sadržaj
+        document.getElementById('content').style.display = 'block';
+    }
+};
+
+
       </script>
     <!-- Google tag (gtag.js) -->
 <script>
@@ -779,12 +789,10 @@
   /* -------------- */
   block_blacklist_countries();
 </script>
-    <script type="text/javascript" src="https://cdn.livetrafficfeed.com/static/online/live.v2.js?text=ffffff&bg=ff0000&ro=0&tz=Europe%2FBelgrade"></script><noscript id="LTF_online_website"><a href="http://livetrafficfeed.com/online-counter">Site Online Counter</a></noscript>
-      <div class="widget">
+
       </div>
   </body>
 </html>
-
 
 
 
