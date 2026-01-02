@@ -1,75 +1,87 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obaveštenje</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-        padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obaveštenje</title>
 
-    .box {
-        background-color: #fff;
-        padding: 30px 40px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        max-width: 400px;
-    }
+    <!-- AUTOMATSKO PREUSMERENJE (najpouzdanije) -->
+    <meta http-equiv="refresh" content="8;url=https://www.svenadlanu.online/p/serije.html">
 
-    h1 {
-        font-size: 1.8em;
-        margin-bottom: 20px;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
 
-    p {
-        font-size: 1.1em;
-        margin-bottom: 25px;
-        line-height: 1.5;
-    }
+        .box {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 420px;
+            width: 100%;
+        }
 
-    a {
-        display: inline-block;
-        padding: 12px 25px;
-        background-color: #4CAF50;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background 0.3s;
-    }
+        h1 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
 
-    a:hover {
-        background-color: #45a049;
-    }
-</style>
+        p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        a {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        a:hover {
+            background-color: #45a049;
+        }
+
+        .small {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
+
     <div class="box">
         <h1>Obaveštenje</h1>
         <p>
             Dragi posetioci,<br>
-            Sajt više nije ovde.<br>
-            Sve serije i sadržaj sada možete pratiti na novoj adresi:
+            Sajt više nije aktivan na ovoj adresi.<br>
+            Sav sadržaj je premešten na novi sajt:
         </p>
-        <a href="https://www.sveNaDlanu.online">➡ Posetite novi sajt</a>
-        <p style="margin-top:15px; font-size:0.9em; color:#666;">
+
+        <a href="https://www.svenadlanu.online/p/serije.html">
+            ➡ Posetite novi sajt
+        </a>
+
+        <p class="small">
             Bićete automatski preusmereni za nekoliko sekundi.
         </p>
     </div>
 
-    <script>
-        setTimeout(function() {
-            window.location.href = "https://www.svenadlanu.online/p/serije.html";
-        }, 8000);
-    </script>
 </body>
 </html>
-
