@@ -95,7 +95,7 @@
         width: 105px;
       }
       
-            /* Vertikalni Sidebar */
+      /* Vertikalni Sidebar */
       .sidebar {
         position: fixed;
         top: 40%;
@@ -103,12 +103,10 @@
         transform: translateY(-50%);
         background-color: rgba(0, 0, 0, 0.7);
         padding: 30px 25px;
-        /* Povećan padding */
         border-radius: 10px;
         display: flex;
         flex-direction: column;
         gap: 30px;
-        /* Veći razmak između dugmića */
         z-index: 1000;
       }
       .sidebar-links {
@@ -118,85 +116,79 @@
       }
       .sidebar-links li {
         margin: 15px 0;
-        /* Veći razmak između listi */
       }
       .sidebar-links a {
         text-decoration: none;
         color: white;
         font-size: 13px;
-        /* Veći font za bolju čitljivost */
         font-weight: bold;
         text-transform: uppercase;
         padding: 15px 15px;
-        /* Povećan padding za šire dugmiće */
         transition: all 0.3s ease;
       }
       .sidebar-links a:hover {
         background-color: rgba(255, 255, 255, 0.1);
         color: #e50914;
         border-radius: 18px;
-        /* Veći border-radius za moderan izgled */
       }
   </style>
 </head>
 <body>
+
 <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
-    </div>
-    <!-- Vertikalni Sidebar -->
-    <div class="sidebar">
-      <ul class="sidebar-links">
-        <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">Netflix Filmovi</a></li>
-        <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflixserije.html">Netflix Serije</a></li>
-        <li><a href="https://jelenasavic123.github.io/SveNaEkranu/omiljeno.html">Omiljeni Sadrzaj</a></li>
-      </ul>
-    </div>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix Logo">
+</div>
 
-  <div style="padding:20px; max-width:600px; margin:auto;">
-    <input type="text" id="seriesSearch" placeholder="Pretraži serije..." style="width:100%; padding:10px; font-size:16px; border-radius:5px; border:1px solid #ccc;">
-  </div>
+<div class="sidebar">
+  <ul class="sidebar-links">
+    <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflix.html">Netflix Filmovi</a></li>
+    <li><a href="https://jelenasavic123.github.io/SveNaEkranu/netflixserije.html">Netflix Serije</a></li>
+    <li><a href="https://jelenasavic123.github.io/SveNaEkranu/omiljeno.html">Omiljeni Sadrzaj</a></li>
+  </ul>
+</div>
 
-  <div id="loading">Učitavanje...</div>
-  <div id="filters">
-    <div id="genre-buttons"></div>
-    <div id="year-buttons"></div>
-  </div>
-  <div id="series-list"></div>
-  <div style="text-align:center; margin:20px 0;">
-    <button id="loadMoreBtn" style="padding:10px 20px; font-size:16px; cursor:pointer; border-radius:5px;">Učitaj još</button>
-  </div>
+<div style="padding:20px; max-width:600px; margin:auto;">
+  <input type="text" id="seriesSearch" placeholder="Pretraži serije..." style="width:100%; padding:10px; font-size:16px; border-radius:5px; border:1px solid #ccc;">
+</div>
 
-  <!-- Popup prozor -->
-  <div id="popup" class="popup">
-    <div class="popup-content">
-      <span id="close" class="close">&times;</span>
-      <div class="series-info">
-        <img id="series-poster" src="" alt="Poster">
-        <div>
-          <h3 id="series-title"></h3>
-          <p id="series-overview"></p>
-          <p><strong>Godina:</strong> <span id="series-year"></span></p>
-          <p><strong>Žanrovi:</strong> <span id="series-genres"></span></p>
-          <button id="saveToWatchLater">💾 Dodaj u Omiljeno</button>
-          <p><strong>Broj sezona:</strong> <span id="series-seasons"></span></p>
-          <p><strong>Broj epizoda:</strong> <span id="series-episodes"></span></p>
-        </div>
+<div id="loading">Učitavanje...</div>
+<div id="filters">
+  <div id="genre-buttons"></div>
+  <div id="year-buttons"></div>
+</div>
+<div id="series-list"></div>
+
+<!-- Popup za detalje -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span id="close" class="close">&times;</span>
+    <div class="series-info">
+      <img id="series-poster" src="" alt="Poster">
+      <div>
+        <h3 id="series-title"></h3>
+        <p id="series-overview"></p>
+        <p><strong>Godina:</strong> <span id="series-year"></span></p>
+        <p><strong>Žanrovi:</strong> <span id="series-genres"></span></p>
+        <button id="saveToWatchLater">💾 Dodaj u Omiljeno</button>
+        <p><strong>Broj sezona:</strong> <span id="series-seasons"></span></p>
+        <p><strong>Broj epizoda:</strong> <span id="series-episodes"></span></p>
       </div>
-      <div id="seasons" class="season-list"></div>
-      <div id="episodes" class="episode-list"></div>
-      <div id="customAlert"></div>
     </div>
+    <div id="seasons" class="season-list"></div>
+    <div id="episodes" class="episode-list"></div>
+    <div id="customAlert"></div>
   </div>
+</div>
 
-  <!-- Popup za jezik -->
-  <div id="language-popup" class="popup">
-    <div class="popup-content">
-      <span id="close-language-popup" class="close">&times;</span>
-      <h2>Izaberite jezik za gledanje</h2>
-      <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
-      <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
-    </div>
+<!-- Popup za jezik -->
+<div id="language-popup" class="popup">
+  <div class="popup-content">
+    <span id="close-language-popup" class="close">&times;</span>
+    <h2>Izaberite jezik za gledanje</h2>
+    <button id="watch-sr" class="language-button">Gledaj na srpskom</button>
+    <button id="watch-hr" class="language-button">Gledaj na hrvatskom</button>
   </div>
+</div>
 
 <script>
 const apiKey = '2701858e9bccab54d4d0e4931420a739';
@@ -232,10 +224,10 @@ let currentSeason = 1;
 let currentSeriesId = null;
 let selectedEpisode = null;
 
-// --- Fetch žanrova ---
+// Fetch žanrova
 async function fetchGenres() {
-  const response = await fetch(`${baseUrl}genre/tv/list?api_key=${apiKey}&language=en`);
-  const data = await response.json();
+  const res = await fetch(`${baseUrl}genre/tv/list?api_key=${apiKey}&language=en`);
+  const data = await res.json();
   data.genres.forEach(genre => {
     const btn = document.createElement('button');
     btn.classList.add('genre-button');
@@ -249,7 +241,7 @@ async function fetchGenres() {
   });
 }
 
-// --- Godine ---
+// Godine
 function generateYears() {
   for (let y = 2025; y >= 2014; y--) {
     const btn = document.createElement('button');
@@ -264,34 +256,30 @@ function generateYears() {
   }
 }
 
-// --- Fetch serije ---
+// Fetch serije
 async function fetchSeries() {
-  document.getElementById('loading').style.display = 'block';
-
+  document.getElementById('loading').style.display='block';
   let url = '';
-  if (currentSearch) {
+  if(currentSearch){
     url = `${baseUrl}search/tv?api_key=${apiKey}&language=sr-SR&query=${encodeURIComponent(currentSearch)}&page=${currentPage}`;
   } else {
     url = `${baseUrl}discover/tv?api_key=${apiKey}&language=sr-SR&sort_by=popularity.desc&page=${currentPage}&with_watch_providers=${netflixProviderId}&watch_region=US`;
-    if (currentGenre) url += `&with_genres=${currentGenre}`;
-    if (currentYear) url += `&first_air_date_year=${currentYear}`;
+    if(currentGenre) url += `&with_genres=${currentGenre}`;
+    if(currentYear) url += `&first_air_date_year=${currentYear}`;
   }
 
-  try {
+  try{
     const res = await fetch(url);
     const data = await res.json();
-
-    if (currentPage === 1) seriesList.innerHTML = '';
+    if(currentPage===1) seriesList.innerHTML='';
     displaySeries(data.results);
-
-  } catch (err) { console.error(err); }
-
-  document.getElementById('loading').style.display = 'none';
+  }catch(e){console.error(e);}
+  document.getElementById('loading').style.display='none';
 }
 
-// --- Display serije ---
-function displaySeries(series) {
-  series.forEach(s => {
+// Display serije
+function displaySeries(series){
+  series.forEach(s=>{
     const card = document.createElement('div');
     card.classList.add('series-card');
     card.innerHTML = `
@@ -301,89 +289,88 @@ function displaySeries(series) {
       </div>
       <h3>${s.name}</h3>
     `;
-    card.addEventListener('click', () => showSeriesDetails(s.id));
+    card.addEventListener('click', ()=>showSeriesDetails(s.id));
     seriesList.appendChild(card);
   });
 }
 
-// --- Detalji ---
-async function showSeriesDetails(id) {
-  currentSeriesId = id;
-  const res = await fetch(`${baseUrl}tv/${id}?api_key=${apiKey}&language=sr-SR`);
-  const data = await res.json();
+// Detalji
+async function showSeriesDetails(id){
+  currentSeriesId=id;
+  const res=await fetch(`${baseUrl}tv/${id}?api_key=${apiKey}&language=sr-SR`);
+  const data=await res.json();
+  seriesTitle.textContent=data.name;
+  seriesOverview.textContent=data.overview;
+  seriesPoster.src=`https://image.tmdb.org/t/p/w500${data.poster_path}`;
+  seriesYear.textContent=data.first_air_date?.split('-')[0]||'';
+  seriesGenres.textContent=data.genres.map(g=>g.name).join(', ');
+  seriesSeasons.textContent=data.number_of_seasons;
+  seriesEpisodes.textContent=data.number_of_episodes;
 
-  seriesTitle.textContent = data.name;
-  seriesOverview.textContent = data.overview;
-  seriesPoster.src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
-  seriesYear.textContent = data.first_air_date?.split('-')[0] || '';
-  seriesGenres.textContent = data.genres.map(g => g.name).join(', ');
-  seriesSeasons.textContent = data.number_of_seasons;
-  seriesEpisodes.textContent = data.number_of_episodes;
-
-  seasonsContainer.innerHTML = '';
-  for (let i = 1; i <= data.number_of_seasons; i++) {
-    const btn = document.createElement('button');
+  seasonsContainer.innerHTML='';
+  for(let i=1;i<=data.number_of_seasons;i++){
+    const btn=document.createElement('button');
     btn.classList.add('season-button');
-    btn.textContent = `Sezona ${i}`;
-    btn.addEventListener('click', () => fetchEpisodes(i));
+    btn.textContent=`Sezona ${i}`;
+    btn.addEventListener('click',()=>fetchEpisodes(i));
     seasonsContainer.appendChild(btn);
   }
 
-  popup.style.display = 'flex';
+  popup.style.display='flex';
 }
 
-// --- Epizode ---
-function fetchEpisodes(seasonNumber) {
-  currentSeason = seasonNumber;
+// Epizode
+function fetchEpisodes(seasonNumber){
+  currentSeason=seasonNumber;
   fetch(`${baseUrl}tv/${currentSeriesId}/season/${seasonNumber}?api_key=${apiKey}&language=sr-SR`)
-    .then(r => r.json())
-    .then(data => {
-      episodesContainer.innerHTML = '';
-      data.episodes.forEach(ep => {
-        const btn = document.createElement('button');
+    .then(r=>r.json())
+    .then(data=>{
+      episodesContainer.innerHTML='';
+      data.episodes.forEach(ep=>{
+        const btn=document.createElement('button');
         btn.classList.add('episode-button');
-        btn.textContent = `Sezona ${currentSeason}, Epizoda ${ep.episode_number}`;
-        btn.addEventListener('click', () => {
-          selectedEpisode = ep;
-          languagePopup.style.display = 'flex';
+        btn.textContent=`Sezona ${currentSeason}, Epizoda ${ep.episode_number}`;
+        btn.addEventListener('click',()=>{
+          selectedEpisode=ep;
+          languagePopup.style.display='flex';
         });
         episodesContainer.appendChild(btn);
       });
     });
 }
 
-// --- Popup ---
-closeBtn.addEventListener('click', () => { popup.style.display='none'; languagePopup.style.display='none'; });
-closeLanguagePopup.addEventListener('click', () => { languagePopup.style.display='none'; });
+// Popup
+closeBtn.addEventListener('click',()=>{popup.style.display='none'; languagePopup.style.display='none';});
+closeLanguagePopup.addEventListener('click',()=>{languagePopup.style.display='none';});
 
-watchSrButton.addEventListener('click', () => {
+watchSrButton.addEventListener('click',()=>{
   if(selectedEpisode) window.location.href=`https://vidsrc.xyz/embed/tv/${currentSeriesId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=sr`;
 });
-watchHrButton.addEventListener('click', () => {
+watchHrButton.addEventListener('click',()=>{
   if(selectedEpisode) window.location.href=`https://vidsrc.xyz/embed/tv/${currentSeriesId}/${currentSeason}/${selectedEpisode.episode_number}?ds_lang=hr`;
 });
 
-// --- Infinite scroll ---
-window.addEventListener('scroll', () => {
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+// Infinite scroll
+window.addEventListener('scroll',()=>{
+  if(window.innerHeight+window.scrollY>=document.body.offsetHeight-150){
     currentPage++;
     fetchSeries();
   }
 });
 
-// --- Pretraga ---
-searchInput.addEventListener('input', () => {
+// Pretraga
+searchInput.addEventListener('input',()=>{
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    currentSearch = searchInput.value.trim() || null;
-    currentPage = 1;
+  searchTimeout=setTimeout(()=>{
+    currentSearch=searchInput.value.trim()||null;
+    currentPage=1;
     fetchSeries();
-  }, 400);
+  },400);
 });
 
-// --- Watch Later ---
-document.getElementById('saveToWatchLater').addEventListener('click', () => {
-  const list = JSON.parse(localStorage.getItem('watchLater')) || [];
+// Watch Later
+document.getElementById('saveToWatchLater').addEventListener('click',()=>{
+  const list=JSON.parse(localStorage.getItem('watchLater'))||[];
   if(!list.some(x=>x.id===currentSeriesId)){
     list.push({id:currentSeriesId,title:seriesTitle.textContent,poster:seriesPoster.src});
     localStorage.setItem('watchLater',JSON.stringify(list));
@@ -391,14 +378,13 @@ document.getElementById('saveToWatchLater').addEventListener('click', () => {
   } else alert(`Film/serija "${seriesTitle.textContent}" već u Omiljeno`);
 });
 
-// --- Init ---
-document.addEventListener('DOMContentLoaded', () => {
+// Init
+document.addEventListener('DOMContentLoaded',()=>{
   fetchGenres();
   generateYears();
   fetchSeries();
 });
 </script>
-
 
 </body>
 </html>
