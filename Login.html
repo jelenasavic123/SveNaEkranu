@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TV Login</title>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+  margin:0;
+  background:#141414;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+/* LOGIN BOX */
+#popup{
+  background:#111;
+  padding:24px;
+  border-radius:16px;
+  width:640px;
+  text-align:center;
+}
+
+/* INPUT */
+#popup input{
+  width:60%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-bottom:10px;
+  font-size:16px;
+  text-align:center;
+}
+
+/* BUTTON */
+#popup button{
+  padding:10px 24px;
+  border:none;
+  border-radius:8px;
+  background:#e50914;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* STATUS */
+#status{
+  margin-top:10px;
+  font-size:14px;
+  color:#ffb3b3;
+}
+
+/* CONTACT */
+.contact-title{
+  margin-top:20px;
+  font-size:15px;
+  color:#ccc;
+}
+
+.contact-box{
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  margin-top:15px;
+}
+
+.contact-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+  text-align:center;
+}
+
+.contact-item a{
+  color:#4ea3ff;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.contact-item.fb img{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  border:2px solid #1877f2;
+}
+
+.icon{
+  width:50px;
+  height:50px;
+}
+
+.qr{
+  width:70px;
+  height:70px;
+  background:#fff;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN POPUP -->
+<div id="popup" tabindex="0">
+
+  <input type="text" id="nickname" placeholder="Unesite korisničko ime">
+  <br>
+  <button id="loginBtn">Prijavi se</button>
+  <p id="status"></p>
+
+  <p class="contact-title">
+    Nemate korisnički nalog?<br>
+    Molimo vas da nas kontaktirate radi aktivacije.
+  </p>
+
+  <div class="contact-box">
+
+    <!-- FACEBOOK -->
+    <div class="contact-item fb">
+      <img src="https://jelenasavic123.github.io/SveNaEkranu/slike/slika-jelena.jpg">
+      <a href="https://facebook.com/groups/sveturskeserije" target="_blank">
+        Facebook<br>Jovana Savić
+      </a>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="contact-item">
+      <img src="https://www.freeiconspng.com/uploads/communication-gmail-icon-3.png" class="icon">
+      <a href="mailto:dlanusvena@gmail.com">dlanusvena@gmail.com</a>
+    </div>
+
+    <!-- QR -->
+    <div class="contact-item">
+      <img src="https://jelenasavic123.github.io/SveNaEkranu/slike/qrcode.png" class="qr">
+      <span>QR chat</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* FIREBASE CONFIG – POPUNJENO */
+const firebaseConfig = {
+  apiKey: "AIzaSyDMsdqasmtSLNfbf9ICXVMRpKgmiNes85o",
+  authDomain: "svenaekranu-64477.firebaseapp.com",
+  projectId: "svenaekranu-64477",
+  storageBucket: "svenaekranu-64477.firebasestorage.app",
+  messagingSenderId: "15230160013",
+  appId: "1:15230160013:web:89144bb5079637e787e6c4"
+};
+
+/* INIT */
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* ELEMENTI */
+const nicknameInput = document.getElementById("nickname");
+const loginBtn = document.getElementById("loginBtn");
+const statusDiv = document.getElementById("status");
+
+/* LOGIN */
+loginBtn.addEventListener("click", () => {
+  const nickname = nicknameInput.value.trim();
+
+  if(!nickname){
+    statusDiv.textContent = "Unesite korisničko ime.";
+    return;
+  }
+
+  auth.signInAnonymously().then(() => {
+    db.collection("nicknames").doc(nickname).get().then(doc => {
+      if(doc.exists && doc.data().available){
+        localStorage.setItem("nickname", nickname);
+        statusDiv.style.color = "lightgreen";
+        statusDiv.textContent = "Uspešna prijava ✔";
+        // OVDE može redirect ili otvaranje app-a
+        // window.location.href = "home.html";
+      } else {
+        statusDiv.textContent = "Nalog nije aktivan.";
+      }
+    });
+  }).catch(() => {
+    statusDiv.textContent = "Greška pri prijavi.";
+  });
+});
+</script>
+
+</body>
+</html>
