@@ -1,0 +1,369 @@
+<style>
+/* ----------------- RESET BROWSER + BLOGGER WRAPPERS ----------------- */
+html, body, .main-inner, .content-outer, .content-inner, .post-body {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* ----------------- WRAPPER ----------------- */
+.app-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ----------------- HEADER ----------------- */
+header {
+    background: linear-gradient(90deg,#E50914,#b20710);
+    padding: 20px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    border-radius: 0;
+    color: #fff;
+}
+
+/* ----------------- NOTICE ----------------- */
+.notice {
+    text-align: center;
+    padding: 10px;
+    background: #eee;
+    font-size: 14px;
+    color: #000;
+    border-radius: 0;
+    margin: 0 0 12px 0;
+}
+
+/* ----------------- NAV ----------------- */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    background: #ddd;
+    padding: 12px;
+    border-radius: 0;
+    margin: 0 0 12px 0;
+}
+
+nav button, nav select, nav input {
+    background: #fff;
+    color: #000;
+    border: 1px solid #aaa;
+    padding: 9px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+nav button:hover { background: #E50914; color: #fff; }
+
+/* ----------------- GRID CARDS ----------------- */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.card {
+    background: #f9f9f9;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover { transform: translateY(-4px); }
+
+.card img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover;
+    display: block;
+}
+
+.card h3 {
+    font-size: 14px;
+    margin: 8px;
+    color: #000;
+}
+
+.card span {
+    margin: 0 8px 10px;
+    display: block;
+    color: #555;
+    font-size: 12px;
+}
+
+/* ----------------- SHOW MORE ----------------- */
+.show-more-wrap {
+    text-align: center;
+    padding: 20px;
+}
+
+.show-more-btn {
+    background: #E50914;
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.show-more-btn:hover { background: #b20710; }
+
+/* ----------------- POPUP ----------------- */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s;
+    z-index: 9999;
+}
+
+.popup.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-content {
+    background: #fff;
+    color: #000;
+    max-width: 900px;
+    width: 95%;
+    padding: 22px;
+    border-radius: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.popup-content img {
+    width: 180px;
+    float: left;
+    margin-right: 18px;
+    border-radius: 8px;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #E50914;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.section { margin-top: 18px; }
+.section p { line-height: 1.6; color: #000; }
+
+/* ----------------- RESPONSIVE ----------------- */
+@media (max-width: 600px) {
+    .popup-content img {
+        float: none;
+        width: 100%;
+        margin: 0 0 15px;
+    }
+}
+</style>
+
+
+<div class="app-wrap">
+
+<header>🎞 Filmovi & Serije (2000–2010)</header>
+
+<div class="notice">
+⚠️ Note: This page is **for information purposes only**. You cannot watch movies or shows here.
+</div>
+
+<nav>
+<button onclick="loadMovies()">🎬 Filmovi</button>
+<button onclick="loadTV()">📺 Serije</button>
+
+<select onchange="filterGenre(this.value)">
+<option value="">Žanr</option>
+<option value="28">Akcija</option>
+<option value="12">Avantura</option>
+<option value="16">Animirani</option>
+<option value="35">Komedija</option>
+<option value="18">Drama</option>
+<option value="27">Horor</option>
+<option value="878">Sci-Fi</option>
+</select>
+
+<select onchange="filterYear(this.value)">
+<option value="">Godina</option>
+<option value="2000-2002">2000–2002</option>
+<option value="2003-2005">2003–2005</option>
+<option value="2006-2008">2006–2008</option>
+<option value="2009-2010">2009–2010</option>
+</select>
+
+<input type="text" placeholder="Pretraži..." oninput="searchMovies(this.value)">
+</nav>
+
+<div class="container" id="list"></div>
+
+<div class="show-more-wrap">
+<button class="show-more-btn" onclick="showMore()">⬇ PRIKAŽI VIŠE</button>
+</div>
+
+</div>
+
+<div class="popup" id="popup">
+<div class="popup-content" id="popupContent"></div>
+</div>
+
+<script>
+const API = "https://api.themoviedb.org/3";
+const KEY = "2701858e9bccab54d4d0e4931420a739";
+
+let page = 1;
+let mode = "movie";
+let baseURL = "";
+let allData = [];
+let currentGenre = "";
+let currentYearRange = "";
+
+function loadMovies() {
+  baseURL = `${API}/discover/movie?api_key=${KEY}&primary_release_date.gte=2000-01-01&primary_release_date.lte=2010-12-31&sort_by=popularity.desc`;
+  resetAndLoad("movie");
+}
+
+function loadTV() {
+  baseURL = `${API}/discover/tv?api_key=${KEY}&first_air_date.gte=2000-01-01&first_air_date.lte=2010-12-31&sort_by=popularity.desc`;
+  resetAndLoad("tv");
+}
+
+function resetAndLoad(type) {
+  mode = type;
+  page = 1;
+  allData = [];
+  document.getElementById("list").innerHTML = "";
+  fetchPage();
+}
+
+async function fetchPage() {
+  let url = `${baseURL}&page=${page}`;
+  if (currentGenre) url += `&with_genres=${currentGenre}`;
+  if (currentYearRange) {
+    const [start,end] = currentYearRange.split("-");
+    if(mode==="movie") {
+        url = url.replace(/primary_release_date.gte=2000-01-01/,`primary_release_date.gte=${start}-01-01`)
+                 .replace(/primary_release_date.lte=2010-12-31/,`primary_release_date.lte=${end}-12-31`);
+    } else {
+        url = url.replace(/first_air_date.gte=2000-01-01/,`first_air_date.gte=${start}-01-01`)
+                 .replace(/first_air_date.lte=2010-12-31/,`first_air_date.lte=${end}-12-31`);
+    }
+  }
+
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!data.results || data.results.length===0) return;
+  allData = allData.concat(data.results);
+  render(data.results);
+  page++;
+}
+
+function render(items) {
+  const c = document.getElementById("list");
+  items.forEach(i=>{
+    if(!i.poster_path) return;
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <img src="https://image.tmdb.org/t/p/w500${i.poster_path}">
+      <h3>${i.title||i.name}</h3>
+      <span>⭐ ${i.vote_average} | ${(i.release_date||i.first_air_date||"").slice(0,4)}</span>
+    `;
+    card.onclick = ()=>openPopup(i.id);
+    c.appendChild(card);
+  });
+}
+
+function showMore(){ fetchPage(); }
+function filterGenre(g){ currentGenre=g; resetAndLoad(mode); }
+function filterYear(y){ currentYearRange=y; resetAndLoad(mode); }
+function searchMovies(q){
+  document.getElementById("list").innerHTML="";
+  render(allData.filter(m=>(m.title||m.name).toLowerCase().includes(q.toLowerCase())));
+}
+
+// ---------------- POPUP FULL INFO ----------------
+async function openPopup(id){
+  const res = await fetch(`${API}/${mode}/${id}?api_key=${KEY}`);
+  const m = await res.json();
+
+  const genres = m.genres ? m.genres.map(g => g.name).join(", ") : "N/A";
+  const runtime = m.runtime || m.episode_run_time?.[0] || "N/A";
+  const status = m.status || "N/A";
+
+  let funFact = "";
+  if (m.title && m.title.toLowerCase().includes("ring")) funFact = "💍 Ovaj film uključuje legendarni prsten u središtu priče!";
+  else if (m.title && m.title.toLowerCase().includes("matrix")) funFact = "🕶 Poznat po revolucionarnom 'bullet time' efektu!";
+  else if (m.title && m.title.toLowerCase().includes("pirates")) funFact = "🏴‍☠️ Inspiriran klasičnim piratskim pričama i avanturama!";
+  else funFact = "🎬 Izvanredan naslov iz zlatne ere 2000–2010.";
+
+  document.getElementById("popupContent").innerHTML = `
+    <button class="close" onclick="closePopup()">✖</button>
+    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title||m.name}">
+    <h2>${m.title||m.name}</h2>
+    <em style="color:#aaa">${m.tagline||""}</em>
+
+    <div class="section">
+        <p>${m.overview || "Nema dostupnog opisa."}</p>
+    </div>
+
+    <div class="section">
+        <p>
+        ⭐ Ocjena: ${m.vote_average} (${m.vote_count})<br>
+        🎭 Žanrovi: ${genres}<br>
+        ⏱ Trajanje: ${runtime} min<br>
+        📅 Godina: ${(m.release_date||m.first_air_date||"").slice(0,4)}<br>
+        🌍 Jezik: ${m.original_language.toUpperCase()}<br>
+        🔥 Popularnost: ${Math.round(m.popularity)}<br>
+        📝 Status: ${status}
+        </p>
+    </div>
+
+    <div class="section">
+        <p>Ovaj naslov dolazi iz zlatne ere (2000–2010), poznate po snažnim pričama, praktičnim efektima i nezaboravnim likovima.</p>
+    </div>
+
+    <div class="section">
+        <strong>🎉 Zanimljivost / Trivia:</strong>
+        <p>${funFact}</p>
+    </div>
+
+    <div class="section" style="color:#ffdd57; font-size:13px;">
+        ⚠️ Napomena: Popup pruža <strong>informacije samo</strong>, film nije dostupan za gledanje.
+    </div>
+  `;
+
+  document.getElementById("popup").classList.add("active");
+}
+
+function closePopup(){ document.getElementById("popup").classList.remove("active"); }
+
+loadMovies();
+</script>
