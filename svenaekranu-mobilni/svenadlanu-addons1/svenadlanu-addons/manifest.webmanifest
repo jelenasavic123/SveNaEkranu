@@ -1,0 +1,25 @@
+{
+  "name": "Sve Na Dlanu",
+  "short_name": "Sve Na Dlanu",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#141414",
+  "theme_color": "#e50914",
+  "description": "Sve Na Dlanu",
+  "icons": [
+    {
+      "src": "/svenadlanu-site-addons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/svenadlanu-site-addons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
