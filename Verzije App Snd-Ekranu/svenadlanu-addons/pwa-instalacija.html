@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sve Na Dlanu</title>
+<link rel="manifest" href="/svenadlanu-site-addons/manifest.webmanifest">
+<meta name="theme-color" content="#e50914">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#141414;color:#fff;font-family:Arial,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center}
+.box{width:min(520px,92%);padding:40px 25px;background:#1d1d1d;border-radius:18px;box-shadow:0 10px 40px #0008}
+h1{font-size:32px;margin:0 0 12px}
+p{color:#bbb;line-height:1.5}
+button{margin-top:20px;background:#e50914;color:#fff;border:0;border-radius:8px;padding:15px 28px;font-size:17px;font-weight:bold;cursor:pointer}
+#status{margin-top:20px;color:#aaa;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>Sve Na Dlanu</h1>
+<p>Instaliraj Sve Na Dlanu kao aplikaciju na računaru.</p>
+<button id="installBtn" hidden>📥 INSTALIRAJ SVE NA DLANU</button>
+<div id="status">Provera instalacije...</div>
+</div>
+
+<script>
+let deferredPrompt = null;
+
+const btn = document.getElementById("installBtn");
+const status = document.getElementById("status");
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+        try {
+            const registration = await navigator.serviceWorker.register(
+                "/svenadlanu-pwa-sw.js",
+                { scope: "/" }
+            );
+
+            console.log("PWA Service Worker:", registration.scope);
+        } catch (error) {
+            console.error("PWA Service Worker greška:", error);
+        }
+    });
+}
+
+window.addEventListener("beforeinstallprompt", event => {
+    event.preventDefault();
+    deferredPrompt = event;
+
+    btn.hidden = false;
+    status.textContent = "Aplikacija je spremna za instalaciju.";
+});
+
+btn.addEventListener("click", async () => {
+    if (!deferredPrompt) {
+        status.innerHTML =
+            'Chrome trenutno ne nudi direktnu instalaciju.<br><br>' +
+            'Klikni <b>⋮</b> → <b>Cast, save, and share</b> → ' +
+            '<b>Install page as app</b>.';
+        return;
+    }
+
+    deferredPrompt.prompt();
+
+    const result = await deferredPrompt.userChoice;
+
+    if (result.outcome === "accepted") {
+        status.textContent = "Sve Na Dlanu je instaliran.";
+    } else {
+        status.textContent = "Instalacija je otkazana.";
+    }
+
+    deferredPrompt = null;
+    btn.hidden = true;
+});
+
+window.addEventListener("appinstalled", () => {
+    status.textContent = "Sve Na Dlanu je uspešno instaliran.";
+    deferredPrompt = null;
+    btn.hidden = true;
+});
+</script>
+</body>
+</html>

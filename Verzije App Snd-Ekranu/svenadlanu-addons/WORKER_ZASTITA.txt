@@ -1,0 +1,27 @@
+SVE NA DLANU 9.0.0 - WORKER ZASTITA
+
+Ovaj ZIP je napravljen direktno iz originalnog rezervna(2).zip.
+
+Cloudflare Worker:
+https://svenadlanu-addon-api.balevasanja.workers.dev/
+
+Worker vec koristi:
+- X-Addon-ID header
+- JSON: { id, version }
+- Origin chrome-extension://<extension-id>
+- ALLOWED_EXTENSION_ID
+- allowedVersion = 9.0.0
+
+Addon sada koristi isti taj protokol.
+
+Nije menjano:
+- content.js
+- page_guard.js
+- rules_1.json
+- rules_2.json
+- ikonice
+- PWA fajlovi
+- postojece funkcije background.js, osim dodate Worker autorizacije pre addDomain() za nove popup domene.
+
+VAZNO:
+Ne menjaj extension ID. Instaliraj ovu verziju preko istog extension identiteta.
